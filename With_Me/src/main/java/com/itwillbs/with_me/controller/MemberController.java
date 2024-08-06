@@ -3,6 +3,7 @@ package com.itwillbs.with_me.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.itwillbs.with_me.service.MemberService;
 
@@ -27,5 +28,23 @@ public class MemberController {
 	@GetMapping("Id_find")
 	public String id_Find() {
 		return "member/member_id_find";
+	}
+	
+	// 비밀번호 찾기
+	@GetMapping("Passwd_find")
+	public String passwd_Find() {
+		return "member/member_pw_find";
+	}
+	
+	// 비밀번호 찾기
+	@PostMapping("PwFindPro")
+	public String pwFindPro() {
+		return "member/member_pw_find_pro";
+	}
+	
+	// 비밀번호 재설정
+	@PostMapping("PwReset")
+	public String pwReset() {
+		return "member/member_pw_reset";
 	}
 }

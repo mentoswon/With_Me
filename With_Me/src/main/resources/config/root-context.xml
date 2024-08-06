@@ -9,8 +9,8 @@
 	<!-- SQL 로그를 위한 log4jdbc 라이브러리 관련 DBCP 정보 변경(driverClassName, jdbcUrl 속성만 변경) -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
-		<property name="jdbcUrl" value="jdbc:log4jdbc:mysql://localhost:3306/spring_mvc_board5"></property>
-		<property name="username" value="root"></property>
+		<property name="jdbcUrl" value="jdbc:log4jdbc:mysql://itwillbs.com:3306/c5d2403t2_2"></property>
+		<property name="username" value="c5d2403t2_2"></property>
 		<property name="password" value="1234"></property>
 	</bean>
 
