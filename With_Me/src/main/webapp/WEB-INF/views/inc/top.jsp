@@ -22,9 +22,10 @@
 		<%-- EL의 sessionScope 내장 객체 접근하여 sId 속성값 존재 여부 판별 --%>
 		<c:choose>
 			<c:when test="${empty sessionScope.sId}"> <%-- 로그인 상태가 아닐 경우 --%>
-				<button class="btn">스토어</button>
-				<button class="btn">로그인/회원가입</button>
-				<button class="btn">프로젝트 만들기</button>
+				<button class="btn" onclick="location.href='Store'">스토어</button>
+				<button class="btn" onclick="location.href='MemberLogin'">로그인</button>
+				<button class="btn" onclick="location.href='MemberJoin'">회원가입</button>
+				<button class="btn" onclick="location.href='CreateProject'">프로젝트 만들기</button>
 			</c:when>
 			<c:otherwise>
 				<%-- 아이디 클릭 시 회원 상세정보 조회를 위한 "MemberInfo.me" 서블릿 요청 --%>
