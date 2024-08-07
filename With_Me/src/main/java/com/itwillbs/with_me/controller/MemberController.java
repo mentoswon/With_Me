@@ -18,6 +18,10 @@ public class MemberController {
 		return "member/member_join_form";
 	}
 	
+	// 회원가입 완료 페이지
+	
+	
+	
 	// 로그인 페이지
 	@GetMapping("MemberLogin")
 	public String login() {
@@ -25,13 +29,13 @@ public class MemberController {
 	}
 	
 	// 아이디 찾기
-	@GetMapping("Id_find")
+	@GetMapping("IdFind")
 	public String id_Find() {
 		return "member/member_id_find";
 	}
 	
 	// 비밀번호 찾기
-	@GetMapping("Passwd_find")
+	@GetMapping("PasswdFind")
 	public String passwd_Find() {
 		return "member/member_pw_find";
 	}

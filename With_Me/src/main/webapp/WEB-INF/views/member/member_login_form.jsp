@@ -51,8 +51,8 @@
 						<div>
 							<input type="submit" value="로그인" id="loginBtn"><br>
 							<a onclick="location.href='MemberJoin'" style="font-size: 12px;">회원가입&nbsp;&nbsp;&nbsp;&nbsp;</a>
-							<a onclick="location.href='Id_find'" style="font-size: 12px;">아이디 찾기/</a>
-							<a onclick="location.href='Passwd_find'" style="font-size: 12px;">비밀번호 찾기</a>
+							<a onclick="location.href='IdFind'" style="font-size: 12px;">아이디 찾기/</a>
+							<a onclick="location.href='PasswdFind'" style="font-size: 12px;">비밀번호 찾기</a>
 						</div>
 					</div>
 				</form>	
