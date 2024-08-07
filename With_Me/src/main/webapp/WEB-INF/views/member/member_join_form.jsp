@@ -16,7 +16,7 @@
 <script type="text/javascript">
 	// 입력값 검증 결과를 저장할 변수 선언(true : 적합, false : 부적합)
 	// => submit 이벤트에서 검사 후 submit 여부 결정
-	let checkIdResult = false;
+	let checkEmailResult = false;
 	let checkPasswdResult = false;
 	let checkPasswd2Result = false;
 	let checkLicenseResult = false;
@@ -32,9 +32,9 @@
 // 	}
 	
 	// 2. ID 입력 후 빠져나갈 때(blur) 아이디 입력값 체크하기
-	function checkId() {
+	function checkEmail() {
 		// 입력받은 아이디 값 가져오기
-		let mem_id = $("#mem_id").val();
+		let mem_email = $("#mem_email").val();
 		
 		/*
 		[ 아이디 입력값 검증을 위한 정규표현식 활용 ]
@@ -55,10 +55,10 @@
 
 		// 정규표현식 문자열을 관리하는 객체(regex)의 exec() 메서드 호출하여
 		// 검사할 문자열을 전달하면 정규표현식 일치 여부 확인 가능
-		if(!regex.exec(mem_id)) { // 불일치
-			checkIdResult = false; // 아이디 검사 적합 여부 false(부적합) 값 저장
+		if(!regex.exec(mem_email)) { // 불일치
+			checkEmailResult = false; // 아이디 검사 적합 여부 false(부적합) 값 저장
 		} else { // 일치
-			checkIdResult = true; // 아이디 검사 적합 여부 true(적합) 값 저장
+			checkEmailResult = true; // 아이디 검사 적합 여부 true(적합) 값 저장
 		}
 		
 		let msg = "";
@@ -68,7 +68,7 @@
 		// 정규표현식 규칙 검사 결과 판별
 		// => 불일치 시 불일치 메세지 출력 처리
 		// => 일치 시 AJAX 활용하여 아이디 중복 검사 요청 후 결과 처리
-		if(!checkIdResult) {
+		if(!checkEmailResult) {
 			msg = "영문자, 숫자, 특수문자(_) 조합 4 ~ 16글자";
 			color = "red";
 			bgColor = "lightpink";
@@ -77,7 +77,7 @@
 				type : "GET",
 				url : "MemberCheckDupId",
 				data : {
-					mem_id : $("#mem_id").val()
+					mem_email : $("#mem_email").val()
 				},
 				success : function(result) {
 					console.log("result = " + result);
@@ -91,9 +91,9 @@
 						bgColor = "";
 					}
 					
-					$("#checkIdResult").text(msg);
-					$("#checkIdResult").css("color", color);
-					$("#mem_id").css("background", bgColor);
+					$("#checkEmailResult").text(msg);
+					$("#checkEmailResult").css("color", color);
+					$("#mem_email").css("background", bgColor);
 				}
 			});
 		}
@@ -102,9 +102,9 @@
 		// 기본값 널스트링 값이 저장된 채로 실행되므로 정확한 결과값이 표시되지 않는다!
 		// => 따라서, 현재 코드가 AJAX 요청 성공 시 처리하는 success 블럭에도 추가되어야한다!
 		
-		$("#checkIdResult").text(msg);
-		$("#checkIdResult").css("color", color);
-		$("#mem_id").css("background", bgColor);
+		$("#checkEmailResult").text(msg);
+		$("#checkEmailResult").css("color", color);
+		$("#mem_email").css("background", bgColor);
 
 		
 	}
@@ -473,8 +473,8 @@
 						</tr>
 						<tr>
 							<td>
-								<input type="text" name="mem_id" id="mem_id" size="15" placeholder="이메일입력" onblur="checkId()" required="required">
-								<div id="checkIdResult"></div>
+								<input type="text" name="mem_email" id="mem_email" size="15" placeholder="이메일입력" onblur="checkEmail()" required="required">
+								<div id="checkEmailResult"></div>
 							</td>
 						</tr>	
 						<tr>
@@ -485,7 +485,7 @@
 								<input type="password" name="mem_passwd" id="mem_passwd" size="25" onblur="checkPasswd()" required="required">
 								<span id="checkPasswdComplexResult"></span>
 								<div id="checkPasswdResult"></div>
-							</td>
+							</td> 
 						</tr>	
 						<tr>
 							<td>비밀번호확인</td>
@@ -516,8 +516,8 @@
 							<td id="tdjumin">(생년월일 6자리를 입력해주세요)</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="mem_jumin" size="15" id="mem_jumin" maxlength="14" required="required" onblur="checkJumin()">
-								<div id="checkJuminResult"></div>
+							<td><input type="text" name="mem_birthday" size="15" id="mem_birthday" maxlength="14" required="required" onblur="checkJumin()">
+								<div id="checkBirthResult"></div>
 							</td>
 						</tr>
 						<tr>
