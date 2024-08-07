@@ -457,7 +457,7 @@
 		<jsp:include page="/WEB-INF/views//inc/top.jsp"></jsp:include>
 	</header>
 	<main>
-		<article style="position: relative; top: 100px;">
+		<article>
 			<h1 align="center">회원 가입</h1>
 			<form action="MemberJoinPro" name="joinForm" method="post">
 				<section class="joinForm1">
