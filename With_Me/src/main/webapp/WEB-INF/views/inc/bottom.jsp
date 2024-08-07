@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <div id="footer_area">
-	
-	<img src="" >
+	<a href="./" class="main_logo">
+		<img alt="로고" src="${pageContext.request.contextPath}/resources/image/withme.png">
+	</a>
 <!-- 	<img src="/images/logo.png" > 
 		태그는 브라우저에서 실행하는데, 클라이언트 입장에서 root 는 localhost:8080 임.
 		프로젝트명을 찾지 못함 -> 이미지 엑박뜸 

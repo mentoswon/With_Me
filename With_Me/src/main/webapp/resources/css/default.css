@@ -35,12 +35,26 @@ article table {
 }
 
 #member_area {
+	width: 100%;
 	text-align: right;
     padding-top: 10px;
     position: absolute;
     top: 0px;
     right: 0px;
     color: #aaaaaa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main_logo {
+	width: 100px;
+	height: 80px;
+}
+
+.main_logo img{
+	width: 100%;
+	height: 100%;
 }
 
 #member_area .btn {
