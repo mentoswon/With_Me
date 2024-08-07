@@ -18,6 +18,10 @@ public class MemberController {
 		return "member/member_join_form";
 	}
 	
+	// 회원가입 완료 페이지
+	
+	
+	
 	// 로그인 페이지
 	@GetMapping("MemberLogin")
 	public String login() {
