@@ -1,5 +1,7 @@
 package com.itwillbs.with_me.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -133,6 +135,7 @@ public class MemberController {
 		} else { // 로그인 성공
 			// 로그인 성공한 아이디를 세션에 저장
 			session.setAttribute("sId", member.getMem_email());
+			session.setAttribute("sName", member.getMem_name());
 			
 			// 세션 타이머 1시간으로 변경
 			session.setMaxInactiveInterval(60 * 60); // 60초 * 60분 = 3600
@@ -166,9 +169,18 @@ public class MemberController {
 				return "redirect:/ManagerMain";
 			}
 			return "redirect:/";
+			
+			
 		}
 	}
 	
+	
+	// 로그아웃
+	@GetMapping("MemberLogout")
+	public String memberLogout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/";
+	}
 	
 	
 	// 아이디 찾기
