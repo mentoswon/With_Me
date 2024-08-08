@@ -17,6 +17,7 @@ public class ProjectVO {
 	private String project_status;
 	private int creator_idx;
 	private String project_category;
+	private String project_category_detail;
 	private String project_title;
 	private String project_summary;
 	private String project_image;

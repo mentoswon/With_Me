@@ -13,6 +13,10 @@
 		}
 	}
 	
+	function projectList(cateDetail) {
+		location.href="ProjectList?project_category_detail=" + cateDetail;
+	}
+	
 </script>
 
 <div class="inner">
@@ -52,45 +56,36 @@
 			<li class="depth01">
 				<a href=""> 푸드 </a>
 				<ul class="depth02">
-					<li><a href="">사료</a></li>
-					<li><a href="">껌류</a></li>
-					<li><a href="">수제간식</a></li>
+					<li><button value="사료" onclick="projectList(this.value)" >사료</button></li>
+					<li><button value="껌류" onclick="projectList(this.value)" >껌류</button></li>
+					<li><button value="수제간식" onclick="projectList(this.value)" >수제간식</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
 				<a href=""> 패션 / 위생 </a>
 				<ul class="depth02">
-					<li><a href="">메뉴1</a></li>
-					<li><a href="">메뉴2</a></li>
-					<li><a href="">메뉴3</a></li>
+					<li><button value="메뉴" onclick="projectList(this.value)" >메뉴</button></li>
+					<li><button value="메뉴" onclick="projectList(this.value)" >메뉴</button></li>
+					<li><button value="메뉴" onclick="projectList(this.value)" >메뉴</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
 				<a href=""> 식기 / 급수기 </a>
 				<ul class="depth02">
-					<li><a href="">메뉴1</a></li>
-					<li><a href="">메뉴2</a></li>
-					<li><a href="">메뉴3</a></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
 				<a href=""> 장난감 / 훈련 </a>
 				<ul class="depth02">
-					<li><a href="">메뉴1</a></li>
-					<li><a href="">메뉴2</a></li>
-					<li><a href="">메뉴3</a></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
 				<a href=""> 하우스 / 안전 </a>
 				<ul class="depth02">
-					<li><a href="">메뉴1</a></li>
-					<li><a href="">메뉴2</a></li>
-					<li><a href="">메뉴3</a></li>
 				</ul>
 			</li>
 		</ul>
