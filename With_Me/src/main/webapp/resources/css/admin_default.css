@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+/* .inner 크기 - default.css 에 있어서 생략 */
+
+.inner .wrapper {
+	display: flex;
+	height: 140vh;
+}
+
+.inner .wrapper .side_nav{
+	width: 14rem;
+	padding: 1rem;
+	background-color: whitesmoke;
+}
+
+.inner .wrapper article {
+	width: 100%;
+}
+
+/* 관리자페이지 홈 버튼*/
+.inner .wrapper .side_nav ul li #GoHome {
+	color: rgb(211, 84, 0);
+	font-weight: bold;
+}
+
+/* 메뉴 기본 설정 */
+.inner .wrapper .side_nav ul li {
+	padding: 0.8rem;
+}
+
+/* depth01 */
+.inner .wrapper .side_nav .depth01{
+	border-bottom: 1px solid #ccc;
+	position: relative;
+}
+
+.inner .wrapper .side_nav .depth01 a{
+	display: block;
+	width: 100%;
+}
+
+/* depth02 */
+.inner .wrapper .side_nav .depth01 .depth02{
+/* 	position: absolute; */
+/* 	opacity: 0; */
+/* 	transition: 0.3s; */
+/* 	pointer-events: none; */
+	display: none;
+	margin-top: 0.8rem;
+}
+
+.inner .wrapper .side_nav .depth01:hover .depth02 {
+/* 	opacity: 1; */
+/* 	pointer-events: auto; */
+	display: block;
+}
+

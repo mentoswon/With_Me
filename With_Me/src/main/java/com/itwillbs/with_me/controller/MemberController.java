@@ -136,6 +136,11 @@ public class MemberController {
 			// 로그인 성공한 아이디를 세션에 저장
 			session.setAttribute("sId", member.getMem_email());
 			session.setAttribute("sName", dbMember.getMem_name());
+			if(dbMember.getMem_isAdmin() == 1) {
+				session.setAttribute("sIsAdmin", "Y");
+			} else {
+				session.setAttribute("sIsAdmin", "N");
+			}
 			
 			// 세션 타이머 1시간으로 변경
 			session.setMaxInactiveInterval(60 * 60); // 60초 * 60분 = 3600
@@ -165,8 +170,8 @@ public class MemberController {
 //			}
 			
 			// 관리자(admin) 일 경우 관리자 메인으로 리다이렉트
-			if(dbMember.getMem_email().equals("admin@naver.com")) {
-				return "redirect:/ManagerMain";
+			if(dbMember.getMem_isAdmin() == 1) {
+				return "redirect:/Admin";
 			}
 			return "redirect:/";
 			

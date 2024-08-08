@@ -31,6 +31,7 @@ public class MemberVO {
 	private Date mem_withdraw_date;
 	private int mem_status;
 	private String mem_mail_auth_status;
+	private int mem_isAdmin;
 	
 }
 
