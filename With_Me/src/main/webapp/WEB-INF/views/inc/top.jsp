@@ -95,6 +95,7 @@
 			</li>
 		</ul>
 		
+		<%-- 검색 form 태그 추가 예정 --%>
 		<input type="search" id="search">
 	</nav>
 </div>

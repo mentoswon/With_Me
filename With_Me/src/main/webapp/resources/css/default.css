@@ -15,7 +15,9 @@ a {
 }
 
 header{
-    background-color: #f0f8ff; 
+    background-color: #f0f8ff;
+    position: relative;
+    z-index: 999;
 }
 
 .inner {
@@ -58,10 +60,14 @@ article table {
 }
 
 #member_area .btn {
-	width: 150px;
+	width: 120px;
 	border-radius: 0;
 	height: 40px;
 	border: none;
+}
+
+#member_area .btn:hover {
+	background-color: #ffab40;
 }
 
 .inner>nav {
@@ -86,7 +92,7 @@ article table {
 	height: 80px;
 }
 .inner>nav>ul>li a:hover {
-	color: rgb(211, 84, 0);
+	color: #ffab40;
 }
 
 .inner>nav>ul {
@@ -128,7 +134,7 @@ article table {
 /* footer */
 
 footer{
-	background-color: #eee;
+	background-color: #f0f8ff;
 }
 
 #footer_area {
@@ -137,7 +143,6 @@ footer{
 	text-align: left;
 	padding-top: 30px;
 	padding-bottom: 30px;
-	font-size: 14px;
 	color: #333;
 }
 
@@ -149,4 +154,31 @@ footer{
 #footer_area li {
 	display: inline-block;
 	margin-right: 10px;
+}
+
+#footer_area .wrapper {
+	padding: 16px 0;
+	display: flex;
+	justify-content: space-between;
+/* 	border-bottom: 1px solid #b3b3b3; */
+}
+
+#footer_area .wrapper h4{
+	margin-bottom: 15px;
+	font-size: 18px;
+}
+
+#footer_area .wrapper .footer_service ul {
+	margin-bottom: 10px;
+} 
+
+#footer_area .wrapper .footer_info #askBtn {
+	width : 100%;
+	height: 30px;
+	margin-top: 10px;
+}
+
+#footer_area .company_info {
+	padding: 20px 0;
+	font-size: 14px;
 }
