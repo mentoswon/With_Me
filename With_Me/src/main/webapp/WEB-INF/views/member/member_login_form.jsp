@@ -43,7 +43,7 @@
 					<div style="display: flex; justify-content: center;">
 						<div style="margin-right: 20px;">
 							<b>아이디</b><br>
-							<input type="text" name="mem_id" required size="18" value="${cookie.rememberId.value}"><br>
+							<input type="text" name="mem_email" required size="18" value="${cookie.rememberId.value}"><br>
 							<input type="checkbox" name="rememberId" style="margin-bottom: 10px;">아이디 저장<br>
 							<b>비밀번호</b><br>
 							<input type="password" name="mem_passwd" size="18" required>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.itwillbs.with_me.mapper.MemberMapper">
+
+	<!-- 회원가입 회원정보 -->
+	<insert id="insertMember">
+		INSERT
+		INTO member
+		VALUES (
+			null
+			,#{mem_email}
+			,#{mem_name}
+			,#{mem_passwd}
+			,#{mem_post_code}
+			,#{mem_add1}
+			,#{mem_add2}
+			,#{mem_tel}
+			, 1                   -- sns수신
+			,#{mem_birthday}
+			, now()               -- 가입일자
+			, null                -- 탈퇴일자
+			, 1                   -- 회원상태(1 : 정상, 2 : 휴면, 3 : 탈퇴)
+			, 'N'                 -- 메일인증여부
+		)
+	</insert>
+	
+	<!-- 회원 상세정보 조회 SELECT-->
+	<!-- 아이디(email)가 일치하는 레코드 조회-->
+	<select id="selectMember" resultType="member">
+		SELECT *
+		FROM member
+		WHERE mem_email = #{mem_email}
+		OR mem_tel = #{mem_tel}
+	</select>
+
+
+</mapper>
