@@ -68,7 +68,7 @@ label {
 }
 
 label.selected {
-	background-color: #f0f8ff;
+	background-color: #FFAB40;
 	border: none;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
@@ -92,13 +92,13 @@ label.selected {
 }
 
 /* ----- 버튼 ----------*/
-#create {
+#create {	/* 이어서 작성 */
 	width: 120px;
 	height: 40px;
 	margin: 10px;
 	border-radius: 10px;
 	border: none;
-	background-color: #flf3f5;
+	background-color: #F0F0F0;
 }
 #next {	/* 다음 */
 	width: 100px;
@@ -106,18 +106,18 @@ label.selected {
 	margin: 10px;
 	border-radius: 10px;
 	border: none;
-	background-color: #f0f8ff;
+	background-color: #FFAB40;
 	caret-color: transparent;	/* 커서 깜빡임 없애기 */
 }
 
 #next:enabled:hover, #create:hover {
-	background-color: #f0f8ff;
+	background-color: #FFAB40;
 	cursor: pointer;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 #next:disabled {
-	background-color: #f1f3f5;
+	background-color: #F0F0F0;
 }
 </style>
 <script type="text/javascript">

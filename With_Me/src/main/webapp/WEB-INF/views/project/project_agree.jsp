@@ -56,8 +56,8 @@ input[type="checkbox"] + label::before {
 }
 
 input[type="checkbox"]:checked + label::before {
-	background-color: #50bcdf;
-	border-color: #50bcdf;
+	background-color: #FFAB40;
+	border-color: #FFAB40;
 }
 
 input[type="checkbox"]:checked + label::after {
@@ -97,11 +97,11 @@ label b {
 
 #back {	/* 돌아가기 */
 	background-color: #ffffff;
-	border: 1px solid #ccc;
+	border: 2px solid #ccc;
 }
 #start {	/* 시작하기 */
 	border: none;
-	background-color: #f0f8ff;
+	background-color: #FFAB40;
 }
 #back:hover,#start:enabled:hover {
 	cursor: pointer;
@@ -109,7 +109,7 @@ label b {
 }
 
 #start:disabled {
-	background-color: #f1f3f5;
+	background-color: #F0F0F0;
 }
 </style>
 <script type="text/javascript">

@@ -28,13 +28,19 @@
 
 #startNow {	/* 지금 시작하기 */
 	border: none;
-	background-color: #f0f8ff;
+	background-color: #FFAB40;
 /* 	color: #ffffff; */
 }
 #creatorGuide {	/* 창작자 가이드 */
 	background-color: #ffffff;
-	border: 1px solid #ccc;
+	border: 2px solid #ccc;
 }
+
+input[type="button"]:hover {
+	cursor: pointer;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
 </style>
 
 <script type="text/javascript">
