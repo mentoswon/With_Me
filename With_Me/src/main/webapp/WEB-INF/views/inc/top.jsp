@@ -32,17 +32,17 @@
 			</c:when>
 			<c:otherwise>
 				<%-- 아이디 클릭 시 회원 상세정보 조회를 위한 "MemberInfo.me" 서블릿 요청 --%>
+				<a href="MemberInfo" class="loged">${sessionScope.sName}님</a>
+				<a href="javascript:confirmLogout()" class="loged">로그아웃 </a>
 				<button class="btn" onclick="location.href='Store'">스토어</button>
-				| <a href="MemberInfo">${sessionScope.sName}</a>님
 				<%-- 하이퍼링크 상에서 자바스크립트 함수 호출 시
 				"javascript:함수명()" 형태로 호출 --%>
-				| <a href="javascript:confirmLogout()">로그아웃 </a>
 				<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
 			</c:otherwise>			
 		</c:choose>
-<%-- 		<c:if test="${sessionScope.sId eq 'admin@naver.com'}"> --%> <!-- 로그인 가능해지면 풀기 -->
+ 		<c:if test="${sessionScope.sId eq 'admin@naver.com'}">  <!-- 로그인 가능해지면 풀기 -->
 			<button class="btn" onclick="location.href='Admin'">관리자페이지</button>
-<%-- 		</c:if> --%>
+		</c:if> 
 		</div>
 	</div>
 	

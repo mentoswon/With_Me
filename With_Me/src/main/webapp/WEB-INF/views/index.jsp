@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <!DOCTYPE html>
 <html>
 	<head>
@@ -7,6 +9,7 @@
 		<title>index</title>
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
+		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 	</head>
 	<body>
 		<header>
@@ -34,8 +37,9 @@
 									</div>
 									<div class="item_info">
 										<h4>55% 달성</h4>
-										<span>제목</span>
+										<a href="#">제목</a>
 									</div>
+									<span class="tag">펀딩</span>
 								</div>
 								
 								<div class="item">
@@ -46,8 +50,9 @@
 									</div>
 									<div class="item_info">
 										<h4>55% 달성</h4>
-										<span>제목</span>
+										<a href="#">제목</a>
 									</div>
+									<span class="tag">펀딩</span>
 								</div>
 							</div>
 						</div>
@@ -65,8 +70,9 @@
 									</div>
 									<div class="item_info">
 										<h4>55% 달성</h4>
-										<span>제목</span>
+										<a href="#">제목</a>
 									</div>
+									<span class="tag">펀딩</span>
 								</div>
 								
 								<div class="item">
@@ -77,8 +83,9 @@
 									</div>
 									<div class="item_info">
 										<h4>55% 달성</h4>
-										<span>제목</span>
+										<a href="#">제목</a>
 									</div>
+									<span class="tag">펀딩</span>
 								</div>
 							</div>
 						</div>
@@ -100,8 +107,8 @@
 						<div class="popularItem">
 							<b>1</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 								<span>55% 달성</span>
 							</div>
 							<div class="popular_image">
@@ -113,8 +120,8 @@
 						<div class="popularItem">
 							<b>2</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 								<span>55% 달성</span>
 							</div>
 							<div class="popular_image">
@@ -126,8 +133,8 @@
 						<div class="popularItem">
 							<b>3</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 								<span>55% 달성</span>
 							</div>
 							<div class="popular_image">
@@ -139,8 +146,8 @@
 						<div class="popularItem">
 							<b>4</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 								<span>55% 달성</span>
 							</div>
 							<div class="popular_image">
@@ -152,8 +159,8 @@
 						<div class="popularItem">
 							<b>5</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 								<span>55% 달성</span>
 							</div>
 							<div class="popular_image">
@@ -170,9 +177,8 @@
 						<div class="popularItem">
 							<b>1</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
-								<span>55% 달성</span>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 							</div>
 							<div class="popular_image">
 								<a href="#">
@@ -183,9 +189,8 @@
 						<div class="popularItem">
 							<b>2</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
-								<span>55% 달성</span>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 							</div>
 							<div class="popular_image">
 								<a href="#">
@@ -196,9 +201,8 @@
 						<div class="popularItem">
 							<b>3</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
-								<span>55% 달성</span>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 							</div>
 							<div class="popular_image">
 								<a href="#">
@@ -209,9 +213,8 @@
 						<div class="popularItem">
 							<b>4</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
-								<span>55% 달성</span>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 							</div>
 							<div class="popular_image">
 								<a href="#">
@@ -222,9 +225,8 @@
 						<div class="popularItem">
 							<b>5</b>
 							<div class="popTitle">
-								<span>창작자명</span>
-								<h3>제목</h3>
-								<span>55% 달성</span>
+								<span><a href="#">창작자명</a></span>
+								<h3><a href="#">제목</a></h3>
 							</div>
 							<div class="popular_image">
 								<a href="#">
@@ -237,9 +239,115 @@
 			</section>
 			
 			<section class="sec02">
+				<h4>컨텐츠 제목 입력</h4>
+				
+				<div class="itemList">
+					<div class="itemWrapper">
+						<div class="item">
+							<div class="item_image">
+								<a href="#">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
+								</a>
+							</div>
+							<div class="item_info">
+								<h4>55% 달성</h4>
+								<a href="#">제목</a>
+							</div>
+							<span class="tag">펀딩</span>
+						</div>
+						
+						<div class="item">
+							<div class="item_image">
+								<a href="#">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
+								</a>
+							</div>
+							<div class="item_info">
+								<h4>55% 달성</h4>
+								<a href="#">제목</a>
+							</div>
+							<span class="tag">펀딩</span>
+						</div>
+						<div class="item">
+							<div class="item_image">
+								<a href="#">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
+								</a>
+							</div>
+							<div class="item_info">
+								<h4>55% 달성</h4>
+								<a href="#">제목</a>
+							</div>
+							<span class="tag">펀딩</span>
+						</div>
+						<div class="item">
+							<div class="item_image">
+								<a href="#">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
+								</a>
+							</div>
+							<div class="item_info">
+								<h4>55% 달성</h4>
+								<a href="#">제목</a>
+							</div>
+							<span class="tag">펀딩</span>
+						</div>
+						<div class="item">
+							<div class="item_image">
+								<a href="#">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
+								</a>
+							</div>
+							<div class="item_info">
+								<h4>55% 달성</h4>
+								<a href="#">제목</a>
+							</div>
+							<span class="tag">펀딩</span>
+						</div>
+					</div>
+				</div>
 			</section>
 			
 			<section class="sec03">
+				<h4>컨텐츠 제목 입력</h4>
+				<div class="itemList">
+					<div class="itemWrapper">
+						<div class="item">
+							<div class="item_image">
+								<a href="#">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
+								</a>
+							</div>
+							<div class="item_info">
+								<h4><a href="#">제품명</a></h4>
+								<span><fmt:formatNumber value="10000" pattern="#,###"/>원</span>
+							</div>
+						</div>
+						
+						<div class="item">
+							<div class="item_image">
+								<a href="#">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
+								</a>
+							</div>
+							<div class="item_info">
+								<h4><a href="#">제품명</a></h4>
+								<span><fmt:formatNumber value="10000" pattern="#,###"/>원</span>
+							</div>
+						</div>
+						<div class="item">
+							<div class="item_image">
+								<a href="#">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
+								</a>
+							</div>
+							<div class="item_info">
+								<h4><a href="#">제품명</a></h4>
+								<span><fmt:formatNumber value="10000" pattern="#,###"/>원</span>
+							</div>
+						</div>
+					</div>
+				</div>
 			</section>
 		</div>
 		<footer>

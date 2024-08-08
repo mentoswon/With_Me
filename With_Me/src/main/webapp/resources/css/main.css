@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 section {
-	margin: 20px 0;
+	margin: 40px 0;
 }
 
 .sec01 {
@@ -45,6 +45,7 @@ section {
 .sec01 .mainWrapper .itemList .cateTitle{
 	display: flex;
 	align-items: center;
+	margin-bottom: 20px;
 }
 
 .sec01 .mainWrapper .itemList .cateTitle h4 {
@@ -66,10 +67,11 @@ section {
 /* 	background-color: blue; */
 	width: 45%;
 	height: 100%;
+	position: relative;
 }
 
 .sec01 .mainWrapper .itemList .itemWrapper .item .item_image{
-	margin: 20px 0;
+	margin-bottom: 20px;
 	width: 100%;
 	height: 230px;
 	position: relative;
@@ -92,6 +94,16 @@ section {
 	margin-bottom: 15px;
 }
 
+.sec01 .mainWrapper .itemList .itemWrapper .item .tag {
+	padding: 5px 8px;
+	font-size: 14px;
+	text-align: center;
+	background-color: #ffab40;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
 .sec01 .mainWrapper .itemList #category02 {
 	width: 50%;
 	height: 100%;
@@ -109,6 +121,11 @@ section {
 
 .sec01 .popularList #tabMenu {
 	margin: 15px 0;
+}
+
+.sec01 .popularList #tabMenu ul {
+	padding-bottom: 15px;
+	border-bottom: 1px solid #eee;
 }
 
 .sec01 .popularList #tabMenu ul li {
@@ -143,6 +160,15 @@ section {
 	width: 120px;
 }
 
+.sec01 .popularList .popularWrapper .popularItem .popTitle span {
+	font-size: 13px;
+	color: #bbb;
+}
+
+.sec01 .popularList .popularWrapper .popularItem .popTitle span:hover a{
+	text-decoration: underline;
+}
+
 .sec01 .popularList .popularWrapper .popularItem .popTitle h3{
 	width: 100%;
 	height: 40px;
@@ -172,3 +198,107 @@ section {
 	left: 50%;
 	transform: translate(-50%, -50%)
 }
+
+/* -------------------------------------------------------------------------------------- */
+/* section02 */
+
+.sec02 .itemList {
+	padding-top: 30px;
+	display: block;
+	width: 100%;
+	height: 350px;
+}
+
+
+.sec02 .itemList .itemWrapper {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.sec02 .itemList .itemWrapper .item {
+	width: 18%;
+	height: 100%;
+	position: relative;
+}
+
+.sec02 .itemList .itemWrapper .item .item_image{
+	margin-bottom: 20px;
+	width: 100%;
+	height: 230px;
+	position: relative;
+	overflow: hidden;
+}
+
+.sec02 .itemList .itemWrapper .item .item_image img{
+	width: 120%;
+	position: absolute;
+	top: 50% ;
+	left: 50%;
+	transform: translate(-50%, -50%)
+}
+
+.sec02 .itemList .itemWrapper .item .item_info {
+	padding-bottom: 20px;
+}
+
+.sec02 .itemList .itemWrapper .item .item_info h4{
+	margin-bottom: 15px;
+}
+
+.sec02 .itemList .itemWrapper .item .tag {
+	padding: 5px 8px;
+	font-size: 14px;
+	text-align: center;
+	background-color: #ffab40;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+/* -------------------------------------------------------------------------------------- */
+/* section03 */
+
+.sec03 .itemList {
+	padding-top: 30px;
+	display: block;
+	width: 100%;
+	height: 350px;
+}
+
+
+.sec03 .itemList .itemWrapper {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.sec03 .itemList .itemWrapper .item {
+	width: 32%;
+	height: 100%;
+}
+
+.sec03 .itemList .itemWrapper .item .item_image{
+	margin-bottom: 20px;
+	width: 100%;
+	height: 230px;
+	position: relative;
+	overflow: hidden;
+}
+
+.sec03 .itemList .itemWrapper .item .item_image img{
+	width: 120%;
+	position: absolute;
+	top: 50% ;
+	left: 50%;
+	transform: translate(-50%, -50%)
+}
+
+.sec03 .itemList .itemWrapper .item .item_info {
+	padding-bottom: 20px;
+}
+
+.sec03 .itemList .itemWrapper .item .item_info h4{
+	margin-bottom: 15px;
+}
+
