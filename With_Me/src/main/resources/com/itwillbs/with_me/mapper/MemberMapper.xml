@@ -37,6 +37,13 @@
 		OR mem_tel = #{mem_tel}
 		OR mem_name = #{mem_name}
 	</select>
+	
+	<!-- 전화번호로 아이디 조회 -->
+	<select id="selectId" resultType="member">
+		SELECT *
+		FROM member
+		WHERE mem_email = #{mem_email}
+	</select>
 
 
 </mapper>

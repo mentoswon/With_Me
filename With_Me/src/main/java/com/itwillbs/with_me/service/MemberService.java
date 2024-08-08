@@ -20,6 +20,11 @@ public class MemberService {
 	public MemberVO getMember(MemberVO member) {
 		return mapper.selectMember(member);
 	}
+	
+	// 아이디 조회
+	public MemberVO getId(MemberVO member) {
+		return mapper.selectId(member);
+	}
 
 
 }

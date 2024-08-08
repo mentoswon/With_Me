@@ -13,16 +13,16 @@
 	border-radius: 12px;
 	padding: 10px 30px;
 }
-#next {
+#moveLogin {
 	padding: 10px 30px;
 	border: none;
 	border-radius: 12px;
 	background-color: #ccc;
 }
-#next:hover {
+#moveLogin:hover {
 	background-color: #59b9a9;
 }
-#sec02 {
+#findId_wrap_ {
 	background-color: #f1f3f5;
 	border-radius: 12px;
 	margin: 10px 60px;
@@ -37,38 +37,25 @@
 	</header>
 	<main>
 		<section>
-			<div id="findId_wrap" align="center">
-				<form action=IdFindPro method="post">
-					<section id="sec01">
-						<table>
-							<tr>
-								<td id="td01"><h2>아이디 찾기</h2></td>
-							</tr>
-							<tr>
-								<td id="td02">위드미는 이메일을 아이디로 사용합니다.<br>
-											소유하고 계신 계정을 입력해보세요.<br>
-											가입여부를 확인해드립니다.
-								</td>
-							</tr>
-						</table>
-					</section>	
-					<section id="sec02">
-						<div style="display: flex; justify-content: center;">
-							<table>
-								<tr>
-									<td><input type="text" name="mem_email" id="mem_email" size="10" required="required" placeholder="이메일 계정"></td>
-								</tr>	
-								<tr>
-								<td id="td05" align="center" colspan="3">
-									<br><input type="submit" value="다음" id="next">
-		<!-- 						<input type="button" value="다음" onclick="location.href='MemberJoin_two'"> -->
-		<!-- 						<input type="button" value="돌아가기" onclick="history.back()"> -->
-								</td>
-							</tr>
-							</table>
-						</div>
-					</section>
-				</form>
+			<h1 align="center">회원으로 등록된 아이디입니다.</h1>
+			<div id="findId_wrap_" style="display: flex; justify-content: center;">
+				<table id="table01">
+					<tr>
+						<td>아이디 : </td><td>${dbMember.mem_email}</td>
+<%-- 							<td><input type="text" name="id_name" value="${sessionScope.sId}" required="required" size="15"></td> --%>
+					</tr>
+					<tr>
+						<td>가입일 : </td><td>${dbMember.mem_sign_date}</td>
+					</tr>	
+					<tr>
+						<td colspan="2" align="center">
+							<br>
+							<input type="button" value="로그인하러 가기" onclick="location.href='MemberLogin'" id="moveLogin">
+<!-- 						<input type="button" value="다음" onclick="location.href='MemberJoin_two'"> -->
+<!-- 						<input type="button" value="돌아가기" onclick="history.back()"> -->
+						</td>
+					</tr>
+				</table>
 			</div>
 		</section>
 	</main>

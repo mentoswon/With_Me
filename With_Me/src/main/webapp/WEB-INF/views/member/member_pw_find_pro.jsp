@@ -39,7 +39,7 @@
 		<section>
 			<div id="findPw_wrap2">
 				<form action=PwReset method="post">
-					<input type="hidden" name="mem_id" value="${param.mem_id}" id="mem_tel" size="10">
+					<input type="hidden" name="mem_id" value="${param.mem_id}" id="mem_id" size="10">
 					<section id="sec01">
 						<table>
 							<tr>

@@ -135,7 +135,7 @@ public class MemberController {
 		} else { // 로그인 성공
 			// 로그인 성공한 아이디를 세션에 저장
 			session.setAttribute("sId", member.getMem_email());
-			session.setAttribute("sName", member.getMem_name());
+			session.setAttribute("sName", dbMember.getMem_name());
 			
 			// 세션 타이머 1시간으로 변경
 			session.setMaxInactiveInterval(60 * 60); // 60초 * 60분 = 3600
@@ -165,7 +165,7 @@ public class MemberController {
 //			}
 			
 			// 관리자(admin) 일 경우 관리자 메인으로 리다이렉트
-			if(dbMember.getMem_email().equals("admin")) {
+			if(dbMember.getMem_email().equals("admin@naver.com")) {
 				return "redirect:/ManagerMain";
 			}
 			return "redirect:/";
@@ -182,11 +182,29 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
-	
-	// 아이디 찾기
-	@GetMapping("IdFind")
-	public String id_Find() {
+	// 아이디 찾기 폼
+	@GetMapping("IdFind") 
+	public String idFind() {
 		return "member/member_id_find";
+	}
+	
+	
+	// 전화번호로 아이디 찾기
+	@PostMapping("IdFindPro")
+	public String idFindPro(MemberVO member, Model model) {
+		
+		MemberVO dbMember = service.getId(member);
+		System.out.println("dbMember : " + dbMember);
+		
+		if(dbMember == null) { // !member.getMem_tel().equals(mem_tel)
+			model.addAttribute("msg", "없는 아이디입니다");
+			return "result/fail";
+			
+		} else {
+			model.addAttribute("dbMember", dbMember); // model에 전화번호 값 저장
+			return "member/member_id_find_pro";
+		}
+		
 	}
 	
 	// 비밀번호 찾기
@@ -195,15 +213,28 @@ public class MemberController {
 		return "member/member_pw_find";
 	}
 	
-	// 비밀번호 찾기
-	@PostMapping("PwFindPro")
-	public String pwFindPro() {
-		return "member/member_pw_find_pro";
-	}
+//	// 비밀번호 찾기
+//	@PostMapping("PwFindPro")
+//	public String pwFindPro(MemberVO member, Model model) {
+//			
+//		MemberVO dbMember = service.isExistId(member);
+//		
+//		if(dbMember == null) { // !member.getMem_tel().equals(mem_tel)
+//			model.addAttribute("msg", "없는 아이디입니다");
+//			return "result/fail";
+//
+//		} else {
+////				model.addAttribute("mem_id", mem_id); // model에 아이디값 저장
+//			model.addAttribute("dbMember", dbMember); // model에 아이디값 저장
+//			return "member/member_pw_find_pro";
+//		}
+//		
+//		return "member/member_pw_find_pro";
+//	}
 	
-	// 비밀번호 재설정
-	@PostMapping("PwReset")
-	public String pwReset() {
-		return "member/member_pw_reset";
-	}
+//	// 비밀번호 재설정
+//	@PostMapping("PwReset")
+//	public String pwReset() {
+//		return "member/member_pw_reset";
+//	}
 }

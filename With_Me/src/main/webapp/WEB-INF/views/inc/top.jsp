@@ -37,7 +37,7 @@
 				<%-- 하이퍼링크 상에서 자바스크립트 함수 호출 시
 				"javascript:함수명()" 형태로 호출 --%>
 				| <a href="javascript:confirmLogout()">로그아웃 </a>
-				<button class="btn" onclick="location.href='CreateProject'">프로젝트 만들기</button>
+				<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
 			</c:otherwise>			
 		</c:choose>
 <%-- 		<c:if test="${sessionScope.sId eq 'admin@naver.com'}"> --%> <!-- 로그인 가능해지면 풀기 -->
