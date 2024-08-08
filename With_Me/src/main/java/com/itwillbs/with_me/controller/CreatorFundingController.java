@@ -18,19 +18,30 @@ public class CreatorFundingController {
 	
 	// 프로젝트 만들기 페이지
 	@GetMapping("ProjectStart")
-	public String projectStart(HttpSession session) {
-		// 미로그인 시 로그인 페이지로 이동
-		// 로그인 후 ProjectStart 페이지로 돌아오기
+	public String projectStart(HttpSession session, Model model) {
+		String id = (String)session.getAttribute("sId");
+		// 미로그인 시 로그인 페이지로 이동(로그인 후 ProjectStart 페이지로 돌아오기)
+		if(id == null) {
+			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberLogin");
+			session.setAttribute("prevURL", "ProjectStart");
+			return "result/fail";
+		}
+		
 		
 		return "project/project_start";
 	}
 	
 	// 프로젝트 카테고리 선택 및 제목 작성 페이지
 	@GetMapping("ProjectCategory")
-	public String projectCategory(HttpSession session) {
+	public String projectCategory(HttpSession session, Model model) {
+		String id = (String)session.getAttribute("sId");
 		// 미로그인 시 로그인 페이지로 이동
 		
-		// 이미 작성중인 프로젝트가 있는지 확인
+		// 작성중인 프로젝트 목록 조회
+		ProjectVO project = service.getProjectList(id);
+		System.out.println("project : " + project);
+		model.addAttribute("project", project);
 		
 		return "project/project_category";
 	}

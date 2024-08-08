@@ -161,21 +161,18 @@ public class MemberController {
 			// 3. 클라이언트측으로 쿠키 정보를 전송하기 위해
 			//    응답 객체를 관리하는 HttpServletResponse 객체의 addCookie() 메서드로 쿠키 추가
 			response.addCookie(cookie);
-			
-//			if(session.getAttribute("prevURL") == null) {
-//				return "redirect:/";
-//			} else {
-//				// 요청 서블릿 주소 앞에 "/" 기호가 이미 붙어있으므로 "redirect:" 문자열과 결합
-//				return "redirect:" + session.getAttribute("prevURL");
-//			}
-			
+
 			// 관리자(admin) 일 경우 관리자 메인으로 리다이렉트
-			if(dbMember.getMem_isAdmin() == 1) {
-				return "redirect:/Admin";
+			if(dbMember.getMem_email().equals("admin@naver.com")) {
+				return "redirect:/ManagerMain";
 			}
-			return "redirect:/";
 			
-			
+			if(session.getAttribute("prevURL") == null) {
+				return "redirect:/";
+			} else {
+				// 요청 서블릿 주소 앞에 "/" 기호가 이미 붙어있으므로 "redirect:" 문자열과 결합
+				return "redirect:" + session.getAttribute("prevURL");
+			}
 		}
 	}
 	

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,8 +27,9 @@ article {	/* 가운데 정렬 */
 	margin: 10px 0;
 }
 
-#projectCategoryWrap {
-    max-width: 520px;
+#updateProjectWrap, #projectCategoryWrap, #projectTitleWrap {
+    max-width: 550px;
+    box-sizing: border-box;
 }
 #projectTitleWrap {
 	display: none;
@@ -49,6 +51,9 @@ article {	/* 가운데 정렬 */
 	display: flex;
     justify-content: center;
     align-items: center;
+}
+#projectContent h3 {
+	text-align: left;
 }
 
 /* ----- 프로젝트 카테고리 ----------*/
@@ -95,7 +100,7 @@ label.selected {
 #create {	/* 이어서 작성 */
 	width: 120px;
 	height: 40px;
-	margin: 10px;
+	margin: 0 10px 0 20px;
 	border-radius: 10px;
 	border: none;
 	background-color: #F0F0F0;
@@ -165,17 +170,23 @@ label.selected {
 		<div>
 			<br><br>
 			<%-- ------------------------------------------------------ --%>
-			<%-- 작성중인 프로젝트 있는지 확인 --%>
-			<%-- 있다면 이어서 작성 표시 --%>
-			<a style="color: red;">작성중인 프로젝트가 있습니다!</a>
-			<div id="updateProjectWrap">
-				<div id="projectContent">
-					<img alt="로고" src="${pageContext.request.contextPath}/resources/image/image.png">
-					<h3>프로젝트 제목</h3>
+			<%-- 작성중인 프로젝트 있는지 확인(있다면 이어서 작성 표시) --%>
+			<c:if test="${not empty project}">
+				<a style="color: red;">작성중인 프로젝트가 있습니다!</a>
+				<div id="updateProjectWrap">
+					<div id="projectContent">
+						<img alt="로고" src="${pageContext.request.contextPath}/resources/image/image.png">
+						<h3>${project.project_title}</h3>
+					</div>
+					<div>
+						<form action="ProjectCreate" method="post">
+							<input type="hidden" name="project_idx" value="${project.project_idx}">
+							<input type="submit" id="create" value="이어서 작성">
+						</form>
+					</div>
 				</div>
-				<input type="button" id="create" value="이어서 작성">
-			</div>
-			<br><br>
+				<br><br>
+			</c:if>
 			<%-- ------------------------------------------------------ --%>
 			
 			

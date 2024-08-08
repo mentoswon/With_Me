@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.itwillbs.with_me.mapper.CreatorFundingMapper">
+
+<select id="selectProjectList" resultType="project">
+	SELECT *
+	FROM project_info
+	WHERE creator_idx = (
+		SELECT creator_idx
+		FROM creator_info
+		WHERE creator_email = #{id})
+	AND project_status = '작성중'
+	ORDER BY project_submit_date desc	-- 최근에 수정(제출) 한 순서
+	Limit 1								-- 그 중에 첫번째 행
+</select>
+
+</mapper>
