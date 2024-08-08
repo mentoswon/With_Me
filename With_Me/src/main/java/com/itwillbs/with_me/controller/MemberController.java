@@ -237,4 +237,34 @@ public class MemberController {
 //	public String pwReset() {
 //		return "member/member_pw_reset";
 //	}
+	
+	@GetMapping("MemberInfo")
+	public String memberInfo() {
+		return "mypage/mypage";
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

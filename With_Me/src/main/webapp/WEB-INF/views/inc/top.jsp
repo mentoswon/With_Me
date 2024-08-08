@@ -33,7 +33,7 @@
 			<c:otherwise>
 				<%-- 아이디 클릭 시 회원 상세정보 조회를 위한 "MemberInfo.me" 서블릿 요청 --%>
 				<button class="btn" onclick="location.href='Store'">스토어</button>
-				| <a href="">${sessionScope.sName}</a>님
+				| <a href="MemberInfo">${sessionScope.sName}</a>님
 				<%-- 하이퍼링크 상에서 자바스크립트 함수 호출 시
 				"javascript:함수명()" 형태로 호출 --%>
 				| <a href="javascript:confirmLogout()">로그아웃 </a>
