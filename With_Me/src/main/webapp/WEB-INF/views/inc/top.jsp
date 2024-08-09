@@ -31,7 +31,7 @@
 			<c:when test="${empty sessionScope.sId}"> <%-- 로그인 상태가 아닐 경우 --%>
 				<button class="btn" onclick="location.href='Store'">스토어</button>
 				<button class="btn" onclick="location.href='MemberLogin'">로그인</button>
-				<button class="btn" onclick="location.href='MemberJoin'">회원가입</button>
+<!-- 				<button class="btn" onclick="location.href='MemberJoin'">회원가입</button> -->
 				<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
 			</c:when>
 			<c:otherwise>
@@ -91,7 +91,10 @@
 		</ul>
 		
 		<%-- 검색 form 태그 추가 예정 --%>
-		<input type="search" id="search">
+		<form action="ProjectList">
+			<input type="text" id="search" name="searchKeyword" value="${param.searchKeyword}">
+			<input type="submit" id="searchBtn" value="">		
+		</form>
 	</nav>
 </div>
 
