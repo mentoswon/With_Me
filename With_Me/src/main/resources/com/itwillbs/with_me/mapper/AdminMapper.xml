@@ -24,7 +24,7 @@
 => 검색어 데이터는 searchKeyword 변수에 저장되어 있으므로 변수명 그대로 활용
 => 자바 문법과 동일하게 equals() 메서드를 통해 문자열 비교 수행 -->
 	
-	<!-- 회원 총 개수 -->
+	<!-- 회원 목록 개수 조회 -->
 	<select id="selectMemberListCount" resultType="int">
 		SELECT COUNT(*)
 		FROM member
@@ -43,7 +43,7 @@
 		SELECT * 
 		FROM member
 		<if test="!searchKeyword.equals('')">
-			where 
+			WHERE 
 				mem_idx like concat('%',#{searchKeyword},'%')
 				or mem_email like concat('%',#{searchKeyword},'%')
 				or mem_name like concat('%',#{searchKeyword},'%')
@@ -51,11 +51,11 @@
 				or mem_status like concat('%',#{searchKeyword},'%')
 		</if>
 		ORDER BY
-			mem_isAdmin DESC,
-			mem_idx DESC
+			mem_isAdmin DESC
+			, mem_idx DESC
 		LIMIT
-			#{startRow}     
-			, #{listLimit}  
+			#{startRow}
+			, #{listLimit}
 	</select>
 	
 	<!-- 관리자 권한 부여 / 해제 -->
@@ -74,4 +74,90 @@
 			</choose>
 		WHERE mem_email = #{mem_email}
 	</update>
+	
+	<!-- 후원내역 개수 조회 -->
+	<select id="selectSponsorshipDetailListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM project_payment pp JOIN funding_user fu
+		ON pp.pro_funding_idx = fu.funding_idx
+		JOIN pay_method pm
+		ON pp.pro_funding_pay_method_idx = pm.pay_method_idx
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				pp.pro_pay_idx like concat('%',#{searchKeyword},'%')
+				or pp.pro_funding_idx like concat('%',#{searchKeyword},'%')
+				or fu.funding_project_idx like concat('%',#{searchKeyword},'%') -- 임시로 프로젝트 번호 사용
+				or pp.pro_pay_amt like concat('%',#{searchKeyword},'%')
+				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
+				or pp.pro_pay_date like concat('%',#{searchKeyword},'%')
+		</if>
+	</select>
+	
+	<!-- 후원내역 조회 -->
+	<select id="selectSponsorshipDetail" resultType="String">
+		SELECT pp.pro_pay_idx, pp.pro_funding_idx, fu.funding_project_idx, pp.pro_pay_amt, pm.pay_method_name, pp.pro_pay_date
+		FROM project_payment pp JOIN funding_user fu
+		ON pp.pro_funding_idx = fu.funding_idx
+		JOIN pay_method pm
+		ON pp.pro_funding_pay_method_idx = pm.pay_method_idx
+		WHERE pro_mem_email = #{member.mem_email}
+		<if test="!searchKeyword.equals('')">
+			AND (
+				pp.pro_pay_idx like concat('%',#{searchKeyword},'%')
+				or pp.pro_funding_idx like concat('%',#{searchKeyword},'%')
+				or fu.funding_project_idx like concat('%',#{searchKeyword},'%') -- 임시로 프로젝트 번호 사용
+				or pp.pro_pay_amt like concat('%',#{searchKeyword},'%')
+				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
+				or pp.pro_pay_date like concat('%',#{searchKeyword},'%')
+			)
+		</if>
+		ORDER BY
+			pp.pro_pay_idx DESC
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 구매내역 개수 조회 -->
+	<select id="selectPurchaseHistoryListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM product_payment pp JOIN product_info pi
+		ON pp.product_idx = pi.product_idx
+		JOIN pay_method pm
+		ON pp.order_pay_method_idx = pm.pay_method_idx
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				pp.order_product_idx like concat('%',#{searchKeyword},'%')
+				or pp.product_idx like concat('%',#{searchKeyword},'%')
+				or pi.product_name like concat('%',#{searchKeyword},'%')
+				or pp.order_pay_cost like concat('%',#{searchKeyword},'%')
+				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
+				or pp.order_pay_date like concat('%',#{searchKeyword},'%')
+		</if>
+	</select>
+	
+	<!-- 구매내역 조회 -->
+	<select id="selectPurchaseHistory" resultType="String">
+		SELECT pp.order_product_idx, pp.product_idx, pi.product_name, pp.order_pay_cost, pm.pay_method_name, pp.order_pay_date
+		FROM product_payment pp JOIN product_info pi
+		ON pp.product_idx = pi.product_idx
+		JOIN pay_method pm
+		ON pp.order_pay_method_idx = pm.pay_method_idx
+		WHERE order_mem_email = #{member.mem_email}
+		<if test="!searchKeyword.equals('')">
+			AND (
+				pp.order_product_idx like concat('%',#{searchKeyword},'%')
+				or pp.product_idx like concat('%',#{searchKeyword},'%')
+				or pi.product_name like concat('%',#{searchKeyword},'%')
+				or pp.order_pay_cost like concat('%',#{searchKeyword},'%')
+				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
+				or pp.order_pay_date like concat('%',#{searchKeyword},'%')
+			)
+		</if>
+		ORDER BY
+			pp.order_product_idx DESC
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
 </mapper>

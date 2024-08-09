@@ -47,12 +47,12 @@ public class AdminController {
 			return "result/fail";
 		}
 		// 페이징 처리
-//		int listLimit = 5; // 페이지 당 게시물 수
-		int startRow = (pageNum - 1) * listLimit; // 조회할 게시물의 행 번호
+//		int listLimit = 5; // 페이지 당 목록 개수
+		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
 		
-		int listCount = adminService.getMemberListCount(searchKeyword); // 총 게시물 개수
-//		System.out.println(listCount);
-		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 갯수를 3개로 지정(1 2 3 or 4 5 6)
+		int listCount = adminService.getMemberListCount(searchKeyword); // 총 목록 개수
+//		System.out.println("listCount : " + listCount);
+		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
 		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
 		int endPage = startPage + pageListLimit - 1;
@@ -79,16 +79,14 @@ public class AdminController {
 		// 회원 목록 조회
 		// 검색어는 기본적으로 "" 널스트링
 		List<MemberVO> memberList = adminService.getMemberList(startRow, listLimit, searchKeyword);
-		
-//		System.out.println(memberList);
+//		System.out.println("memberList : " + memberList);
 		
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+//		System.out.println("pageInfo : " + pageInfo);
 		
 		// 회원 목록, 페이징 정보 Model 객체에 저장 -> admin_member_list.jsp 로 전달
 		model.addAttribute("memberList", memberList);
 		model.addAttribute("pageInfo", pageInfo);
-		
-//		System.out.println(pageInfo);
 		
 		return "admin/admin_member_list";
 	}
@@ -118,11 +116,122 @@ public class AdminController {
 		}
 	}
 	
-	// 관리자 - 회원관리 - 회원목록 - 후원내역(보류)
-	@GetMapping("AdminMemberSponsorshipDetail")
-	public String adminMemberSponsorshipDetail(MemberVO member, Model model) {
+	// 관리자 - 회원관리 - 회원목록 - 후원내역
+	@GetMapping("SponsorshipDetailList")
+	public String sponsorshipDetailList(@RequestParam(defaultValue = "1") int pageNum,
+										@RequestParam(defaultValue ="") String searchKeyword,
+										@RequestParam(defaultValue = "5") int listLimit,
+										MemberVO member, HttpSession session, Model model) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		// 페이징 처리
+//		int listLimit = 5; // 페이지 당 목록 개수
+		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
+		
+		int listCount = adminService.getSponsorshipDetailListCount(searchKeyword); // 총 목록 개수
+//		System.out.println("listCount : " + listCount);
+		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
+		int endPage = startPage + pageListLimit - 1;
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
+		if(maxPage == 0) {
+			maxPage = 1;
+		}
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
+		if(pageNum < 1 || pageNum > maxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "SponsorshipDetailList?pageNum=1");
+			return "result/fail";
+		}
+		
+		// 후원내역 조회
+		// 검색어는 기본적으로 "" 널스트링
 		member = memberService.getMember(member);
-		return "";
+		List<String> sponsorshipDetailList = adminService.getSponsorshipDetail(startRow, listLimit, searchKeyword, member);
+//		System.out.println("sponsorshipDetailList : " + sponsorshipDetailList);
+		
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+//		System.out.println("pageInfo : " + pageInfo);
+		
+		// 구매내역 목록, 페이징 정보 Model 객체에 저장 -> admin_member_purchase_history_list.jsp 로 전달
+		model.addAttribute("member", member);
+		model.addAttribute("sponsorshipDetailList", sponsorshipDetailList);
+		model.addAttribute("pageInfo", pageInfo);
+		
+		return "admin/admin_member_sponsorship_detail_list";
+	}
+	
+	// 관리자 - 회원관리 - 회원목록 - 구매내역
+	@GetMapping("PurchaseHistoryList")
+	public String purchaseHistoryList(@RequestParam(defaultValue = "1") int pageNum,
+									@RequestParam(defaultValue ="") String searchKeyword,
+									@RequestParam(defaultValue = "5") int listLimit,
+									MemberVO member, HttpSession session, Model model) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		// 페이징 처리
+//		int listLimit = 5; // 페이지 당 목록 개수
+		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
+		
+		int listCount = adminService.getPurchaseHistoryListCount(searchKeyword); // 총 목록 개수
+//		System.out.println("listCount : " + listCount);
+		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
+		int endPage = startPage + pageListLimit - 1;
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
+		if(maxPage == 0) {
+			maxPage = 1;
+		}
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
+		if(pageNum < 1 || pageNum > maxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "PurchaseHistoryList?pageNum=1");
+			return "result/fail";
+		}
+		
+		// 구매내역 조회
+		// 검색어는 기본적으로 "" 널스트링
+		member = memberService.getMember(member);
+		List<String> purchaseHistorylist = adminService.getPurchaseHistory(startRow, listLimit, searchKeyword, member);
+//		System.out.println("purchaseHistorylist : " + purchaseHistorylist);
+		
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+//		System.out.println("pageInfo : " + pageInfo);
+		
+		// 구매내역 목록, 페이징 정보 Model 객체에 저장 -> admin_member_purchase_history_list.jsp 로 전달
+		model.addAttribute("member", member);
+		model.addAttribute("purchaseHistorylist", purchaseHistorylist);
+		model.addAttribute("pageInfo", pageInfo);
+		
+		return "admin/admin_member_purchase_history_list";
 	}
 }
 
