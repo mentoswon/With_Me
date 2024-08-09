@@ -6,130 +6,28 @@
 <meta charset="UTF-8">
 <title>위드미 | 프로젝트 등록</title>
 <%-- 외부 CSS 파일 연결하기 --%>
-<link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.servletContext.contextPath}/resources/css/project_create.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
-<style type="text/css">
-article {	/* 가운데 정렬 */
-	display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#topWrap {
-	display: flex;
-	justify-content: space-between;
-    align-items: center;
-    max-width: 1280px;
-    min-width: 900px;
-    width: calc(100% - 40px);
-    margin: 0 auto;
-    padding: 8px 0;
-}
-
-
-/* ----- 버튼 ---------- */
-#save, #request {	/* 저장하기 */
-	width: 100px;
-	height: 40px;
-	margin: 10px;
-	border-radius: 10px;
-	border: none;
-	caret-color: transparent;	/* 커서 깜빡임 없애기 */
-}
-#save {
-	background-color: #FFAB40;
-}
-
-#save:hover, #request:enabled:hover {
-	background-color: #FFAB40;
-	cursor: pointer;
-	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-#request:disabled {
-	background-color: #F0F0F0;
-}
-
-/* ----- 프로젝트 심사기준 팝업창 ---------- */
-#popupWrap {
-	position: fixed;
-    left: 50%;
-    top: 400px;
-    transform: translate(-50%, -50%);
-    width: 800px; height: auto;
-    box-sizing: border-box;;
-    background-color: #F0F0F0;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    z-index: 1000;
-    border-radius: 10px;
-    padding: 20px 30px;
-}
-
-#popupTop {
-	margin: 0 10px;
-}
-#popupTop p {
-	line-height: 300%;	/* 줄간격 */
-}
-
-#popupContent {
-	display: flex;
-	justify-content: space-between;
-}
-#popupContent p {
-	line-height: 200%;
-}
-.icon {
-	border-radius: 100%;
-	width: 25px; height: 25px;
-	color: #fff;
-	margin: auto;
-	text-align: center;
-}
-
-#grantProject, #returnProject {
-	background-color: #fff;
-	border-radius: 10px;
-	padding: 20px;
-	width: 320px;
-}
-
-.grant {
-	background-color: #2db400;
-}
-.return {
-	background-color: red;
-}
-
-#agree {	/* 확인했어요 버튼 */
-	width: 80%;
-	height: 40px;
-	margin: 10px;
-	border-radius: 10px;
-	background-color: #FFAB40;
-	color: #fff;
-	border: none;
-	caret-color: transparent;	/* 커서 깜빡임 없애기 */
-}
-
-#agree:hover {
-	cursor: pointer;
-	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-/* --------------------------------------- */
-</style>
 <script type="text/javascript">
 	$(function() {
 		// 프로젝트 심사 기준 팝업창 버튼 클릭 시 닫힘
 		$("#agree").click(function() {
 			$("#popupWrap").hide();
 		});
+		
+		// 메뉴 항목 클릭 시 활성화 처리
+	    $("#projectMenuList li").click(function() {
+	        $("#projectMenuList li").removeClass("active");
+	        $(this).addClass("active");
+	    });
+		
+		
 	});	// ready 이벤트 끝
 </script>
 </head>
 <body>
+	<%-- ---------- 프로젝트 등록 페이지 헤더 ---------- --%>
 	<header>
 		<div id="topWrap">
 			<a href="#">← 내가 만든 프로젝트</a>
@@ -142,10 +40,72 @@ article {	/* 가운데 정렬 */
 			</div>
 		</div>
 	</header>
+	
+	<%-- ---------- 프로젝트 등록 메뉴바 ---------- --%>
+	<section id="projectCreateMenu">
+		<div id="projectMenuWrap">
+			<div id="projectMenuTop">
+				<img alt="로고" src="${pageContext.request.contextPath}/resources/image/image.png">
+				<div>
+					<h2>${project.project_title}</h2>
+					<p style="line-height: 200%;">${project.project_category}</p>
+				</div>
+			</div>
+			<div id="projectMenu">
+				<ul id="projectMenuList">
+					<li class="writeList active">
+						<span>기본 정보</span>
+					</li>
+					<li class="writeList">
+						<span>펀딩 계획</span>
+					</li>
+					<li class="writeList">
+						<span>후원 구성</span>
+					</li>
+					<li class="writeList">
+						<span>프로젝트 계획</span>
+					</li>
+					<li class="writeList">
+						<span>창작자 정보</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	
 	<article>
-		<br><br><br><br><br><br><br><br><br><br><br>
-		<h2 align="center">프로젝트 등록 시자악!</h2>
-		<br><br><br><br><br><br><br><br><br><br><br>
+		<div>
+			<br>
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>프로젝트 카테고리<span class="essential">&nbsp;*</span></h3>
+					<p>
+						프로젝트 성격과 가장 일치하는 카테고리를 선택해주세요.<br>
+						적합하지 않을 경우 운영자에 의해 조정될 수 있습니다.
+					</p>
+				</div>
+				<div class="projectContentWrap">
+					<select id="projectCategorySelect" class="select">
+						<option>푸드</option>
+						<option>패션/위생</option>
+						<option>식기/급수기</option>
+						<option>장난감/훈련</option>
+						<option>하우스/안전</option>
+					</select>
+					<br><br>
+					<select id="projectCategoryDetailSelect" class="select">
+						<option>사료</option>
+						<option>껌류</option>
+						<option>수제간식</option>
+					</select>
+				</div>
+			</div>
+			
+			
+			<br><br><br><br><br><br><br><br><br><br><br>
+			<h2 align="center">프로젝트 등록 시자악!</h2>
+			<br><br><br><br><br><br><br><br><br><br><br>
+		</div>
 		
 	</article>
 	

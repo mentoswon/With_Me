@@ -202,8 +202,8 @@ label.selected {
 						<label for="food">푸드</label>
 						<input type="radio" name="project_category" id="fashion/hygiene" value="패션/위생">
 						<label for="fashion/hygiene">패션/위생</label>
-						<input type="radio" name="project_category" id="tableware/water supply" value="식기/급수기">
-						<label for="tableware/water supply">식기/급수기</label>
+						<input type="radio" name="project_category" id="tableware/waterSupply" value="식기/급수기">
+						<label for="tableware/waterSupply">식기/급수기</label>
 						<input type="radio" name="project_category" id="toy/training" value="장난감/훈련">
 						<label for="toy/training">장난감/훈련</label>
 						<input type="radio" name="project_category" id="house/safety" value="하우스/안전">
