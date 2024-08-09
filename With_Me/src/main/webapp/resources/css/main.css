@@ -21,10 +21,20 @@ section {
 /* 	background-color: yellow; */
 	width: 100%;
 	height: 320px;
-	background: url("https://rgo4.com/files/attach/images/2681740/617/103/007/c026461721a57836e71f440d84c53db4.jpg")
-				center center / cover no-repeat;
+/* 	background: url("https://rgo4.com/files/attach/images/2681740/617/103/007/c026461721a57836e71f440d84c53db4.jpg") */
+/* 				center center / cover no-repeat; */
+	position: relative;
+	overflow: hidden;
 }
 
+.sec01 .mainWrapper #mainBanner .bannerImg {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 50% ;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
 
 /*  🤞🤞 펀딩 아이템 리스트  */
 

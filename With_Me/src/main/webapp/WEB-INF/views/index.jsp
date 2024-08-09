@@ -21,6 +21,7 @@
 				<div class="mainWrapper">
 					<div id="mainBanner">
 						<!-- 메인배너 자리 (슬라이드로 할지 .. 그냥 이미지 박을지 .. -->
+						<img class="bannerImg" alt="배너" src="${pageContext.request.contextPath}/resources/image/cuteDog3.jpg">
 					</div>
 					<div class="itemList">
 						<div id="category01">
@@ -32,7 +33,7 @@
 								<div class="item">
 									<div class="item_image">
 										<a href="#">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/Sample3.jpg">
+											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
 										</a>
 									</div>
 									<div class="item_info">
@@ -45,7 +46,7 @@
 								<div class="item">
 									<div class="item_image">
 										<a href="#">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/Sample3.jpg">
+											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
 										</a>
 									</div>
 									<div class="item_info">
