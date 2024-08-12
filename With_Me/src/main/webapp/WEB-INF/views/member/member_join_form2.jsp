@@ -385,56 +385,41 @@
 					<div id="checkNameResult" class="resultAreaForJoin"></div>
 				</div>
 				<div>
-				<div class="form-group">
 					<label for="email" id="mgForThree">이메일</label> 
-					<input class="form-control" type="email" name="member_email" id="email" required>
-					<input type="button" value="중복확인" id="checkEmailDupButton">
+					<input placeholder="이메일을 입력해주세요" type="text"  name="member_id" id="id" required>
 					<div id="checkEmailResult" class="resultAreaForJoin"></div>
 				</div>
-					<label for="reg-ln" id="mgForThree">이메일</label> 
-					<input placeholder="이메일을 입력해주세요" maxlength="20" type="text"  name="member_id" id="id" required>
-					<input type="button" value="중복확인" id="checkIdDupButton">
-					<div id="checkIdResult" class="resultAreaForJoin"></div>
-				</div>
-	
-				<div class="form-group">
+				<div>
 					<label for="reg-pass" id="mgForFour">비밀번호</label> 
 					<input class="form-control" maxlength="16" placeholder="8~16자의 영문 대/소문자, 숫자, 특수문자(!@#%^&*)" type="password"  name="member_password" id="password" required>
 					<div id="checkPasswordResult" class="resultAreaForJoin"></div>
 				</div>
-				<div class="form-group">
+				<div>
 					<label for="reg-pass-confirm" id="mgForSix">비밀번호 확인</label> 
 					<input class="form-control" maxlength="16" placeholder="비밀번호를 다시 입력해주세요" type="password" id="passwordConfirm" required>
 					<div id="checkPasswordConfirmResult" class="resultAreaForJoin"></div>
 				</div>
-				<div class="form-group">
-					<label for="reg-ln" id="mgForTwo">주소</label> 
-					<input type="hidden" id="map">
-					<input class="form-control" type="text" placeholder="버튼을 눌러 동네를 인증해주세요" name="member_address" id="myMap" required readonly>
-	<!-- 								<input type="button" value="동네인증" id="myMapButton"> -->
-	<!-- 								<input type="button" value="지도로찾기" id="myMapButton" onclick="AddressMap()"> -->
-					<input type="button" value="동네인증" id="myMapButton" onclick="AddressMap()">
-					<div id="checkAddressResult" class="resultAreaForJoin"></div>
+				<div>
+					<label for="address">주소</label>
+						<input type="text" name="post_code" id="postCode" size="6" required readonly>
+						<input type="button" value="주소검색" id="btnSearchAddress">
+						<br>
+						<input type="text" name="address1" id="address1" size="30" placeholder="기본주소" required>
+						<br>
+						<input type="text" name="address2" id="address2" size="30" placeholder="상세주소">
 				</div>
-				<div class="form-group">
+				<div>
 					<label for="reg-ln" id="mgForFour">생년월일</label> 
 					<input class="form-control" type="text" name="member_birth" id="birthdate" required>
 					<div id="checkBirthdateResult" class="resultAreaForJoin"></div>
 				</div>
-				<div class="form-group">
+				<div>
 					<label for="phone" id="mgForFive">휴대폰번호</label> 
 					<input class="form-control" maxlength="13" placeholder="숫자만 입력해주세요" type="tel" name="member_phone" id="phone" required>
 					<input type="button" value="인증코드발급" id="requestPhoneAuthCodeButton">
 					<div id="checkPhoneResult" class="resultAreaForJoin"></div>
 				</div>
-				<div class="form-group">
-					<label for="phoneAuthCode" id="mgForFour">인증코드</label> 
-					<input class="form-control" placeholder="코드를 입력한 후 인증 버튼을 눌러주세요" type="text" name="phone_auth_code" id="phoneAuthCode" maxlength="4" required>
-					<input type="button" value="인증" id="completePhoneAuthButton">
-					<div id="checkPhoneAuthCodeResult" class="resultAreaForJoin"></div>
-				</div>
-					
-				<div class="button">
+				<div>
 					<button class="btn" type="button" onclick="history.back()">돌아가기</button>
 					<button class="btn" type="submit">가입완료</button>
 				</div>

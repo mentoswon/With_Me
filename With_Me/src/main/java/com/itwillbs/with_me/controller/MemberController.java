@@ -25,7 +25,7 @@ public class MemberController {
 	// 회원가입폼 페이지
 	@GetMapping("MemberJoin")
 	public String memberJoin() {
-		return "member/member_join_form";
+		return "member/member_join_form2";
 	}
 	
 	
