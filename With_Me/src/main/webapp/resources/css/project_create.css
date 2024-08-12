@@ -2,8 +2,14 @@
 /* ----- 프로젝트 메뉴바 ---------- */
 header{
     background-color: #f0f8ff;
-    position: relative;
-    z-index: 999;
+    position: fixed;
+	top: 0;
+    height:96px;
+    width: 100%;
+    z-index: 9999;
+    display: flex; /* flex 레이아웃 추가 */
+	justify-content: center; /* 수평 중앙 정렬 */
+	align-items: center; /* 수직 중앙 정렬 */
 }
 
 #topWrap {
@@ -33,7 +39,10 @@ a {
 }
 
 #projectCreateMenu {
-	position: sticky;
+	position: fixed;
+	background-color: #fff;
+	top: 96px;
+	width:100%;
 	z-index: 5000;
 	border-bottom: 1px solid #ccc;
 }
@@ -96,7 +105,9 @@ article {	/* 가운데 정렬 */
     justify-content: center;
     align-items: center;
     width: 1080px;
-/*     text-align: left; */
+    margin: 0 auto;
+    position: relative;
+    top: 342px;
 }
 
 
@@ -104,13 +115,17 @@ article {	/* 가운데 정렬 */
 .projectWriteWrap {
 	display: flex;
 	align-items: flex-start;
+	margin-bottom: 30px;
 }
 
 .projectExplanationWrap {
-	margin: 10px 20px;
+	margin: 10px 40px 10px 20px;
+	width: 500px;
+	box-sizing: border-box;
 }
 .projectContentWrap {
 	margin: 80px 20px 0 20px;
+	width: 350px;
 }
 
 .essential {
@@ -118,12 +133,98 @@ article {	/* 가운데 정렬 */
 	font-size: 24px;
 }
 
-.select {
-	padding: 5px 10px;
-	width: 300px;
+.select, input[type="text"], textarea {
+	padding: 8px 10px;
+	width: 350px;
 	border-color: #ccc;
+	box-sizing: border-box;
+	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
 }
 
+textarea {
+	resize: none;
+}
+
+.dividingLine {	/* 경계선 */
+	background: #F0F0F0;
+    height: 1px;
+    border: 0;
+}
+/* ----- 글자수 확인 ----- */
+.LengthCheck {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.LengthCheck p {
+	font-size: 12px;
+	color: #ccc;
+}
+#LengthCheck {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+/* ------ 검색태그 ----------------------------- */
+.tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .tag {
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+        }
+        .tag .remove-tag {
+            cursor: pointer;
+            margin-left: 5px;
+            color: red;
+            font-weight: bold;
+        }
+        .LengthCheck {
+            font-size: 0.9em;
+            color: #666;
+        }
+/* --------------------------------------------- */
+
+/* ----- 파일 css ----- */
+input[type="file"] {
+	display: none;
+}
+.uploadImg img {
+	width: 22px;
+	height: 22px;
+	vertical-align: text-bottom;	/* 글자와 정렬 맞추기 */
+}
+.fileUpload {
+	border: 1px solid #ccc;
+	padding: 8px 10px;
+	width: 350px;
+	box-sizing: border-box;
+	text-align: center;
+	cursor: pointer;
+}
+
+/* -------------------- */
+
+
+/* ----- 창작자 가이드 ----------- */
+.creatorGuide {
+	background-color: #ffebeb;
+	border-radius: 10px;
+	padding: 5px 25px;
+	margin: 0 15px;
+}
+.emphasis {
+	color: red;
+	font-weight: bold;
+}
 
 /* ----- 버튼 ---------- */
 #save, #request {	/* 저장하기 */

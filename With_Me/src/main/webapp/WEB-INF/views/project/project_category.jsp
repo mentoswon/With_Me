@@ -198,16 +198,21 @@ label.selected {
 						<p>카테고리는 나중에 변경 가능합니다.</p>
 					</div>
 					<div>
-						<input type="radio" name="project_category" id="food" value="푸드">
-						<label for="food">푸드</label>
-						<input type="radio" name="project_category" id="fashion/hygiene" value="패션/위생">
-						<label for="fashion/hygiene">패션/위생</label>
-						<input type="radio" name="project_category" id="tableware/waterSupply" value="식기/급수기">
-						<label for="tableware/waterSupply">식기/급수기</label>
-						<input type="radio" name="project_category" id="toy/training" value="장난감/훈련">
-						<label for="toy/training">장난감/훈련</label>
-						<input type="radio" name="project_category" id="house/safety" value="하우스/안전">
-						<label for="house/safety">하우스/안전</label>
+						<c:forEach var="category" items="${category}">
+							<input type="radio" name="project_category" id="${category.common_code}" value="${category.common_code_name}">
+							<label for="${category.common_code}">${category.common_code_name}</label>
+						</c:forEach>
+						
+<!-- 						<input type="radio" name="project_category" id="food" value="푸드"> -->
+<!-- 						<label for="food">푸드</label> -->
+<!-- 						<input type="radio" name="project_category" id="fashion/hygiene" value="패션/위생"> -->
+<!-- 						<label for="fashion/hygiene">패션/위생</label> -->
+<!-- 						<input type="radio" name="project_category" id="tableware/waterSupply" value="식기/급수기"> -->
+<!-- 						<label for="tableware/waterSupply">식기/급수기</label> -->
+<!-- 						<input type="radio" name="project_category" id="toy/training" value="장난감/훈련"> -->
+<!-- 						<label for="toy/training">장난감/훈련</label> -->
+<!-- 						<input type="radio" name="project_category" id="house/safety" value="하우스/안전"> -->
+<!-- 						<label for="house/safety">하우스/안전</label> -->
 					</div>
 				</div>
 				<br><br>

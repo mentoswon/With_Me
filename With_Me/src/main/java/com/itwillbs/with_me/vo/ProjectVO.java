@@ -23,6 +23,8 @@ public class ProjectVO {
 	private String project_image;
 	private String search_tag;
 	private int target_price;
+	private int funding_commission;
+	private int funding_premium;
 	private Date funding_start_date;
 	private Date funding_end_date;
 	private String project_interduce;

@@ -1,5 +1,7 @@
 package com.itwillbs.with_me.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.itwillbs.with_me.service.CreatorFundingService;
+import com.itwillbs.with_me.vo.CommonCodeVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Controller
@@ -48,6 +51,10 @@ public class CreatorFundingController {
 		System.out.println("project : " + project);
 		model.addAttribute("project", project);
 		
+		// 공통코드 테이블에서 상위공통코드 FUND 인 컬럼(카테고리) 조회
+		List<CommonCodeVO> category = service.getCategory();
+		model.addAttribute("category", category);
+		
 		return "project/project_category";
 	}
 	
@@ -80,7 +87,13 @@ public class CreatorFundingController {
 			return "result/fail";
 		}
 		
-		// 프로젝트 이어서 작성하기라면 바로 이동
+		// 공통코드 테이블에서 상위공통코드 FUND 인 컬럼(카테고리) 조회
+		List<CommonCodeVO> category = service.getCategory();
+		model.addAttribute("category", category);
+
+		// ----------------------------------------------------------------------------
+		// 프로젝트 이어서 작성하기라면 project_idx로 project_info select 하여 이동
+		
 		// 새로 작성하는 프로젝트라면 제목, 카테고리 저장(insert) 후 이동
 		// => NN 값의 경우 임시값 넣어서 insert 할 것
 		
