@@ -31,10 +31,15 @@
 	display: block;
 }
 
+.option {
+	background-color: #FFFFFF;
+	border: none;
+}
+
 </style>
 <script type="text/javascript">
 	let tabMenu = document.querySelectorAll('.tabMenu');
-	let loginCon = document.querySelectorAll('.login');
+	let loginCon = document.querySelectorAll('#button');
 			
 	for(let i = 0; i < tabMenu.length; i++){
 		tabMenu[i].onclick = function () {
@@ -58,11 +63,19 @@
 	</header>
 	<main>
 		<section>
-			<div style="text-align: center;">s
+			<div style="text-align: center; display: flex;">
 				<h3>${sessionScope.sName}</h3>
+				<button class="option" type="button" onclick="location.href='MypageInfo'">
+					<img src="${pageContext.request.contextPath}/resources/image/mypage.png" width="25">
+				</button>
 			</div>
 			<div>
 				<input type="button" id="buttonA" class="tabMenu on" value="프로필">
+				<div>
+					<p>
+					등록된 정보가 없습니다.
+					</p>
+				</div>
 				<input type="button" id="buttonB" class="tabMenu" value="좋아요">
 				<input type="button" id="buttonC" class="tabMenu" value="올린 프로젝트">
 				<input type="button" id="buttonD" class="tabMenu" value="후원한 프로젝트">
