@@ -14,7 +14,7 @@ import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Controller
-public class UserFundingConroller {
+public class UserFundingController {
 	@Autowired
 	private UserFundingService service;
 	
@@ -73,13 +73,14 @@ public class UserFundingConroller {
 		// 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(category, searchKeyword, startRow, listLimit);
 		
-		System.out.println("projectList : " + projectList);
+//		System.out.println("projectList : " + projectList);
 		
 		// --------------------------------------------------------------------
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
 		// --------------------------------------------------------------------
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("category", category);
 		
 		
 		return "project/project_list";

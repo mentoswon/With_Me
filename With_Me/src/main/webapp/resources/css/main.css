@@ -89,7 +89,7 @@ section {
 }
 
 .sec01 .mainWrapper .itemList .itemWrapper .item .item_image img{
-	width: 120%;
+	width: 100%;
 	position: absolute;
 	top: 50% ;
 	left: 50%;
@@ -241,7 +241,7 @@ section {
 }
 
 .sec02 .itemList .itemWrapper .item .item_image img{
-	width: 120%;
+	width: 100%;
 	position: absolute;
 	top: 50% ;
 	left: 50%;
@@ -297,7 +297,7 @@ section {
 }
 
 .sec03 .itemList .itemWrapper .item .item_image img{
-	width: 120%;
+	width: 100%;
 	position: absolute;
 	top: 50% ;
 	left: 50%;

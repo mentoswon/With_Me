@@ -22,6 +22,7 @@
 			</when>
 			<otherwise>
 				project_category_detail = #{category}
+				AND project_status = '승인'
 			</otherwise>
 		</choose>
 	</select>
@@ -42,6 +43,7 @@
 			</when>
 			<otherwise>
 				p.project_category_detail = #{category}
+				AND project_status = '승인'
 			</otherwise>
 		</choose>
 		limit 

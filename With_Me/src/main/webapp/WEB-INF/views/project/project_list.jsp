@@ -10,6 +10,47 @@
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
+		<style type="text/css">
+		#pageList {
+			margin: 30px auto;
+			width: 1024px;
+			text-align: center;
+		}
+		.sec02 .itemList {
+			height: 100%;
+		}
+		
+		.sec02 .itemList .itemWrapper {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 2rem;
+		}
+		
+		.sec02 .itemList .itemWrapper .item {
+			width: 100%;
+		}
+		
+		.sec02 .itemList .itemWrapper .item .item_image .like{
+			top: 90%;
+			bottom: 0;
+			left: 90%;
+			right: 0;
+			width: 20px;
+			height: 20px;
+		}
+		
+		.sec02 .itemList .itemWrapper .item .item_info h4 {
+			font-size: 13px;	
+			font-weight: normal;
+			color: #bbb;
+		}
+		
+		.sec02 .itemList .itemWrapper .item .fund_rate_var {
+			width: 100%;
+			height: 5px;
+			background-color: #ffab40;
+		}
+		</style>
 	</head>
 	<body>
 		<header>
@@ -18,7 +59,7 @@
 		
 		<div class="inner">
 			<section class="sec02">
-<%-- 				<h4>${project_category} > ${project_category_detail}</h4> --%>
+				<h2>${category}</h2>
 
 				<%-- 페이지 번호 기본값 1로 설정 --%>
 				<c:set var="pageNum" value="1"/>
@@ -27,6 +68,12 @@
 				</c:if>
 				
 				<div class="itemList">
+					<c:if test="${empty projectList}">
+						<p>
+						${category}에 등록된 펀딩이 없습니다. <br><br>
+						이용에 불편을 드려 죄송합니다.
+						</p>
+					</c:if>
 					<div class="itemWrapper">
 					<c:forEach var="project" items= "${projectList}">
 						<div class="item">
@@ -34,11 +81,20 @@
 								<a href="#">
 									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
 								</a>
+								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+								
+								<!-- 나중에 쓸 채워진 하트 -->
+<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 							</div>
 							<div class="item_info">
-								<h4>${project.creator_name}</h4>
+								<h4><a href="#">${project.creator_name}</a></h4>
 								<a href="#">${project.project_title}</a>
 							</div>
+							
+							<div class="fund_info">
+							
+							</div>
+							<div class="fund_rate_var"></div>
 						</div>
 					</c:forEach>
 					</div>

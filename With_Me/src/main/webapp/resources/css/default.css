@@ -152,6 +152,7 @@ article table {
 	background-color: inherit;
 	border: none;
 	font-size: 14px;
+	cursor: pointer;
 }
 
 .inner>nav ul .depth01 .depth02 li button:hover {
@@ -162,6 +163,8 @@ article table {
 	height: 30px;
 	width: 20rem;
 }
+
+
 /* footer */
 
 footer{

@@ -10,6 +10,15 @@
 		</layout>
 	</appender>
 	
+	<!-- 로그 메세지를 파일로 출력 -->
+	<appender name="rollingFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="d:/log/test.log" />
+		<param name="DatePattern" value=".yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
+		</layout>
+	</appender>
+	
 	<!-- Application Loggers -->
 	<logger name="com.itwillbs.with_me">
 		<level value="info" />
@@ -31,6 +40,24 @@
 	<logger name="org.springframework.web">
 		<level value="info" />
 	</logger>
+
+	<!-- 이 부분부터 항목 추가 -->
+	
+	<!-- 2. jdbc.sqltiming : SQL 문장과 실행에 소요된 시간(밀리초)에 대한 로그 -->
+	<logger name="jdbc.sqltiming" additivity="false">
+		<level value="info" />
+		<appender-ref ref="console" />
+		<appender-ref ref="rollingFile" />
+	</logger>
+	
+	
+	<!-- 5. jdbc.resultsettable : SELECT 실행 결과(데이터 테이블 = ResultSet 객체 내용) 에 대한 로그 -->
+	<logger name="jdbc.resultsettable" additivity="false">
+		<level value="info" />
+		<appender-ref ref="console" />
+		<appender-ref ref="rollingFile" />
+	</logger>
+	<!-- 여기까지 항목 추가 -->
 
 	<!-- Root Logger -->
 	<root>
