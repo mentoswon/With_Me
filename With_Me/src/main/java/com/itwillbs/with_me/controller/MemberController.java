@@ -163,8 +163,8 @@ public class MemberController {
 			response.addCookie(cookie);
 
 			// 관리자(admin) 일 경우 관리자 메인으로 리다이렉트
-			if(dbMember.getMem_email().equals("admin@naver.com")) {
-				return "redirect:/ManagerMain";
+			if(dbMember.getMem_isAdmin() == 1) {
+				return "redirect:/Admin";
 			}
 			
 			if(session.getAttribute("prevURL") == null) {
