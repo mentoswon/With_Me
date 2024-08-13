@@ -1,7 +1,5 @@
 package com.itwillbs.with_me.controller;
 
-import java.util.Map;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,18 +12,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
+import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 
 @Controller
 public class MemberController {
 	@Autowired
 	private MemberService service;
+	@Autowired
+	private MailService MailService;
 	
 	// 회원가입폼 페이지
 	@GetMapping("MemberJoin")
 	public String memberJoin() {
-		return "member/member_join_form2";
+		return "member/member_join_form3";
 	}
 	
 	
@@ -35,7 +37,7 @@ public class MemberController {
 	@ResponseBody
 	@GetMapping("MemberCheckDupEmail")
 	public String checkDupEmail(MemberVO member) {
-		System.out.println("email : " + member.getMem_email());
+//		System.out.println("email : " + member.getMem_email());
 		
 		// MemberService - getMember() 메서드 재사용하여 회원 상세정보 조회
 		// => 파라미터 : MemberVO 객체   리턴타입 : MemberVO 객체
@@ -55,7 +57,7 @@ public class MemberController {
 	@ResponseBody
 	@GetMapping("MemberCheckDupTel")
 	public String checkDupTel(MemberVO member) {
-		System.out.println("tel : " + member.getMem_tel());
+//		System.out.println("tel : " + member.getMem_tel());
 		
 		// MemberService - getMember() 메서드 재사용하여 회원 상세정보 조회
 		// => 파라미터 : MemberVO 객체   리턴타입 : MemberVO 객체
@@ -72,7 +74,7 @@ public class MemberController {
 	}
 	
 	
-	// 회원가입 완료 페이지
+	// 회원가입 폼
 	@PostMapping("MemberJoinPro")
 	public String memberJoinPro(MemberVO member, Model model, BCryptPasswordEncoder passwordEncoder) {
 		System.out.println(member);
@@ -92,12 +94,55 @@ public class MemberController {
 		// 성공 시 : "MemberJoinSuccess" 서블릿 주소 리다이렉트
 		// 실패 시 : "result_process/fail.jsp" 페이지 포워딩("msg" 속성값 : "회원가입 실패!")
 		if(insertCount > 0) {
+			// ------------ 인증 메일 발송 작업 추가 --------------
+			// MailService - sendAuthMail() 메서드 호출하여 인증메일 발송 요청
+			// => 파라미터 : MemberVO 객체    리턴타입 : MailAuthInfo(mailAuthInfo)
+			MailAuthInfo mailAuthInfo = MailService.sendAuthMail(member);
+			
+			// MemberService - registMailAuthInfo() 메서드 호출하여 인증 정보 등록 요청
+			// => 파라미터 : MailAuthInfo 객체    리턴타입 : void
+			service.registMailAuthInfo(mailAuthInfo);
+			
 			return "redirect:/MemberJoinSuccess";
 		} else {
 			model.addAttribute("msg", "회원가입 실패!");
 			return "result/fail";
 		}
 	}
+	
+	// 이메일 인증
+	@GetMapping("MemberEmailAuth")
+	public String memberEmailAtuth(MailAuthInfo authInfo, Model model) {
+		
+		System.out.println("authInfo : " + authInfo);
+		
+		// MemberService - requestEmailAuth() 메서드 호출하여 이메일 인증 처리 요청
+		boolean isAuthSuccess = service.requestEmailAuth(authInfo);
+		
+		return "";
+	}
+	
+//	// 이메일 인증 버튼 눌렀을 때
+//	@ResponseBody
+//	@GetMapping("RequestEmailAuth")
+//	public String requestEmailAuth(MemberVO member) {
+//		
+//		int insertCount = service.registMember(member);
+//		
+//		if(insertCount > 0) {
+//			// ------------ 인증 메일 발송 작업 추가 --------------
+//			// MailService - sendAuthMail() 메서드 호출하여 인증메일 발송 요청
+//			MailAuthInfo mailAuthInfo = MailService.sendAuthMail(member);
+//			
+//			// MemberService - registMailAuthInfo() 메서드 호출하여 인증 정보 등록 요청
+//			service.registMailAuthInfo(mailAuthInfo);
+//			
+//			// ----------------------------------------------------
+//			return "redirect:/MemberJoinSuccess";
+//		}
+//		
+//		return "";
+//	}
 	
 	
 	// 회원가입 완료
@@ -163,8 +208,8 @@ public class MemberController {
 			response.addCookie(cookie);
 
 			// 관리자(admin) 일 경우 관리자 메인으로 리다이렉트
-			if(dbMember.getMem_isAdmin() == 1) {
-				return "redirect:/Admin";
+			if(dbMember.getMem_email().equals("admin@naver.com")) {
+				return "redirect:/ManagerMain";
 			}
 			
 			if(session.getAttribute("prevURL") == null) {

@@ -2,6 +2,7 @@ package com.itwillbs.with_me.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 
 @Mapper
@@ -15,5 +16,14 @@ public interface MemberMapper {
 	
 	// 아이디 조회
 	MemberVO selectId(MemberVO member);
+	
+	// 이메일 인증 정보 조회 
+	MailAuthInfo selectMailAuthInfo(MailAuthInfo mailAuthInfo);
+	
+	// 이메일 인증 정보 등록
+	void insertMailAuthInfo(MailAuthInfo mailAuthInfo);
+	
+	// 이메일 인증 상태 변경
+	void updateMailAuthInfo(MailAuthInfo mailAuthInfo);
 
 }

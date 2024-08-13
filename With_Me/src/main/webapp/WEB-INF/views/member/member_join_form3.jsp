@@ -21,22 +21,19 @@
 	let checkPasswd2Result = false;
 	let checkJuminResult = false;
 	let checkTelResult = false;
-	let emailAuth = false;
-	let isCorrectEmailAtuthCode = false;s
 	// =============================================================
 	
 	function checkEmail() {
 		// 입력받은 이메일 값 가져오기
 		let mem_email = $("#mem_email").val();
-		let regex =  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 		
+		let regex =  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 		
 		let msg = "";
 		let color = "";
 		let bgColor = "";
 
 		// 정규표현식 문자열을 관리하는 객체(regex)의 exec() 메서드 호출하여
-		// exec 메서드 기능은 exec 메서드가 일치하는 부분을 찾지 못하면 null을 반환
 		// 검사할 문자열을 전달하면 정규표현식 일치 여부 확인 가능
 		if(!regex.exec(mem_email)) { // 불일치
 			checkEmailResult = false; // 아이디 검사 적합 여부 false(부적합) 값 저장
@@ -87,41 +84,6 @@
 		$("#mem_email").css("background", bgColor);
 		
 	}
-	
-	// 이메일 인증 버튼 눌렀을 때
-	$("#requestEmailAuthCode").on("click", function() {
-		alert("인증코드 발송 완료");
-		let mem_email = $("#mem_email").val();
-		
-		$.ajax({
-			type : "GET"
-			url : "RequestEmailAuth",
-			data : {
-				"mem_email" : mem_email
-			},
-			success : function(result) {
-				console.log("result : " + result);
-				
-				$("#successAuthCode").on("click", function() { // 인증코드를 입력후 인증버튼 눌렀을 때
-					let emailAuthCode = $("#emailAuthCode").val();
-					
-					// 이메일 코드가 널값인지 비교
-					if(emailAuthCode == "") {
-						$("#checkEmailCodeResult").text("인증코드를 입력해주세요").css("color", "red");
-						isCorrectEmailAtuthCode = false;
-					} else {
-						if()
-						alert("인증 코드가 올바르지 않습니다. 다시 인증해주세요!");
-					}
-				});
-				alert("인증코드 발송 완료");			
-			}
-		});
-	});
-	
-	
-	
-	
 	
 	
 	function checkTel() {
@@ -392,14 +354,8 @@
 				<div>
 					<label for="email">이메일</label> 
 					<input placeholder="이메일을 입력해주세요" type="text"  name="mem_email" id="mem_email" required onblur="checkEmail()">
-					<input type="button" value="이메일 인증" id="requestEmailAuthCode">
+					<input type="button" value="이메일 인증" id="emailAuthCodeButton" onclick="sendAuthMail()">
 					<div id="checkEmailResult"></div>
-				</div>
-				<div>
-					<label for="authCode">인증코드</label> 
-					<input placeholder="인증번호를 입력해주세요" type="text"  name="emailAuthCode" id="emailAuthCode" required>
-					<input type="button" value="인증" id="successAuthCode">
-					<div id="checkEmailCodeResult"></div>
 				</div>
 				<div>
 					<label for="passwd">비밀번호</label> 
@@ -424,12 +380,12 @@
 				<div>
 					<label for="birthday" id="mgForFour">생년월일</label> 
 					<input type="text" name="mem_birthday" id="mem_birthday" required>
-					<div id="checkBirthdateResult" class="resultAreaForJoin"></div>
+					<div id="checkBirthdateResult"></div>
 				</div>
 				<div>
 					<label for="tel" id="mgForFive">휴대폰번호</label> 
 					<input maxlength="13" placeholder="숫자만 입력해주세요" type="tel" name="mem_tel" id="mem_tel" required onblur="checkTel()">
-					<div id="checkTelResult" class="resultAreaForJoin"></div>
+					<div id="checkTelResult"></div>
 				</div>
 				<div>
 					<button class="btn" type="button" onclick="history.back()">돌아가기</button>
