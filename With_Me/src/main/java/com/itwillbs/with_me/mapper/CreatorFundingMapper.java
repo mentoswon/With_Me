@@ -16,4 +16,7 @@ public interface CreatorFundingMapper {
 	// 상위공통코드 FUND 인 컬럼(카테고리) 조회
 	List<CommonCodeVO> selectCategory();
 
+	// 세부 카테고리 조회
+	List<CommonCodeVO> selectCategoryDetail(String project_category);
+
 }

@@ -25,4 +25,19 @@
 	WHERE common_code_top = 'FUND'
 </select>
 
+<!-- 세부 카테고리 조회 - SELECT -->
+<!-- 파라미터가 common_code_name 형태이므로 서브쿼리에서 common_code 찾아서 조회 -->
+<select id="selectCategoryDetail" resultType='commonCode'>
+	SELECT *
+	FROM common_code
+	WHERE common_code_top = (
+		SELECT common_code
+		FROM common_code
+		WHERE common_code_name = #{project_category}
+		AND common_code_top = 'FUND'
+	)
+</select>
+
+
+
 </mapper>

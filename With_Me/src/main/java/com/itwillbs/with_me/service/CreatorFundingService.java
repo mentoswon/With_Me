@@ -23,5 +23,10 @@ public class CreatorFundingService {
 	public List<CommonCodeVO> getCategory() {
 		return mapper.selectCategory();
 	}
+	
+	// 세부 카테고리 조회 요청
+    public List<CommonCodeVO> getCategoryDetail(String project_category) {
+        return mapper.selectCategoryDetail(project_category);
+    }
 
 }

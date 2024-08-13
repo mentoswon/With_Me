@@ -140,6 +140,12 @@ article {	/* 가운데 정렬 */
 	font-size: 24px;
 }
 
+/* 상세 카테고리
+   첫번째 옵션(세부 카테고리를 선택하세요.) 선택지에서는 지우기 */
+.project_category_detail:not(:placeholder-shown) option:first-child {
+    display: none;
+}
+
 .select, input[type="text"], textarea {
 	padding: 8px 10px;
 	width: 350px;

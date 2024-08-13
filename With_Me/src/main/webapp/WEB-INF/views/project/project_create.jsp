@@ -19,8 +19,9 @@ $(function() {
     let maxTags = 5; // 최대 태그 수
 
 	// 정규 표현식(한글 또는 숫자만 허용)
-	let tagPattern = /^[가-힣0-9]*$/;
-
+	let regexTag = /^[가-힣0-9]*$/;
+	let checkTagResult = false;	// 입력값 검증 결과를 저장할 변수(true : 적합, false : 부적합)
+    
     // 프로젝트 심사 기준 팝업창 버튼 클릭 시 닫힘
     $("#agree").click(function() {
         $("#popupWrap").hide();
@@ -31,7 +32,37 @@ $(function() {
         $("#projectMenuList li").removeClass("active");
         $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
     });
-
+	
+    // 세부 카테고리 조회
+	$("#project_category").change(function() {
+		let project_category = $("#project_category").val();
+		if (project_category) {
+		    $.ajax({
+		        type: "POST",
+		        url: "GetCategoryDetail",
+		        data: {
+		        	"project_category" : project_category
+		        },
+		        dataType : "json",
+		        success: function(response) {
+		            // 기존 세부 카테고리 옵션 지움
+		            $("#project_category_detail").empty();
+					$("#project_category_detail").append("<option disabled selected hidden>세부 카테고리를 선택하세요.</option>");
+		            
+		            $.each(response, function(index, item) {
+		            	$("#project_category_detail").append("<option value='" + item.common_code_name + "'>" + item.common_code_name + "</option>");
+		            });
+		        },
+		        error: function() {
+		            alert("세부 카테고리를 불러오는 데 실패했습니다.");
+		        }
+		    });
+		} else {
+			$("#project_category_detail").empty().append("<option disabled selected hidden>세부 카테고리를 선택하세요.</option>");
+		}
+	});
+    
+    
     // 제목 길이 체크
     function checkTitleLength() {
         let titleLength = $("#project_title").val().length;
@@ -78,10 +109,15 @@ $(function() {
     
     // 검색 태그 입력값 유효성 검사
     $("#search_tag").keyup(function() {
-    	 let tagValue = $(this).val();  // 입력된 태그 값을 가져옴
-        if (!tagPattern.test(tagValue)) {  // 유효성 검사
-            // 유효하지 않은 문자를 제거
-            $(this).val(tagValue.replace(/[^가-힣0-9]/g, ''));
+    	 let tagValue = $("#search_tag").val();  // 입력된 태그 값을 가져옴
+        if (!regexTag.exec(tagValue)) {  // 불일치
+        	$("#checkTagResult").html("한글, 숫자로만 입력 가능합니다!<br>공백, 특수문자 불가");
+        	$("#checkTagResult").css("color", "red");
+        	checkTagResult = false;
+        } else {	// 일치
+        	$("#checkTagResult").html("문자로만 최소 1자 이상 입력해주세요.");
+        	$("#checkTagResult").css("color", "#ccc");
+        	checkTagResult = true;
         }
     });
     
@@ -91,17 +127,19 @@ $(function() {
 		if(keyCode == 13 || keyCode == 32) {	// Enter(13) 또는 SpaceBar(32) 누를 시
             event.preventDefault(); // 폼 제출 방지
             let tagValue = $(this).val().trim();	// 입력된 태그 값을 가져와서 공백 제거
-            if (tagValue && tagContainer.children().length < maxTags) {    // 유효한 태그와 태그 개수가 최대 개수보다 적은 경우
-                // 새로운 태그 추가
-                tagContainer.append("<span class='tag'>" + tagValue + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></span>");
-                // 태그 카운트 업데이트
-                updateTagCount();
-                // 입력 필드 비우기
-                $(this).val("");
-                
-            } else if (tagContainer.children().length >= maxTags) {
-                alert("태그는 최대 " + maxTags + "개까지만 추가할 수 있습니다.");
-            }
+            if (checkTagResult) {	// 검색태그 검사 적합여부 true
+            	if (tagValue && tagContainer.children().length < maxTags) {    // 유효한 태그와 태그 개수가 최대 개수보다 적은 경우
+                    // 새로운 태그 추가
+                    tagContainer.append("<span class='tag'>" + tagValue + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></span>");
+                    // 태그 카운트 업데이트
+                    updateTagCount();
+                    // 입력 필드 비우기
+                    $(this).val("");
+                    
+                } else if (tagContainer.children().length >= maxTags) {
+                    alert("태그는 최대 " + maxTags + "개까지만 추가할 수 있습니다.");
+                }
+			}
     	}
 	});
     
@@ -185,17 +223,17 @@ $(function() {
 					</p>
 				</div>
 				<div class="projectContentWrap">
-					<select id="projectCategorySelect" class="select" name="project_category">
+					<select id="project_category" class="select" name="project_category">
 						<c:forEach var="category" items="${category}">
-							<option <c:if test="${project.project_category eq category.common_code_name}">selected</c:if>>${category.common_code_name}</option>
+							<option value="${category.common_code_name}" <c:if test="${project.project_category eq category.common_code_name}">selected</c:if>>${category.common_code_name}</option>
 						</c:forEach>
 					</select>
 					<br><br>
-					<select id="projectCategoryDetailSelect" class="select" name="project_category_detail">
-						<option>세부 카테고리를 선택하세요.</option>
-<%-- 						<c:forEach var="categoryDetail" items="${categoryDetail}"> --%>
-<!-- 							<option>${categoryDetail.common_code_name}</option> -->
-<%-- 						</c:forEach> --%>
+					<select id="project_category_detail" class="select" name="project_category_detail">
+						<option disabled selected hidden>세부 카테고리를 선택하세요.</option>
+						<c:forEach var="categoryDetail" items="${category_detail}">
+							<option value="${categoryDetail.common_code_name}">${categoryDetail.common_code_name}</option>
+						</c:forEach>
 					</select>
 				</div>
 			</div>
@@ -284,7 +322,7 @@ $(function() {
 				<div class="projectContentWrap">
 					<input type="text" name="search_tag" id="search_tag" placeholder="Enter를 눌러 핵심 키워드를 등록해주세요.">
 					<div class="LengthCheck">
-						<span style="color: #ccc;">한 태그당 문자로만 최소 1자 이상 입력해주세요.</span>
+						<span id="checkTagResult" style="color: #ccc; font-size: 13px;">문자로만 최소 1자 이상 입력해주세요.</span>
 						<p><span id="tagCount">0</span>/5개</p>
 					</div>
 					<div class="tag-container" id="tagContainer">

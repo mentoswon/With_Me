@@ -1,14 +1,18 @@
 package com.itwillbs.with_me.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.CreatorFundingService;
 import com.itwillbs.with_me.vo.CommonCodeVO;
@@ -78,7 +82,7 @@ public class CreatorFundingController {
 	
 	// 프로젝트 시작하기 페이지
 	@PostMapping("ProjectCreate")
-	public String projectCreate(ProjectVO project, HttpSession session, Model model) {
+	public String projectCreate(ProjectVO project, HttpSession session, Model model, @RequestParam Map<String, String> map) {
 		String id = (String)session.getAttribute("sId");
 		// 미로그인 시 로그인 페이지로 이동
 		if(id == null) {
@@ -90,7 +94,14 @@ public class CreatorFundingController {
 		// 공통코드 테이블에서 상위공통코드 FUND 인 컬럼(카테고리) 조회
 		List<CommonCodeVO> category = service.getCategory();
 		model.addAttribute("category", category);
-
+		
+		
+		System.out.println("map : " + map);
+		// 세부 카테고리 조회
+		String project_category = map.get("project_category");
+		List<CommonCodeVO> category_detail = service.getCategoryDetail(project_category);
+		model.addAttribute("category_detail", category_detail);
+		
 		// ----------------------------------------------------------------------------
 		// 프로젝트 이어서 작성하기라면 project_idx로 project_info select 하여 이동
 		
@@ -105,6 +116,19 @@ public class CreatorFundingController {
 		
 		return "project/project_create";
 	}
-
+	
+	// 세부 카테고리 불러오기
+//	@PostMapping("GetCategoryDetail")
+//	public List<CommonCodeVO> getCategoryDetail(@RequestParam("project_category") String project_category) {
+//		List<CommonCodeVO> category_detail = service.getCategoryDetail(project_category);
+//		return category_detail;
+//	}
+	@ResponseBody
+	@PostMapping("GetCategoryDetail")
+	public List<CommonCodeVO> getCategoryDetail(@RequestParam("project_category") String project_category) {
+		List<CommonCodeVO> categoryDetailList = service.getCategoryDetail(project_category);
+		// 데이터 반환 (Spring이 자동으로 JSON으로 변환)
+		return categoryDetailList;
+	}
 	
 }
