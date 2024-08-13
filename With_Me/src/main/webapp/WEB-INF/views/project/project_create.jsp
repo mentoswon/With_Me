@@ -29,10 +29,18 @@ $(function() {
 
     // 메뉴 항목 클릭 시 활성화 처리
     $("#projectMenuList li").click(function() {
+        $(".writeContainer").hide();	// 모든 .writeContainer 숨기기
         $("#projectMenuList li").removeClass("active");
         $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
+        let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
+        $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
     });
 	
+	// 초기 상태로 첫 번째 메뉴와 콘텐츠가 보이도록 설정
+//     $("#projectMenuList li:eq(0)").click();
+	// 임시) 초기 상태로 두 번째 메뉴와 콘텐츠가 보이도록 설정
+    $("#projectMenuList li:eq(1)").click();
+    
     // 세부 카테고리 조회
 	$("#project_category").change(function() {
 		let project_category = $("#project_category").val();
@@ -191,19 +199,19 @@ $(function() {
 		<div id="projectMenuWrap">
 			<div id="projectMenu">
 				<ul id="projectMenuList">
-					<li class="writeList active">
+					<li class="writeList active" data-index="1">
 						<span>기본 정보</span>
 					</li>
-					<li class="writeList">
+					<li class="writeList" data-index="2">
 						<span>펀딩 계획</span>
 					</li>
-					<li class="writeList">
+					<li class="writeList" data-index="3">
 						<span>후원 구성</span>
 					</li>
-					<li class="writeList">
+					<li class="writeList" data-index="4">
 						<span>프로젝트 계획</span>
 					</li>
-					<li class="writeList">
+					<li class="writeList" data-index="5">
 						<span>창작자 정보</span>
 					</li>
 				</ul>
@@ -212,8 +220,8 @@ $(function() {
 	</section>
 	
 	<article>
-		<div>
-			<br>
+		<%-- ---------- 기본 정보 ---------- --%>
+		<div id="writeContainer1" class="writeContainer">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
 					<h3>프로젝트 카테고리<span class="essential">&nbsp;*</span></h3>
@@ -331,8 +339,75 @@ $(function() {
 					<br><br>
 				</div>
 			</div>
+		</div>
+		
+		<%-- ---------- 펀딩 계획 ---------- --%>
+		<div id="writeContainer2" class="writeContainer">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>목표 금액<span class="essential">&nbsp;*</span></h3>
+					<p>
+						프로젝트를 완수하기 위해 필요한 금액을 설정해주세요.
+					</p>
+					<br>
+					<div class="creatorGuide">
+						<p class="emphasis">목표금액 설정 시 꼭 알아두세요!</p>
+						<p>
+							1. 종료일까지 목표금액을 달성하지 못하면 후원자 결제가 진행되지 않습니다.<br>
+							2. 후원 취소 및 결제 누락을 대비해 10% 이상 초과 달성을 목표로 해주세요.<br>
+							3. 제작비, 선물 배송비, 인건비, 예비 비용 등을 함께 고려해주세요 .<br>
+							4. 목표금액은 50만원 이상 1억 미만으로 설정해 주세요.<br>
+						</p>
+					</div>
+				</div>
+				<div class="projectContentWrap targetAmount">
+					<div id="targetAmount">
+						<h4>목표금액</h4>
+						<table style="border: 1px solid #ccc; width: 100%;">
+							<tr>
+								<td><input type="text" placeholder="50만원 이상의 금액을 입력하세요." style="border: none; text-align: right; width: 320px;"></td>
+								<td style="text-align: center; padding-bottom: 5px;" width="40px">원</td>
+							</tr>
+						</table>
+						
+						
+						<div id="estimateAmountWrap">
+							<div id="estimateAmount">	<!-- display:flex; -->
+								<p>목표금액 달성 시 예상 수령액</p>
+								<span><span>0</span>원</span>
+							</div>
+							<hr>
+							<div>	<!-- display:flex; -->
+								<p>총 수수료</p>
+								<span><span>0</span>원</span>
+							</div>
+							<div>	<!-- display:flex; -->
+								<p>결제대행 수수료 (총 결제 성공금액의 3% + VAT)</p>
+								<span><span>0</span>원</span>
+							</div>
+							<div>	<!-- display:flex; -->
+								<p>위드미 수수료 (총 결제 성공금액의 5% + VAT)</p>
+								<span><span>0</span>원</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr class="dividingLine">
+			
 			
 		</div>
+		
+		<%-- ---------- 후원 구성 ---------- --%>
+		<div id="writeContainer3" class="writeContainer">
+		</div>
+		<%-- ---------- 프로젝트 계획 ---------- --%>
+		<div id="writeContainer4" class="writeContainer">
+		</div>
+		<%-- ---------- 창작자 정보 ---------- --%>
+		<div id="writeContainer5" class="writeContainer">
+		</div>
+		
 		
 	</article>
 	

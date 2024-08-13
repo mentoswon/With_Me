@@ -117,6 +117,10 @@ article {	/* 가운데 정렬 */
     position: relative;
 }
 
+/* 프로젝트 등록글 작성 영역 */
+.writeContainer {
+        display: none;
+    }
 
 /* ----- 프로젝트 작성 영역 ---------- */
 .projectWriteWrap {
@@ -130,11 +134,14 @@ article {	/* 가운데 정렬 */
 	width: 500px;
 	box-sizing: border-box;
 }
-.projectContentWrap {
+.projectContentWrap:not(.targetAmount) {
 	margin: 80px 20px 0 20px;
 	width: 350px;
 }
-
+.targetAmount {	/* 목표금액 작성 영역 */
+	margin-top: 80px;
+    width: 400px;
+}
 .essential {
 	color: #FFAB40;
 	font-size: 24px;
@@ -159,7 +166,7 @@ textarea {
 }
 
 .dividingLine {	/* 경계선 */
-	background: #F0F0F0;
+	background: #f1f3f5;
     height: 1px;
     border: 0;
 }
@@ -245,6 +252,16 @@ input[type="file"] {
 	font-weight: bold;
 }
 
+/* 펀딩계획 - 목표금액 */
+#targetAmount {
+	border: 2px solid #ccc;
+	padding: 15px;
+	
+}
+#estimateAmountWrap {
+	background-color: #f1f3f5;
+}
+
 /* ----- 버튼 ---------- */
 #save, #request {	/* 저장하기 */
 	width: 100px;
@@ -265,7 +282,7 @@ input[type="file"] {
 }
 
 #request:disabled {
-	background-color: #F0F0F0;
+	background-color: #f0f0f0;
 }
 
 /* ----- 프로젝트 심사기준 팝업창 ---------- */
@@ -276,11 +293,11 @@ input[type="file"] {
 	/* ------------------------------------------ */
 	position: fixed;
     left: 50%;
-    top: 400px;
-    transform: translate(-50%, -50%);
+    top: 160px;
+    transform: translate(-50%, 0%);
     width: 800px; height: auto;
     box-sizing: border-box;;
-    background-color: #F0F0F0;
+    background-color: #f1f3f5;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     z-index: 9999;
     border-radius: 10px;
