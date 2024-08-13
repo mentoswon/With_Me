@@ -1,5 +1,8 @@
 package com.itwillbs.with_me.controller;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -25,12 +28,12 @@ public class UserFundingController {
 		System.out.println("searchKeyword : " + searchKeyword);
 		
 		// 메뉴에서 선택한 카테고리대로 목록이 표출되게 해야함
-		String category = project.getProject_category_detail(); 
+		String category = project.getProject_category(); 
 		
-		System.out.println("categoryDetail : " + category);
+		System.out.println("category : " + category);
 		
 		// 한 페이지에서 표시할 글 목록 개수 지정 (jsp 에서 가져옴)
-		int listLimit = 6;
+		int listLimit = 8;
 		
 		// 조회 시작 행 번호 계산
 		int startRow = (pageNum - 1) * listLimit;
@@ -65,7 +68,7 @@ public class UserFundingController {
 		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
 		if(pageNum < 1 || pageNum > maxPage) {
 			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "BoardList");
+			model.addAttribute("targetURL", "ProjectList");
 			
 			return "result/fail";
 		}
@@ -87,8 +90,36 @@ public class UserFundingController {
 	}
 	
 	
-	
-	
+	@GetMapping("ProjectDetail")
+	public String projectDetail(ProjectVO project, Model model) {
+		System.out.println("ProjectDetail : " + project);
+		String project_code = project.getProject_code();
+		
+		// 프로젝트 가져오기
+		ProjectVO project_detail = service.getProject(project_code);
+		
+//		System.out.println("가져온 프로젝트 ~ : " + project_detail);
+		
+		// 결제일 계산 ----------------------------
+		Date project_end_date = project_detail.getFunding_end_date();
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar cal = Calendar.getInstance(); // 날짜 계산을 위해 Calendar 추상클래스 선언 및 getInstance() 메서드 사용
+        
+        cal.setTime(project_end_date);
+
+        cal.add(Calendar.DATE, 1); // 날짜에 1일 더한다.
+        
+        String pay_date = format.format(cal.getTime());
+//        System.out.println(pay_date);
+        // 결제일 계산 end ----------------------------
+		
+		model.addAttribute("project_detail", project_detail);
+		model.addAttribute("pay_date", pay_date);
+		
+		return "project/project_detail";
+	}
 	
 	
 	

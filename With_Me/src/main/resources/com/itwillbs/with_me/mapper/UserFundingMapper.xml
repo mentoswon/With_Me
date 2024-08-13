@@ -21,7 +21,7 @@
 				or project_category_detail like concat('%',#{searchKeyword},'%') 	
 			</when>
 			<otherwise>
-				project_category_detail = #{category}
+				project_category = #{category}
 				AND project_status = '승인'
 			</otherwise>
 		</choose>
@@ -42,7 +42,8 @@
 				or p.project_category_detail like concat('%',#{searchKeyword},'%') 	
 			</when>
 			<otherwise>
-				p.project_category_detail = #{category}
+				(p.project_category = #{category}
+				OR p.project_category_detail = #{category})
 				AND project_status = '승인'
 			</otherwise>
 		</choose>
@@ -51,4 +52,10 @@
 			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
 	</select>
 	
+	<!-- 프로젝트 상세정보 가져오기 -->
+	<select id="selectProject" resultType="project">
+		SELECT *
+		FROM project_info
+		WHERE project_code = #{project_code}
+	</select>
 </mapper>

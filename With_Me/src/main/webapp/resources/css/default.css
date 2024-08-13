@@ -46,6 +46,12 @@ article table {
 	margin: auto;
 }
 
+#pageList {
+	margin: 30px auto;
+	width: 1024px;
+	text-align: center;
+}
+
 #member_area {
 	width: 100%;
 	text-align: right;

@@ -13,9 +13,13 @@
 		}
 	}
 	
-	function projectList(cateDetail) {
-		location.href="ProjectList?project_category_detail=" + cateDetail;
+	function projectList(cate) {
+		location.href="ProjectList?project_category=" + cate;
 	}
+	
+// 	function projectListDetail(cateDetail) {
+// 		location.href="ProjectListDetail?project_category_detail=" + cateDetail;
+// 	}
 	
 </script>
 
@@ -54,7 +58,7 @@
 		
 		<ul>
 			<li class="depth01">
-				<a href=""> 푸드 </a>
+				<a href="javascript:projectList('푸드')"> 푸드 </a>
 				<ul class="depth02">
 					<li><button value="사료" onclick="projectList(this.value)" >사료</button></li>
 					<li><button value="껌류" onclick="projectList(this.value)" >껌류</button></li>
@@ -63,11 +67,10 @@
 			</li>
 			
 			<li class="depth01">
-				<a href=""> 패션 / 위생 </a>
+				<a href="javascript:projectList('패션/위생')"> 패션 / 위생 </a>
 				<ul class="depth02">
-					<li><button value="메뉴" onclick="projectList(this.value)" >메뉴</button></li>
-					<li><button value="메뉴" onclick="projectList(this.value)" >메뉴</button></li>
-					<li><button value="메뉴" onclick="projectList(this.value)" >메뉴</button></li>
+					<li><button value="옷" onclick="projectList(this.value)" >옷</button></li>
+					<li><button value="신발" onclick="projectList(this.value)" >신발</button></li>
 				</ul>
 			</li>
 			
