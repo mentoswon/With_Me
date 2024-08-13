@@ -15,11 +15,12 @@
 <script type="text/javascript">
 $(function() {
 	let tagContainer = $("#tagContainer");
-    let searchTagInput = $("#searchTagInput");
     let tagCount = $("#tagCount");
     let maxTags = 5; // 최대 태그 수
 
-	
+	// 정규 표현식(한글 또는 숫자만 허용)
+	let tagPattern = /^[가-힣0-9]*$/;
+
     // 프로젝트 심사 기준 팝업창 버튼 클릭 시 닫힘
     $("#agree").click(function() {
         $("#popupWrap").hide();
@@ -28,7 +29,7 @@ $(function() {
     // 메뉴 항목 클릭 시 활성화 처리
     $("#projectMenuList li").click(function() {
         $("#projectMenuList li").removeClass("active");
-        $(this).addClass("active");
+        $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
     });
 
     // 제목 길이 체크
@@ -75,7 +76,49 @@ $(function() {
         checkSummaryLength();
     });
     
-});
+    // 검색 태그 입력값 유효성 검사
+    $("#search_tag").keyup(function() {
+    	 let tagValue = $(this).val();  // 입력된 태그 값을 가져옴
+        if (!tagPattern.test(tagValue)) {  // 유효성 검사
+            // 유효하지 않은 문자를 제거
+            $(this).val(tagValue.replace(/[^가-힣0-9]/g, ''));
+        }
+    });
+    
+    // 검색 태그 Enter(SpaceBar) 누름 이벤트
+    $("#search_tag").on("keypress", function(event) {
+    	let keyCode = event.keyCode;
+		if(keyCode == 13 || keyCode == 32) {	// Enter(13) 또는 SpaceBar(32) 누를 시
+            event.preventDefault(); // 폼 제출 방지
+            let tagValue = $(this).val().trim();	// 입력된 태그 값을 가져와서 공백 제거
+            if (tagValue && tagContainer.children().length < maxTags) {    // 유효한 태그와 태그 개수가 최대 개수보다 적은 경우
+                // 새로운 태그 추가
+                tagContainer.append("<span class='tag'>" + tagValue + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></span>");
+                // 태그 카운트 업데이트
+                updateTagCount();
+                // 입력 필드 비우기
+                $(this).val("");
+                
+            } else if (tagContainer.children().length >= maxTags) {
+                alert("태그는 최대 " + maxTags + "개까지만 추가할 수 있습니다.");
+            }
+    	}
+	});
+    
+	// 태그 삭제 이벤트
+    tagContainer.on("click", ".removeTag", function() {
+        $(this).parent().remove(); // 현재 태그 요소를 삭제
+        updateTagCount(); // 태그 개수 업데이트
+    });
+
+    // 태그 개수 업데이트 함수
+    function updateTagCount() {
+        let currentTagCount = tagContainer.children().length;
+        tagCount.text(currentTagCount);
+    }
+    
+    
+});	// ready 이벤트 끝
 
 </script>
 </head>
@@ -95,8 +138,8 @@ $(function() {
 	</header>
 	
 	<%-- ---------- 프로젝트 등록 메뉴바 ---------- --%>
-	<section id="projectCreateMenu">
-		<div id="projectMenuWrap">
+	<section id="projectInfo">
+		<div id="projectInfoWrap">
 			<div id="projectMenuTop">
 				<img alt="로고" src="${pageContext.request.contextPath}/resources/image/image.png">
 				<div>
@@ -104,6 +147,10 @@ $(function() {
 					<p style="line-height: 200%;">${project.project_category}</p>
 				</div>
 			</div>
+		</div>
+	</section>
+	<section id="projectCreateMenu">
+		<div id="projectMenuWrap">
 			<div id="projectMenu">
 				<ul id="projectMenuList">
 					<li class="writeList active">
@@ -235,7 +282,7 @@ $(function() {
 					</div>
 				</div>
 				<div class="projectContentWrap">
-					<input type="text" name="search_tag" placeholder="Enter를 눌러 핵심 키워드를 등록해주세요.">
+					<input type="text" name="search_tag" id="search_tag" placeholder="Enter를 눌러 핵심 키워드를 등록해주세요.">
 					<div class="LengthCheck">
 						<span style="color: #ccc;">한 태그당 문자로만 최소 1자 이상 입력해주세요.</span>
 						<p><span id="tagCount">0</span>/5개</p>

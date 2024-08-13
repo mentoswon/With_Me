@@ -38,16 +38,24 @@ a {
 	height: 100%;
 }
 
-#projectCreateMenu {
-	position: fixed;
+#projectInfo {
+	position: relative;
 	background-color: #fff;
 	top: 96px;
 	width:100%;
 	z-index: 5000;
+}
+#projectCreateMenu {
+	position: sticky;
+	top: 96px;
+	margin-top: 96px;
+	width:100%;
+	z-index: 5000;
+	background-color: #fff;
 	border-bottom: 1px solid #ccc;
 }
 
-#projectMenuWrap {
+#projectMenuTop, #projectMenuWrap {
 	width: 1080px;
 	margin: auto;
 }
@@ -56,7 +64,7 @@ a {
 	display: flex;
     align-items: center;
     padding: 20px 30px;
-    margin-left: 50px;
+    margin: auto;
 }
 
 #projectMenuTop img {
@@ -107,7 +115,6 @@ article {	/* 가운데 정렬 */
     width: 1080px;
     margin: 0 auto;
     position: relative;
-    top: 342px;
 }
 
 
@@ -168,29 +175,35 @@ textarea {
 }
 
 /* ------ 검색태그 ----------------------------- */
-.tag-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-        .tag {
-            background-color: #e0e0e0;
-            border-radius: 3px;
-            padding: 5px 10px;
-            display: flex;
-            align-items: center;
-        }
-        .tag .remove-tag {
-            cursor: pointer;
-            margin-left: 5px;
-            color: red;
-            font-weight: bold;
-        }
-        .LengthCheck {
-            font-size: 0.9em;
-            color: #666;
-        }
+.tag {
+    display: inline-block;
+    background-color: #fff;
+    color: #555;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 3px;
+    font-size: 14px;
+    
+    position: relative;
+}
+
+/* 태그 삭제 버튼 */
+.removeTag {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+}
+.removeTag img {
+	width: 20px;
+	height: 16px;
+}
+.removeTag:hover {
+    color: #c0392b;
+}
 /* --------------------------------------------- */
 
 /* ----- 파일 css ----- */
