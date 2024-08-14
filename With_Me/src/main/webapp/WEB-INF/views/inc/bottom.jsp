@@ -9,7 +9,7 @@
 			<div class="footer_service">
 				<h4>위드미 이용안내</h4>
 				<ul>
-					<li><a href="#">공지사항</a></li>
+					<li><a href="BoardList">공지사항</a></li>
 					<li><a href="#">후원자 가이드</a></li>
 				</ul>
 				<ul>
