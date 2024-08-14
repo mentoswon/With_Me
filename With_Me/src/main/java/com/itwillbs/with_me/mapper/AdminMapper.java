@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
 
 @Mapper
 public interface AdminMapper {
@@ -33,5 +34,15 @@ public interface AdminMapper {
 	// 구매내역 조회
 	List<String> selectPurchaseHistory(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
 										@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
+	
+	// 등록 대기중인 프로젝트 개수 조회
+	int selectRegistWaitingProjectListCount(String searchKeyword);
+	
+	// 프로젝트 목록 조회
+	List<ProjectVO> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
+										@Param("searchKeyword") String searchKeyword);
+	
+	// 프로젝트 등록 승인/거부
+	int updateProjectStatus(@Param("project") ProjectVO project, @Param("isAuthorize") String isAuthorize);
 	
 }

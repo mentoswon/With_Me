@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.AdminMapper;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
 
 @Service
 public class AdminService {
@@ -46,6 +47,21 @@ public class AdminService {
 	// 구매내역 조회
 	public List<String> getPurchaseHistory(int startRow, int listLimit, String searchKeyword, MemberVO member) {
 		return mapper.selectPurchaseHistory(startRow, listLimit, searchKeyword, member);
+	}
+	
+	// 등록 대기중인 프로젝트 개수 조회
+	public int getRegistWaitingProjectListCount(String searchKeyword) {
+		return mapper.selectRegistWaitingProjectListCount(searchKeyword);
+	}
+	
+	// 프로젝트 목록 조회
+	public List<ProjectVO> getProjectList(int startRow, int listLimit, String searchKeyword) {
+		return mapper.selectProjectList(startRow, listLimit, searchKeyword);
+	}
+	
+	// 프로젝트 등록 승인/거부
+	public int changeProjectStatus(ProjectVO project, String isAuthorize) {
+		return mapper.updateProjectStatus(project, isAuthorize);
 	}
 	
 }

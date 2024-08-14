@@ -160,4 +160,57 @@
 			#{startRow}
 			, #{listLimit}
 	</select>
+	
+	<!-- 등록 대기중인 프로젝트 개수 조회 -->
+	<select id="selectRegistWaitingProjectListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM project_info
+		WHERE project_status = '심사중'
+		<if test="!searchKeyword.equals('')">
+			AND (
+				project_idx like concat('%',#{searchKeyword},'%')
+				or project_title like concat('%',#{searchKeyword},'%')
+				or project_category like concat('%',#{searchKeyword},'%')
+				or project_category_detail like concat('%',#{searchKeyword},'%')
+				or target_price like concat('%',#{searchKeyword},'%')
+				or funding_start_date like concat('%',#{searchKeyword},'%')
+				or funding_end_date like concat('%',#{searchKeyword},'%')
+			)
+		</if>
+	</select>
+	
+	<!-- 프로젝트 목록 조회 -->
+	<select id="selectProjectList" resultType="project">
+		SELECT * 
+		FROM project_info
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				project_idx like concat('%',#{searchKeyword},'%')
+				or project_title like concat('%',#{searchKeyword},'%')
+				or project_category like concat('%',#{searchKeyword},'%')
+				or project_category_detail like concat('%',#{searchKeyword},'%')
+				or target_price like concat('%',#{searchKeyword},'%')
+				or funding_start_date like concat('%',#{searchKeyword},'%')
+				or funding_end_date like concat('%',#{searchKeyword},'%')
+		</if>
+		ORDER BY
+			project_idx DESC
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 프로젝트 등록 승인/거부 -->
+	<update id="updateProjectStatus">
+		UPDATE project_info
+		<choose>
+			<when test="isAuthorize.equals('YES')">
+				SET project_status = '승인'
+			</when>
+			<when test="isAuthorize.equals('NO')">
+				SET project_status = '반려'
+			</when>
+		</choose>
+		WHERE project_idx = #{project.project_idx}
+	</update>
 </mapper>

@@ -44,15 +44,13 @@
 		background-color: #eee;
 	}
 	
-	.main .content table #yAdmin {
-		background-color:  orange;
-	}
-	
 	/* 페이징 처리 */
 	.main #pageList {
 		text-align: center;
 	}
 </style>
+<%-- jquery 라이브러리 포함시키기 --%>
+<script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 </head>
 <body>
 	<header>
