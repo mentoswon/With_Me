@@ -14,6 +14,6 @@ public class BoardController {
 	// 공지사항 게시글 상세 페이지 
 	@GetMapping("BoardDetail")
 	public String boardDetail() {
-		return "board/board_detail";
+		return "board/board_view";
 	}
 }

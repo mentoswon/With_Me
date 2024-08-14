@@ -133,7 +133,7 @@
 						<c:forEach var="bo" items="${boardList}">
 							<%-- boardList 에서 꺼낸 BoardBean 객체(board)에 저장된 멤버변수값(데이터) 출력 --%>
 							<li class="subject">
-								<a href="boardDetail"> 
+								<a href="BoardDetail"> 
 									<span class="titleBox">
 										<span class="group" id="notice">공지사항</span>
 										<span class="subject">[광고센터 이용 안내] 토스페이먼츠 8월시스템</span> 
@@ -142,7 +142,7 @@
 								</a>
 							</li>
 							<li class="subject">
-								<a href="boardDetail"> 
+								<a href="BoardDetail"> 
 									<span class="titleBox"> 
 										<span class="group">공지사항</span> 
 										<span class="subject">${bo.bo_subject}</span> 
@@ -150,7 +150,7 @@
 									</span>
 								</a>
 							</li>
-							<li class="subject"><a href="boardDetail"> <span
+							<li class="subject"><a href="BoardDetail"> <span
 									class="titleBox"> <span class="group">공지사항</span> <span
 										class="subject">[광고센터 이용 안내] 토스페이먼츠 8월시스템</span> <span>2024-06-01<fmt:formatDate value="${bo.bo_sysdate}"
 									pattern="yyyy-MM-dd" /></span>
@@ -158,7 +158,7 @@
 							</a></li>
 						</c:forEach>
 							<li class="subject">
-								<a href="boardDetail"> 
+								<a href="BoardDetail"> 
 									<span class="titleBox"> 
 										<span class="group">공지사항</span>
 										 <span class="subject">[광고센터 이용 안내] 토스페이먼츠 8월시스템</span>
@@ -167,7 +167,7 @@
 								</a>
 							</li>
 							<li class="subject">
-								<a href="boardDetail"> 
+								<a href="BoardDetail"> 
 									<span class="titleBox"> 
 										<span class="group">공지사항</span>
 										 <span class="subject">[광고센터 이용 안내] 토스페이먼츠 8월시스템</span>
@@ -203,7 +203,7 @@
 							<td>${bo.bo_idx}</td>
 							<td id="subject">
 								<%-- 제목 클릭 시 하이퍼링크 설정(BoardDetail) --%> <%-- 파라미터 : 글번호(board_num), 페이지번호(pageNum) --%>
-								<a href="boardDetail?bo_idx=${bo.bo_idx}&pageNum=${pageNum}">${bo.bo_subject}</a>
+								<a href="BoardDetail?bo_idx=${bo.bo_idx}&pageNum=${pageNum}">${bo.bo_subject}</a>
 							</td>
 							<td><fmt:formatDate value="${bo.bo_sysdate}"
 									pattern="yyyy-MM-dd" /></td>
