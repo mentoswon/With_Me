@@ -31,6 +31,7 @@
 		<section id="joinFinish">
 			<div>
 				<h1 align="center">회원 가입 완료</h1>
+				<h1 align="center">이메일 인증 후 로그인을 하세요!</h1>
 				<div align="center">
 					<input type="button" value="홈으로" onclick="location.href='./'" class="btn" style="background-color: #ccc;">
 					<input type="button" value="로그인"

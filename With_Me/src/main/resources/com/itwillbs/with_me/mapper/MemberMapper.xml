@@ -45,6 +45,42 @@
 		FROM member
 		WHERE mem_email = #{mem_email}
 	</select>
-
-
+	
+	<!-- 이메일 인증 정보 조회 -->
+	<!-- 이메일주소에 해당하는 정보 조회 -->
+	<select id="selectMailAuthInfo" resultType="mailAuth">
+		SELECT *
+		FROM mail_auth_info
+		WHERE email = #{email}
+	</select>
+	
+	<!-- 이메일 인증 정보 등록 -->
+	<insert id="insertMailAuthInfo">
+		INSERT
+		INTO mail_auth_info
+		VALUES (
+			#{email}
+			,#{auth_code}
+		)
+	</insert>
+	
+	<!-- 이메일 인증 상태 변경 -->
+	<update id="updateMailAuthInfo">
+		UPDATE mail_auth_info
+		SET
+			auth_code = #{auth_code}
+		WHERE
+			email = #{email}
+	</update>
+	
 </mapper>
+
+
+
+
+
+
+
+
+
+

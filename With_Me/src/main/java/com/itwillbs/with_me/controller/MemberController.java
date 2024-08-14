@@ -110,17 +110,25 @@ public class MemberController {
 		}
 	}
 	
-	// 이메일 인증
-	@GetMapping("MemberEmailAuth")
-	public String memberEmailAtuth(MailAuthInfo authInfo, Model model) {
-		
-		System.out.println("authInfo : " + authInfo);
-		
-		// MemberService - requestEmailAuth() 메서드 호출하여 이메일 인증 처리 요청
-		boolean isAuthSuccess = service.requestEmailAuth(authInfo);
-		
-		return "";
-	}
+//	// 이메일 인증
+//	@GetMapping("MemberEmailAuth")
+//	public String memberEmailAtuth(MailAuthInfo authInfo, Model model) {
+//		
+//		System.out.println("authInfo : " + authInfo);
+//		
+//		// MemberService - requestEmailAuth() 메서드 호출하여 이메일 인증 처리 요청
+//		boolean isAuthSuccess = service.requestEmailAuth(authInfo);
+//		
+//		if(!isAuthSuccess) {
+//			model.addAttribute("msg", "인증 실패!");
+//			return "result/fail";
+//		} else { // 인증 성공
+//			model.addAttribute("msg", "인증 성공!\\n로그인 페이지로 이동합니다.");
+//			model.addAttribute("targetURL", "MemberLogin");
+//			
+//			return "result/success";
+//		}
+//	}
 	
 //	// 이메일 인증 버튼 눌렀을 때
 //	@ResponseBody
@@ -177,7 +185,12 @@ public class MemberController {
 			model.addAttribute("msg", "탈퇴한 회원입니다!");
 			return "result/fail";
 			
+		} else if(dbMember.getMem_mail_auth_status().equals("N")) { // 이메일 미인증 회원인 경우
+			model.addAttribute("msg", "이메일 인증 후 로그인 가능합니다.");
+			return "result/fail";
+			
 		} else { // 로그인 성공
+		
 			// 로그인 성공한 아이디를 세션에 저장
 			session.setAttribute("sId", member.getMem_email());
 			session.setAttribute("sName", dbMember.getMem_name());
@@ -219,6 +232,44 @@ public class MemberController {
 				return "redirect:" + session.getAttribute("prevURL");
 			}
 		}
+	}
+	
+	// 이메일 인증 메일 재발송 폼
+	@GetMapping("ReSendAuthMail")
+	public String reSendAuthMailForm() {
+		return "member/re_send_auth_mail_form";
+	}
+	
+	@PostMapping("ReSendAuthMail")
+	public String reSendAuthMailPro(MemberVO member, Model model) {
+		System.out.println("member : " + member);
+		// 아이디, 이메일 일치 여부 확인
+		// MemberService - getMember() 메서드 호출하여 회원 상세정보 조회
+		MemberVO dbMember = service.getMember(member);
+		System.out.println(dbMember);
+		
+		if(dbMember == null) { // 아이디 없음
+			model.addAttribute("msg", "존재하지 않는 아이디");
+			return "result/fail";
+		} else if(!dbMember.getMem_email().equals(member.getMem_email())) { // 이메일 불일치
+			model.addAttribute("msg", "존재하지 않는 이메일");
+			return "result/fail";
+		}
+		
+		// ------------ 인증 메일 발송 작업 추가 --------------
+		// MailService - sendAuthMail() 메서드 호출하여 인증메일 발송 요청
+		// => 파라미터 : MemberVO 객체    리턴타입 : MailAuthInfo(mailAuthInfo)
+		MailAuthInfo mailAuthInfo = MailService.sendAuthMail(member);
+		
+		// MemberService - registMailAuthInfo() 메서드 호출하여 인증 정보 등록 요청
+		// => 파라미터 : MailAuthInfo 객체    리턴타입 : void
+		service.registMailAuthInfo(mailAuthInfo);
+		
+		model.addAttribute("msg", "인증 메일 발송 성공!\\n인증메일을 확인해 주세요.\\n로그인 페이지로 이동합니다.");
+		model.addAttribute("targetURL", "MemberLogin");
+		System.out.println(model.getAttribute("msg"));
+		
+		return "result/success";
 	}
 	
 	

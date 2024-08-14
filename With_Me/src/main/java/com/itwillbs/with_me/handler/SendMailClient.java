@@ -55,7 +55,7 @@ public class SendMailClient {
 			// 1) 발신자 정보 설정
 			//    => InternetAddress 객체 활용(Address 타입으로 업캐스팅)
 			//    => 생성자 파라미터 : 발신자 메일주소, 발신자 이름
-			Address senderAddress = new InternetAddress(SENDER_ADDRESS, "아이티윌");
+			Address senderAddress = new InternetAddress(SENDER_ADDRESS, "위드미");
 			// => 주의! 네이버는 발신자 메일주소 수정 자체가 차단되어있으므로
 			//    실제 네이버 메일 주소를 정확하게 지정해야한다!
 			// => 메일 주소 강제 변경 시 예외 발생(인가되지 않은 발신자 주소)

@@ -53,6 +53,7 @@
 							<a onclick="location.href='MemberJoin'" style="font-size: 12px;">회원가입&nbsp;&nbsp;&nbsp;&nbsp;</a>
 							<a onclick="location.href='IdFind'" style="font-size: 12px;">아이디 찾기/</a>
 							<a onclick="location.href='PasswdFind'" style="font-size: 12px;">비밀번호 찾기</a>
+							<input type="button" value="인증메일재발송" onclick="location.href='ReSendAuthMail'">
 						</div>
 					</div>
 				</form>	
