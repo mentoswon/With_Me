@@ -1,4 +1,15 @@
 @charset "UTF-8";
+@import url('//fonts.googleapis.com/earlyaccess/notosanskr.css');
+.noto-sans-kr-<uniquifier> {
+  font-family: "Noto Sans KR", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+* {
+	font-family: "Noto Sans KR", sans-serif;
+}
+
 /* ----- 프로젝트 메뉴바 ---------- */
 header{
     background-color: #f0f8ff;
@@ -131,16 +142,13 @@ article {	/* 가운데 정렬 */
 
 .projectExplanationWrap {
 	margin: 10px 40px 10px 20px;
-	width: 500px;
+	width: 400px;
 	box-sizing: border-box;
 }
-.projectContentWrap:not(.targetAmount) {
+.projectContentWrap {
 	margin: 80px 20px 0 20px;
-	width: 350px;
-}
-.targetAmount {	/* 목표금액 작성 영역 */
-	margin-top: 80px;
-    width: 400px;
+	width: 650px;
+	box-sizing: border-box;
 }
 .essential {
 	color: #FFAB40;
@@ -155,7 +163,7 @@ article {	/* 가운데 정렬 */
 
 .select, input[type="text"], textarea {
 	padding: 8px 10px;
-	width: 350px;
+	width: 550px;
 	border-color: #ccc;
 	box-sizing: border-box;
 	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
@@ -175,6 +183,7 @@ textarea {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin-right: 100px;
 }
 
 .LengthCheck p {
@@ -231,7 +240,7 @@ input[type="file"] {
 .fileUpload {
 	border: 1px solid #ccc;
 	padding: 8px 10px;
-	width: 350px;
+	width: 550px;
 	box-sizing: border-box;
 	text-align: center;
 	cursor: pointer;
@@ -252,16 +261,32 @@ input[type="file"] {
 	font-weight: bold;
 }
 
-/* 펀딩계획 - 목표금액 */
+/* ----- 펀딩계획 - 목표금액 ---------- */
 #targetAmount {
 	border: 2px solid #ccc;
 	padding: 15px;
 	
 }
 #estimateAmountWrap {
-	background-color: #f1f3f5;
+	background-color: #fafafa;
+	padding: 10px 20px;
+	margin-top: 20px;
 }
 
+.amountArea {
+	display: flex;
+	justify-content: space-between;
+    align-items: center;
+}
+.amountArea p {
+	margin: 3px 0;
+}
+.amountArea:not(:first-child) {
+	color: #aaa;
+}
+.fontModify {
+	color: red;
+}
 /* ----- 버튼 ---------- */
 #save, #request {	/* 저장하기 */
 	width: 100px;

@@ -38,8 +38,10 @@ $(function() {
 	
 	// 초기 상태로 첫 번째 메뉴와 콘텐츠가 보이도록 설정
 //     $("#projectMenuList li:eq(0)").click();
+	// -------------------------------------------------------------------------------
 	// 임시) 초기 상태로 두 번째 메뉴와 콘텐츠가 보이도록 설정
     $("#projectMenuList li:eq(1)").click();
+	// -------------------------------------------------------------------------------
     
     // 세부 카테고리 조회
 	$("#project_category").change(function() {
@@ -245,8 +247,8 @@ $(function() {
 					</select>
 				</div>
 			</div>
-			<hr class="dividingLine">
 
+			<hr class="dividingLine">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
 					<h3>프로젝트 제목<span class="essential">&nbsp;*</span></h3>
@@ -263,8 +265,8 @@ $(function() {
 					<br><br>
 				</div>
 			</div>
-			<hr class="dividingLine">
 			
+			<hr class="dividingLine">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
 					<h3>프로젝트 요약<span class="essential">&nbsp;*</span></h3>
@@ -286,8 +288,8 @@ $(function() {
 					<br><br>
 				</div>
 			</div>
-			<hr class="dividingLine">
 			
+			<hr class="dividingLine">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
 					<h3>프로젝트 대표 이미지<span class="essential">&nbsp;*</span></h3>
@@ -308,9 +310,8 @@ $(function() {
 					<br><br>
 				</div>
 			</div>
+			
 			<hr class="dividingLine">
-			
-			
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
 					<h3>검색 태그</h3>
@@ -365,47 +366,141 @@ $(function() {
 						<h4>목표금액</h4>
 						<table style="border: 1px solid #ccc; width: 100%;">
 							<tr>
-								<td><input type="text" placeholder="50만원 이상의 금액을 입력하세요." style="border: none; text-align: right; width: 320px;"></td>
-								<td style="text-align: center; padding-bottom: 5px;" width="40px">원</td>
+								<td><input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." style="border: none; text-align: right; width: 565px;"></td>
+								<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
 							</tr>
 						</table>
 						
 						
 						<div id="estimateAmountWrap">
-							<div id="estimateAmount">	<!-- display:flex; -->
-								<p>목표금액 달성 시 예상 수령액</p>
-								<span><span>0</span>원</span>
+							<div class="amountArea">
+								<h4>목표금액 달성 시 예상 수령액</h4>
+								<h3 class="fontModify"><span id="estimateAmount">0</span>원</h3>
 							</div>
 							<hr>
-							<div>	<!-- display:flex; -->
+							<div class="amountArea">
 								<p>총 수수료</p>
-								<span><span>0</span>원</span>
+								<span><span id="totalCommission">0</span>원</span>
+								<input type="hidden" name="funding_commission" id="funding_commission">	<%-- 수수료 --%>
 							</div>
-							<div>	<!-- display:flex; -->
+							<div class="amountArea">
 								<p>결제대행 수수료 (총 결제 성공금액의 3% + VAT)</p>
-								<span><span>0</span>원</span>
+								<span><span id="createCommission">0</span>원</span>
 							</div>
-							<div>	<!-- display:flex; -->
+							<div class="amountArea">
 								<p>위드미 수수료 (총 결제 성공금액의 5% + VAT)</p>
-								<span><span>0</span>원</span>
+								<span><span id="withmeCommission">0</span>원</span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<hr class="dividingLine">
 			
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>펀딩 일정<span class="essential">&nbsp;*</span></h3>
+					<p>
+						설정한 날짜가 되면 펀딩이 자동 시작됩니다.<br>
+						펀딩 시작 전까지 날짜를 변경할 수 있습니다.
+					</p>
+					<br>
+					<div class="creatorGuide">
+						<p class="emphasis">펀딩기간 설정 시 꼭 알아두세요!</p>
+						<p>
+							선택하신 시작일 9시에 펀딩이 시작됩니다.<br>
+							선택하신 종료일 다음 날 0시에 펀딩이 종료됩니다.<br>
+							프로젝트가 성공하면 펀딩 종료 다음 날 후원금이 결제됩니다. 결제가 이루어지지 않은 경우 24시간 간격으로 7일 동안 결제를 시도합니다.<br>
+							모금액은 후원자 결제 종료 후 7일 뒤 입금됩니다.<br>
+							
+						</p>
+					</div>
+				</div>
+				<div class="projectContentWrap">
+					<jsp:include page="/WEB-INF/views/project/calendar.jsp"></jsp:include>
+					<br><br>
+				</div>
+			</div>
 			
 		</div>
 		
 		<%-- ---------- 후원 구성 ---------- --%>
 		<div id="writeContainer3" class="writeContainer">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>후원 구성<span class="essential">&nbsp;*</span></h3>
+					<p>
+						후원구성 후원구성 후원구성 후원구성 후원구성 후원구성
+					</p>
+					<br>
+					<div class="creatorGuide">
+						<p class="emphasis">가이드 가이드 가이드!</p>
+						<p>
+							가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명
+						</p>
+					</div>
+				</div>
+				<div class="projectContentWrap">
+					<input type="text" name="" id="">
+					<div class="LengthCheck">
+						<span id=""></span>
+						<p><span id="">0</span>/30</p>
+					</div>
+					<br><br>
+				</div>
+			</div>
 		</div>
 		<%-- ---------- 프로젝트 계획 ---------- --%>
 		<div id="writeContainer4" class="writeContainer">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>프로젝트 계획<span class="essential">&nbsp;*</span></h3>
+					<p>
+						프로젝트 계획 프로젝트 계획 프로젝트 계획 프로젝트 계획 프로젝트 계획
+					</p>
+					<br>
+					<div class="creatorGuide">
+						<p class="emphasis">가이드 가이드 가이드!</p>
+						<p>
+							가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명
+						</p>
+					</div>
+				</div>
+				<div class="projectContentWrap">
+					<input type="text" name="" id="">
+					<div class="LengthCheck">
+						<span id=""></span>
+						<p><span id="">0</span>/30</p>
+					</div>
+					<br><br>
+				</div>
+			</div>
 		</div>
 		<%-- ---------- 창작자 정보 ---------- --%>
 		<div id="writeContainer5" class="writeContainer">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>창작자 정보<span class="essential">&nbsp;*</span></h3>
+					<p>
+						창작자 정보 창작자 정보 창작자 정보 창작자 정보 창작자 정보
+					</p>
+					<br>
+					<div class="creatorGuide">
+						<p class="emphasis">가이드 가이드 가이드!</p>
+						<p>
+							가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명
+						</p>
+					</div>
+				</div>
+				<div class="projectContentWrap">
+					<input type="text" name="" id="">
+					<div class="LengthCheck">
+						<span id=""></span>
+						<p><span id="">0</span>/30</p>
+					</div>
+					<br><br>
+				</div>
+			</div>
 		</div>
 		
 		
