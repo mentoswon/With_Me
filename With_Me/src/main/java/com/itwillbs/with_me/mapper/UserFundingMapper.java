@@ -21,7 +21,11 @@ public interface UserFundingMapper {
 
 
 	// 프로젝트 상세정보 가져오기
-	ProjectVO selectProject(String project_code);
+	Map<String, Object> selectProject(String project_code);
+
+
+	// 팔로워 수 계산
+	int countFollower(String creator_email);
 	
 
 

@@ -89,27 +89,35 @@
 					</c:if>
 					
 					<div class="itemWrapper">
+					
+					<!-- 오늘 날짜 추출 -->
+					<c:set var="now" value="<%=new java.util.Date()%>" />
+					<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+					<!-- 오늘 날짜 추출 end -->
+					
 					<c:forEach var="project" items= "${projectList}">
-						<div class="item">
-							<div class="item_image">
-								<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-								</a>
-								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+						<c:if test="${project.funding_end_date > today}">
+							<div class="item">
+								<div class="item_image">
+									<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
+										<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+									</a>
+									<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+									
+									<!-- 나중에 쓸 채워진 하트 -->
+	<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
+								</div>
+								<div class="item_info">
+									<h4><a href="#">${project.creator_name}</a></h4>
+									<h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
+								</div>
 								
-								<!-- 나중에 쓸 채워진 하트 -->
-<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
+								<div class="fund_info">
+								
+								</div>
+								<div class="fund_rate_var"></div>
 							</div>
-							<div class="item_info">
-								<h4><a href="#">${project.creator_name}</a></h4>
-								<h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
-							</div>
-							
-							<div class="fund_info">
-							
-							</div>
-							<div class="fund_rate_var"></div>
-						</div>
+						</c:if>
 					</c:forEach>
 					</div>
 				</div>

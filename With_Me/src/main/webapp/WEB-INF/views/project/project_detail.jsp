@@ -40,8 +40,15 @@
 			}
 			
 			.itemWrapper #infoArea h4{
-				margin: 40px 0 20px;
+				margin: 30px 0 20px;
 				font-size: 32px;
+			}
+			
+			.itemWrapper #infoArea .category {
+				background-color: #eee;
+				padding: 3px 7px;
+				border-radius: 5px;
+				font-size: 13px;
 			}
 			
 			.itemWrapper #infoArea .fundInfo1{
@@ -145,25 +152,98 @@
  			.con02 {
  				display: flex;
  				justify-content: space-between;
- 				align-items: center;
  				padding: 40px 0;
     			border-top: 1px solid #eee;
  			}
  			
  			.con02 .left {
  				width: 70%;
- 				height: 300px;
- 				background-color: yellow;
  			}
  			
  			.con02 .right {
- 				width: 25%;
- 				height: 300px;
- 				background-color: olive;
+ 				width: 28%;
  			}
  			
+ 			.con02 .right>div {
+ 				margin-bottom: 30px;
+ 			}
  			
+ 			.con02 .right h4 {
+ 				margin-bottom: 10px;
+ 				font-size: 18px;
+ 			}
+ 			
+ 			.con02 .right #creatorInfo .wrap{
+ 				border: 1px solid #eee;
+ 				border-radius: 5px;
+ 				padding: 5%;
+ 			}
+ 			
+ 			.con02 .right #creatorInfo .wrap .creator {
+ 				width: 100%;
+			    display: flex;
+			    align-items: center;
+			    margin-bottom: 15px;
+ 			}
+ 			
+ 			.con02 .right #creatorInfo .wrap .creator img {
+ 				border-radius: 50%;
+ 				width: 40px;
+ 				object-fit: cover;
+ 				margin-right: 10px;
+ 			}
+ 			
+ 			.con02 .right #creatorInfo .wrap>div ul {
+ 				display: flex;
+ 				justify-content: space-between;
+ 				margin-bottom: 10px;
+ 			}
+ 			
+ 			.con02 .right #creatorInfo .wrap .btns {
+ 				display: flex;
+ 				justify-content: space-between;
+ 				margin: 15px 0;
+ 			}
+ 			
+ 			.con02 .right #creatorInfo .wrap .btns .follow{
+				background-color: #ffab40;
+				color: #fff; 				
+ 			}
+ 			.con02 .right #creatorInfo .wrap .btns button {
+ 				width: 48%;
+ 				padding: 7px 0;
+ 				border: none;
+ 				border-radius: 5px;
+ 			}
+ 			
+ 			/* ------------- 신고하기 --------------*/
+ 			
+ 			.con02 .right #report {
+ 				width: 100%;
+ 				height: 40px;
+ 				background-color: #f5f5f5;
+ 				position: relative;
+ 			}
+ 			
+ 			.con02 .right #report span {
+ 				position: absolute;
+			    top: 25%;
+   				left: 5%;
+ 			}
+ 			
+ 			.con02 .right #report img {
+ 				position: absolute;
+ 				top: 25%;
+ 				right: 5%;
+ 				width: 20px;
+  			}
 		</style>
+		
+		<script type="text/javascript">
+			function report() {
+// 				alert("신고!");
+			}
+		</script>
 	</head>
 	<body>
 		<header>
@@ -203,9 +283,12 @@
 							<dl>
 								<dt>펀딩기간</dt>
 								<dd>${project_detail.funding_start_date} ~ ${project_detail.funding_end_date}</dd>
+								
+								<!-- 남은 날짜 계산 -->
 								<fmt:parseNumber value="${project_detail.funding_start_date.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
 								<fmt:parseNumber value="${project_detail.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
 								<c:set value="${endDate - strDate}" var="leftDay"/>
+								<!-- 남은 날짜 계산 end -->
 								
 								<dd id="leftDay" style="<c:if test="${leftDay eq 0}">background-color:#ffab40; color:#ffffff;font-weight: bold;</c:if>">
 									<c:choose>
@@ -220,7 +303,7 @@
 							</dl>
 							<dl>
 								<dt>결제</dt>
-								<dd>목표금액 달성 시 <b>${pay_date}</b>에 결제 진행</dd> <!-- 마감일 다음날 결제 예정일 -->
+								<dd>목표금액 달성 시 <b>${project_detail.pay_date}</b>에 결제 진행</dd> <!-- 마감일 다음날 결제 예정일 -->
 							</dl>
 						</div>
 						
@@ -238,31 +321,52 @@
 				<div class="left">
 				
 				</div>
+				
 				<div class="right">
 					<div id="creatorInfo">
 						<h4>창작자 소개</h4>
-						<div>
+						<div class="wrap">
 							<div>
-							
+								<div class="creator">
+									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
+									<span><a href="#">${project_detail.creator_name}</a></span>
+								</div>
+								<div>
+									<ul>
+										<li>누적펀딩액</li>
+										<li> 원</li>
+									</ul>
+									<ul>
+										<li>팔로워</li>
+										<li>${project_detail.followerCount} 명</li>
+									</ul>
+								</div>
 							</div>
 							<div class="btns">
-								<button class="follow">팔로우</button>
-								<button class="ask">문의</button>
+								<button class="follow" onclick="confirmFollow()">팔로우</button>
+								<button class="ask" onclick="chat()">문의</button>
 							</div>
 						</div>
 					</div>
-					<div id="choosenFunding">
-						<h4>후원 선택</h4>
 					
-					</div>
-					<div id="report">
+					<div id="report" onclick="report()">
 						<span>신고하기</span>
 						<img alt="이동" src="${pageContext.request.contextPath}/resources/image/right-arrow.png">
 					</div>
+					
+					<!-- 후원자가 고른 후원 아이템 -->
+					<div id="choosenFunding">
+						<h4>후원 선택</h4>
+						<div class="wrap">
+						
+						</div>
+					</div>
+					
+					
 					<div id="fundingOptions">
 						<h4>후원 선택</h4>
-						<div>
-							
+						<div class="wrap">
+						
 						</div>
 					</div>
 					

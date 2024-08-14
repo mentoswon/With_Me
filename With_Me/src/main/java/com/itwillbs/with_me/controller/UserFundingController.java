@@ -96,12 +96,12 @@ public class UserFundingController {
 		String project_code = project.getProject_code();
 		
 		// 프로젝트 가져오기
-		ProjectVO project_detail = service.getProject(project_code);
+		Map<String, Object> project_detail = service.getProject(project_code);
 		
-//		System.out.println("가져온 프로젝트 ~ : " + project_detail);
+		System.out.println("가져온 프로젝트 ~ : " + project_detail);
 		
 		// 결제일 계산 ----------------------------
-		Date project_end_date = project_detail.getFunding_end_date();
+		Date project_end_date = (Date) project_detail.get("funding_end_date");
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -113,10 +113,25 @@ public class UserFundingController {
         
         String pay_date = format.format(cal.getTime());
 //        System.out.println(pay_date);
+        
         // 결제일 계산 end ----------------------------
+        
+        // Map 객체 (project_detail) 에 집어넣기
+        project_detail.put("pay_date", pay_date);
 		
+        // --------------------------------------------------------------
+        
+        // 팔로워 계산 ----------------------------
+        // 창작자 email 가져오기
+        String creator_email = (String) project_detail.get("creator_email");
+        
+        int followerCount = service.countFollower(creator_email);
+        
+//        System.out.println(creator_email + "의 팔로워 수 : " + followerCount);
+        project_detail.put("followerCount", followerCount);
+         
+        // --------------------------------------------------------------
 		model.addAttribute("project_detail", project_detail);
-		model.addAttribute("pay_date", pay_date);
 		
 		return "project/project_detail";
 	}

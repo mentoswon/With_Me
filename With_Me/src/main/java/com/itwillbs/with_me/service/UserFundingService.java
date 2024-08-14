@@ -27,8 +27,13 @@ public class UserFundingService {
 
 	
 	// 프로젝트 상세정보 가져오기
-	public ProjectVO getProject(String project_code) {
+	public Map<String, Object> getProject(String project_code) {
 		return mapper.selectProject(project_code);
+	}
+
+	// 팔로워 수 계산
+	public int countFollower(String creator_email) {
+		return mapper.countFollower(creator_email);
 	}
 	
 
