@@ -53,6 +53,29 @@
 				height: 5px;
 				background-color: #ffab40;
 			}
+			
+			.sec02 .itemList .itemWrapper .item .fund_info {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 15px;
+			} 
+			
+			.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap {
+				display: flex;
+				align-items: center;
+			} 
+			
+			.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_rate {
+				margin-right: 10px;
+				color: #ffab40;
+				font-weight: bold;
+			}	
+			
+			.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_amt {
+				color: #aaa;
+				font-size: 14px;
+			}	
 		</style>
 	</head>
 	<body>
@@ -96,6 +119,13 @@
 					<!-- 오늘 날짜 추출 end -->
 					
 					<c:forEach var="project" items= "${projectList}">
+					
+						<!-- 남은 날짜 계산 -->
+						<fmt:parseNumber value="${project.funding_start_date.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+						<fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
+						<c:set value="${endDate - strDate}" var="leftDay"/>
+						<!-- 남은 날짜 계산 end -->
+						
 						<c:if test="${project.funding_end_date > today}">
 							<div class="item">
 								<div class="item_image">
@@ -113,7 +143,20 @@
 								</div>
 								
 								<div class="fund_info">
-								
+									<div class="fund_leftWrap">
+										<div class="fund_rate">11%</div> <%-- 펀딩률 --%>
+										<div class="fund_amt"><fmt:formatNumber pattern="#,###">1111111</fmt:formatNumber> 원</div> <%-- 모금액 --%>
+									</div>
+									<div class="fund_etc">
+										<c:choose>
+											<c:when test="${leftDay eq 0}">
+												오늘 마감
+											</c:when>
+											<c:otherwise>
+												<c:out value="${leftDay}" />일 남음
+											</c:otherwise>
+										</c:choose>
+									</div> <%-- 남은 날짜/오늘 마감/오픈 날짜/펀딩 성공 --%>
 								</div>
 								<div class="fund_rate_var"></div>
 							</div>

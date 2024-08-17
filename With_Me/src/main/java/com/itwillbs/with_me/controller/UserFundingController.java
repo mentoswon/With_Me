@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.SponsorVO;
 
 @Controller
 public class UserFundingController {
@@ -76,7 +77,7 @@ public class UserFundingController {
 		// 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(category, searchKeyword, startRow, listLimit);
 		
-//		System.out.println("projectList : " + projectList);
+		System.out.println("projectList : " + projectList);
 		
 		// --------------------------------------------------------------------
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
@@ -100,7 +101,7 @@ public class UserFundingController {
 		
 		System.out.println("가져온 프로젝트 ~ : " + project_detail);
 		
-		// 결제일 계산 ----------------------------
+		// 결제일 계산 ------------------
 		Date project_end_date = (Date) project_detail.get("funding_end_date");
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -114,14 +115,14 @@ public class UserFundingController {
         String pay_date = format.format(cal.getTime());
 //        System.out.println(pay_date);
         
-        // 결제일 계산 end ----------------------------
+        // 결제일 계산 end --------------
         
         // Map 객체 (project_detail) 에 집어넣기
         project_detail.put("pay_date", pay_date);
 		
         // --------------------------------------------------------------
         
-        // 팔로워 계산 ----------------------------
+        // 팔로워 계산 -------------------
         // 창작자 email 가져오기
         String creator_email = (String) project_detail.get("creator_email");
         
@@ -130,7 +131,20 @@ public class UserFundingController {
 //        System.out.println(creator_email + "의 팔로워 수 : " + followerCount);
         project_detail.put("followerCount", followerCount);
          
+        // 팔로워 계산 end ---------------
+        
         // --------------------------------------------------------------
+        
+        // 후원 정보 가져오기 ------------
+        int project_idx = (int) project_detail.get("project_idx");
+//        System.out.println("project_idx : " + project_idx);
+        List<SponsorVO> sponsorList = service.getSponsor(project_idx);
+        
+        System.out.println("sponsorList : " + sponsorList);
+        
+        // 후원 정보 가져오기 end --------
+        
+        // =========================================================
 		model.addAttribute("project_detail", project_detail);
 		
 		return "project/project_detail";

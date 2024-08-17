@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.SponsorVO;
 
 public interface UserFundingMapper {
 
@@ -26,6 +27,9 @@ public interface UserFundingMapper {
 
 	// 팔로워 수 계산
 	int countFollower(String creator_email);
+
+	// 후원 리워드 리스트
+	List<SponsorVO> selectSponsorList(int project_idx);
 	
 
 

@@ -9,241 +9,8 @@
 		<meta charset="UTF-8">
 		<title>index</title>
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
-		<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
+		<link href="${pageContext.request.contextPath}/resources/css/project_detail.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
-		<style type="text/css">
-			section {
-				margin: 40px 0;
-			}
-			
-			.itemWrapper {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				height: 500px;
-			}
-			
-			.itemWrapper #imgArea {
-				width: 53%;
-				height: 100%;
-			}
-			
-			.itemWrapper #imgArea img {
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
-			}
-			
-			.itemWrapper #infoArea {
-				width: 40%;
-				height: 100%;
-			}
-			
-			.itemWrapper #infoArea h4{
-				margin: 30px 0 20px;
-				font-size: 32px;
-			}
-			
-			.itemWrapper #infoArea .category {
-				background-color: #eee;
-				padding: 3px 7px;
-				border-radius: 5px;
-				font-size: 13px;
-			}
-			
-			.itemWrapper #infoArea .fundInfo1{
-				padding: 20px 0 20px; 
-				border-top: 1px solid #bbb;
-				border-bottom: 1px solid #bbb;
-			}
-			
-			
-			.itemWrapper #infoArea .fundInfo1 div {
-				margin-bottom: 20px;
-			}
-			
-			.itemWrapper #infoArea .fundInfo1 div:last-child {
-				margin: 0;
-			}
-			
-			.itemWrapper #infoArea .fundInfo1 div span {
-				color: #595959;
-				display: block;
-				margin-bottom: 15px;
-			}
-			
-			.itemWrapper #infoArea .fundInfo1 div ul{
-				display: flex;
-				align-items: baseline;
-			}
-			
-			.itemWrapper #infoArea .fundInfo1 div ul li h4 {
- 				color: #ffab40;
- 				font-size: 30px;
- 				margin-top: 0;
- 				margin-bottom: 0;
- 				margin-right: 10px;
- 			}
- 			
- 			/* fundInfo2 */
- 			
- 			.itemWrapper #infoArea .fundInfo2 {
- 				padding: 20px 0 20px; 
- 				border-bottom: 1px solid #bbb;
- 			}
- 			
- 			.itemWrapper #infoArea .fundInfo2 dl {
- 				display: flex;
- 				margin-bottom: 15px;
- 				align-items: center;
- 			}
- 			
- 			.itemWrapper #infoArea .fundInfo2 dl dt {
- 				width: 100px;
- 				font-weight: bold;
- 				color: #595959;
- 			}
- 			
- 			.itemWrapper #infoArea .fundInfo2 #leftDay {
- 				font-size: 13px;
- 				padding: 3px 10px;
- 				height: 20px;
- 				text-align: center;
- 				align-content: center;
- 				border-radius: 5px;
- 				background-color: #eee;
- 				margin-left: 10px;
- 			}
- 			
- 			/* fundInfo3 */
- 			
- 			.itemWrapper #infoArea .fundInfo3 {
- 				padding-top: 15px;
- 				display: flex;
- 			}
- 			
- 			.itemWrapper #infoArea .fundInfo3 .Btn{
- 				border-radius: 10px;
- 				border: 1px solid #eee;
- 				margin-right: 10px;
- 				background-color: transparent;
- 			}
- 			
- 			.itemWrapper #infoArea .fundInfo3 .Btn img {
- 				object-fit: cover;
- 				width: 80%;
- 			}
- 			
- 			.itemWrapper #infoArea .fundInfo3 .like {
- 				width: 50px;
- 				height: 50px;
- 			}
- 			
- 			.itemWrapper #infoArea .fundInfo3 .goFund {
- 				width: 400px;
- 				height: 50px;
- 				background-color: #ffab40;
- 				color: #fff;
- 				font-weight: bold;
- 				font-size: 20px;
- 			}
- 			
- 			/* ---------------------------------------------------------------------- */
- 			.con02 {
- 				display: flex;
- 				justify-content: space-between;
- 				padding: 40px 0;
-    			border-top: 1px solid #eee;
- 			}
- 			
- 			.con02 .left {
- 				width: 70%;
- 			}
- 			
- 			.con02 .right {
- 				width: 28%;
- 			}
- 			
- 			.con02 .right>div {
- 				margin-bottom: 30px;
- 			}
- 			
- 			.con02 .right h4 {
- 				margin-bottom: 10px;
- 				font-size: 18px;
- 			}
- 			
- 			.con02 .right #creatorInfo .wrap{
- 				border: 1px solid #eee;
- 				border-radius: 5px;
- 				padding: 5%;
- 			}
- 			
- 			.con02 .right #creatorInfo .wrap .creator {
- 				width: 100%;
-			    display: flex;
-			    align-items: center;
-			    margin-bottom: 15px;
- 			}
- 			
- 			.con02 .right #creatorInfo .wrap .creator img {
- 				border-radius: 50%;
- 				width: 40px;
- 				object-fit: cover;
- 				margin-right: 10px;
- 			}
- 			
- 			.con02 .right #creatorInfo .wrap>div ul {
- 				display: flex;
- 				justify-content: space-between;
- 				margin-bottom: 10px;
- 			}
- 			
- 			.con02 .right #creatorInfo .wrap .btns {
- 				display: flex;
- 				justify-content: space-between;
- 				margin: 15px 0;
- 			}
- 			
- 			.con02 .right #creatorInfo .wrap .btns .follow{
-				background-color: #ffab40;
-				color: #fff; 				
- 			}
- 			.con02 .right #creatorInfo .wrap .btns button {
- 				width: 48%;
- 				padding: 7px 0;
- 				border: none;
- 				border-radius: 5px;
- 			}
- 			
- 			/* ------------- 신고하기 --------------*/
- 			
- 			.con02 .right #report {
- 				width: 100%;
- 				height: 40px;
- 				background-color: #f5f5f5;
- 				position: relative;
- 			}
- 			
- 			.con02 .right #report span {
- 				position: absolute;
-			    top: 25%;
-   				left: 5%;
- 			}
- 			
- 			.con02 .right #report img {
- 				position: absolute;
- 				top: 25%;
- 				right: 5%;
- 				width: 20px;
-  			}
-		</style>
-		
-		<script type="text/javascript">
-			function report() {
-// 				alert("신고!");
-			}
-		</script>
 	</head>
 	<body>
 		<header>
@@ -349,7 +116,7 @@
 						</div>
 					</div>
 					
-					<div id="report" onclick="report()">
+					<div id="report">
 						<span>신고하기</span>
 						<img alt="이동" src="${pageContext.request.contextPath}/resources/image/right-arrow.png">
 					</div>
@@ -369,13 +136,91 @@
 						
 						</div>
 					</div>
-					
 				</div>
 			</section>
+		</div>
+		
+		<div class="modal"> <!-- 신고 -->
+		    <div class="modal_popup">
+		        <h3>신고하기</h3>
+	        	<span>어떤 문제가 있나요?</span><br>
+		        <div class="content">
+		        	<button>
+		        		<span class="repTitle">지식재산권 침해</span>
+		        		<span class="repContent">
+		        			타인의 지식재산권을 허락없이 사용했어요. <br>
+							타인의 제품이나 콘텐츠를 동일하게 모방했어요.
+		        		</span>
+		        	</button>
+		        	<button>
+		        		<span class="repTitle">상세설명 내 허위사실</span>
+		        		<span class="repContent">
+		        			상품을 받아보니 상세설명과 다른 부분이 있어요.
+		        		</span>
+		        	</button>
+		        	<button>
+		        		<span class="repTitle">동일 제품의 타 채널 유통</span>
+		        		<span class="repContent">
+		        			프로젝트 진행 전에 이미 판매한 적이 있는 제품이에요. <br>
+							같은 제품을 다른 곳에서 (예약)판매하고 있어요.
+		        		</span>
+		        	</button>
+		        	<button>
+		        		<span class="repTitle">부적절한 콘텐츠</span>
+		        		<span class="repContent">
+		        			- 타인을 모욕, 명예훼손하는 콘텐츠 <br>
+		        			- 개인정보를 침해하는 콘텐츠<br>
+		        			- 차별, 음란, 범죄 등 불건전한 콘텐츠 <br>
+		        			- 타사 유통 채널 광고. 홍보 목적의 콘텐츠
+		        		</span>
+		        	</button>
+		        	<button>
+		        		<span class="repTitle">기타</span>
+		        		<span class="repContent">
+		        			- 리워드가 불량이라 교환/수리 신청하고 싶어요. <br>
+		        			- 리워드에 큰 하자가 있어 환불 신청하고 싶어요.  <br>
+		        			- 배송이 너무 늦어져서 환불 신청하고 싶어요.  <br>
+		        			- 창작자와 의사소통이 잘 되지 않아요. 
+		        		</span>
+		        	</button>
+		        	
+		        	<div class="warn">
+		        		<span>
+		        			– 신고 내용이 사실과 다르거나 허위인 경우, 이용 제재를 받을 수 있습니다. <br>
+							– 신고인의 정보를 허위로기재할 경우, 법적 책임을 물을 수 있습니다. <br>
+							– 타인 비방 및 부당 이익 목적의 신고는 신고를 철회하더라도 면책되지 않습니다. <br>
+							– 신고자의 정보 및 신고 내용은 안전하게 보호되며 외부에 제공되지 않습니다. <br>
+							– 신고자는 개인정보의 수집 및 이용 동의 및 제 3자 제공을 거부할 권리가 있으나,  <br>
+							   거부할 경우 신고하기 서비스 이용에 제한을 받을 수 있습니다.
+		        		</span>
+		        	</div>
+				</div>
+   				<img alt="닫기" src="${pageContext.request.contextPath}/resources/image/close.png" class="close_btn">
+		    </div>
 		</div>
 		<footer>
 			<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 		</footer>
+		<script type="text/javascript">
+			let modal = document.querySelectorAll('.modal');
+			let reportBtn = document.querySelector('#report');
+			let closeBtn = document.querySelectorAll('.close_btn');
+			
+			// -------------------------------------------------------------------------
+			
+			// 팝업 오픈
+			reportBtn.onclick = function(){
+				modal[0].classList.add('on');
+			}
+			
+			// -------------------------------------------------------------------------
+			// 닫기 버튼
+			for(let i = 0; i < closeBtn.length ; i++) {
+				closeBtn[i].onclick = function(){
+					modal[i].classList.remove('on');
+				}
+			}
+		</script>
 	</body>
 </html>
 

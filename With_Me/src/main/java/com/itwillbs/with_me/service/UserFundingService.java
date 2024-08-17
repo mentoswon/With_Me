@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.UserFundingMapper;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.SponsorVO;
 
 @Service
 public class UserFundingService {
@@ -34,6 +35,11 @@ public class UserFundingService {
 	// 팔로워 수 계산
 	public int countFollower(String creator_email) {
 		return mapper.countFollower(creator_email);
+	}
+
+	// 후원 리워드 리스트
+	public List<SponsorVO> getSponsor(int project_idx) {
+		return mapper.selectSponsorList(project_idx);
 	}
 	
 

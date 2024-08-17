@@ -69,4 +69,12 @@
 		FROM follow
 		WHERE follow_mem_email = #{creator_email}
 	</select>
+	
+	
+	<!-- 후원 리워드 리스트 -->
+	<select id="selectSponsorList" resultType="sponsor">
+		SELECT *
+		FROM sponsor_info
+		WHERE project_idx = #{project_idx}
+	</select>
 </mapper>
