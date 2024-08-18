@@ -64,7 +64,7 @@
 		)
 	</insert>
 	
-	<!-- 이메일 인증 상태 변경 -->
+	<!-- 이메일 인증 정보 수정 -->
 	<update id="updateMailAuthInfo">
 		UPDATE mail_auth_info
 		SET
@@ -73,6 +73,22 @@
 			email = #{email}
 	</update>
 	
+	<!-- 이메일 인증 상태 수정 -->
+	<update id="updateMailAuthStatus">
+		UPDATE member
+		SET
+			mem_mail_auth_status = 'Y'
+		WHERE
+			mem_email = #{mem_email}
+	</update>
+	
+	<!-- 이메일 인증 정보 삭제 -->
+	<delete id="deleteMailAuthInfo">
+		DELETE
+		FROM mail_auth_info
+		WHERE
+			email = #{email}
+	</delete>
 </mapper>
 
 

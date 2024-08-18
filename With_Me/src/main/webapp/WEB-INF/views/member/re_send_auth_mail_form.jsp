@@ -21,7 +21,6 @@
 				<%-- 쿠키에 저장된 "rememberId" 속성의 쿠키값을 아이디 입력창에 표시 --%>
 				<%-- EL 문법에서 내장객체 cookie의 rememberID 속성의 쿠키값을 표시 --%>
 				<%-- 기본문법 : ${cookie.쿠키명.value} --%>
-				<input type="text" name="mem_email" placeholder="아이디" required><br>
 				<input type="text" name="mem_email" placeholder="E-Mail" required><br>
 				<input type="submit" value="재발송">
 			</form>	

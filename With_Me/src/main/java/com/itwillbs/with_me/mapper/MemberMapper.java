@@ -23,7 +23,13 @@ public interface MemberMapper {
 	// 이메일 인증 정보 등록
 	void insertMailAuthInfo(MailAuthInfo mailAuthInfo);
 	
-	// 이메일 인증 상태 변경
+	// 이메일 인증 정보 수정
 	void updateMailAuthInfo(MailAuthInfo mailAuthInfo);
+	
+	// 이메일 인증 상태 변경
+	void updateMailAuthStatus(MailAuthInfo authInfo);
+	
+	// 이메일 인증 정보 삭제
+	void deleteMailAuthInfo(MailAuthInfo authInfo);
 
 }

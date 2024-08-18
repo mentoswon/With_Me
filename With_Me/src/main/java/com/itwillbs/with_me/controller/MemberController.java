@@ -98,7 +98,6 @@ public class MemberController {
 			// MailService - sendAuthMail() 메서드 호출하여 인증메일 발송 요청
 			// => 파라미터 : MemberVO 객체    리턴타입 : MailAuthInfo(mailAuthInfo)
 			MailAuthInfo mailAuthInfo = MailService.sendAuthMail(member);
-			
 			// MemberService - registMailAuthInfo() 메서드 호출하여 인증 정보 등록 요청
 			// => 파라미터 : MailAuthInfo 객체    리턴타입 : void
 			service.registMailAuthInfo(mailAuthInfo);
@@ -110,25 +109,25 @@ public class MemberController {
 		}
 	}
 	
-//	// 이메일 인증
-//	@GetMapping("MemberEmailAuth")
-//	public String memberEmailAtuth(MailAuthInfo authInfo, Model model) {
-//		
-//		System.out.println("authInfo : " + authInfo);
-//		
-//		// MemberService - requestEmailAuth() 메서드 호출하여 이메일 인증 처리 요청
-//		boolean isAuthSuccess = service.requestEmailAuth(authInfo);
-//		
-//		if(!isAuthSuccess) {
-//			model.addAttribute("msg", "인증 실패!");
-//			return "result/fail";
-//		} else { // 인증 성공
-//			model.addAttribute("msg", "인증 성공!\\n로그인 페이지로 이동합니다.");
-//			model.addAttribute("targetURL", "MemberLogin");
-//			
-//			return "result/success";
-//		}
-//	}
+	// 이메일 인증
+	@GetMapping("MemberEmailAuth")
+	public String memberEmailAtuth(MailAuthInfo authInfo, Model model) {
+		
+		System.out.println("authInfo : " + authInfo);
+		
+		// MemberService - requestEmailAuth() 메서드 호출하여 이메일 인증 처리 요청
+		boolean isAuthSuccess = service.requestEmailAuth(authInfo);
+		
+		if(!isAuthSuccess) {
+			model.addAttribute("msg", "인증 실패!");
+			return "result/fail";
+		} else { // 인증 성공
+			model.addAttribute("msg", "인증 성공!\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberLogin");
+			
+			return "result/success";
+		}
+	}
 	
 //	// 이메일 인증 버튼 눌렀을 때
 //	@ResponseBody
@@ -248,14 +247,17 @@ public class MemberController {
 		MemberVO dbMember = service.getMember(member);
 		System.out.println(dbMember);
 		
-		if(dbMember == null) { // 아이디 없음
-			model.addAttribute("msg", "존재하지 않는 아이디");
-			return "result/fail";
-		} else if(!dbMember.getMem_email().equals(member.getMem_email())) { // 이메일 불일치
+//		if(dbMember == null) { // 아이디 없음
+//			model.addAttribute("msg", "존재하지 않는 아이디");
+//			return "result/fail";
+//		} else if(!dbMember.getMem_email().equals(member.getMem_email())) { // 이메일 불일치
+//			model.addAttribute("msg", "존재하지 않는 이메일");
+//			return "result/fail";
+//		}
+		if(!dbMember.getMem_email().equals(member.getMem_email())) { // 아이디 없음
 			model.addAttribute("msg", "존재하지 않는 이메일");
 			return "result/fail";
 		}
-		
 		// ------------ 인증 메일 발송 작업 추가 --------------
 		// MailService - sendAuthMail() 메서드 호출하여 인증메일 발송 요청
 		// => 파라미터 : MemberVO 객체    리턴타입 : MailAuthInfo(mailAuthInfo)
