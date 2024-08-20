@@ -1,0 +1,339 @@
+@charset "UTF-8";
+@import url('//fonts.googleapis.com/earlyaccess/notosanskr.css');
+.noto-sans-kr-<uniquifier> {
+  font-family: "Noto Sans KR", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+* {
+	font-family: "Noto Sans KR", sans-serif;
+}
+
+/* ----- 프로젝트 메뉴바 ---------- */
+header{
+    background-color: #f0f8ff;
+    position: fixed;
+	top: 0;
+    height:96px;
+    width: 100%;
+    z-index: 9999;
+    display: flex; /* flex 레이아웃 추가 */
+	justify-content: center; /* 수평 중앙 정렬 */
+	align-items: center; /* 수직 중앙 정렬 */
+}
+
+#topWrap {
+	display: flex;
+	justify-content: space-between;
+    align-items: center;
+    max-width: 1280px;
+    min-width: 900px;
+    width: calc(100% - 40px);
+    margin: 0 auto;
+    padding: 8px 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.main_logo {
+	width: 100px;
+	height: 80px;
+}
+
+.main_logo img{
+	width: 100%;
+	height: 100%;
+}
+
+#projectInfo {
+	position: relative;
+	background-color: #fff;
+	top: 96px;
+	width:100%;
+	z-index: 5000;
+}
+#projectCreateMenu {
+	position: sticky;
+	top: 96px;
+	margin-top: 96px;
+	width:100%;
+	z-index: 5000;
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+}
+
+#projectMenuTop, #projectMenuWrap {
+	width: 1080px;
+	margin: auto;
+}
+
+#projectMenuTop {
+	display: flex;
+    align-items: center;
+    padding: 20px 30px;
+    margin: auto;
+}
+
+#projectMenuTop img {
+	margin-right: 20px;
+	width: 200px;
+	height: 150px;
+	object-fit: cover;
+	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+}
+
+#MypageMenu {
+    display: flex;
+    background-color: #fff;
+}
+
+#MypageMenuList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+#MypageMenuList li {
+    margin: 0 10px;
+    padding: 15px 0;
+    width: 150px;
+    cursor: pointer;
+    transition: color 0.3s;
+   	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+}
+
+#MypageMenuList li.active {
+    font-weight: bold;
+    border-bottom: 3px solid #FFAB40;
+}
+
+
+#MypageMenuList li span {
+    display: block;
+    text-align: center;
+}
+
+/* ----------------------------------- */
+article {	/* 가운데 정렬 */
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1080px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* 프로젝트 등록글 작성 영역 */
+.writeContainer {
+        display: none;
+    }
+
+/* ----- 프로젝트 작성 영역 ---------- */
+.MypageWriteWrap {
+	display: flex;
+	align-items: flex-start;
+	margin-bottom: 30px;
+}
+
+.MypageExplanationWrap {
+	margin: 10px 40px 10px 20px;
+	width: 400px;
+	box-sizing: border-box;
+}
+
+
+.select, input[type="text"], textarea {
+	padding: 8px 10px;
+	width: 550px;
+	border-color: #ccc;
+	box-sizing: border-box;
+	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
+}
+
+textarea {
+	resize: none;
+}
+
+.dividingLine {	/* 경계선 */
+	background: #f1f3f5;
+    height: 1px;
+    border: 0;
+}
+/* ----- 글자수 확인 ----- */
+.LengthCheck {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-right: 100px;
+}
+
+.LengthCheck p {
+	font-size: 12px;
+	color: #ccc;
+}
+#LengthCheck {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+
+/* ----- 파일 css ----- */
+input[type="file"] {
+	display: none;
+}
+.uploadImg img {
+	width: 22px;
+	height: 22px;
+	vertical-align: text-bottom;	/* 글자와 정렬 맞추기 */
+}
+.fileUpload {
+	border: 1px solid #ccc;
+	padding: 8px 10px;
+	width: 550px;
+	box-sizing: border-box;
+	text-align: center;
+	cursor: pointer;
+}
+
+/* -------------------- */
+
+
+/* ----- 창작자 가이드 ----------- */
+.creatorGuide {
+	background-color: #ffebeb;
+	border-radius: 10px;
+	padding: 5px 25px;
+	margin: 0 15px;
+}
+.emphasis {
+	color: red;
+	font-weight: bold;
+}
+
+/* ----- 펀딩계획 - 목표금액 ---------- */
+#targetAmount {
+	border: 2px solid #ccc;
+	padding: 15px;
+	
+}
+#estimateAmountWrap {
+	background-color: #fafafa;
+	padding: 10px 20px;
+	margin-top: 20px;
+}
+
+.amountArea {
+	display: flex;
+	justify-content: space-between;
+    align-items: center;
+}
+.amountArea p {
+	margin: 3px 0;
+}
+.amountArea:not(:first-child) {
+	color: #aaa;
+}
+.fontModify {
+	color: red;
+}
+/* ----- 버튼 ---------- */
+#save, #request {	/* 저장하기 */
+	width: 100px;
+	height: 40px;
+	margin: 10px;
+	border-radius: 10px;
+	border: none;
+	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+}
+#save {
+	background-color: #FFAB40;
+}
+
+#save:hover, #request:enabled:hover {
+	background-color: #FFAB40;
+	cursor: pointer;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+#request:disabled {
+	background-color: #f0f0f0;
+}
+
+/* ----- 프로젝트 심사기준 팝업창 ---------- */
+#popupWrap {
+	/* ------------ 임시 ------------------------ */
+	/* 프로젝트 등록 작업 완료 후 지우기!!!!!!!!! */
+	display: none;
+	/* ------------------------------------------ */
+	position: fixed;
+    left: 50%;
+    top: 160px;
+    transform: translate(-50%, 0%);
+    width: 800px; height: auto;
+    box-sizing: border-box;;
+    background-color: #f1f3f5;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 9999;
+    border-radius: 10px;
+    padding: 20px 30px;
+}
+
+#popupTop {
+	margin: 0 10px;
+}
+#popupTop p {
+	line-height: 300%;	/* 줄간격 */
+}
+
+#popupContent {
+	display: flex;
+	justify-content: space-between;
+}
+#popupContent p {
+	line-height: 200%;
+}
+.icon {
+	border-radius: 100%;
+	width: 25px; height: 25px;
+	color: #fff;
+	margin: auto;
+	text-align: center;
+}
+
+#grantProject, #returnProject {
+	background-color: #fff;
+	border-radius: 10px;
+	padding: 20px;
+	width: 320px;
+}
+
+.grant {
+	background-color: #2db400;
+}
+.return {
+	background-color: red;
+}
+
+#agree {	/* 확인했어요 버튼 */
+	width: 80%;
+	height: 40px;
+	margin: 10px;
+	border-radius: 10px;
+	background-color: #FFAB40;
+	color: #fff;
+	border: none;
+	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+}
+
+#agree:hover {
+	cursor: pointer;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* --------------------------------------- */
