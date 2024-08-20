@@ -67,14 +67,21 @@ a {
 </style>
 
 <body>
-<div class="wrap">
-   <div class="title">로그인</div>
-     <a class="kakao" href="https://kauth.kakao.com/oauth/authorize?client_id=5d33f40785e5f7a04c305e9e2ea27009&redirect_uri=http://localhost:8081/kakao/callback&response_type=code">
-     	<!-- REST_API키 및 REDIRECT_URI는 본인걸로 수정하세요 -->
+<!-- <div class="wrap"> -->
+<!--    <div class="title">로그인</div> -->
+<!--      <a class="kakao" href="https://kauth.kakao.com/oauth/authorize?client_id=5d33f40785e5f7a04c305e9e2ea27009&redirect_uri=http://localhost:8081/kakao/callback&response_type=code"> -->
+<!--      	REST_API키 및 REDIRECT_URI는 본인걸로 수정하세요 -->
         
-      	<div class="kakao_i"></div>
-      	<div class="kakao_txt">카카오톡으로 간편로그인 </div>
-   	</a>
+<!--       	<div class="kakao_i"></div> -->
+<!--       	<div class="kakao_txt">카카오톡으로 간편로그인 </div> -->
+<!--    	</a> -->
+<!-- </div> -->
+<!-- kakao button -->
+<div class="text-center">
+    <a href="https://kauth.kakao.com/oauth/authorize"
+       th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code')}">
+        <img src="/images/kakao_login_medium_narrow.png">
+    </a>
 </div>
 </body>
 </html>
