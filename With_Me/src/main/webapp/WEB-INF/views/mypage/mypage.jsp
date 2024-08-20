@@ -1,109 +1,96 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>위드미 | 프로젝트 등록</title>
+<%-- 외부 CSS 파일 연결하기 --%>
+<link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
-<link href="${pageContext.request.servletContext.contextPath}/resources/css/login_form.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-#loginForm {
-	border: 1px solid #ccc;
-	border-radius: 12px;
-	margin: 0 100px;
-	padding: 20px;
-}
-#loginBtn {
-	 height: 90px;
-	 width: 170px; 
-	 margin: 20px 0 10px 0;
-	 border: none;
-	 border-radius: 12px;
-	 background-color: #ccc;
-	 font-size: 18px;
-}
-#loginBtn:hover {
-	 background-color: #59b9a9;
-}
-
-.on {
-	display: block;
-}
-
-.option {
-	background-color: #FFFFFF;
-	border: none;
-}
-
-</style>
+<%-- jquery 라이브러리 포함시키기 --%>
+<script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script type="text/javascript">
-	let tabMenu = document.querySelectorAll('.tabMenu');
-	let loginCon = document.querySelectorAll('#button');
-			
-	for(let i = 0; i < tabMenu.length; i++){
-		tabMenu[i].onclick = function () {
-			tabMenu[0].classList.remove('on');
-			tabMenu[1].classList.remove('on');
-		                  
-			tabMenu[i].classList.add('on');
-		
-			loginCon[0].classList.remove('on')
-			loginCon[1].classList.remove('on')
-		
-			loginCon[i].classList.add('on');
-		}
-	}
+$(function() {
+
+    // 메뉴 항목 클릭 시 활성화 처리
+    $("#MypageMenuList li").click(function() {
+        $(".writeContainer").hide();	// 모든 .writeContainer 숨기기
+        $("#MypageMenuList li").removeClass("active");
+        $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
+        let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
+        $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
+    });
+	
+	// 임시) 초기 상태로 두 번째 메뉴와 콘텐츠가 보이도록 설정
+    $("#MypageMenuList li:eq(0)").click();
+    
+});	// ready 이벤트 끝
+
 </script>
+
 </head>
 <body>
 	<header>
 		<%-- top.jsp 페이지를 현재 페이지에 삽입 --%>
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
-	<main>
-		<section>
-			<div style="text-align: center; display: flex;">
-				<h3>${sessionScope.sName}</h3>
-				<button class="option" type="button" onclick="location.href='MypageInfo'">
-					<img src="${pageContext.request.contextPath}/resources/image/mypage.png" width="25">
-				</button>
-			</div>
-			<div>
-				<input type="button" id="buttonA" class="tabMenu on" value="프로필">
+	<%-- ---------- 프로젝트 등록 메뉴바 ---------- --%>
+	<section id="MemberInfo">
+		<div id="projectInfoWrap">
+			<div id="MypageMenuTop">
 				<div>
+					<h2>gg${project.project_title}</h2>
+					<input type="button" value="내정보" onclick="location.href='MypageInfo'">
+					<p style="line-height: 200%;">${project.project_category}</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section id="MemberMypage">
+		<div id="MypageMenuWrap">
+			<div id="MypageMenu">
+				<ul id="MypageMenuList">
+					<li class="writeList active" data-index="1">
+						<span>프로필</span>
+					</li>
+					<li class="writeList" data-index="2">
+						<span>좋아요</span>
+					</li>
+					<li class="writeList" data-index="3">
+						<span>올린 프로젝트</span>
+					</li>
+					<li class="writeList" data-index="4">
+						<span>후원한 프로젝트</span>
+					</li>
+					<li class="writeList" data-index="5">
+						<span>팔로워</span>
+					</li>
+					<li class="writeList" data-index="6">
+						<span>팔로잉</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	
+	<article>
+		<div id="writeContainer1" class="writeContainer">
+			<div class="MypageWriteWrap">
+				<div class="MypageExplanationWrap">
 					<p>
-					등록된 정보가 없습니다.
+						등록된 소개가 없습니다.
 					</p>
 				</div>
-				<input type="button" id="buttonB" class="tabMenu" value="좋아요">
-				<input type="button" id="buttonC" class="tabMenu" value="올린 프로젝트">
-				<input type="button" id="buttonD" class="tabMenu" value="후원한 프로젝트">
-				<input type="button" id="buttonE" class="tabMenu" value="팔로워">
-				<input type="button" id="buttonF" class="tabMenu" value="팔로잉">
 			</div>
-			<div>
-			
-			</div>
-		</section>
-	</main>
-	
+		</div>
+	</article>
 	
 	<footer>
-		<%-- 회사 소개 영역(inc/botto.jsp) 페이지 삽입 --%>
-		<jsp:include page="/WEB-INF/views//inc/bottom.jsp"></jsp:include>
+		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 	</footer>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,7 @@
 package com.itwillbs.with_me.controller;
 
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -338,11 +340,23 @@ public class MemberController {
 //		return "member/member_pw_reset";
 //	}
 	
+	// 마이페이지
 	@GetMapping("MemberInfo")
-	public String memberInfo() {
+	public String memberInfo(MemberVO member, Model model, HttpSession session) {
+		String id = (String)session.getAttribute("sId");
+		// 미로그인 시 로그인 페이지로 이동
+		if(id == null) {
+			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberLogin");
+			return "result/fail";
+		}
+		MemberVO memberList = service.getMember(member);
+		model.addAttribute("memberList", memberList);
+		
 		return "mypage/mypage";
 	}
 	
+	// 마이페이지(개인정보)
 	@GetMapping("MypageInfo")
 	public String mypageInfo() {
 		return "mypage/mypage_info";

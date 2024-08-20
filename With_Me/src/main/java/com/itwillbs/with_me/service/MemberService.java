@@ -1,5 +1,7 @@
 package com.itwillbs.with_me.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,5 +75,10 @@ public class MemberService {
 		
 		// MemberMapper - updateEmailAuth() 메서드 호출하여 이메일 인증 처리
 		return isAuthSuccess;
+	}
+
+	// 회원정보 조회
+	public List<MemberVO> getMember() {
+		return mapper.selectMember();
 	}
 }

@@ -1,5 +1,7 @@
 package com.itwillbs.with_me.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.itwillbs.with_me.vo.MailAuthInfo;
@@ -31,5 +33,8 @@ public interface MemberMapper {
 	
 	// 이메일 인증 정보 삭제
 	void deleteMailAuthInfo(MailAuthInfo authInfo);
+	
+	// 회원 상세정보 조회
+	List<MemberVO> selectMember();
 
 }
