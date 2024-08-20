@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.with_me.service.UserFundingService;
+import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.SponsorVO;
@@ -30,8 +31,10 @@ public class UserFundingController {
 		
 		// 메뉴에서 선택한 카테고리대로 목록이 표출되게 해야함
 		String category = project.getProject_category(); 
+		String category_detail = project.getProject_category_detail(); 
 		
-		System.out.println("category : " + category);
+//		System.out.println("category : " + category);
+//		System.out.println("category_detail : " + category_detail);
 		
 		// 한 페이지에서 표시할 글 목록 개수 지정 (jsp 에서 가져옴)
 		int listLimit = 8;
@@ -43,9 +46,9 @@ public class UserFundingController {
 		
 		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
-		int listCount = service.getBoardListCount(searchKeyword, category);
+		int listCount = service.getBoardListCount(searchKeyword, category,category_detail);
 		
-//		System.out.println("listCount : " + listCount);
+		System.out.println("listCount : " + listCount);
 		
 		int pageListLimit = 3;
 		
@@ -75,7 +78,7 @@ public class UserFundingController {
 		}
 		// --------------------------------------------------------------------
 		// 목록 표출하기
-		List<Map<String, Object>> projectList = service.getProjectList(category, searchKeyword, startRow, listLimit);
+		List<Map<String, Object>> projectList = service.getProjectList(category, category_detail, searchKeyword, startRow, listLimit);
 		
 		System.out.println("projectList : " + projectList);
 		
@@ -84,7 +87,6 @@ public class UserFundingController {
 		// --------------------------------------------------------------------
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("pageInfo", pageInfo);
-		model.addAttribute("category", category);
 		
 		
 		return "project/project_list";
@@ -129,6 +131,8 @@ public class UserFundingController {
         int followerCount = service.countFollower(creator_email);
         
 //        System.out.println(creator_email + "의 팔로워 수 : " + followerCount);
+        
+        // Map 객체 (project_detail) 에 집어넣기
         project_detail.put("followerCount", followerCount);
          
         // 팔로워 계산 end ---------------
@@ -151,6 +155,34 @@ public class UserFundingController {
 	}
 	
 	
+	// ================================================================================
+	// 마이페이지로 넘어가는 부분
+	@GetMapping("MemberInfoTest")
+	public String memberInfoTest(MemberVO member, Model model) {
+//		System.out.println(member);
+		String mem_email = member.getMem_email();
+		
+		// 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자 이름 가져오기
+		String creatorName = service.getCreatorName(mem_email);
+		
+		System.out.println("creatorName : " + creatorName);
+		
+		if(creatorName == null) {
+			MemberVO notCreatorMember= service.getMemberInfo(mem_email);
+			
+			System.out.println("창작자 아닌 사람 정보 : " + notCreatorMember);
+			
+			model.addAttribute("notCreatorMember", notCreatorMember);
+		} else {
+			MemberVO creatorMember = service.getMemberInfo(mem_email);
+			
+			System.out.println("창작자 맞는 사람 정보 : " + creatorMember);
+			
+			model.addAttribute("creatorMember", creatorMember);
+		}
+		
+		return "mypage/mypageTest";
+	}
 	
 	
 	

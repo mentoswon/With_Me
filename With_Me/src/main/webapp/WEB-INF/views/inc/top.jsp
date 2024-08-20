@@ -13,8 +13,12 @@
 		}
 	}
 	
-	function projectList(cate) {
-		location.href="ProjectList?project_category=" + cate;
+	function projectList(category, category_detail) {
+		if(category_detail != "") {
+			location.href="ProjectList?project_category=" + category + "&project_category_detail=" + category_detail;
+		} else {
+			location.href="ProjectList?project_category=" + category;
+		}
 	}
 	
 // 	function projectListDetail(cateDetail) {
@@ -58,19 +62,19 @@
 		
 		<ul>
 			<li class="depth01">
-				<a href="javascript:projectList('푸드')"> 푸드 </a>
+				<a href="javascript:projectList('푸드', '')"> 푸드 </a>
 				<ul class="depth02">
-					<li><button value="사료" onclick="projectList(this.value)" >사료</button></li>
-					<li><button value="껌류" onclick="projectList(this.value)" >껌류</button></li>
-					<li><button value="수제간식" onclick="projectList(this.value)" >수제간식</button></li>
+					<li><button value="사료" onclick="projectList('푸드', this.value)" >사료</button></li>
+					<li><button value="껌류" onclick="projectList('푸드', this.value)" >껌류</button></li>
+					<li><button value="수제간식" onclick="projectList('푸드', this.value)" >수제간식</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
-				<a href="javascript:projectList('패션/위생')"> 패션 / 위생 </a>
+				<a href="javascript:projectList('패션/위생', '')"> 패션 / 위생 </a>
 				<ul class="depth02">
-					<li><button value="옷" onclick="projectList(this.value)" >옷</button></li>
-					<li><button value="신발" onclick="projectList(this.value)" >신발</button></li>
+					<li><button value="옷" onclick="projectList('패션/위생',this.value)" >옷</button></li>
+					<li><button value="신발" onclick="projectList('패션/위생',this.value)" >신발</button></li>
 				</ul>
 			</li>
 			

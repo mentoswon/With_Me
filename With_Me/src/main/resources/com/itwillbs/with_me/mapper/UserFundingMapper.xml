@@ -21,8 +21,17 @@
 				or project_category_detail like concat('%',#{searchKeyword},'%') 	
 			</when>
 			<otherwise>
-				project_category = #{category}
-				AND project_status = '승인'
+				<choose>
+					<when test="category_detail == null">
+						project_category = #{category}
+						AND	project_status = '승인'
+					</when>
+					<otherwise>
+						project_category = #{category}
+						AND project_category_detail = #{category_detail}
+						AND	project_status = '승인'
+					</otherwise>
+				</choose>
 			</otherwise>
 		</choose>
 	</select>
@@ -42,9 +51,17 @@
 				or p.project_category_detail like concat('%',#{searchKeyword},'%') 	
 			</when>
 			<otherwise>
-				(p.project_category = #{category}
-				OR p.project_category_detail = #{category})
-				AND project_status = '승인'
+				<choose>
+					<when test="category_detail == null">
+						p.project_category = #{category}
+						AND	p.project_status = '승인'
+					</when>
+					<otherwise>
+						p.project_category = #{category}
+						AND p.project_category_detail = #{category_detail}
+						AND	p.project_status = '승인'
+					</otherwise>
+				</choose>
 			</otherwise>
 		</choose>
 		limit 
@@ -77,4 +94,20 @@
 		FROM sponsor_info
 		WHERE project_idx = #{project_idx}
 	</select>
+	
+	<!-- 창작자에 등록되어있는지 -->
+	<select id="selectCreatorName">
+		SELECT creator_name
+		FROM creator_info
+		WHERE creator_email = #{mem_email}
+	</select>
+	
+	<!-- 창작자가 아닌 사람 정보 가져오기 -->
+	<select id="selectMemberInfo" resultType="member">
+		SELECT *
+		FROM member
+		WHERE mem_email = #{mem_email}
+	</select>
+	
+	
 </mapper>

@@ -48,11 +48,6 @@
 				word-wrap: break-word;
 			}
 			
-			.sec02 .itemList .itemWrapper .item .fund_rate_var {
-				width: 100%;
-				height: 5px;
-				background-color: #ffab40;
-			}
 			
 			.sec02 .itemList .itemWrapper .item .fund_info {
 				display: flex;
@@ -75,8 +70,34 @@
 			.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_amt {
 				color: #aaa;
 				font-size: 14px;
-			}	
+			}
+				
+			.progress {
+				width: 100%;
+				appearance: none;
+				height: 7px;
+			}
+			
+			.progress::-webkit-progress-bar {
+				background-color: #eee;
+				border-radius: 3px;
+			}
+			
+			.progress::-webkit-progress-value {
+				background-color: #ffab40;
+				border-radius: 3px;
+			}
 		</style>
+		
+		<script type="text/javascript">
+			$(function() {
+				let progress = document.querySelectorAll('.progress');
+				let fund_rate = document.querySelectorAll('.fund_rate');
+
+				
+			});
+		
+		</script>
 	</head>
 	<body>
 		<header>
@@ -85,85 +106,88 @@
 		
 		<div class="inner">
 			<section class="sec02">
-				<c:forEach var="project" items= "${projectList}" begin="0" end="0">
-					<c:choose>
-						<c:when test="${category eq '푸드'}">
-							<h2>${project.project_category}</h2>
-						</c:when>
-						<c:otherwise>
-							<h2>${project.project_category} > ${category}</h2> <!-- 프로젝트 경로 뽑아내고 싶은데 .. 고민 중 -->
-						</c:otherwise>
-					</c:choose>
-				</c:forEach>
-				<%-- 페이지 번호 기본값 1로 설정 --%>
-				<c:set var="pageNum" value="1"/>
-				<c:if test="${not empty param.pageNum}">
-					<c:set var="pageNum" value="${param.pageNum}"/>
-				</c:if>
-				
-				<div class="itemList">
-				
-					<%-- 등록되어있는 프로젝트가 없을 경우 --%>
-					<c:if test="${empty projectList}">
+				<c:choose>
+					<c:when test="${searchKeyword ne '' && empty projectList}">
 						<p>
-						${category}에 등록된 펀딩이 없습니다. <br><br>
+						검색결과가 없습니다. <br><br>
 						이용에 불편을 드려 죄송합니다.
 						</p>
-					</c:if>
-					
-					<div class="itemWrapper">
-					
-					<!-- 오늘 날짜 추출 -->
-					<c:set var="now" value="<%=new java.util.Date()%>" />
-					<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
-					<!-- 오늘 날짜 추출 end -->
-					
-					<c:forEach var="project" items= "${projectList}">
-					
-						<!-- 남은 날짜 계산 -->
-						<fmt:parseNumber value="${project.funding_start_date.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
-						<fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-						<c:set value="${endDate - strDate}" var="leftDay"/>
-						<!-- 남은 날짜 계산 end -->
+					</c:when>
+					<c:when test="${searchKeyword ne ''}">
+						<c:choose>
+							<c:when test="${param.project_category_detail eq null}">
+								<h2>${param.project_category}</h2>
+							</c:when>
+							<c:otherwise>
+								<h2>${param.project_category} > ${param.project_category_detail}</h2>
+							</c:otherwise>
+						</c:choose>
 						
-						<c:if test="${project.funding_end_date > today}">
-							<div class="item">
-								<div class="item_image">
-									<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
-										<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-									</a>
-									<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-									
-									<!-- 나중에 쓸 채워진 하트 -->
-	<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
-								</div>
-								<div class="item_info">
-									<h4><a href="#">${project.creator_name}</a></h4>
-									<h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
-								</div>
-								
-								<div class="fund_info">
-									<div class="fund_leftWrap">
-										<div class="fund_rate">11%</div> <%-- 펀딩률 --%>
-										<div class="fund_amt"><fmt:formatNumber pattern="#,###">1111111</fmt:formatNumber> 원</div> <%-- 모금액 --%>
-									</div>
-									<div class="fund_etc">
-										<c:choose>
-											<c:when test="${leftDay eq 0}">
-												오늘 마감
-											</c:when>
-											<c:otherwise>
-												<c:out value="${leftDay}" />일 남음
-											</c:otherwise>
-										</c:choose>
-									</div> <%-- 남은 날짜/오늘 마감/오픈 날짜/펀딩 성공 --%>
-								</div>
-								<div class="fund_rate_var"></div>
-							</div>
+						<%-- 페이지 번호 기본값 1로 설정 --%>
+						<c:set var="pageNum" value="1"/>
+						<c:if test="${not empty param.pageNum}">
+							<c:set var="pageNum" value="${param.pageNum}"/>
 						</c:if>
-					</c:forEach>
-					</div>
-				</div>
+						
+						<div class="itemList">
+							<div class="itemWrapper">
+							
+							<!-- 오늘 날짜 추출 -->
+							<c:set var="now" value="<%=new java.util.Date()%>" />
+							<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+							<!-- 오늘 날짜 추출 end -->
+							
+							<c:forEach var="project" items= "${projectList}">
+							
+								<!-- 남은 날짜 계산 -->
+								<fmt:parseNumber value="${project.funding_start_date.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+								<fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
+								<c:set value="${endDate - strDate}" var="leftDay"/>
+								<!-- 남은 날짜 계산 end -->
+								
+								<c:if test="${project.funding_end_date > today}">
+									<div class="item">
+										<div class="item_image">
+											<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
+												<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+											</a>
+											<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+											
+											<!-- 나중에 쓸 채워진 하트 -->
+			<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
+										</div>
+										<div class="item_info">
+											<h4><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
+											<h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
+										</div>
+										
+										<div class="fund_info">
+											<div class="fund_leftWrap">
+												<c:set var="fund_rate" value="11"/>  <%-- 펀딩률 계산 필요--%>
+												
+												<div class="fund_rate">${fund_rate} %</div>
+												<div class="fund_amt"><fmt:formatNumber pattern="#,###">1111111</fmt:formatNumber> 원</div> <%-- 모금액 --%>
+											</div>
+											<div class="fund_etc">
+												<c:choose>
+													<c:when test="${leftDay eq 0}">
+														오늘 마감
+													</c:when>
+													<c:otherwise>
+														<c:out value="${leftDay}" />일 남음
+													</c:otherwise>
+												</c:choose>
+											</div> <%-- 남은 날짜/오늘 마감/오픈 날짜/펀딩 성공 --%>
+										</div>
+<!-- 										<div class="fund_rate_var"></div> -->
+										<progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+									</div>
+								</c:if>
+							</c:forEach>
+							</div>
+						</div>
+					</c:when>
+				</c:choose>
 			</section>
 			
 			<section id="pageList">

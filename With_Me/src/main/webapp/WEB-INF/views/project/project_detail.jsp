@@ -96,7 +96,7 @@
 							<div>
 								<div class="creator">
 									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
-									<span><a href="#">${project_detail.creator_name}</a></span>
+									<span><a href="MemberInfoTest?mem_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
 								</div>
 								<div>
 									<ul>
@@ -117,7 +117,7 @@
 					</div>
 					
 					<div id="report">
-						<span>신고하기</span>
+						<span>문제가 있나요?</span>
 						<img alt="이동" src="${pageContext.request.contextPath}/resources/image/right-arrow.png">
 					</div>
 					
@@ -145,27 +145,30 @@
 		        <h3>신고하기</h3>
 	        	<span>어떤 문제가 있나요?</span><br>
 		        <div class="content">
-		        	<button>
+		        	<button value="지식재산권 침해">
 		        		<span class="repTitle">지식재산권 침해</span>
 		        		<span class="repContent">
 		        			타인의 지식재산권을 허락없이 사용했어요. <br>
 							타인의 제품이나 콘텐츠를 동일하게 모방했어요.
 		        		</span>
 		        	</button>
-		        	<button>
+		        	
+		        	<button value="상세설명 내 허위사실">
 		        		<span class="repTitle">상세설명 내 허위사실</span>
 		        		<span class="repContent">
 		        			상품을 받아보니 상세설명과 다른 부분이 있어요.
 		        		</span>
 		        	</button>
-		        	<button>
+		        	
+		        	<button value="동일 제품의 타 채널 유통">
 		        		<span class="repTitle">동일 제품의 타 채널 유통</span>
 		        		<span class="repContent">
 		        			프로젝트 진행 전에 이미 판매한 적이 있는 제품이에요. <br>
 							같은 제품을 다른 곳에서 (예약)판매하고 있어요.
 		        		</span>
 		        	</button>
-		        	<button>
+		        	
+		        	<button value="부적절한 콘텐츠">
 		        		<span class="repTitle">부적절한 콘텐츠</span>
 		        		<span class="repContent">
 		        			- 타인을 모욕, 명예훼손하는 콘텐츠 <br>
@@ -174,7 +177,8 @@
 		        			- 타사 유통 채널 광고. 홍보 목적의 콘텐츠
 		        		</span>
 		        	</button>
-		        	<button>
+		        	
+		        	<button value="기타">
 		        		<span class="repTitle">기타</span>
 		        		<span class="repContent">
 		        			- 리워드가 불량이라 교환/수리 신청하고 싶어요. <br>
@@ -191,7 +195,7 @@
 							– 타인 비방 및 부당 이익 목적의 신고는 신고를 철회하더라도 면책되지 않습니다. <br>
 							– 신고자의 정보 및 신고 내용은 안전하게 보호되며 외부에 제공되지 않습니다. <br>
 							– 신고자는 개인정보의 수집 및 이용 동의 및 제 3자 제공을 거부할 권리가 있으나,  <br>
-							   거부할 경우 신고하기 서비스 이용에 제한을 받을 수 있습니다.
+							  &nbsp;&nbsp; 거부할 경우 신고하기 서비스 이용에 제한을 받을 수 있습니다.
 		        		</span>
 		        	</div>
 				</div>
@@ -220,6 +224,8 @@
 					modal[i].classList.remove('on');
 				}
 			}
+			
+			// ==========================================================================
 		</script>
 	</body>
 </html>
