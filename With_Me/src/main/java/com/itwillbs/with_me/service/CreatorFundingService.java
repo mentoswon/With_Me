@@ -29,4 +29,34 @@ public class CreatorFundingService {
         return mapper.selectCategoryDetail(project_category);
     }
 
+    // 창작자 정보 등록 요청
+    public void registCreator(String id) {
+    	// 기존에 창작자 정보 있는지 조회(창작자 번호 조회)
+    	String selectCreator = mapper.selectCreator(id);
+    	
+    	if (selectCreator == null) {	// 조회된 결과 없을 경우
+			mapper.insertCreator(id);
+		}
+    }
+
+    // 프로젝트 등록 요청
+	public int registProject(String id, ProjectVO project) {
+		// 창작자 번호 조회
+		String creator_idx = mapper.selectCreator(id);
+		
+		return mapper.insertProject(creator_idx, project);
+	}
+
+	// 프로젝트 번호 조회 요청
+	public Integer getProjectIdx(String id) {
+		return mapper.selectProjectIdx(id);
+	}
+
+	// 프로젝트 정보 조회 요청
+	public ProjectVO getProject(Integer project_idx) {
+		return mapper.selectProject(project_idx);
+	}
+
+
+
 }

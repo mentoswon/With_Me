@@ -79,10 +79,9 @@ public class CreatorFundingController {
 		return "project/project_agree";
 	}
 	
-	
 	// 프로젝트 시작하기 페이지
 	@PostMapping("ProjectCreate")
-	public String projectCreate(ProjectVO project, HttpSession session, Model model, @RequestParam Map<String, String> map) {
+	public String projectCreate(ProjectVO project, HttpSession session, Model model, @RequestParam Map<String, String> map, Integer project_idx) {
 		String id = (String)session.getAttribute("sId");
 		// 미로그인 시 로그인 페이지로 이동
 		if(id == null) {
@@ -90,39 +89,59 @@ public class CreatorFundingController {
 			model.addAttribute("targetURL", "MemberLogin");
 			return "result/fail";
 		}
-		
-		// 공통코드 테이블에서 상위공통코드 FUND 인 컬럼(카테고리) 조회
-		List<CommonCodeVO> category = service.getCategory();
-		model.addAttribute("category", category);
-		
-		
-		System.out.println("map : " + map);
-		// 세부 카테고리 조회
-		String project_category = map.get("project_category");
-		List<CommonCodeVO> category_detail = service.getCategoryDetail(project_category);
-		model.addAttribute("category_detail", category_detail);
-		
 		// ----------------------------------------------------------------------------
-		// 프로젝트 이어서 작성하기라면 project_idx로 project_info select 하여 이동
+		if (project_idx == null) {	// 새로 작성하는 프로젝트 일 경우
+			// 프로젝트 등록 전 창작자 정보 먼저 임시 등록
+			// (project_info 테이블의 creator_idx 컬럼이 참조되어 있으므로..)
+			service.registCreator(id);
+			
+			// 프로젝트 제목, 카테고리 저장(insert) 후 이동
+			// => NN 값의 경우 임시값 넣어서 insert 할 것
+			int insertCount = service.registProject(id, project);
+			
+			if (insertCount == 0) {
+				model.addAttribute("msg", "프로젝트 등록 실패!");
+				return "result/fail";
+			}
+			
+			// insert 한 프로젝트 번호 조회
+			project_idx = service.getProjectIdx(id);
+		}
 		
-		// 새로 작성하는 프로젝트라면 제목, 카테고리 저장(insert) 후 이동
-		// => NN 값의 경우 임시값 넣어서 insert 할 것
-		
-		
-//		model.addAttribute("project_category", project.getProject_category());
-//		model.addAttribute("project_title", project.getProject_title());
-		System.out.println("project : " + project);
-		model.addAttribute("project", project);
-		
-		return "project/project_create";
+		return "redirect:/ProjectCreate?project_idx=" + project_idx;
 	}
 	
+	// 프로젝트 정보 조회 및 페이지 렌더링
+	@GetMapping("ProjectCreate")
+	public String projectCreateGet(HttpSession session, Model model, @RequestParam("project_idx") Integer project_idx) {
+	    String id = (String) session.getAttribute("sId");
+
+	    // 미로그인 시 로그인 페이지로 이동
+	    if (id == null) {
+	        model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+	        model.addAttribute("targetURL", "MemberLogin");
+	        return "result/fail";
+	    }
+
+	    // 프로젝트 정보 조회
+	    ProjectVO project = service.getProject(project_idx);
+
+	    // 공통코드 테이블에서 상위공통코드 FUND 인 컬럼(카테고리) 조회
+	    List<CommonCodeVO> category = service.getCategory();
+	    model.addAttribute("category", category);
+
+	    // 세부 카테고리 조회
+	    String project_category = project.getProject_category();
+	    List<CommonCodeVO> category_detail = service.getCategoryDetail(project_category);
+	    model.addAttribute("category_detail", category_detail);
+
+	    model.addAttribute("project", project);
+
+	    return "project/project_create";
+	}
+	
+	
 	// 세부 카테고리 불러오기
-//	@PostMapping("GetCategoryDetail")
-//	public List<CommonCodeVO> getCategoryDetail(@RequestParam("project_category") String project_category) {
-//		List<CommonCodeVO> category_detail = service.getCategoryDetail(project_category);
-//		return category_detail;
-//	}
 	@ResponseBody
 	@PostMapping("GetCategoryDetail")
 	public List<CommonCodeVO> getCategoryDetail(@RequestParam("project_category") String project_category) {

@@ -74,9 +74,9 @@ b {
     height: 100%;
     border: none;
     border-radius: 50%; /* 동그랗게 만들기 */
-    padding: 5px; /* 텍스트 주위에 여백을 추가 */
-    margin: 0 5px;  /* 마진 제거 */
-    box-sizing: border-box; /* 패딩이 포함되도록 설정 */
+    padding: 5px;
+    margin: 0 5px;
+    box-sizing: border-box;
 }
 
 
@@ -104,7 +104,6 @@ b {
 
 <script>
 $(document).ready(function() {
-	// jQuery UI Datepicker의 한글 설정
     $.datepicker.regional['ko'] = {
         closeText: '닫기',
         prevText: '이전달',
@@ -124,62 +123,55 @@ $(document).ready(function() {
         showMonthAfterYear: true,
         yearSuffix: '년'
     };
-    $.datepicker.setDefaults($.datepicker.regional['ko']); // 한글 설정 적용
+    $.datepicker.setDefaults($.datepicker.regional['ko']);
 
-	
-    // 오늘 날짜와 내일 날짜 설정
     let today = new Date();
     let tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
     let tomorrowFormatted = $.datepicker.formatDate('yy-mm-dd', tomorrow);
 
-    // 출발일 선택 시
     $("#start_date").datepicker({
         dateFormat: 'yy-mm-dd',
-        minDate: tomorrow, // 내일 날짜부터 선택 가능
+        minDate: tomorrow,
         beforeShow: function(input, inst) {
-            setTimeout(setDatepickerZIndex, 0); // 캘린더 열릴 때 z-index 설정
+            setTimeout(setDatepickerZIndex, 0);
         },
         onSelect: function(selectedDate) {
             let startDate = $(this).datepicker('getDate');
-            // 종료일의 최소, 최대 날짜를 설정합니다.
             let endDateMin = new Date(startDate);
-            endDateMin.setDate(startDate.getDate() + 1); // 시작일 다음 날부터
+            endDateMin.setDate(startDate.getDate() + 1);
             let endDateMax = new Date(startDate);
-            endDateMax.setDate(startDate.getDate() + 60); // 시작일로부터 최대 60일 이내
+            endDateMax.setDate(startDate.getDate() + 60);
 
             $('#end_date').datepicker('option', 'minDate', endDateMin);
             $('#end_date').datepicker('option', 'maxDate', endDateMax);
-
-            // 종료일 필드 활성화
             $('#end_date').prop('disabled', false);
 
-            // 숨겨진 필드에 시작일 업데이트
             updateStartDate();
+            updateCalculations();
         }
     });
 
-    // 종료일 선택 시
     $("#end_date").datepicker({
         dateFormat: 'yy-mm-dd',
         beforeShow: function(input, inst) {
-            setTimeout(setDatepickerZIndex, 0); // 캘린더 열릴 때 z-index 설정
+            setTimeout(setDatepickerZIndex, 0);
         },
         onSelect: function(selectedDate) {
-            // 숨겨진 필드에 종료일 업데이트
             updateEndDate();
+            updateCalculations();
+            
+			// 요금제 선택 영역을 보이도록 설정
+            $("#selectChargeWrap").show();
         }
     });
 
-    // 페이지가 처음 로드될 때 종료일 필드 비활성화
     $('#end_date').prop('disabled', true);
 
-    // 공통 설정(캘린더를 맨앞으로 이동)
     function setDatepickerZIndex() {
         $('.ui-datepicker').css('z-index', 9999);
     }
 
-    // 시작일 숨겨진 필드 업데이트
     function updateStartDate() {
         let date = $("#start_date").val();
         if (date) {
@@ -187,11 +179,36 @@ $(document).ready(function() {
         }
     }
 
-    // 종료일 숨겨진 필드 업데이트
     function updateEndDate() {
         let date = $("#end_date").val();
         if (date) {
             $("#funding_end_date").val(date);
+        }
+    }
+
+    function updateCalculations() {
+        let startDateStr = $("#start_date").val();
+        let endDateStr = $("#end_date").val();
+
+        if (startDateStr && endDateStr) {
+            let startDate = new Date(startDateStr);
+            let endDate = new Date(endDateStr);
+
+            // 펀딩 기간 계산
+            let fundingPeriod = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+            $("#fundingPeriod").text(fundingPeriod);
+
+            // 후원자 결제 종료일 계산 (종료일 다음날부터 7일)
+            let userPaymentDate = new Date(endDate);
+            userPaymentDate.setDate(endDate.getDate() + 1);
+            userPaymentDate.setDate(userPaymentDate.getDate() + 7);
+            $("#userPaymentDate").text($.datepicker.formatDate('yy-mm-dd', userPaymentDate));
+
+			// 정산일 계산 (후원자 결제 종료일 기준으로 다음날부터 7일)
+            let settlementDate = new Date(userPaymentDate);
+            settlementDate.setDate(userPaymentDate.getDate() + 1);
+            settlementDate.setDate(settlementDate.getDate() + 7);
+            $("#settlementDate").text($.datepicker.formatDate('yy-mm-dd', settlementDate));
         }
     }
 });
@@ -205,7 +222,7 @@ $(document).ready(function() {
 			<img alt="캘린더아이콘" src="${pageContext.request.contextPath}/resources/image/calendar.png">
 		</span>
 	</div>
-	<br>
+	<br><br>
 
 	<b>종료일</b><br>
 	<div class="date-input">
@@ -214,17 +231,17 @@ $(document).ready(function() {
 			<img alt="캘린더아이콘" src="${pageContext.request.contextPath}/resources/image/calendar.png">
 		</span>
 	</div>
-	<br>
+	<br><br>
 
 	<b>펀딩기간</b><br>
-	<span><span id="fundingPeriod">0</span>일</span><br>
+	<span><span id="fundingPeriod">0</span>일</span><br><br>
 
 	<b>후원자 결제종료</b><br>
 	
-	<span id="userPaymentDate">종료일 다음날부터 7일</span><br>
+	<span id="userPaymentDate">종료일 다음날부터 7일</span><br><br>
 
 	<b>정산일</b><br>
-	<span id="settlementDate">결제종료 다음날부터 7일</span><br>
+	<span id="settlementDate">결제종료 다음날부터 7일</span><br><br>
 
 
 <%-- 시작일, 종료일 전달 --%>

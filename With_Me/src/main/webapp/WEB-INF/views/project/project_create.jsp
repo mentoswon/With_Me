@@ -14,6 +14,7 @@
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script type="text/javascript">
 $(function() {
+	// [ 기본 정보 ]
 	let tagContainer = $("#tagContainer");
     let tagCount = $("#tagCount");
     let maxTags = 5; // 최대 태그 수
@@ -39,11 +40,11 @@ $(function() {
 	// 초기 상태로 첫 번째 메뉴와 콘텐츠가 보이도록 설정
 //     $("#projectMenuList li:eq(0)").click();
 	// -------------------------------------------------------------------------------
-	// 임시) 초기 상태로 두 번째 메뉴와 콘텐츠가 보이도록 설정
-    $("#projectMenuList li:eq(1)").click();
+	// 임시) 초기 상태로 세 번째 메뉴와 콘텐츠가 보이도록 설정
+    $("#projectMenuList li:eq(2)").click();
 	// -------------------------------------------------------------------------------
     
-    // 세부 카테고리 조회
+    // 세부 카테고리 조회(ajax)
 	$("#project_category").change(function() {
 		let project_category = $("#project_category").val();
 		if (project_category) {
@@ -164,6 +165,145 @@ $(function() {
         let currentTagCount = tagContainer.children().length;
         tagCount.text(currentTagCount);
     }
+    
+    // ========================================================================================
+    // [ 펀딩 계획 ]
+	// 수수료 비율 정의
+    const PAYMENT_FEE_RATE = 0.03; // 결제대행 수수료 3%
+    const PLATFORM_FEE_RATE = 0.05; // 위드미 수수료 5%
+    const VAT_RATE = 0.1; // 부가세 10%
+
+    // 목표금액 입력 시 이벤트 처리
+    $("#target_price").on("input", function(event) {
+        let value = $(this).val();
+
+        // 숫자만 남기기
+        value = value.replace(/[^0-9]/g, "");
+
+        // 숫자 포맷팅
+        if (value) {
+            value = parseInt(value, 10).toLocaleString("ko-KR");	// 세자리 마다 콤마(,) 붙여줌
+        }
+        $(this).val(value);
+
+        // 50만원 이상인지 체크
+        let numericValue = parseInt(value.replace(/,/g, ""), 10) || 0;
+        if (numericValue < 500000) {
+            $("#checkTargetPrice").text("50만원 이상의 금액을 입력해주세요.");
+            $("#checkTargetPrice").css("color", "red");
+        } else if (numericValue > 9999999999) {
+            $("#checkTargetPrice").text("9,999,999,999원 이하인 금액을 입력해주세요.");
+            $("#checkTargetPrice").css("color", "red");
+		} else {
+            $("#checkTargetPrice").text("");
+        }
+		calculateEstimateAmounts(numericValue);
+    });
+
+    // 수수료 및 예상 수령액 계산
+    function calculateEstimateAmounts(targetPrice) {
+        // 결제대행 수수료 계산
+        let paymentFee = Math.floor(targetPrice * PAYMENT_FEE_RATE);
+        let paymentVAT = Math.floor(paymentFee * VAT_RATE);
+        let totalPaymentFee = paymentFee + paymentVAT;
+
+        // 위드미 수수료 계산
+        let platformFee = Math.floor(targetPrice * PLATFORM_FEE_RATE);
+        let platformVAT = Math.floor(platformFee * VAT_RATE);
+        let totalPlatformFee = platformFee + platformVAT;
+
+        // 총 수수료
+        let totalCommission = totalPaymentFee + totalPlatformFee;
+
+        // 예상 수령액
+        let estimateAmount = targetPrice - totalCommission;
+
+        // 계산된 금액 표시
+        $("#createCommission").text(totalPaymentFee.toLocaleString('ko-KR'));
+        $("#withmeCommission").text(totalPlatformFee.toLocaleString('ko-KR'));
+        $("#totalCommission").text(totalCommission.toLocaleString('ko-KR'));
+        $("#estimateAmount").text(estimateAmount.toLocaleString('ko-KR'));
+    }
+
+    // 예상 수령액 초기화
+    function resetEstimateAmounts() {
+        $("#createCommission").text("0");
+        $("#withmeCommission").text("0");
+        $("#totalCommission").text("0");
+        $("#estimateAmount").text("0");
+    }
+
+    // 숫자 입력만 허용하는 keypress 이벤트
+    $("#target_price").on("keypress", function(event) {
+    	let keyCode = event.keyCode;
+        if (keyCode < 48 || keyCode > 57) {
+            event.preventDefault();
+        }
+    });
+    
+    
+    // ========================================================================================
+    // [ 후원 구성 ]
+    // 아이템 이름 글자 수
+    $("#item_name").keyup(function() {
+    	let itemNameLength = $("#item_name").val().length;
+        $("#itemNameLength").text(itemNameLength);
+    });
+    
+	// 옵션조건 선택 이벤트
+	// 처음에는 두 영역 모두 숨김
+    $('#subjectiveWrap').hide();
+    $('#objectiveWrap').hide();
+	$("input[name='item_condition']").on("change", function() {
+        // 모든 라벨에서 selected 클래스를 제거
+        $("label").removeClass("selected");
+        
+        // 체크된 라디오 버튼의 for 속성과 일치하는 라벨에 selected 클래스 추가
+        $("label[for='" + $(this).attr("id") + "']").addClass("selected");
+        
+        // 선택된 라디오 버튼의 값을 가져옴
+        let selectedValue = $(this).val();
+		
+		// input 초기화
+        $('#subjectiveWrap input').val('');
+        $('#objectiveWrap input[type="text"]').val('');
+        $('#objectiveWrap input[type="text"]').slice(2).remove(); // 처음 2개 외의 input 제거
+
+        
+        if (selectedValue == "주관식") {	// 주관식 선택 시
+            $("#subjectiveWrap").show();
+            $("#objectiveWrap").hide();
+        } else if (selectedValue == "객관식") {	// 객관식 선택 시
+            $("#subjectiveWrap").hide();
+            $("#objectiveWrap").show();
+        } else {	// 없음 선택 시
+            $("#subjectiveWrap").hide();
+            $("#objectiveWrap").hide();
+        }
+    });
+	
+	// + 버튼 클릭 시 새로운 input 필드 추가 (최대 10개까지)
+    $("#addOption").on("click", function() {
+    	let inputCount = $("#objectiveWrap input[type='text']").length;
+    	if (inputCount < 15) { // 현재 input 개수가 10개 미만일 때만 추가
+	        let newInput = $("<input type='text' name='item_option_name' class='itemText'>");
+	        $("#objectiveWrap").append(newInput);	// objectiveWrap 안의 마지막 input 요소 뒤에 새 input 요소 추가
+    	} else {
+            alert("옵션 항목은 최대 15개까지 추가할 수 있습니다.");
+        }
+
+        
+    });
+    
+    
+    // ========================================================================================
+    // [ 프로젝트 계획 ]
+    // 프로젝트 정책 글자 수
+    $("#project_policy").keyup(function() {
+    	let projectPolicyLength = $("#project_policy").val().length;
+        $("#projectPolicyLength").text(projectPolicyLength);
+    });
+    
     
     
 });	// ready 이벤트 끝
@@ -361,15 +501,18 @@ $(function() {
 						</p>
 					</div>
 				</div>
-				<div class="projectContentWrap targetAmount">
-					<div id="targetAmount">
+				<div class="projectContentWrap">
+					<div class="projectWriteBorder">
 						<h4>목표금액</h4>
 						<table style="border: 1px solid #ccc; width: 100%;">
 							<tr>
-								<td><input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." style="border: none; text-align: right; width: 565px;"></td>
+								<td>
+									<input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." maxlength="14" style="border: none; text-align: right; width: 565px;">
+								</td>
 								<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
 							</tr>
 						</table>
+						<span id="checkTargetPrice"></span>
 						
 						
 						<div id="estimateAmountWrap">
@@ -377,7 +520,7 @@ $(function() {
 								<h4>목표금액 달성 시 예상 수령액</h4>
 								<h3 class="fontModify"><span id="estimateAmount">0</span>원</h3>
 							</div>
-							<hr>
+							<hr class="dividingLine2">
 							<div class="amountArea">
 								<p>총 수수료</p>
 								<span><span id="totalCommission">0</span>원</span>
@@ -410,9 +553,9 @@ $(function() {
 						<p>
 							선택하신 시작일 9시에 펀딩이 시작됩니다.<br>
 							선택하신 종료일 다음 날 0시에 펀딩이 종료됩니다.<br>
-							프로젝트가 성공하면 펀딩 종료 다음 날 후원금이 결제됩니다. 결제가 이루어지지 않은 경우 24시간 간격으로 7일 동안 결제를 시도합니다.<br>
-							모금액은 후원자 결제 종료 후 7일 뒤 입금됩니다.<br>
-							
+							프로젝트가 성공하면 펀딩 종료 다음 날 후원금이 결제됩니다.<br>
+							결제가 이루어지지 않은 경우 24시간 간격으로 7일 동안 결제를 시도합니다.<br>
+							모금액은 후원자 결제 종료 다음 날부터 7일째 되는 날 입금됩니다.
 						</p>
 					</div>
 				</div>
@@ -422,55 +565,274 @@ $(function() {
 				</div>
 			</div>
 			
+<!-- 			<div id="selectChargeWrap" style="display: none;"> -->
+			<div id="selectChargeWrap">
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>요금제 선택<span class="essential">&nbsp;*</span></h3>
+						<p>
+							프로젝트 진행 목적에 적합한 요금제를 선택해 주세요.<br>
+							프로젝트가 승인된 이후에는 요금제를 변경할 수 없으니 신중히 선택해주세요.
+						</p>
+					</div>
+					<div class="projectContentWrap">
+						<div class="projectWriteBorder">
+						</div>
+						<br><br>
+					</div>
+				</div>
+			</div>
+			
 		</div>
 		
 		<%-- ---------- 후원 구성 ---------- --%>
 		<div id="writeContainer3" class="writeContainer">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
-					<h3>후원 구성<span class="essential">&nbsp;*</span></h3>
-					<p>
-						후원구성 후원구성 후원구성 후원구성 후원구성 후원구성
-					</p>
-					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">가이드 가이드 가이드!</p>
-						<p>
-							가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명
-						</p>
-					</div>
+					<h3>내가 만든 아이템</h3>
 				</div>
 				<div class="projectContentWrap">
-					<input type="text" name="" id="">
-					<div class="LengthCheck">
-						<span id=""></span>
-						<p><span id="">0</span>/30</p>
+					<div class="projectWriteBorder">
+						<h3>아이템 만들기</h3>
+						<p>
+							아이템은 후원에 포함되는 구성 품목을 말합니다.<br>
+							특별한 물건부터 의미있는 경험까지 후원을 구성할 아이템을 만들어 보세요.
+						</p>
+						<form action="RegistItem" method="post">
+							<input type="hidden" name="project_idx" value="${project.project_idx}">
+							<b>아이템 이름</b>
+							<input type="text" name="item_name" id="item_name" maxlength="50" style="width: 100%;">
+							<div class="LengthCount">
+								<p><span id="itemNameLength">0</span>/50</p>
+							</div>
+							<br>
+							
+							<b>옵션 조건</b>
+							<div id="optionCondition" style="display: flex; justify-content: space-between;">
+								<input type="radio" name="item_condition" id="none" value="없음">
+								<label for="none">없음</label>
+								<input type="radio" name="item_condition" id="subjective" value="주관식">
+								<label for="subjective">주관식</label>
+								<input type="radio" name="item_condition" id="objective" value="객관식">
+								<label for="objective">객관식</label>
+							</div>
+							<br>
+							
+							<div id="subjectiveWrap">
+								<b>옵션 항목</b>
+								<input type="text" name="item_option_name" class="itemText" placeholder="예) 각인문구를 작성해주세요.">
+							</div>
+							<div id="objectiveWrap">
+								<b>옵션 항목</b>
+								<div style="display: flex; justify-content: space-between; align-items: flex-end;">
+									<p>
+										2개 이상의 옵션 항목을 만들어주세요.<br>
+										한 칸에 하나의 옵션을 작성해주세요.
+									</p>
+									<input type="button" id="addOption" value="+" style="margin-bottom: 10px;">
+								</div>
+								<input type="text" name="item_option_name" class="itemText" placeholder="예) 240mm">
+								<input type="text" name="item_option_name" class="itemText" placeholder="예) 250mm">
+								
+							</div>
+							
+							<hr class="dividingLine2">
+							<div style="display: flex; justify-content: space-between;">
+								<input type="reset" id="reset" value="초기화">
+								<input type="submit" id="itemRegist" value="등록">
+							</div>
+							
+							
+						</form>
 					</div>
 					<br><br>
 				</div>
 			</div>
+			
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>내가 만든 후원</h3>
+				</div>
+				<div class="projectContentWrap">
+					<div class="projectWriteBorder">
+						
+						
+						
+					</div>
+					<br><br>
+				</div>
+			</div>
+			
 		</div>
 		<%-- ---------- 프로젝트 계획 ---------- --%>
 		<div id="writeContainer4" class="writeContainer">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
-					<h3>프로젝트 계획<span class="essential">&nbsp;*</span></h3>
+					<h3>프로젝트 소개<span class="essential">&nbsp;*</span></h3>
 					<p>
-						프로젝트 계획 프로젝트 계획 프로젝트 계획 프로젝트 계획 프로젝트 계획
+						프로젝트에 대해 자세히 설명해 주세요.
 					</p>
 					<br>
 					<div class="creatorGuide">
-						<p class="emphasis">가이드 가이드 가이드!</p>
+						<p class="emphasis">다음 내용이 포함되도록 작성해 주세요!</p>
 						<p>
-							가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명
+							Q. 무엇을 만들기 위한 프로젝트인가요?<br>
+							Q. 프로젝트를 간단히 소개한다면?<br>
+							Q. 이 프로젝트가 왜 의미있나요?<br>
+							Q. 이 프로젝트를 시작하게 된 배경이 무엇인가요?
 						</p>
 					</div>
 				</div>
 				<div class="projectContentWrap">
-					<input type="text" name="" id="">
-					<div class="LengthCheck">
-						<span id=""></span>
-						<p><span id="">0</span>/30</p>
+					<input type="file" name="project_image" id="project_introduce">
+					<label for="project_introduce">
+						<div class="fileUpload">
+							<span class="uploadImg">
+								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+								소개 이미지 업로드
+							</span>
+						</div>
+					</label>
+					<br><br>
+				</div>
+			</div>
+
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>프로젝트 예산<span class="essential">&nbsp;*</span></h3>
+					<p>
+						설정하신 목표 금액을 어디에 사용 예정이 신지 구체적인 지출 항목으로 적어주세요.
+					</p>
+					<br>
+					<div class="creatorGuide">
+						<p class="emphasis">다음 항목을 확인해주세요!</p>
+						<p>
+							예산은 ‘제작비’가 아닌 구체적인 ‘항목’으로 적어주세요.<br>
+							이번 프로젝트의 실행에 필요한 비용으로만 작성해 주세요.<br>
+							예시) 목표금액은 아래의 지출 항목으로 사용할 예정입니다.
+						</p>
+					</div>
+				</div>
+				<div class="projectContentWrap">
+					<input type="file" name="project_image" id="project_budget">
+					<label for="project_budget">
+						<div class="fileUpload">
+							<span class="uploadImg">
+								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+								예산 이미지 업로드
+							</span>
+						</div>
+					</label>
+					<br><br>
+				</div>
+			</div>
+
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>프로젝트 일정</h3>
+					<p>
+						작업 일정을 구체적인 날짜와 함께 작성하세요.<br>
+						후원자가 일정을 보면서 어떤 작업이 진행될지 알 수 있어야 합니다.<br>
+						펀딩 종료 이후의 제작 일정을 반드시 포함하세요.
+					</p>
+					<br>
+					<div class="creatorGuide">
+						<p class="emphasis">아래의 양식을 참고하여 작성해보세요!</p>
+						<p>
+							(예시)<br>
+							0월 0일: 현재 제품 시안 및 1차 샘플 제작<br>
+							0월 0일: 펀딩 시작일<br>
+							0월 0일: 펀딩 종료일<br>
+							0월 0일: 제품 디테일 보완<br>
+							0월 0일: 제품 발주 시작<br>
+							0월 0일: 후가공 처리 및 포장 작업<br>
+							0월 0일: 선물 예상 전달일
+						</p>
+					</div>
+				</div>
+				<div class="projectContentWrap">
+					<input type="file" name="project_image" id="project_schedule">
+					<label for="project_schedule">
+						<div class="fileUpload">
+							<span class="uploadImg">
+								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+								일정 이미지 업로드
+							</span>
+						</div>
+					</label>
+					<br><br>
+				</div>
+			</div>
+
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>프로젝트 팀 소개</h3>
+					<p>
+						프로젝트를 진행하는 팀(혹은 개인)을 알려주세요.<br>
+						이 프로젝트를 완수할 수 있다는 점을 후원자가 알 수 있어야 합니다.
+					</p>
+					<br>
+				</div>
+				<div class="projectContentWrap">
+					<input type="file" name="project_image" id="project_team_introduce">
+					<label for="project_team_introduce">
+						<div class="fileUpload">
+							<span class="uploadImg">
+								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+								팀소개 이미지 업로드
+							</span>
+						</div>
+					</label>
+					<br><br>
+				</div>
+			</div>
+			
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>후원 설명</h3>
+					<p>
+						후원자가 후원 금액별로 받을 수 있는 선물을 상세하게 알려주세요.
+					</p>
+					<br>
+				</div>
+				<div class="projectContentWrap">
+					<input type="file" name="project_image" id="project_sponsor">
+					<label for="project_sponsor">
+						<div class="fileUpload">
+							<span class="uploadImg">
+								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+								후원 설명 이미지 업로드
+							</span>
+						</div>
+					</label>
+					<br><br>
+				</div>
+			</div>
+			
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>프로젝트 정책</h3>
+					<p>
+						펀딩 종료 후 후원자의 불만 또는 분쟁 발생 시 중요한 기준이 될 수 있습니다. 
+						신중히 작성해 주세요.
+					</p>
+					<br>
+				</div>
+				<div class="projectContentWrap">
+					<div class="projectWriteBorder">
+						<h4>프로젝트 정책</h4>
+						<p>이 프로젝트의 정책을 기입해주세요.</p>
+						<textarea name="project_policy" id="project_policy" rows="8" cols="10" maxlength="10000" style="width: 100%;"></textarea>
+						<div class="LengthCount">
+							<p><span id="projectPolicyLength">0</span>/1000</p>
+						</div>
 					</div>
 					<br><br>
 				</div>
@@ -478,6 +840,31 @@ $(function() {
 		</div>
 		<%-- ---------- 창작자 정보 ---------- --%>
 		<div id="writeContainer5" class="writeContainer">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>창작자 정보<span class="essential">&nbsp;*</span></h3>
+					<p>
+						창작자 정보 창작자 정보 창작자 정보 창작자 정보 창작자 정보
+					</p>
+					<br>
+					<div class="creatorGuide">
+						<p class="emphasis">가이드 가이드 가이드!</p>
+						<p>
+							가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명
+						</p>
+					</div>
+				</div>
+				<div class="projectContentWrap">
+					<input type="text" name="" id="">
+					<div class="LengthCheck">
+						<span id=""></span>
+						<p><span id="">0</span>/30</p>
+					</div>
+					<br><br>
+				</div>
+			</div>
+			
+			<hr class="dividingLine">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
 					<h3>창작자 정보<span class="essential">&nbsp;*</span></h3>

@@ -38,6 +38,77 @@
 	)
 </select>
 
+<!-- 창작자 정보 조회 - SELECT -->
+<select id="selectCreator" resultType="String">
+	SELECT creator_idx
+	FROM creator_info
+	WHERE creator_email = #{id}
 
+</select>
+<!-- 창작자 정보 등록 - INSERT -->
+<insert id="insertCreator">
+	INSERT INTO creator_info
+	VALUES (
+		null	-- creator_idx(auto_increment)
+		, #{id}	-- creator_email
+		, ''	-- 임시값("") creator_name
+		, ''	-- 임시값("") creator_image
+		, ''	-- 임시값("") creator_introduce
+	)
+</insert>
+
+<!-- 프로젝트 등록 - INSERT -->
+<insert id="insertProject">
+	<selectKey keyProperty="project_idx" resultType="int" order="BEFORE">
+		SELECT IFNULL(MAX(project_idx), 0) -- project_idx 최대값 조회(null 일 경우 기본값 0 사용)
+		FROM project_info
+	</selectKey>
+	INSERT INTO project_info
+	VALUES (
+		null										-- project_idx
+		, CONCAT('project_ ', #{project_idx} + 1)	-- project_code
+		, '작성중'									-- project_status
+		, #{creator_idx}							-- creator_idx
+		, #{project.project_category}				-- project_category
+		, ''										-- project_category_detail
+		, #{project.project_title}					-- project_title
+		, ''		-- project_summary
+		, ''		-- project_image
+		, ''		-- search_tag
+		, 0			-- target_price
+		, 0		-- funding_commission
+		, 0			-- funding_premium
+		, null		-- funding_start_date
+		, null		-- funding_end_date
+		, ''		-- project_introduce
+		, ''		-- project_budget
+		, null		-- project_schedule
+		, null		-- project_team_interduce
+		, null		-- project_sponsor
+		, null		-- project_policy
+		, now()		-- project_submit_date
+		, 'N'		-- mail_auth_status
+	)
+</insert>
+
+<!-- 프로젝트 번호 조회 - SELECT -->
+<select id="selectProjectIdx">
+	SELECT project_idx
+	FROM project_info
+	WHERE creator_idx = (
+		SELECT creator_idx
+		FROM creator_info
+		WHERE creator_email = #{id})
+	AND project_status = '작성중'
+	ORDER BY project_submit_date desc	-- 최근에 수정(제출) 한 순서
+	Limit 1								-- 그 중에 첫번째 행
+</select>
+
+<!-- 프로젝트 정보 조회 - SELECT -->
+<select id="selectProject">
+	SELECT *
+	FROM project_info
+	WHERE project_idx = #{project_idx}
+</select>
 
 </mapper>

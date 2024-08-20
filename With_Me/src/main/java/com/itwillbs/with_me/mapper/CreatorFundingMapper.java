@@ -3,6 +3,7 @@ package com.itwillbs.with_me.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.CommonCodeVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -18,5 +19,23 @@ public interface CreatorFundingMapper {
 
 	// 세부 카테고리 조회
 	List<CommonCodeVO> selectCategoryDetail(String project_category);
+
+	// 창작자 정보 조회
+	String selectCreator(String id);
+
+	// 창작자 정보 등록
+	void insertCreator(String id);
+
+	// 프로젝트 등록
+	int insertProject(@Param("creator_idx") String creator_idx, 
+					  @Param("project") ProjectVO project);
+	
+	// 프로젝트 번호 조회
+	Integer selectProjectIdx(String id);
+
+	// 프로젝트 정보 조회
+	ProjectVO selectProject(Integer project_idx);
+
+
 
 }

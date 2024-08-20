@@ -130,8 +130,8 @@ article {	/* 가운데 정렬 */
 
 /* 프로젝트 등록글 작성 영역 */
 .writeContainer {
-        display: none;
-    }
+	display: none;
+}
 
 /* ----- 프로젝트 작성 영역 ---------- */
 .projectWriteWrap {
@@ -161,7 +161,7 @@ article {	/* 가운데 정렬 */
     display: none;
 }
 
-.select, input[type="text"], textarea {
+.select, input[type="text"]:not(.itemText), textarea {
 	padding: 8px 10px;
 	width: 550px;
 	border-color: #ccc;
@@ -178,6 +178,11 @@ textarea {
     height: 1px;
     border: 0;
 }
+.dividingLine2 {	/* 경계선 */
+	background: #ccc;
+    height: 1px;
+    border: 0;
+}
 /* ----- 글자수 확인 ----- */
 .LengthCheck {
 	display: flex;
@@ -186,14 +191,13 @@ textarea {
 	margin-right: 100px;
 }
 
-.LengthCheck p {
+.LengthCount {
+	text-align: right;
+}
+
+.LengthCheck p, .LengthCount p {
 	font-size: 12px;
 	color: #ccc;
-}
-#LengthCheck {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 }
 
 /* ------ 검색태그 ----------------------------- */
@@ -246,23 +250,8 @@ input[type="file"] {
 	cursor: pointer;
 }
 
-/* -------------------- */
-
-
-/* ----- 창작자 가이드 ----------- */
-.creatorGuide {
-	background-color: #ffebeb;
-	border-radius: 10px;
-	padding: 5px 25px;
-	margin: 0 15px;
-}
-.emphasis {
-	color: red;
-	font-weight: bold;
-}
-
 /* ----- 펀딩계획 - 목표금액 ---------- */
-#targetAmount {
+.projectWriteBorder {
 	border: 2px solid #ccc;
 	padding: 15px;
 	
@@ -287,6 +276,80 @@ input[type="file"] {
 .fontModify {
 	color: red;
 }
+
+/* ----- 후원 구성 ---------- */
+
+/* ----- 옵션 조건 ---------- */
+input[type="radio"] {
+	display: none;
+}
+#optionCondition label {
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius:10px;
+	padding: 8px 0;
+	margin: 3px 0;
+	cursor: pointer;
+	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+	width: 30%;
+	text-align: center;
+}
+
+#optionCondition label.selected {
+	border: 2px solid #FFAB40;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.itemText {	/* 텍스트박스 */
+	width: 100%;
+	margin-bottom: 8px;
+	padding: 8px 10px;
+	border-color: #ccc;
+	box-sizing: border-box;
+	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
+}
+
+
+/* ----- 버튼 ----- */
+#reset, #itemRegist {
+	height: 40px;
+	margin: 10px 0;
+	border-radius: 10px;
+}
+
+#reset {	/* 초기화 */
+	width: 22%;
+	background-color: #ffffff;
+	border: 2px solid #ccc;
+}
+#itemRegist {	/* 등록 */
+	width: 75%;
+	border: none;
+	background-color: #FFAB40;
+/* 	color: #ffffff; */
+}
+
+#reset:hover, #itemRegist:hover {
+	cursor: pointer;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+
+
+
+
+/* ----- 창작자 가이드 ----------- */
+.creatorGuide {
+	background-color: #ffebeb;
+	border-radius: 10px;
+	padding: 5px 25px;
+	margin: 0 15px;
+}
+.emphasis {
+	color: red;
+	font-weight: bold;
+}
+
 /* ----- 버튼 ---------- */
 #save, #request {	/* 저장하기 */
 	width: 100px;
