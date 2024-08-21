@@ -14,6 +14,14 @@ public class BoardController {
 	// 공지사항 게시글 상세 페이지 
 	@GetMapping("BoardDetail")
 	public String boardDetail() {
-		return "board/board_view";
+		return "board/board_detail";
 	}
+	
+	
+	// 헬프센터 페이지 
+	@GetMapping("HelpCenter")
+	public String helpCenter() {
+		return "help/helpcenter_main";
+	}
+	
 }

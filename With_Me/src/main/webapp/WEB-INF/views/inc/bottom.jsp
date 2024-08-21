@@ -13,7 +13,7 @@
 					<li><a href="#">후원자 가이드</a></li>
 				</ul>
 				<ul>
-					<li><a href="#">헬프센터</a></li>
+					<li><a href="HelpCenter">헬프센터</a></li>
 					<li><a href="#">창작자 가이드</a></li>
 				</ul>
 			</div>
