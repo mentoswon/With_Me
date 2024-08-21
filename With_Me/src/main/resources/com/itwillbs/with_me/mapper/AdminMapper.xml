@@ -161,11 +161,19 @@
 			, #{listLimit}
 	</select>
 	
-	<!-- 등록 대기중인 프로젝트 개수 조회 -->
-	<select id="selectRegistWaitingProjectListCount" resultType="int">
+	<!-- 프로젝트 개수 조회 -->
+	<select id="selectProjectListCount" resultType="int">
 		SELECT COUNT(*)
 		FROM project_info
-		WHERE project_status = '심사중'
+		WHERE 
+		<choose>
+			<when test="projectStatus.equals('심사중')">
+				project_status = '심사중'
+			</when>
+			<when test="projectStatus.equals('승인')">
+				project_status = '승인'
+			</when>
+		</choose>
 		<if test="!searchKeyword.equals('')">
 			AND (
 				project_idx like concat('%',#{searchKeyword},'%')
@@ -183,8 +191,17 @@
 	<select id="selectProjectList" resultType="project">
 		SELECT * 
 		FROM project_info
+		WHERE 
+		<choose>
+			<when test="projectStatus.equals('심사중')">
+				project_status = '심사중'
+			</when>
+			<when test="projectStatus.equals('승인')">
+				project_status = '승인'
+			</when>
+		</choose>
 		<if test="!searchKeyword.equals('')">
-			WHERE 
+			AND (
 				project_idx like concat('%',#{searchKeyword},'%')
 				or project_title like concat('%',#{searchKeyword},'%')
 				or project_category like concat('%',#{searchKeyword},'%')
@@ -192,6 +209,7 @@
 				or target_price like concat('%',#{searchKeyword},'%')
 				or funding_start_date like concat('%',#{searchKeyword},'%')
 				or funding_end_date like concat('%',#{searchKeyword},'%')
+			)
 		</if>
 		ORDER BY
 			project_idx DESC

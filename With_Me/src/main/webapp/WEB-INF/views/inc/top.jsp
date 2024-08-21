@@ -35,26 +35,26 @@
 		<%-- session 아이디 존재 여부를 판별하여 각각 다른 링크 표시  --%>
 		<%-- EL의 sessionScope 내장 객체 접근하여 sId 속성값 존재 여부 판별 --%>
 		<div>
-		<c:choose>
-			<c:when test="${empty sessionScope.sId}"> <%-- 로그인 상태가 아닐 경우 --%>
-				<button class="btn" onclick="location.href='Store'">스토어</button>
-				<button class="btn" onclick="location.href='MemberLogin'">로그인</button>
-<!-- 				<button class="btn" onclick="location.href='MemberJoin'">회원가입</button> -->
-				<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
-			</c:when>
-			<c:otherwise>
-				<%-- 아이디 클릭 시 회원 상세정보 조회를 위한 "MemberInfo.me" 서블릿 요청 --%>
-				<a href="MemberInfo" class="loged">${sessionScope.sName}님</a>
-				<a href="javascript:confirmLogout()" class="loged">로그아웃 </a>
-				<button class="btn" onclick="location.href='Store'">스토어</button>
-				<%-- 하이퍼링크 상에서 자바스크립트 함수 호출 시
-				"javascript:함수명()" 형태로 호출 --%>
-				<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
-			</c:otherwise>			
-		</c:choose>
- 		<c:if test="${sessionScope.sId eq 'admin@naver.com'}">  <!-- 로그인 가능해지면 풀기 -->
-			<button class="btn" onclick="location.href='Admin'">관리자페이지</button>
-		</c:if> 
+			<c:choose>
+				<c:when test="${empty sessionScope.sId}"> <%-- 로그인 상태가 아닐 경우 --%>
+					<button class="btn" onclick="location.href='Store'">스토어</button>
+					<button class="btn" onclick="location.href='MemberLogin'">로그인</button>
+<!-- 					<button class="btn" onclick="location.href='MemberJoin'">회원가입</button> -->
+					<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
+				</c:when>
+				<c:otherwise>
+					<%-- 아이디 클릭 시 회원 상세정보 조회를 위한 "MemberInfo.me" 서블릿 요청 --%>
+					<a href="MemberInfo" class="loged">${sessionScope.sName}님</a>
+					<a href="javascript:confirmLogout()" class="loged">로그아웃 </a>
+					<button class="btn" onclick="location.href='Store'">스토어</button>
+					<%-- 하이퍼링크 상에서 자바스크립트 함수 호출 시
+					"javascript:함수명()" 형태로 호출 --%>
+					<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
+				</c:otherwise>
+			</c:choose>
+	 		<c:if test="${sessionScope.sIsAdmin eq 'Y'}">
+				<button class="btn" onclick="location.href='AdminMain'">관리자페이지</button>
+			</c:if>
 		</div>
 	</div>
 	

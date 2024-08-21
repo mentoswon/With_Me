@@ -49,14 +49,14 @@ public class AdminService {
 		return mapper.selectPurchaseHistory(startRow, listLimit, searchKeyword, member);
 	}
 	
-	// 등록 대기중인 프로젝트 개수 조회
-	public int getRegistWaitingProjectListCount(String searchKeyword) {
-		return mapper.selectRegistWaitingProjectListCount(searchKeyword);
+	// 프로젝트 개수 조회
+	public int getProjectListCount(String searchKeyword, String projectStatus) {
+		return mapper.selectProjectListCount(searchKeyword, projectStatus);
 	}
 	
 	// 프로젝트 목록 조회
-	public List<ProjectVO> getProjectList(int startRow, int listLimit, String searchKeyword) {
-		return mapper.selectProjectList(startRow, listLimit, searchKeyword);
+	public List<ProjectVO> getProjectList(int startRow, int listLimit, String searchKeyword, String projectStatus) {
+		return mapper.selectProjectList(startRow, listLimit, searchKeyword, projectStatus);
 	}
 	
 	// 프로젝트 등록 승인/거부

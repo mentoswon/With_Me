@@ -12,7 +12,7 @@
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <style>
 	.main {
-		padding: 1.8rem;
+		padding: 1.5rem;
 	}
 	
 	.main h3 {
@@ -27,7 +27,7 @@
 	}
 	
 	.main .wrapper_top .search {
-		width: 270px;
+		width: 280px;
 		position: absolute;
 		left: 40%;
 	}
@@ -63,7 +63,7 @@
 		}
 		
 		if(confirm("프로젝트 등록을 " + msg + "하시겠습니까?")){
-			location.href="ProjectApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
+			location.href="AdminProjectApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
 		}
 	}
 </script>
@@ -105,25 +105,21 @@
 							<%-- pageNum 변수에 pageNum 파라미터값 저장 --%>
 							<c:set var="pageNum" value="${param.pageNum}" />
 						</c:if>
-						<c:set var="count" value="0" />
 						<c:forEach var="PL" items="${projectList}">
-							<c:if test="${PL.project_status eq '심사중'}">
-								<c:set var="count" value="${count + 1}" />
-								<tr align="center">
-									<td>${PL.project_idx}</td>
-									<td>${PL.project_title}</td>
-									<td>${PL.project_category}</td>
-									<td>${PL.project_category_detail}</td>
-									<td>${PL.target_price}</td>
-									<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
-									<td>
-										<input type="button" value="승인" onclick="projectApproval('YES', ${PL.project_idx})">
-										<input type="button" value="거부" onclick="projectApproval('NO', ${PL.project_idx})">
-									</td>
-								</tr>
-							</c:if>
+							<tr align="center">
+								<td>${PL.project_idx}</td>
+								<td>${PL.project_title}</td>
+								<td>${PL.project_category}</td>
+								<td>${PL.project_category_detail}</td>
+								<td>${PL.target_price}</td>
+								<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
+								<td>
+									<input type="button" value="승인" onclick="projectApproval('YES', ${PL.project_idx})">
+									<input type="button" value="거부" onclick="projectApproval('NO', ${PL.project_idx})">
+								</td>
+							</tr>
 						</c:forEach>
-						<c:if test="${count == 0}">
+						<c:if test="${empty projectList}">
 							<tr>
 								<td align="center" colspan="7">조회 결과가 없습니다.</td>
 							</tr>

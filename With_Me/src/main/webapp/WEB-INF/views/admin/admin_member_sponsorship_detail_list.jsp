@@ -12,7 +12,7 @@
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <style>
 	.main {
-		padding: 1.8rem;
+		padding: 1.5rem;
 	}
 	
 	.main h3 {
@@ -27,7 +27,7 @@
 	}
 	
 	.main .wrapper_top .search {
-		width: 270px;
+		width: 280px;
 		position: absolute;
 		left: 40%;
 	}
