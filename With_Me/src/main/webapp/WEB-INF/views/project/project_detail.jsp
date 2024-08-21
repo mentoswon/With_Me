@@ -110,7 +110,7 @@
 								</div>
 							</div>
 							<div class="btns">
-								<button class="follow" onclick="confirmFollow()">팔로우</button>
+								<button class="follow" onclick="confirmFollow('${project_detail.creator_name}')">팔로우</button>
 								<button class="ask" onclick="chat()">문의</button>
 							</div>
 						</div>
@@ -145,7 +145,7 @@
 		        <h3>신고하기</h3>
 	        	<span>어떤 문제가 있나요?</span><br>
 		        <div class="content">
-		        	<button value="지식재산권 침해">
+		        	<button value="지식재산권 침해" class="reportType">
 		        		<span class="repTitle">지식재산권 침해</span>
 		        		<span class="repContent">
 		        			타인의 지식재산권을 허락없이 사용했어요. <br>
@@ -153,14 +153,14 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="상세설명 내 허위사실">
+		        	<button value="상세설명 내 허위사실" class="reportType">
 		        		<span class="repTitle">상세설명 내 허위사실</span>
 		        		<span class="repContent">
 		        			상품을 받아보니 상세설명과 다른 부분이 있어요.
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="동일 제품의 타 채널 유통">
+		        	<button value="동일 제품의 타 채널 유통" class="reportType">
 		        		<span class="repTitle">동일 제품의 타 채널 유통</span>
 		        		<span class="repContent">
 		        			프로젝트 진행 전에 이미 판매한 적이 있는 제품이에요. <br>
@@ -168,7 +168,7 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="부적절한 콘텐츠">
+		        	<button value="부적절한 콘텐츠" class="reportType">
 		        		<span class="repTitle">부적절한 콘텐츠</span>
 		        		<span class="repContent">
 		        			- 타인을 모욕, 명예훼손하는 콘텐츠 <br>
@@ -178,7 +178,7 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="기타">
+		        	<button value="기타" class="reportType">
 		        		<span class="repTitle">기타</span>
 		        		<span class="repContent">
 		        			- 리워드가 불량이라 교환/수리 신청하고 싶어요. <br>
@@ -207,25 +207,35 @@
 		</footer>
 		<script type="text/javascript">
 			let modal = document.querySelectorAll('.modal');
-			let reportBtn = document.querySelector('#report');
-			let closeBtn = document.querySelectorAll('.close_btn');
-			
+			let report = document.querySelector('#report');
+			let closeBtn = document.querySelector('.close_btn');
+			let reportType = document.querySelectorAll('.reportType');
 			// -------------------------------------------------------------------------
-			
+			// 신고하기
 			// 팝업 오픈
-			reportBtn.onclick = function(){
+			report.onclick = function(){
 				modal[0].classList.add('on');
 			}
 			
 			// -------------------------------------------------------------------------
 			// 닫기 버튼
-			for(let i = 0; i < closeBtn.length ; i++) {
-				closeBtn[i].onclick = function(){
-					modal[i].classList.remove('on');
-				}
+			closeBtn.onclick = function(){
+				modal[0].classList.remove('on');
+			}
+			// -------------------------------------------------------------------------
+			// 신고 폼
+			
+			reportType.onclick = function(){
+				console.log("클릭");
 			}
 			
+			// 신고하기 end
 			// ==========================================================================
+			// 팔로우
+			function confirmFollow(creatorName){
+				confirm(creatorName + "님을 팔로우 하시겠습니까?");
+			}
+			
 		</script>
 	</body>
 </html>
