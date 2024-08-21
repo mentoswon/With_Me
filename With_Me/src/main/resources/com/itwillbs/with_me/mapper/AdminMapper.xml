@@ -218,15 +218,18 @@
 			, #{listLimit}
 	</select>
 	
-	<!-- 프로젝트 등록 승인/거부 -->
+	<!-- 프로젝트 상태 변경 -->
 	<update id="updateProjectStatus">
 		UPDATE project_info
 		<choose>
-			<when test="isAuthorize.equals('YES')">
+			<when test="status.equals('승인')">
 				SET project_status = '승인'
 			</when>
-			<when test="isAuthorize.equals('NO')">
+			<when test="status.equals('거부')">
 				SET project_status = '반려'
+			</when>
+			<when test="status.equals('취소')">
+				SET project_status = '취소'
 			</when>
 		</choose>
 		WHERE project_idx = #{project.project_idx}

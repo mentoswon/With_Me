@@ -4,7 +4,7 @@
 
 .inner .wrapper {
 	display: flex;
-	height: 140vh;
+	height: auto;
 }
 
 .inner .wrapper .side_nav{

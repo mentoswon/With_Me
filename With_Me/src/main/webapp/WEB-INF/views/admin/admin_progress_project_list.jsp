@@ -52,8 +52,8 @@
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
-	// 프로젝트 등록 승인/거부
-	function projectApproval(isAuthorize, project_idx){
+	// 프로젝트 즉시종료 승인/거부
+	function projectCancel(isAuthorize, project_idx){
 		let msg = "";
 		
 		if(isAuthorize == 'YES') {
@@ -61,9 +61,8 @@
 		} else if(isAuthorize == 'NO') {
 			msg = "거부";
 		}
-		
-		if(confirm("프로젝트 등록을 " + msg + "하시겠습니까?")){
-			location.href="AdminProjectApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
+		if(confirm("프로젝트 취소를 " + msg + "하시겠습니까?")){
+			location.href="AdminProjectCancel?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
 		}
 	}
 </script>
@@ -96,7 +95,7 @@
 							<th>세부 카테고리</th>
 							<th>목표 후원 금액</th>
 							<th>프로젝트 기간</th>
-							<th>프로젝트 즉시종료</th>
+							<th>프로젝트 취소</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
 						<c:set var="pageNum" value="1" />
@@ -114,8 +113,8 @@
 								<td>${PL.target_price}</td>
 								<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
 								<td>
-									<input type="button" value="승인" onclick="projectApproval('YES', ${PL.project_idx})">
-									<input type="button" value="거부" onclick="projectApproval('NO', ${PL.project_idx})">
+									<input type="button" value="승인" onclick="projectCancel('YES', ${PL.project_idx})">
+									<input type="button" value="거부" onclick="projectCancel('NO', ${PL.project_idx})">
 								</td>
 							</tr>
 						</c:forEach>

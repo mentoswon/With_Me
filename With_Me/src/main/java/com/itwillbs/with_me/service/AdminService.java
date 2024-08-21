@@ -59,9 +59,9 @@ public class AdminService {
 		return mapper.selectProjectList(startRow, listLimit, searchKeyword, projectStatus);
 	}
 	
-	// 프로젝트 등록 승인/거부
-	public int changeProjectStatus(ProjectVO project, String isAuthorize) {
-		return mapper.updateProjectStatus(project, isAuthorize);
+	// 프로젝트 상태 변경
+	public int changeProjectStatus(ProjectVO project, String status) {
+		return mapper.updateProjectStatus(project, status);
 	}
 	
 }

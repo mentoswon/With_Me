@@ -302,22 +302,28 @@ public class AdminController {
 			return "result/fail";
 		}
 		// 프로젝트 등록 승인/거부
-		int updateCount = adminService.changeProjectStatus(project, isAuthorize);
+		String status = "";
+		if(isAuthorize.equals("YES")) {
+			status = "승인";
+		} else if(isAuthorize.equals("NO")) {
+			status = "거부";
+		}
+		int updateCount = adminService.changeProjectStatus(project, status);
 		// 등록 승인/거부 결과 판별
 		// 성공 시 "프로젝트 등록 승인/거부 성공!" 메세지 출력 및 "AdminRegistWaitingProjectList" 서블릿 주소 전달(success.jsp)
 		// 실패 시 "프로젝트 등록 승인/거부 실패!" 메세지 출력 및 이전페이지 처리(fail.jsp)
-		if(updateCount > 0 && isAuthorize.equals("YES")) {
-			model.addAttribute("msg", "프로젝트 등록 승인 성공!");
-			model.addAttribute("targetURL", "AdminRegistWaitingProjectList");
-			return "result/success";
-		} else if(updateCount > 0 && isAuthorize.equals("NO")) {
-			model.addAttribute("msg", "프로젝트 등록 거부 성공!");
+		if(updateCount > 0) {
+			if(status.equals("승인")) {
+				model.addAttribute("msg", "프로젝트 등록 승인 성공!");
+			} else if(status.equals("거부")) {
+				model.addAttribute("msg", "프로젝트 등록 거부 성공!");
+			}
 			model.addAttribute("targetURL", "AdminRegistWaitingProjectList");
 			return "result/success";
 		} else {
-			if(isAuthorize.equals("YES")) {
+			if(status.equals("승인")) {
 				model.addAttribute("msg", "프로젝트 등록 승인 실패!");
-			} else if(isAuthorize.equals("NO")) {
+			} else if(status.equals("거부")) {
 				model.addAttribute("msg", "프로젝트 등록 거부 실패!");
 			}
 			return "result/fail";
@@ -379,6 +385,45 @@ public class AdminController {
 		model.addAttribute("pageInfo", pageInfo);
 		
 		return "admin/admin_progress_project_list";
+	}
+	
+	// 프로젝트 취소 승인/거부
+	@GetMapping("AdminProjectCancel")
+	public String adminProjectCancel(HttpSession session, Model model, ProjectVO project, String isAuthorize) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		// 프로젝트 취소 승인/거부
+		int updateCount = 0;
+		String status = "";
+		if(isAuthorize.equals("YES")) {
+			status = "취소";
+			updateCount = adminService.changeProjectStatus(project, status);
+		} else if(isAuthorize.equals("NO")) {
+			updateCount = 1; // update 작업을 하지 않기에 updateCount를 수동으로 조절
+		}
+		// 취소 승인/거부 결과 판별
+		// 성공 시 "프로젝트 취소 승인/거부 성공!" 메세지 출력 및 "AdminProgressProjectList" 서블릿 주소 전달(success.jsp)
+		// 실패 시 "프로젝트 취소 승인/거부 실패!" 메세지 출력 및 이전페이지 처리(fail.jsp)
+		if(updateCount > 0) {
+			if(status.equals("취소")) {
+				model.addAttribute("msg", "프로젝트 취소 승인 성공!");
+			} else {
+				model.addAttribute("msg", "프로젝트 취소 거부 성공!");
+			}
+			model.addAttribute("targetURL", "AdminProgressProjectList");
+			return "result/success";
+		} else {
+			if(status.equals("취소")) {
+				model.addAttribute("msg", "프로젝트 취소 승인 실패!");
+			} else {
+				model.addAttribute("msg", "프로젝트 취소 거부 실패!");
+			}
+			return "result/fail";
+		}
 	}
 }
 

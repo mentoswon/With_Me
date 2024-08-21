@@ -42,7 +42,7 @@ public interface AdminMapper {
 	List<ProjectVO> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
 										@Param("searchKeyword") String searchKeyword, @Param("projectStatus") String projectStatus);
 	
-	// 프로젝트 등록 승인/거부
-	int updateProjectStatus(@Param("project") ProjectVO project, @Param("isAuthorize") String isAuthorize);
+	// 프로젝트 상태 변경
+	int updateProjectStatus(@Param("project") ProjectVO project, @Param("status") String status);
 	
 }
