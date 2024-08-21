@@ -11,17 +11,6 @@
 }
 
 /* ----- 프로젝트 메뉴바 ---------- */
-header{
-    background-color: #f0f8ff;
-    position: fixed;
-	top: 0;
-    height:96px;
-    width: 100%;
-    z-index: 9999;
-    display: flex; /* flex 레이아웃 추가 */
-	justify-content: center; /* 수평 중앙 정렬 */
-	align-items: center; /* 수직 중앙 정렬 */
-}
 
 #topWrap {
 	display: flex;
