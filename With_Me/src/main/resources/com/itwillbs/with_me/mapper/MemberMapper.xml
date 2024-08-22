@@ -79,7 +79,7 @@
 		SET
 			mem_mail_auth_status = 'Y'
 		WHERE
-			mem_email = #{mem_email}
+			mem_email = #{email}     -- authInfo 안에 email값으로 mem_email을 찾아서 업데이트
 	</update>
 	
 	<!-- 이메일 인증 정보 삭제 -->

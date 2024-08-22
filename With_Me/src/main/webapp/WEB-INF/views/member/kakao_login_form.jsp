@@ -80,7 +80,7 @@ a {
 <div class="text-center">
     <a href="https://kauth.kakao.com/oauth/authorize"
        th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code')}">
-        <img src="/images/kakao_login_medium_narrow.png">
+        <img src="${pageContext.request.servletContext.contextPath}/resources/image/kakao_login_medium_narrow.png">
     </a>
 </div>
 </body>
