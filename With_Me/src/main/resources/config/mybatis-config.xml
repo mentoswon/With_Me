@@ -7,6 +7,7 @@
 	<typeAliases>
 		<typeAlias type="com.itwillbs.with_me.vo.MemberVO" alias="member"/>
 		<typeAlias type="com.itwillbs.with_me.vo.ProjectVO" alias="project"/>
+		<typeAlias type="com.itwillbs.with_me.vo.ProjectCancelVO" alias="projectCancel"/>
 		<typeAlias type="com.itwillbs.with_me.vo.CommonCodeVO" alias="commonCode"/>
 		<typeAlias type="com.itwillbs.with_me.vo.MailAuthInfo" alias="mailAuth"/>
 		<typeAlias type="com.itwillbs.with_me.vo.SponsorVO" alias="sponsor"/>

@@ -62,7 +62,7 @@
 			msg = "거부";
 		}
 		if(confirm("프로젝트 취소를 " + msg + "하시겠습니까?")){
-			location.href="AdminProjectCancel?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
+			location.href = "AdminProjectCancel?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
 		}
 	}
 </script>

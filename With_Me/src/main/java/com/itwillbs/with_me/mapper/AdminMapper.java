@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Mapper
@@ -44,5 +45,8 @@ public interface AdminMapper {
 	
 	// 프로젝트 상태 변경
 	int updateProjectStatus(@Param("project") ProjectVO project, @Param("status") String status);
+	
+	// 프로젝트 취소신청 목록 조회
+	ProjectCancelVO selectProjectCancel(@Param("project") ProjectVO project);
 	
 }

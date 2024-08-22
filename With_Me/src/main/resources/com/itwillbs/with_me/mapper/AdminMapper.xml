@@ -234,4 +234,11 @@
 		</choose>
 		WHERE project_idx = #{project.project_idx}
 	</update>
+	
+	<!-- 프로젝트 취소신청 목록 조회 -->
+	<select id="selectProjectCancel" resultType="projectCancel">
+		SELECT * 
+		FROM project_cancel
+		WHERE project_idx = #{project.project_idx}
+	</select>
 </mapper>

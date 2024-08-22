@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.AdminMapper;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Service
@@ -62,6 +63,11 @@ public class AdminService {
 	// 프로젝트 상태 변경
 	public int changeProjectStatus(ProjectVO project, String status) {
 		return mapper.updateProjectStatus(project, status);
+	}
+	
+	// 프로젝트 취소신청 목록 조회
+	public ProjectCancelVO getProjectCancel(ProjectVO project) {
+		return mapper.selectProjectCancel(project);
 	}
 	
 }

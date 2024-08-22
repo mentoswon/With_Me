@@ -14,6 +14,7 @@ import com.itwillbs.with_me.service.AdminService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
+import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Controller
@@ -394,6 +395,14 @@ public class AdminController {
 		if(session.getAttribute("sIsAdmin").equals("N")) {
 			model.addAttribute("msg", "관리자 권한이 없습니다.");
 			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		// 프로젝트 취소신청 목록 조회
+		ProjectCancelVO projectCancel = adminService.getProjectCancel(project);
+		System.out.println("projectCancel : " + projectCancel);
+		// 창작자가 취소신청을 하지 않은 경우 경고메세지 출력 및 이전페이지 처리(fail.jsp)
+		if(projectCancel == null) {
+			model.addAttribute("msg", "이 프로젝트는 창작자가 취소신청을 하지 않았습니다.");
 			return "result/fail";
 		}
 		// 프로젝트 취소 승인/거부

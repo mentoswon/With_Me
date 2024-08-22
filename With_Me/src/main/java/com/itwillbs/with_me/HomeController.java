@@ -35,6 +35,7 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
+		// 세션 아이디가 없을 경우(=로그인 하지 않은 경우) 관리자 권한이 없도록 설정
 		if(session.getAttribute("sId") == null) {
 			session.setAttribute("sIsAdmin", "N");
 			session.setMaxInactiveInterval(60 * 60);
