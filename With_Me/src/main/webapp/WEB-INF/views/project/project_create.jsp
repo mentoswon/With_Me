@@ -118,6 +118,16 @@ $(function() {
         checkSummaryLength();
     });
     
+    // 프로젝트 대표 이미지 미리보기
+	$("#project_image").on("change", function(event) {
+	    let file = event.target.files[0];
+	    let reader = new FileReader(); 
+	    reader.onload = function(e) {
+	        $("#project_image_preview").attr("src", e.target.result);
+	    }
+	    reader.readAsDataURL(file);
+	});
+    
     // 검색 태그 입력값 유효성 검사
     $("#search_tag").keyup(function() {
     	 let tagValue = $("#search_tag").val();  // 입력된 태그 값을 가져옴
@@ -298,6 +308,56 @@ $(function() {
     
     // ========================================================================================
     // [ 프로젝트 계획 ]
+	// 프로젝트 소개 미리보기
+	$("#project_introduce").on("change", function(event) {
+	    let file = event.target.files[0];
+	    let reader = new FileReader(); 
+	    reader.onload = function(e) {
+	        $("#project_introduce_preview").attr("src", e.target.result);
+	    }
+	    reader.readAsDataURL(file);
+	});
+
+	// 프로젝트 예산 미리보기
+	$("#project_budget").on("change", function(event) {
+	    let file = event.target.files[0];
+	    let reader = new FileReader(); 
+	    reader.onload = function(e) {
+	        $("#project_budget_preview").attr("src", e.target.result);
+	    }
+	    reader.readAsDataURL(file);
+	});
+
+	// 프로젝트 일정 미리보기
+	$("#project_schedule").on("change", function(event) {
+	    let file = event.target.files[0];
+	    let reader = new FileReader(); 
+	    reader.onload = function(e) {
+	        $("#project_schedule_preview").attr("src", e.target.result);
+	    }
+	    reader.readAsDataURL(file);
+	});
+
+	// 프로젝트 팀 소개 미리보기
+	$("#project_team_introduce").on("change", function(event) {
+	    let file = event.target.files[0];
+	    let reader = new FileReader(); 
+	    reader.onload = function(e) {
+	        $("#project_team_introduce_preview").attr("src", e.target.result);
+	    }
+	    reader.readAsDataURL(file);
+	});
+
+	// 후원 설명 미리보기
+	$("#project_sponsor").on("change", function(event) {
+	    let file = event.target.files[0];
+	    let reader = new FileReader(); 
+	    reader.onload = function(e) {
+	        $("#project_sponsor_preview").attr("src", e.target.result);
+	    }
+	    reader.readAsDataURL(file);
+	});
+
     // 프로젝트 정책 글자 수
     $("#project_policy").keyup(function() {
     	let projectPolicyLength = $("#project_policy").val().length;
@@ -316,7 +376,14 @@ $(function() {
 		<div id="topWrap">
 			<a href="#">← 내가 만든 프로젝트</a>
 			<a href="./" class="main_logo">
-				<img alt="로고" src="${pageContext.request.contextPath}/resources/image/withme.png">
+				<c:choose>
+					<c:when test="${empty project.project_image}">
+						<img alt="기본 이미지" src="${pageContext.request.contextPath}/resources/image/withme.png">
+					</c:when>
+					<c:otherwise>
+						<img alt="프로젝트 대표 이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+					</c:otherwise>
+				</c:choose>
 			</a>
 			<div>
 				<input type="button" id="save" value="저장하기">
@@ -447,6 +514,9 @@ $(function() {
 							</span>
 						</div>
 					</label>
+					<div class="imagePreview">
+						<img id="project_image_preview">
+					</div>
 					<br><br>
 				</div>
 			</div>
@@ -686,7 +756,7 @@ $(function() {
 					</div>
 				</div>
 				<div class="projectContentWrap">
-					<input type="file" name="project_image" id="project_introduce">
+					<input type="file" name="project_introduce" id="project_introduce">
 					<label for="project_introduce">
 						<div class="fileUpload">
 							<span class="uploadImg">
@@ -695,6 +765,9 @@ $(function() {
 							</span>
 						</div>
 					</label>
+					<div class="imagePreview">
+						<img id="project_introduce_preview">
+					</div>
 					<br><br>
 				</div>
 			</div>
@@ -717,7 +790,7 @@ $(function() {
 					</div>
 				</div>
 				<div class="projectContentWrap">
-					<input type="file" name="project_image" id="project_budget">
+					<input type="file" name="project_budget" id="project_budget">
 					<label for="project_budget">
 						<div class="fileUpload">
 							<span class="uploadImg">
@@ -726,6 +799,9 @@ $(function() {
 							</span>
 						</div>
 					</label>
+					<div class="imagePreview">
+						<img id="project_budget_preview">
+					</div>
 					<br><br>
 				</div>
 			</div>
@@ -755,7 +831,7 @@ $(function() {
 					</div>
 				</div>
 				<div class="projectContentWrap">
-					<input type="file" name="project_image" id="project_schedule">
+					<input type="file" name="project_schedule" id="project_schedule">
 					<label for="project_schedule">
 						<div class="fileUpload">
 							<span class="uploadImg">
@@ -764,6 +840,9 @@ $(function() {
 							</span>
 						</div>
 					</label>
+					<div class="imagePreview">
+						<img id="project_schedule_preview">
+					</div>
 					<br><br>
 				</div>
 			</div>
@@ -779,7 +858,7 @@ $(function() {
 					<br>
 				</div>
 				<div class="projectContentWrap">
-					<input type="file" name="project_image" id="project_team_introduce">
+					<input type="file" name="project_team_introduce" id="project_team_introduce">
 					<label for="project_team_introduce">
 						<div class="fileUpload">
 							<span class="uploadImg">
@@ -788,6 +867,9 @@ $(function() {
 							</span>
 						</div>
 					</label>
+					<div class="imagePreview">
+						<img id="project_team_introduce_preview">
+					</div>
 					<br><br>
 				</div>
 			</div>
@@ -802,7 +884,7 @@ $(function() {
 					<br>
 				</div>
 				<div class="projectContentWrap">
-					<input type="file" name="project_image" id="project_sponsor">
+					<input type="file" name="project_sponsor" id="project_sponsor">
 					<label for="project_sponsor">
 						<div class="fileUpload">
 							<span class="uploadImg">
@@ -811,6 +893,9 @@ $(function() {
 							</span>
 						</div>
 					</label>
+					<div class="imagePreview">
+						<img id="project_sponsor_preview">
+					</div>
 					<br><br>
 				</div>
 			</div>
@@ -903,8 +988,7 @@ $(function() {
 			<%-- ----- 승인 가능 프로젝트 ----- --%>
 			<div id="grantProject">
 				<div class="icon grant">✓</div>
-				<h4 align="center"><br>승인 가능 프로젝트</h4>
-				<br>
+				<h4 align="center">승인 가능 프로젝트</h4>
 				<p>- 기존에 없던 새로운 시도</p>
 				<p>- 기존에 없던 작품, 제품</p>
 				<p>- 창작자의 이전 제품 및 콘텐츠는 후원에서 부수적으로 제공 가능</p>
@@ -912,8 +996,7 @@ $(function() {
 			<%-- ----- 반려 대상 프로젝트 ----- --%>
 			<div id="returnProject">
 				<div class="icon return">X</div>
-				<h4 align="center"><br>반려 대상 프로젝트</h4>
-				<br>
+				<h4 align="center">반려 대상 프로젝트</h4>
 				<p>- 기존 상품의 판매 및 홍보</p>
 				<p>- 제3자에 후원금 또는 물품 기부</p>
 				<p>- 시중에 판매 및 유통되었던 제품 제공</p>
@@ -927,8 +1010,5 @@ $(function() {
 		</div>
 	</div>
 	
-<!-- 	<footer> -->
-<%-- 		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include> --%>
-<!-- 	</footer> -->
 </body>
 </html>
