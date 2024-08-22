@@ -361,7 +361,7 @@ public class MemberController {
 	public String mypageInfo() {
 		return "mypage/mypage_info";
 	}
-	// ㅎㅎ
+	
 }
 
 
