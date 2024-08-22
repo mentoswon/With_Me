@@ -970,7 +970,7 @@ $(function() {
 						<span id=""></span>
 						<p><span id="">0</span>/30</p>
 					</div>
-					<br><br>
+					<br><br> 
 				</div>
 			</div>
 		</div>
