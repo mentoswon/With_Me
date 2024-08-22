@@ -250,6 +250,18 @@ input[type="file"] {
 	cursor: pointer;
 }
 
+.imagePreview {
+	width: 550px; 
+	height: 300px; 
+	margin-top: 10px;
+	overflow: auto;
+	overflow-x: none;
+}
+
+.imagePreview img {
+	width: 100%;
+}
+
 /* ----- 펀딩계획 - 목표금액 ---------- */
 .projectWriteBorder {
 	border: 2px solid #ccc;
@@ -377,7 +389,7 @@ input[type="radio"] {
 #popupWrap {
 	/* ------------ 임시 ------------------------ */
 	/* 프로젝트 등록 작업 완료 후 지우기!!!!!!!!! */
-	display: none;
+/* 	display: none; */
 	/* ------------------------------------------ */
 	position: fixed;
     left: 50%;
