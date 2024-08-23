@@ -23,10 +23,10 @@ public interface AdminMapper {
 	int updateAdminAuth(MemberVO member);
 	
 	// 후원내역 개수 조회
-	int selectSponsorshipDetailListCount(String searchKeyword);
+	int selectSponsorshipHistoryListCount(String searchKeyword);
 	
 	// 후원내역 조회
-	List<String> selectSponsorshipDetail(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
+	List<String> selectSponsorshipHistory(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
 										@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
 	
 	// 구매내역 개수 조회
@@ -46,7 +46,10 @@ public interface AdminMapper {
 	// 프로젝트 상태 변경
 	int updateProjectStatus(@Param("project") ProjectVO project, @Param("status") String status);
 	
-	// 프로젝트 취소신청 목록 조회
-	ProjectCancelVO selectProjectCancel(@Param("project") ProjectVO project);
+	// 프로젝트 취소 신청여부 조회
+	ProjectCancelVO selectProjectCancel(int project_idx);
+	
+	// 프로젝트 취소 승인여부 변경
+	int updateProjectCancelStatus(@Param("project") ProjectVO project);
 	
 }

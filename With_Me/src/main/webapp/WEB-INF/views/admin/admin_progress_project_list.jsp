@@ -52,7 +52,7 @@
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
-	// 프로젝트 즉시종료 승인/거부
+	// 프로젝트 취소 승인/거부
 	function projectCancel(isAuthorize, project_idx){
 		let msg = "";
 		
@@ -61,9 +61,29 @@
 		} else if(isAuthorize == 'NO') {
 			msg = "거부";
 		}
-		if(confirm("프로젝트 취소를 " + msg + "하시겠습니까?")){
-			location.href = "AdminProjectCancel?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
-		}
+		// AJAX 활용하여 프로젝트 취소 신청여부 확인 - IsCancelExists
+		$.ajax({
+			type : "POST",
+			url : "IsCancelExists",
+			data : {
+				"project_idx" : project_idx
+			},
+			dataType : "json",
+			success : function(response) {
+				console.log(JSON.stringify(response));
+				if(!response.isCancelExists) {
+					alert("이 프로젝트는 취소신청을 하지 않았습니다.");
+					return;
+				} else if(response.isCancelExists) {
+					if(confirm("프로젝트 취소를 " + msg + "하시겠습니까?")){
+						location.href = "AdminProjectCancel?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
+					}
+				}
+			},
+			error : function() {
+				alert("프로젝트 취소 처리 과정에서 오류 발생!");
+			}
+		});
 	}
 </script>
 </head>
@@ -89,7 +109,7 @@
 				<div class="content">
 					<table border="1">
 						<tr>
-							<th>프로젝트 번호</th>
+							<th>프로젝트 코드</th>
 							<th>프로젝트 제목</th>
 							<th>카테고리</th>
 							<th>세부 카테고리</th>
@@ -106,7 +126,7 @@
 						</c:if>
 						<c:forEach var="PL" items="${projectList}">
 							<tr align="center">
-								<td>${PL.project_idx}</td>
+								<td>${PL.project_code}</td>
 								<td>${PL.project_title}</td>
 								<td>${PL.project_category}</td>
 								<td>${PL.project_category_detail}</td>

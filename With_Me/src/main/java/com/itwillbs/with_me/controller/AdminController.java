@@ -1,14 +1,19 @@
 package com.itwillbs.with_me.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.AdminService;
 import com.itwillbs.with_me.service.MemberService;
@@ -119,8 +124,8 @@ public class AdminController {
 	}
 	
 	// 관리자 - 회원관리 - 회원목록 - 후원내역
-	@GetMapping("SponsorshipDetailList")
-	public String sponsorshipDetailList(@RequestParam(defaultValue = "1") int pageNum,
+	@GetMapping("SponsorshipHistoryList")
+	public String sponsorshipHistoryList(@RequestParam(defaultValue = "1") int pageNum,
 										@RequestParam(defaultValue ="") String searchKeyword,
 										@RequestParam(defaultValue = "5") int listLimit,
 										MemberVO member, HttpSession session, Model model) {
@@ -134,7 +139,7 @@ public class AdminController {
 //		int listLimit = 5; // 페이지 당 목록 개수
 		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
 		
-		int listCount = adminService.getSponsorshipDetailListCount(searchKeyword); // 총 목록 개수
+		int listCount = adminService.getSponsorshipHistoryListCount(searchKeyword); // 총 목록 개수
 //		System.out.println("listCount : " + listCount);
 		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
@@ -156,14 +161,14 @@ public class AdminController {
 		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
 		if(pageNum < 1 || pageNum > maxPage) {
 			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "SponsorshipDetailList?pageNum=1");
+			model.addAttribute("targetURL", "SponsorshipHistoryList?pageNum=1");
 			return "result/fail";
 		}
 		
 		// 후원내역 조회
 		// 검색어는 기본적으로 "" 널스트링
 		member = memberService.getMember(member);
-		List<String> sponsorshipDetailList = adminService.getSponsorshipDetail(startRow, listLimit, searchKeyword, member);
+		List<String> sponsorshipHistoryList = adminService.getSponsorshipHistory(startRow, listLimit, searchKeyword, member);
 //		System.out.println("sponsorshipDetailList : " + sponsorshipDetailList);
 		
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
@@ -171,10 +176,10 @@ public class AdminController {
 		
 		// 후원내역 목록, 페이징 정보 Model 객체에 저장 -> admin_member_sponsorship_detail_list.jsp 로 전달
 		model.addAttribute("member", member);
-		model.addAttribute("sponsorshipDetailList", sponsorshipDetailList);
+		model.addAttribute("sponsorshipHistoryList", sponsorshipHistoryList);
 		model.addAttribute("pageInfo", pageInfo);
 		
-		return "admin/admin_member_sponsorship_detail_list";
+		return "admin/admin_member_sponsorship_history_list";
 	}
 	
 	// 관리자 - 회원관리 - 회원목록 - 구매내역
@@ -388,6 +393,34 @@ public class AdminController {
 		return "admin/admin_progress_project_list";
 	}
 	
+	// 프로잭트 취소 신청여부 확인
+	@ResponseBody
+	@PostMapping("IsCancelExists")
+	public String isCancelExists(@RequestParam int project_idx) {
+//		System.out.println("project_idx : " + project_idx);
+		
+		// 프로젝트 취소 신청여부 조회
+		ProjectCancelVO projectCancel = adminService.getProjectCancel(project_idx);
+//		System.out.println("projectCancel : " + projectCancel);
+		
+		// 프로젝트 취소 신청여부 판별
+		boolean isCancelExists = false; // 취소신청 여부를 저장할 변수 선언(true : 신청함, false : 신청하지 않음)
+		if(projectCancel != null) { // 취소신청을 했을 경우
+			isCancelExists = true;
+		}
+		// 리턴 데이터를 Map 객체에 저장
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("isCancelExists", isCancelExists);
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(map);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		// JSON 객체를 문자열로 변환하여 리턴(@ResponseBody 어노테이션 필수!)
+		return jo.toString();
+	}
+	
 	// 프로젝트 취소 승인/거부
 	@GetMapping("AdminProjectCancel")
 	public String adminProjectCancel(HttpSession session, Model model, ProjectVO project, String isAuthorize) {
@@ -397,20 +430,15 @@ public class AdminController {
 			model.addAttribute("targetURL", "./");
 			return "result/fail";
 		}
-		// 프로젝트 취소신청 목록 조회
-		ProjectCancelVO projectCancel = adminService.getProjectCancel(project);
-		System.out.println("projectCancel : " + projectCancel);
-		// 창작자가 취소신청을 하지 않은 경우 경고메세지 출력 및 이전페이지 처리(fail.jsp)
-		if(projectCancel == null) {
-			model.addAttribute("msg", "이 프로젝트는 창작자가 취소신청을 하지 않았습니다.");
-			return "result/fail";
-		}
 		// 프로젝트 취소 승인/거부
 		int updateCount = 0;
 		String status = "";
 		if(isAuthorize.equals("YES")) {
 			status = "취소";
-			updateCount = adminService.changeProjectStatus(project, status);
+			// 프로젝트 상태 변경
+			updateCount += adminService.changeProjectStatus(project, status);
+			// 프로젝트 취소 승인여부 변경
+			updateCount += adminService.changeProjectCancelStatus(project);
 		} else if(isAuthorize.equals("NO")) {
 			updateCount = 1; // update 작업을 하지 않기에 updateCount를 수동으로 조절
 		}

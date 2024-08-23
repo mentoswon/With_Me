@@ -76,7 +76,7 @@
 	</update>
 	
 	<!-- 후원내역 개수 조회 -->
-	<select id="selectSponsorshipDetailListCount" resultType="int">
+	<select id="selectSponsorshipHistoryListCount" resultType="int">
 		SELECT COUNT(*)
 		FROM project_payment pp JOIN funding_user fu
 		ON pp.pro_funding_idx = fu.funding_idx
@@ -94,7 +94,7 @@
 	</select>
 	
 	<!-- 후원내역 조회 -->
-	<select id="selectSponsorshipDetail" resultType="String">
+	<select id="selectSponsorshipHistory" resultType="String">
 		SELECT pp.pro_pay_idx, pp.pro_funding_idx, fu.funding_project_idx, pp.pro_pay_amt, pm.pay_method_name, pp.pro_pay_date
 		FROM project_payment pp JOIN funding_user fu
 		ON pp.pro_funding_idx = fu.funding_idx
@@ -176,7 +176,7 @@
 		</choose>
 		<if test="!searchKeyword.equals('')">
 			AND (
-				project_idx like concat('%',#{searchKeyword},'%')
+				project_code like concat('%',#{searchKeyword},'%')
 				or project_title like concat('%',#{searchKeyword},'%')
 				or project_category like concat('%',#{searchKeyword},'%')
 				or project_category_detail like concat('%',#{searchKeyword},'%')
@@ -202,7 +202,7 @@
 		</choose>
 		<if test="!searchKeyword.equals('')">
 			AND (
-				project_idx like concat('%',#{searchKeyword},'%')
+				project_code like concat('%',#{searchKeyword},'%')
 				or project_title like concat('%',#{searchKeyword},'%')
 				or project_category like concat('%',#{searchKeyword},'%')
 				or project_category_detail like concat('%',#{searchKeyword},'%')
@@ -235,10 +235,17 @@
 		WHERE project_idx = #{project.project_idx}
 	</update>
 	
-	<!-- 프로젝트 취소신청 목록 조회 -->
+	<!-- 프로젝트 취소 신청여부 조회 -->
 	<select id="selectProjectCancel" resultType="projectCancel">
 		SELECT * 
 		FROM project_cancel
-		WHERE project_idx = #{project.project_idx}
+		WHERE project_idx = #{project_idx}
 	</select>
+	
+	<!-- 프로젝트 취소 승인여부 변경 -->
+	<update id="updateProjectCancelStatus">
+		UPDATE project_cancel
+		SET project_cancel_status = '취소승인'
+		WHERE project_idx = #{project.project_idx}
+	</update>
 </mapper>

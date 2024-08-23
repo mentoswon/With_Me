@@ -141,7 +141,7 @@
 									</c:choose>
 								</td>
 								<td>
-									<input type="button" value="후원내역" onclick="location.href='SponsorshipDetailList?mem_email=${member.mem_email}'">
+									<input type="button" value="후원내역" onclick="location.href='SponsorshipHistoryList?mem_email=${member.mem_email}'">
 									<input type="button" value="구매내역" onclick="location.href='PurchaseHistoryList?mem_email=${member.mem_email}'">
 								</td>
 							</tr>

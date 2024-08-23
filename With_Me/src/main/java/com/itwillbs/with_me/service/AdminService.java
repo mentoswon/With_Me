@@ -31,13 +31,13 @@ public class AdminService {
 	}
 	
 	// 후원내역 개수 조회
-	public int getSponsorshipDetailListCount(String searchKeyword) {
-		return mapper.selectSponsorshipDetailListCount(searchKeyword);
+	public int getSponsorshipHistoryListCount(String searchKeyword) {
+		return mapper.selectSponsorshipHistoryListCount(searchKeyword);
 	}
 	
 	// 후원내역 조회
-	public List<String> getSponsorshipDetail(int startRow, int listLimit, String searchKeyword, MemberVO member) {
-		return mapper.selectSponsorshipDetail(startRow, listLimit, searchKeyword, member);
+	public List<String> getSponsorshipHistory(int startRow, int listLimit, String searchKeyword, MemberVO member) {
+		return mapper.selectSponsorshipHistory(startRow, listLimit, searchKeyword, member);
 	}
 	
 	// 구매내역 개수 조회
@@ -65,9 +65,14 @@ public class AdminService {
 		return mapper.updateProjectStatus(project, status);
 	}
 	
-	// 프로젝트 취소신청 목록 조회
-	public ProjectCancelVO getProjectCancel(ProjectVO project) {
-		return mapper.selectProjectCancel(project);
+	// 프로젝트 취소 신청여부 조회
+	public ProjectCancelVO getProjectCancel(int project_idx) {
+		return mapper.selectProjectCancel(project_idx);
+	}
+	
+	// 프로젝트 취소 승인여부 변경
+	public int changeProjectCancelStatus(ProjectVO project) {
+		return mapper.updateProjectCancelStatus(project);
 	}
 	
 }

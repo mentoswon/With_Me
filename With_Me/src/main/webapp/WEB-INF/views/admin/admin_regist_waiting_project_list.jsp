@@ -90,7 +90,7 @@
 				<div class="content">
 					<table border="1">
 						<tr>
-							<th>프로젝트 번호</th>
+							<th>프로젝트 코드</th>
 							<th>프로젝트 제목</th>
 							<th>카테고리</th>
 							<th>세부 카테고리</th>
@@ -107,7 +107,7 @@
 						</c:if>
 						<c:forEach var="PL" items="${projectList}">
 							<tr align="center">
-								<td>${PL.project_idx}</td>
+								<td>${PL.project_code}</td>
 								<td>${PL.project_title}</td>
 								<td>${PL.project_category}</td>
 								<td>${PL.project_category_detail}</td>
