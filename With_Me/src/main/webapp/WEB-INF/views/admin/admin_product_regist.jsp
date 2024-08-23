@@ -31,8 +31,73 @@
 		background: skyblue;
 	}
 </style>
-<script type="text/javascript">
+<script>
+// 공통코드 셀렉트
+var subjectObject = {
+  "Front-end": {
+    "HTML": ["Links", "Images", "Tables", "Lists"],
+    "CSS": ["Borders", "Margins", "Backgrounds", "Float"],
+    "JavaScript": ["Variables", "Operators", "Functions", "Conditions"]    
+  },
+  "Back-end": {
+    "PHP": ["Variables", "Strings", "Arrays"],
+    "SQL": ["SELECT", "UPDATE", "DELETE"]
+  }
+}
+window.onload = function() {
+  var subjectSel = document.getElementById("subject");
+  var topicSel = document.getElementById("topic");
+  var chapterSel = document.getElementById("chapter");
+  for (var x in subjectObject) {
+    subjectSel.options[subjectSel.options.length] = new Option(x, x);
+  }
+  subjectSel.onchange = function() {
+    //empty Chapters- and Topics- dropdowns
+    chapterSel.length = 1;
+    topicSel.length = 1;
+    //display correct values
+    for (var y in subjectObject[this.value]) {
+      topicSel.options[topicSel.options.length] = new Option(y, y);
+    }
+  }
+  topicSel.onchange = function() {
+    //empty Chapters dropdown
+    chapterSel.length = 1;
+    //display correct values
+    var z = subjectObject[subjectSel.value][this.value];
+    for (var i = 0; i < z.length; i++) {
+      chapterSel.options[chapterSel.options.length] = new Option(z[i], z[i]);
+    }
+  }
+}
 
+// ==========================================================================
+// 카테고리 셀렉트
+var subjectObject = {
+	"푸드": ["사료", "껌류", "수제간식"],
+	"패션/위생": ["의류"],
+	"식기/급수기": ["급수기"],
+	"장난감/훈련": ["인형"],
+	"하우스/안전": ["계단/스텝", "매트"]
+}
+window.onload = function() {
+  var product_categorySel = document.getElementById("product_category");
+  var project_category_detailSel = document.getElementById("project_category_detail");
+  
+  for (var x in subjectObject) {
+	  product_categorySel.options[product_categorySel.options.length] = new Option(x, x);
+  }
+  product_categorySel.onchange = function() {
+	  
+    project_category_detailSel.length = 1;
+	
+	var y = subjectObject[this.value];
+	
+    for (var i = 0; i < y.length; i++) {
+    	project_category_detailSel.options[project_category_detailSel.options.length] = new Option(y[i], y[i]);
+    }
+  }
+}
 </script>
 </head>
 <body>
@@ -50,7 +115,19 @@
 							<td>상품코드</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="product_code" size="9" id="product_code"></td>
+							<td>
+<!-- 								<input type="text" name="product_code" size="9" id="product_code"> -->
+								<select name="product_code1" id="product_code1">
+									<option value="" selected="selected">상위공통코드</option>
+								</select>
+								<select name="product_code2" id="product_code2">
+									<option value="" selected="selected">공통코드</option>
+								</select>
+								<select name="product_code3" id="product_code3">
+									<option value="" selected="selected">공통코드</option>
+								</select>
+								<input type="text" name="product_code4" size="2">
+							</td>
 						</tr>	
 						<tr>
 							<td>상품이름</td>
@@ -69,13 +146,8 @@
 						</tr>
 						<tr>
 							<td>
-								<select name="product_category">
-									<option value="">카테고리를 선택하세요</option>
-									<option value="푸드">푸드</option>
-									<option value="패션/위생">패션/위생</option>
-									<option value="식기/급수기">식기/급수기</option>
-									<option value="장난감/훈련">장난감/훈련</option>
-									<option value="하우스/안전">하우스/안전</option>
+								<select name="product_category" id="product_category">
+									<option value="" selected="selected">카테고리</option>
 								</select>
 							</td>
 						<tr>
@@ -83,13 +155,9 @@
 						</tr>
 						<tr>
 							<td>
-								<select name="project_category_detail">
-									<option value="">세부 카테고리를 선택하세요</option>
-									<option value="사료">사료</option>
-									<option value="껌류">껌류</option>
-									<option value="수제간식">수제간식</option>
-									<option value="의류">의류</option>
-								</select>
+								<select name="project_category_detail" id="project_category_detail">
+								    <option value="" selected="selected">세부 카테고리</option>
+							   </select>
 							</td>
 						</tr>	
 						<tr>
@@ -108,14 +176,6 @@
 								<input type="text" name="product_stock" id="product_stock">
 							</td>
 						</tr>	
-<!-- 						<tr> -->
-<!-- 							<td>상품상태</td> -->
-<!-- 						</tr> -->
-<!-- 						<tr>	 -->
-<!-- 							<td> -->
-<!-- 								<input type="text" name="product_status" id="product_status"> -->
-<!-- 							</td> -->
-<!-- 						</tr>	 -->
 						<%-- 파일 첨부 영역 --%>
 						<tr>
 							<td>상품 이미지</td>

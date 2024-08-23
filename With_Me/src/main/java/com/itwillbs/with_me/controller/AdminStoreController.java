@@ -132,11 +132,13 @@ public class AdminStoreController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			model.addAttribute("msg", "상품이 등록되었습니다!");
+			model.addAttribute("targetURL", "AdminStore");
 			
 			// 상품관리(AdminStore) 서블릿 주소 리다이렉트
-			return "redirect:/AdminStore";
+			return "result/success";
 		} else { // 실패
-			// "글쓰기 실패!" 메세지 출력 및 이전 페이지 돌아가기 처리
+			// "상품등록 실패!" 메세지 출력 및 이전 페이지 돌아가기 처리
 			model.addAttribute("msg", "상품등록 실패!");
 			return "result/fail";
 		}

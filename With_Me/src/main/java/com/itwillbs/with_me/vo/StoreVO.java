@@ -16,6 +16,10 @@ public class StoreVO {
 	// ----------------------------------------------
 	private int product_idx;
 	private String product_code;
+	private String product_code1; // SHOP/FUND
+	private String product_code2; // FO/FA ~~
+	private String product_code3; // FEE/GUM ~~
+	private String product_code4; // 01, 02 ~~
 	private String product_name;
 	private String product_description;
 	private String product_category;
