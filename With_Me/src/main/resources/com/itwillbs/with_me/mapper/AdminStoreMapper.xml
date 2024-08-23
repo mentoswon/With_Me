@@ -39,6 +39,7 @@
 			, #{product_name}
 			, #{product_description}
 			, #{product_category}
+			, #{project_category_detail}
 			, #{product_price}
 			, #{product_stock}
 			, 1                       -- 1 : 판매중, 2: 판매 중지, 3 : 품절
@@ -48,3 +49,11 @@
 	</insert>
 	
 </mapper>
+
+
+
+
+
+
+
+
