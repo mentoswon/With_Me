@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -137,9 +138,6 @@
 							<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
 							<!-- 오늘 날짜 추출 end -->
 							
-							<!-- 후원금 총액 -->
-							<c:set var="total" value="0"/>
-							
 							<c:forEach var="project" items="${projectList}">
 							
 								<c:if test="${project.funding_end_date > today}">
@@ -160,14 +158,23 @@
 										
 										<div class="fund_info">
 											<div class="fund_leftWrap">
-											
-												<%-- 펀딩률 계산 --%>
-												<c:set var="total" value="${total + project.funding_pay_amt}"/>
-												<c:set var="target_price" value="${project.target_price}"/>
-												<fmt:parseNumber var="fund_rate" value="${total / target_price * 100}"/>
+												<%-- 펀딩률 --%>
+												<fmt:parseNumber var="funding_amt" value="${project.funding_amt*1.0}" ></fmt:parseNumber>
+												<fmt:parseNumber var="target_price" value="${project.target_price}" ></fmt:parseNumber>
 												
-												<div class="fund_rate">${fund_rate} %</div>
-												<div class="fund_amt"><fmt:formatNumber pattern="#,###">${total}</fmt:formatNumber> 원</div> <%-- 모금액 --%>
+												<c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
+												
+												<c:choose>
+													<c:when test="${fund_rate eq 0.0}">
+														<div class="fund_rate">0%</div>
+													</c:when>
+													<c:otherwise>
+														<div class="fund_rate">${fund_rate}%</div>
+													</c:otherwise>
+												</c:choose>
+												<%-- 펀딩률 end --%>
+												
+												<div class="fund_amt"><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
 											</div>
 											<div class="fund_etc">
 												<c:choose>
@@ -177,7 +184,7 @@
 													<c:otherwise>
 													
 														<!-- 남은 날짜 계산 -->
-														<fmt:parseNumber value="${project.funding_start_date.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+														<fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
 														<fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
 														<c:set value="${endDate - strDate}" var="leftDay"/>
 														<!-- 남은 날짜 계산 end -->

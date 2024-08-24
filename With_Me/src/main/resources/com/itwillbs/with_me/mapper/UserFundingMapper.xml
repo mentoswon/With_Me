@@ -39,7 +39,11 @@
 	<!-- 프로젝트 목록 표출 -->
 	<select id="selectProjectList" resultType="hashmap">
 		SELECT * 
-		FROM project_info p JOIN creator_info c
+			, (SELECT IFNULL(SUM(funding_pay_amt),0) 
+				FROM funding_user 
+				WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p 
+		JOIN creator_info c
 		ON p.creator_idx = c.creator_idx 
 		WHERE 
 		<choose>
@@ -71,7 +75,13 @@
 	
 	<!-- 프로젝트 상세정보 가져오기 -->
 	<select id="selectProject" resultType="hashmap">
-		SELECT *
+		SELECT * 
+				, (SELECT IFNULL(SUM(funding_pay_amt),0)  
+				FROM funding_user 
+				WHERE funding_project_idx = p.project_idx) AS funding_amt
+				, (SELECT COUNT(funding_idx) 
+				FROM funding_user 
+				WHERE funding_project_idx = p.project_idx) AS funding_people
 		FROM project_info p 
 		JOIN creator_info c
 		ON p.creator_idx = c.creator_idx 

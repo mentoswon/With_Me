@@ -30,14 +30,30 @@
 							<div>
 								<span>모인 금액</span>
 								<ul>
-									<li><h4><fmt:formatNumber pattern="#,###">123456</fmt:formatNumber></h4></li>
+									<li><h4><fmt:formatNumber pattern="#,###">${project_detail.funding_amt}</fmt:formatNumber></h4></li>
 									<li>원</li>
+									
+									<%-- 펀딩률 --%>
+									<fmt:parseNumber var="funding_amt" value="${project_detail.funding_amt*1.0}" ></fmt:parseNumber>
+									<fmt:parseNumber var="target_price" value="${project_detail.target_price}" ></fmt:parseNumber>
+									
+									<c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
+									
+									<c:choose>
+										<c:when test="${fund_rate eq 0.0}">
+											<li class="fund_rate">0%</li>
+										</c:when>
+										<c:otherwise>
+											<li class="fund_rate">&nbsp;&nbsp; ${fund_rate}%</li>
+										</c:otherwise>
+									</c:choose>
+									<%-- 펀딩률 end --%>
 								</ul>
 							</div>
 							<div>
 								<span>후원자</span>
 								<ul>
-									<li><h4>ddd</h4></li>
+									<li><h4>${project_detail.funding_people}</h4></li>
 									<li>명</li>
 								</ul>
 							</div>
@@ -51,8 +67,13 @@
 								<dt>펀딩기간</dt>
 								<dd>${project_detail.funding_start_date} ~ ${project_detail.funding_end_date}</dd>
 								
+								<!-- 오늘 날짜 추출 -->
+								<c:set var="now" value="<%=new java.util.Date()%>" />
+								<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+								<!-- 오늘 날짜 추출 end -->
+								
 								<!-- 남은 날짜 계산 -->
-								<fmt:parseNumber value="${project_detail.funding_start_date.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+								<fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
 								<fmt:parseNumber value="${project_detail.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
 								<c:set value="${endDate - strDate}" var="leftDay"/>
 								<!-- 남은 날짜 계산 end -->
