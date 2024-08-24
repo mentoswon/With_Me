@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.MemberVO;
-import com.itwillbs.with_me.vo.ProjectVO;
-import com.itwillbs.with_me.vo.SponsorVO;
+import com.itwillbs.with_me.vo.RewardVO;
 
 public interface UserFundingMapper {
 
@@ -33,13 +33,16 @@ public interface UserFundingMapper {
 	int countFollower(String creator_email);
 
 	// 후원 리워드 리스트
-	List<SponsorVO> selectSponsorList(int project_idx);
+	List<RewardVO> selectRewardList(int project_idx);
 
 	// 창작자에 등록되어있는지
 	String selectCreatorName(String mem_email);
 
 	// 창작자가 아닌 사람 정보 가져오기
 	MemberVO selectMemberInfo(String mem_email);
+
+	// 리워드별 아이템 목록
+	List<ItemVO> selectItemList(@Param("item_list")String item_list, @Param("item_idx") String[] item_idx);
 	
 
 

@@ -2,6 +2,8 @@ package com.itwillbs.with_me.controller;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.with_me.service.UserFundingService;
+import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
-import com.itwillbs.with_me.vo.SponsorVO;
+import com.itwillbs.with_me.vo.RewardVO;
 
 @Controller
 public class UserFundingController {
@@ -139,17 +142,40 @@ public class UserFundingController {
         
         // --------------------------------------------------------------
         
-        // 후원 정보 가져오기 ------------
+        // 프로젝트별 후원 정보 가져오기 ------------
         int project_idx = (int) project_detail.get("project_idx");
 //        System.out.println("project_idx : " + project_idx);
-        List<SponsorVO> sponsorList = service.getSponsor(project_idx);
+        List<RewardVO> rewardList = service.getReward(project_idx);
         
-        System.out.println("sponsorList : " + sponsorList);
+//        System.out.println("rewardList : " + rewardList);
+        // 후원별 아이템 가져와야함
+        String item_list;
+        
+        for(int i = 0 ; i < rewardList.size() ; i++) {
+        	item_list = rewardList.get(i).getReward_item_idx();
+        	
+//        	System.out.println("item_list : " + item_list);
+        	
+        	String[] item_idx = null ;
+        	
+        	if(item_list.contains("|")) {
+        		item_idx = item_list.split("|"); 
+        	}
+        	System.out.println("item_idx : " + Arrays.toString(item_idx)); // [1,|,2]
+        	
+        	List<ItemVO> itemList = service.getItemList(item_list, item_idx);
+        	
+        	System.out.println("가져온 아이템 리스트 : " + itemList);
+        }
+        
+        // 아이템별 옵션도 가져와야함 ?
+        
         
         // 후원 정보 가져오기 end --------
         
         // =========================================================
 		model.addAttribute("project_detail", project_detail);
+		model.addAttribute("rewardList", rewardList);
 		
 		return "project/project_detail";
 	}

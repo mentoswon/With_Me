@@ -99,11 +99,21 @@
 	
 	
 	<!-- 후원 리워드 리스트 -->
-	<select id="selectSponsorList" resultType="sponsor">
+	<select id="selectRewardList" resultType="reward">
 		SELECT *
-		FROM sponsor_info
+		FROM reward_info
 		WHERE project_idx = #{project_idx}
 	</select>
+	
+	
+	<!-- 리워드별 아이템 리스트 -->
+	<select id="selectItemList" resultType="item">
+		SELECT *
+		FROM item_info
+		WHERE item_idx = #{item_list}
+		OR item_idx = #{item_idx}
+	</select>	
+	
 	
 	<!-- 창작자에 등록되어있는지 -->
 	<select id="selectCreatorName">

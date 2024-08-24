@@ -41,7 +41,7 @@
 									
 									<c:choose>
 										<c:when test="${fund_rate eq 0.0}">
-											<li class="fund_rate">0%</li>
+											<li class="fund_rate">&nbsp;&nbsp; 0%</li>
 										</c:when>
 										<c:otherwise>
 											<li class="fund_rate">&nbsp;&nbsp; ${fund_rate}%</li>
@@ -143,6 +143,7 @@
 					</div>
 					
 					<!-- 후원자가 고른 후원 아이템 -->
+					<!-- display: none 해두고 추가되면 뜨게 할 것 -->
 					<div id="choosenFunding">
 						<h4>후원 선택</h4>
 						<div class="wrap">
@@ -150,11 +151,28 @@
 						</div>
 					</div>
 					
-					
 					<div id="fundingOptions">
 						<h4>후원 선택</h4>
 						<div class="wrap">
-						
+							<div class="reward" id="reward_default" >
+								<div class="reward_amt"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원</div>
+								<div class="reward_title">일반 후원하기</div>
+							</div>
+							
+							<c:forEach var="rewardList" items="${rewardList}">
+								<div class="reward">
+									<div class="reward_amt"><fmt:formatNumber pattern="#,###">${rewardList.reward_price}</fmt:formatNumber>원</div> 
+									<div class="reward_title">${rewardList.reward_title}</div>
+									
+									<!-- 옵션이 있으면 셀렉박스 표출됨 -->
+									<c:if test="">
+										<select>
+											<option></option>
+										</select>
+									</c:if>
+								
+								</div>
+							</c:forEach>
 						</div>
 					</div>
 				</div>
@@ -166,7 +184,7 @@
 		        <h3>신고하기</h3>
 	        	<span>어떤 문제가 있나요?</span><br>
 		        <div class="content">
-		        	<button value="지식재산권 침해" class="reportType">
+		        	<button value="지식재산권 침해" onclick="reportType(this.value)">
 		        		<span class="repTitle">지식재산권 침해</span>
 		        		<span class="repContent">
 		        			타인의 지식재산권을 허락없이 사용했어요. <br>
@@ -174,14 +192,14 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="상세설명 내 허위사실" class="reportType">
+		        	<button value="상세설명 내 허위사실" onclick="reportType(this.value)">
 		        		<span class="repTitle">상세설명 내 허위사실</span>
 		        		<span class="repContent">
 		        			상품을 받아보니 상세설명과 다른 부분이 있어요.
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="동일 제품의 타 채널 유통" class="reportType">
+		        	<button value="동일 제품의 타 채널 유통" onclick="reportType(this.value)">
 		        		<span class="repTitle">동일 제품의 타 채널 유통</span>
 		        		<span class="repContent">
 		        			프로젝트 진행 전에 이미 판매한 적이 있는 제품이에요. <br>
@@ -189,7 +207,7 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="부적절한 콘텐츠" class="reportType">
+		        	<button value="부적절한 콘텐츠" onclick="reportType(this.value)">
 		        		<span class="repTitle">부적절한 콘텐츠</span>
 		        		<span class="repContent">
 		        			- 타인을 모욕, 명예훼손하는 콘텐츠 <br>
@@ -199,7 +217,7 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="기타" class="reportType">
+		        	<button value="기타" onclick="reportType(this.value)">
 		        		<span class="repTitle">기타</span>
 		        		<span class="repContent">
 		        			- 리워드가 불량이라 교환/수리 신청하고 싶어요. <br>
@@ -230,7 +248,6 @@
 			let modal = document.querySelectorAll('.modal');
 			let report = document.querySelector('#report');
 			let closeBtn = document.querySelector('.close_btn');
-			let reportType = document.querySelectorAll('.reportType');
 			// -------------------------------------------------------------------------
 			// 신고하기
 			// 팝업 오픈
@@ -245,10 +262,12 @@
 			}
 			// -------------------------------------------------------------------------
 			// 신고 폼
-			
-			reportType.onclick = function(){
-				console.log("클릭");
+			function reportType(type){
+// 				console.log(type); // 오케이 .. 뜬다..
+
+				
 			}
+							
 			
 			// 신고하기 end
 			// ==========================================================================

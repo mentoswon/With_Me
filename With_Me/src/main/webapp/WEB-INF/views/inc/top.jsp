@@ -73,26 +73,32 @@
 			<li class="depth01">
 				<a href="javascript:projectList('패션/위생', '')"> 패션 / 위생 </a>
 				<ul class="depth02">
-					<li><button value="옷" onclick="projectList('패션/위생',this.value)" >옷</button></li>
-					<li><button value="신발" onclick="projectList('패션/위생',this.value)" >신발</button></li>
+					<li><button value="의류" onclick="projectList('패션/위생',this.value)" >의류</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
-				<a href=""> 식기 / 급수기 </a>
+				<a href="javascript:projectList('식기/급수기', '')"> 식기 / 급수기 </a>
 				<ul class="depth02">
+					<li><button value="급식기" onclick="projectList('식기/급수기',this.value)" >급식기</button></li>
+					<li><button value="급수기" onclick="projectList('식기/급수기',this.value)" >급수기</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
-				<a href=""> 장난감 / 훈련 </a>
+				<a href="javascript:projectList('장난감/훈련', '')"> 장난감 / 훈련 </a>
 				<ul class="depth02">
+					<li><button value="장난감" onclick="projectList('장난감/훈련',this.value)" >장난감</button></li>
+					<li><button value="훈련용품" onclick="projectList('장난감/훈련',this.value)" >훈련용품</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
-				<a href=""> 하우스 / 안전 </a>
+				<a href="javascript:projectList('하우스/안전', '')"> 하우스 / 안전 </a>
 				<ul class="depth02">
+					<li><button value="하우스" onclick="projectList('하우스/안전',this.value)" >하우스</button></li>
+					<li><button value="울타리" onclick="projectList('하우스/안전',this.value)" >울타리</button></li>
+					<li><button value="기타안전용품" onclick="projectList('하우스/안전',this.value)" >기타안전용품</button></li>
 				</ul>
 			</li>
 		</ul>

@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.UserFundingMapper;
+import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.MemberVO;
-import com.itwillbs.with_me.vo.ProjectVO;
-import com.itwillbs.with_me.vo.SponsorVO;
+import com.itwillbs.with_me.vo.RewardVO;
 
 @Service
 public class UserFundingService {
@@ -39,8 +39,8 @@ public class UserFundingService {
 	}
 
 	// 후원 리워드 리스트
-	public List<SponsorVO> getSponsor(int project_idx) {
-		return mapper.selectSponsorList(project_idx);
+	public List<RewardVO> getReward(int project_idx) {
+		return mapper.selectRewardList(project_idx);
 	}
 
 	// 창작자에 등록되어있는지
@@ -51,6 +51,11 @@ public class UserFundingService {
 	// 창작자가 아닌 사람 정보 가져오기
 	public MemberVO getMemberInfo(String mem_email) {
 		return mapper.selectMemberInfo(mem_email);
+	}
+
+	// 리워드별 아이템 목록
+	public List<ItemVO> getItemList(String item_list, String[] item_idx) {
+		return mapper.selectItemList(item_list, item_idx);
 	}
 	
 

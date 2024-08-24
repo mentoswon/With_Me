@@ -10,6 +10,7 @@
 		<typeAlias type="com.itwillbs.with_me.vo.ProjectCancelVO" alias="projectCancel"/>
 		<typeAlias type="com.itwillbs.with_me.vo.CommonCodeVO" alias="commonCode"/>
 		<typeAlias type="com.itwillbs.with_me.vo.MailAuthInfo" alias="mailAuth"/>
-		<typeAlias type="com.itwillbs.with_me.vo.SponsorVO" alias="sponsor"/>
+		<typeAlias type="com.itwillbs.with_me.vo.RewardVO" alias="reward"/>
+		<typeAlias type="com.itwillbs.with_me.vo.ItemVO" alias="item"/>
 	</typeAliases>
  </configuration>
