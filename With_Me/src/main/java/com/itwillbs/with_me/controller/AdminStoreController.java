@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.with_me.service.AdminStoreService;
+import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.StoreVO;
 
 @Controller
@@ -33,10 +37,51 @@ public class AdminStoreController {
 	
 	// 스토어 뷰폼
 	@GetMapping("AdminStore")
-	public String adminStore() {
+	public String adminStore(
+	@RequestParam(defaultValue = "") String searchType,
+	@RequestParam(defaultValue = "") String searchKeyword,
+	@RequestParam(defaultValue = "1") int pageNum,
+	Model model) {
+		
+		// 페이징 처리를 위해 조회 목록 갯수 조절에 사용될 변수 선언
+		int listLimit = 10; // 페이지 당 게시물 수
+		int startRow = (pageNum - 1) * listLimit; // 조회할 게시물의 행 번호
+		
+		// 페이징 처리를 위한 계산 작업
+		// BoardListService - getBoardListCount() 메서드 호출하여 전체 게시물 수 조회 요청
+		// => 파라미터 : 검색타입, 검색어   리턴타입 : int(listCount)
+		int listCount = service.getProductListCount(searchType, searchKeyword);
+		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 갯수를 3개로 지정(1 2 3 or 4 5 6)
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
+		int endPage = startPage + pageListLimit - 1;
+		
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
+		if(maxPage == 0) {
+			maxPage = 1;
+		}
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 검색했을 때 페이지번호가 1보다 작거나 최대 페이지번호보다 크다면 1페이지로 이동하도록 설정
+		if(pageNum < 1 || pageNum > maxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "AdminStore?pageNum=1");
+			return "result/fail";
+		}
+		
+		// StoreService - getProductList() 메서드 호출하여 게시물 목록 조회 요청
+		List<StoreVO> productList = service.getProductList(searchType, searchKeyword, startRow, listLimit);
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+		
+		// 게시물 목록과 페이징 정보를 Model 객체에 저장
+		model.addAttribute("productList", productList);
+		model.addAttribute("pageInfo", pageInfo);
+		
 		return "admin/admin_store_list";
 	}
-	
 	// 상품 등록
 	@GetMapping("ProductRegist")
 	public String productRegist(HttpSession session, Model model) {
@@ -143,6 +188,43 @@ public class AdminStoreController {
 			return "result/fail";
 		}
 	}
+	
+	// 상품 상세 보기
+	@GetMapping("ProductDetail")
+	public String productDetail(int product_idx, Model model) {
+		
+		// 상품 상세정보 조회 요청
+		StoreVO store = service.getProduct(product_idx);
+		
+		System.out.println(store);
+		
+		// 조회 결과가 없을 경우 "존재하지 않는 게시물입니다" 출력 및 이전페이지 돌아가기 처리
+		if(store == null) {
+			model.addAttribute("msg", "존재하지 않는 상품입니다");
+			return "result/fail";
+		}
+		
+		model.addAttribute("store", store);
+		
+		// 뷰페이지에서 파일 목록의 효율적 처리를 위해 파일명만 별도로 List 객체에 저장
+		List<String> fileList = new ArrayList<String>();
+		fileList.add(store.getProduct_img());
+		
+		// List 객체를 반복하면서 파일명에서 원본 파일명을 추출
+		List<String> originalFileList = new ArrayList<String>();
+		for(String file : fileList) {
+			if(!file.equals("")) {
+				// "_" 기호 다음(해당 인덱스값 + 1)부터 끝까지 추출하여 리스트에 추가
+				originalFileList.add(file.substring(file.indexOf("_") + 1));
+			}
+		}
+		
+		model.addAttribute("fileList", fileList);
+		model.addAttribute("originalFileList", originalFileList);
+		
+		return "admin/admin_store_detail";
+	}
+	
 	
 }
 

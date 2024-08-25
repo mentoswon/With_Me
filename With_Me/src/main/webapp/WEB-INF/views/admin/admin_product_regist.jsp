@@ -32,48 +32,9 @@
 	}
 </style>
 <script>
-// 공통코드 셀렉트
-var subjectObject = {
-  "Front-end": {
-    "HTML": ["Links", "Images", "Tables", "Lists"],
-    "CSS": ["Borders", "Margins", "Backgrounds", "Float"],
-    "JavaScript": ["Variables", "Operators", "Functions", "Conditions"]    
-  },
-  "Back-end": {
-    "PHP": ["Variables", "Strings", "Arrays"],
-    "SQL": ["SELECT", "UPDATE", "DELETE"]
-  }
-}
-window.onload = function() {
-  var subjectSel = document.getElementById("subject");
-  var topicSel = document.getElementById("topic");
-  var chapterSel = document.getElementById("chapter");
-  for (var x in subjectObject) {
-    subjectSel.options[subjectSel.options.length] = new Option(x, x);
-  }
-  subjectSel.onchange = function() {
-    //empty Chapters- and Topics- dropdowns
-    chapterSel.length = 1;
-    topicSel.length = 1;
-    //display correct values
-    for (var y in subjectObject[this.value]) {
-      topicSel.options[topicSel.options.length] = new Option(y, y);
-    }
-  }
-  topicSel.onchange = function() {
-    //empty Chapters dropdown
-    chapterSel.length = 1;
-    //display correct values
-    var z = subjectObject[subjectSel.value][this.value];
-    for (var i = 0; i < z.length; i++) {
-      chapterSel.options[chapterSel.options.length] = new Option(z[i], z[i]);
-    }
-  }
-}
-
 // ==========================================================================
 // 카테고리 셀렉트
-var subjectObject = {
+var categoryObject = {
 	"푸드": ["사료", "껌류", "수제간식"],
 	"패션/위생": ["의류"],
 	"식기/급수기": ["급수기"],
@@ -84,14 +45,14 @@ window.onload = function() {
   var product_categorySel = document.getElementById("product_category");
   var project_category_detailSel = document.getElementById("project_category_detail");
   
-  for (var x in subjectObject) {
+  for (var x in categoryObject) {
 	  product_categorySel.options[product_categorySel.options.length] = new Option(x, x);
   }
   product_categorySel.onchange = function() {
 	  
     project_category_detailSel.length = 1;
 	
-	var y = subjectObject[this.value];
+	var y = categoryObject[this.value];
 	
     for (var i = 0; i < y.length; i++) {
     	project_category_detailSel.options[project_category_detailSel.options.length] = new Option(y[i], y[i]);
@@ -116,17 +77,17 @@ window.onload = function() {
 						</tr>
 						<tr>
 							<td>
-<!-- 								<input type="text" name="product_code" size="9" id="product_code"> -->
-								<select name="product_code1" id="product_code1">
-									<option value="" selected="selected">상위공통코드</option>
-								</select>
-								<select name="product_code2" id="product_code2">
-									<option value="" selected="selected">공통코드</option>
-								</select>
-								<select name="product_code3" id="product_code3">
-									<option value="" selected="selected">공통코드</option>
-								</select>
-								<input type="text" name="product_code4" size="2">
+								<input type="text" name="product_code" size="9" id="product_code">
+<!-- 								<select name="product_code1" id="product_code1"> -->
+<!-- 									<option value="" selected="selected">상위공통코드</option> -->
+<!-- 								</select> -->
+<!-- 								<select name="product_code2" id="product_code2"> -->
+<!-- 									<option value="" selected="selected">공통코드</option> -->
+<!-- 								</select> -->
+<!-- 								<select name="product_code3" id="product_code3"> -->
+<!-- 									<option value="" selected="selected">공통코드</option> -->
+<!-- 								</select> -->
+<!-- 								<input type="text" name="product_code4" size="2"> -->
 							</td>
 						</tr>	
 						<tr>
@@ -155,7 +116,7 @@ window.onload = function() {
 						</tr>
 						<tr>
 							<td>
-								<select name="project_category_detail" id="project_category_detail">
+								<select name="product_category_detail" id="project_category_detail">
 								    <option value="" selected="selected">세부 카테고리</option>
 							   </select>
 							</td>

@@ -24,6 +24,47 @@
 => 검색어 데이터는 searchKeyword 변수에 저장되어 있으므로 변수명 그대로 활용
 => 자바 문법과 동일하게 equals() 메서드를 통해 문자열 비교 수행 -->
 	
+	
+	<!-- 글 목록 조회 시 검색 기능 추가 -->
+	<select id="selectProductList" resultType="store">
+		SELECT *
+		FROM product_info
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+			<choose>
+				<when test="searchType.equals('code')">
+					product_code LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('name')">
+<!-- 					board_content LIKE '%${searchKeyword}%' -->
+					product_name LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					1 = 1  -- WHERE 절을 포함시키되 조건을 걸고 싶지 않을 경우 활용 가능한 조건식(무조건 true 가 나오는 식이면 OK)
+				</otherwise>
+			</choose>
+		</if>
+		
+		ORDER BY
+			product_created DESC
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
+	
+	
+	
+	
+	
+	
+	<!-- 전체 상품 수 조회 - SELECT -->
+	<!-- 검색 기능 추가를 위해 검색어에 따른 결과 게시물 수 조회 -->
+	<select id="selectProcutListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM product_info
+	</select>
+	
+	
 	<insert id="insertProduct">
 		<selectKey keyProperty="product_idx" resultType="int" order="BEFORE">
 			SELECT IFNULL(MAX(product_idx), 0) -- product_idx 최대값 조회(null 일 경우 기본값 0 사용)
@@ -39,7 +80,7 @@
 			, #{product_name}
 			, #{product_description}
 			, #{product_category}
-			, #{project_category_detail}
+			, #{product_category_detail}
 			, #{product_price}
 			, #{product_stock}
 			, 1                       -- 1 : 판매중, 2: 판매 중지, 3 : 품절
@@ -48,6 +89,13 @@
 		)
 	</insert>
 	
+	<!-- 상품 상세정보 조회 - SELECT -->
+	<!-- 상품번호에 해당하는 레코드(게시물) 조회 -->
+	<select id="selectProduct" resultType="store">
+		SELECT * 
+		FROM product_info
+		WHERE product_idx = #{product_idx}
+	</select>
 </mapper>
 
 

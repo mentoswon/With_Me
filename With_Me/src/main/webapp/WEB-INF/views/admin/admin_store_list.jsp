@@ -78,9 +78,13 @@
 			<article class="main">
 				<h3>등록신청관리</h3>
 				<div class="wrapper_top">
-					<form action="AdminRegistWaitingProjectList">
+					<form action="AdminStore">
 						<div class="search">
 							<span>Search</span>
+							<select name="searchType">
+								<option value="code" <c:if test="${param.searchType eq 'code'}">selected</c:if>>상품코드</option>
+								<option value="name" <c:if test="${param.searchType eq 'name'}">selected</c:if>>상품명</option>
+							</select>
 							<input type="search" name="searchKeyword" value="${param.searchKeyword}" >
 							<input type="submit" value="검색">
 						</div>
@@ -95,9 +99,10 @@
 							<th>카테고리</th>
 							<th>상품명</th>
 							<th>상품설명</th>
-							<th>가격</th>
-							<th>수정 및 삭제</th>
-							<th></th>
+							<th>재고</th>
+							<th>등록일</th>
+							<th>상품상태</th>
+							<th>상세보기</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
 						<c:set var="pageNum" value="1" />
@@ -106,33 +111,35 @@
 							<%-- pageNum 변수에 pageNum 파라미터값 저장 --%>
 							<c:set var="pageNum" value="${param.pageNum}" />
 						</c:if>
-						<c:forEach var="PL" items="${projectList}">
+						<c:forEach var="pl" items="${productList}">
 							<tr align="center">
-								<td>${PL.project_idx}</td>
-								<td>${PL.project_title}</td>
-								<td>${PL.project_category}</td>
-								<td>${PL.project_category_detail}</td>
-								<td>${PL.target_price}</td>
-								<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
+								<td>${pl.product_idx}</td>
+								<td>${pl.product_code}</td>
+								<td>${pl.product_category}</td>
+								<td>${pl.product_category_detail}</td>
+								<td>${pl.product_stock}</td>
 								<td>
-									<input type="button" value="승인" onclick="projectApproval('YES', ${PL.project_idx})">
-									<input type="button" value="거부" onclick="projectApproval('NO', ${PL.project_idx})">
+									<fmt:formatDate value="${pl.product_created}" pattern="yy-MM-dd HH:mm" />
+								</td>
+								<td>${pl.product_status}</td>
+								<td>
+									<input type="button" value="상세보기" onclick="location.href='ProductDetail'">
 								</td>
 							</tr>
 						</c:forEach>
-						<c:if test="${empty projectList}">
+						<c:if test="${empty productList}">
 							<tr>
-								<td align="center" colspan="7">조회 결과가 없습니다.</td>
+								<td align="center" colspan="8">조회 결과가 없습니다.</td>
 							</tr>
 						</c:if>
 					</table>
 				</div>
 				<%-- ========================== 페이징 처리 영역 ========================== --%>
 				<div id="pageList">
-					<%-- [이전] 버튼 클릭 시 AdminRegistWaitingProjectList 서블릿 요청(파라미터 : 현재 페이지번호 - 1) --%>
+					<%-- [이전] 버튼 클릭 시 AdminStore 서블릿 요청(파라미터 : 현재 페이지번호 - 1) --%>
 					<%-- 현재 페이지 번호(pageNum)가 URL 파라미터로 전달되므로 ${pageNum} 활용(미리 저장된 변수값) --%>
 					<%-- 단, 현재 페이지 번호가 1 보다 클 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
-					<input type="button" value="이전" onclick="location.href='AdminRegistWaitingProjectList?pageNum=${pageNum - 1}'" <c:if test="${pageNum <= 1}">disabled</c:if>>
+					<input type="button" value="이전" onclick="location.href='AdminStore?pageNum=${pageNum - 1}'" <c:if test="${pageNum <= 1}">disabled</c:if>>
 					<%-- 계산된 페이지 번호가 저장된 PageInfo 객체(pageInfo)를 통해 페이지 번호 출력 --%>
 					<%-- 시작페이지(startPage = begin) 부터 끝페이지(endPage = end)까지 1씩 증가하면서 표시 --%>
 					<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
@@ -143,16 +150,16 @@
 								<b>${i}</b> <%-- 현재 페이지 번호 --%>
 							</c:when>
 							<c:otherwise>
-								<a href="AdminRegistWaitingProjectList?pageNum=${i}">${i}</a> <%-- 다른 페이지 번호 --%>
+								<a href="AdminStore?pageNum=${i}">${i}</a> <%-- 다른 페이지 번호 --%>
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>
-					<%-- [다음] 버튼 클릭 시 AdminRegistWaitingProjectList 서블릿 요청(파라미터 : 현재 페이지번호 + 1) --%>
+					<%-- [다음] 버튼 클릭 시 AdminStore 서블릿 요청(파라미터 : 현재 페이지번호 + 1) --%>
 					<%-- 현재 페이지 번호(pageNum)가 URL 파라미터로 전달되므로 ${param.pageNum} 활용 --%>
 					<%-- 단, 현재 페이지 번호가 최대 페이지번호(maxPage)보다 작을 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
 					<%-- 두 가지 경우의 수에 따라 버튼을 달리 생성하지 않고, disabled 만 추가 여부 설정 --%>
 					<%-- pageNum 파라미터값이 최대 페이지번호 이상일 때 disabled 속성 추가 --%>
-					<input type="button" value="다음" onclick="location.href='AdminRegistWaitingProjectList?pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+					<input type="button" value="다음" onclick="location.href='AdminStore?pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 				</div>
 			</article>
 		</section>

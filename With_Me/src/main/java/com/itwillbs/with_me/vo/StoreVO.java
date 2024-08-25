@@ -1,6 +1,5 @@
 package com.itwillbs.with_me.vo;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +22,7 @@ public class StoreVO {
 	private String product_name;
 	private String product_description;
 	private String product_category;
-	private String project_category_detail;
+	private String product_category_detail;
 	private int product_price;
 	private int product_stock;
 	private int product_status;
@@ -32,5 +31,5 @@ public class StoreVO {
 	private MultipartFile[] product_img_file;
 	private MultipartFile product_img_file1;
 	
-	private Date product_created;            // 상품등록일
+	private Timestamp product_created;            // 상품등록일
 }
