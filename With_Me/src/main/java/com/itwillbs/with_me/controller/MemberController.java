@@ -350,8 +350,12 @@ public class MemberController {
 			model.addAttribute("targetURL", "MemberLogin");
 			return "result/fail";
 		}
-		MemberVO memberList = service.getMember(member);
-		model.addAttribute("memberList", memberList);
+		member.setMem_email(id);
+		member = service.getMember(member);
+		
+		System.out.println("member : " + member);
+		
+		model.addAttribute("member", member);
 		
 		return "mypage/mypage";
 	}
@@ -359,7 +363,7 @@ public class MemberController {
 	// 마이페이지(개인정보)
 	@GetMapping("MypageInfo")
 	public String mypageInfo() {
-		return "mypage/mypage_info";
+		return "mypage/mypage_info2";
 	}
 	
 }

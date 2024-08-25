@@ -13,6 +13,12 @@
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
+<style type="text/css">
+.option {
+	background-color: #FFFFFF;
+	border: none;
+}
+</style>
 <script type="text/javascript">
 $(function() {
 
@@ -42,10 +48,11 @@ $(function() {
 	<section id="MemberInfo">
 		<div id="projectInfoWrap">
 			<div id="MypageMenuTop">
-				<div>
-					<h2>gg${project.project_title}</h2>
-					<input type="button" value="내정보" onclick="location.href='MypageInfo'">
-					<p style="line-height: 200%;">${project.project_category}</p>
+				<div style="text-align: center; display: flex;">
+					<h2>${member.mem_name}</h2>
+					<button class="option" type="button" onclick="location.href='MypageInfo'">
+						<img src="${pageContext.request.contextPath}/resources/image/mypage.png" width="25">
+					</button>
 				</div>
 			</div>
 		</div>
@@ -83,6 +90,15 @@ $(function() {
 				<div class="MypageExplanationWrap">
 					<p>
 						등록된 소개가 없습니다.
+					</p>
+				</div>
+			</div>
+		</div>
+		<div id="writeContainer2" class="writeContainer">
+			<div class="MypageWriteWrap">
+				<div class="MypageExplanationWrap">
+					<p>
+						등록된 소개가 없습니다.22
 					</p>
 				</div>
 			</div>
