@@ -1,11 +1,13 @@
 package com.itwillbs.with_me.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.CommonCodeVO;
+import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Mapper
@@ -34,7 +36,16 @@ public interface CreatorFundingMapper {
 	Integer selectProjectIdx(String id);
 
 	// 프로젝트 정보 조회
-	ProjectVO selectProject(Integer project_idx);
+	ProjectVO selectProject(String project_idx);
+
+	// 아이템 등록
+	int insertItem(Map<String, String> map);
+
+	// 아이템 리스트 조회
+	List<ItemVO> selectItemList(String project_idx);
+
+	// 아이템 삭제
+	int deleteItem(String item_idx);
 
 
 

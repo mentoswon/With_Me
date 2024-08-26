@@ -161,12 +161,20 @@ article {	/* 가운데 정렬 */
     display: none;
 }
 
-.select, input[type="text"]:not(.itemText), textarea {
+.select, input[type="text"]:not(.itemText), textarea, .button {
 	padding: 8px 10px;
 	width: 550px;
-	border-color: #ccc;
+	border: 1px solid #ccc;
+/* 	border-color: #ccc; */
 	box-sizing: border-box;
 	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
+}
+.select, input[type="text"]:not(.itemText), .button {
+	height: 40px;
+}
+
+.button {
+	background-color: #fff;
 }
 
 textarea {
@@ -236,7 +244,7 @@ textarea {
 input[type="file"] {
 	display: none;
 }
-.uploadImg img {
+.uploadImg img, .trashImg img, .importanceImg img, .addImg img {
 	width: 22px;
 	height: 22px;
 	vertical-align: text-bottom;	/* 글자와 정렬 맞추기 */
@@ -250,7 +258,7 @@ input[type="file"] {
 	cursor: pointer;
 }
 
-.imagePreview {
+.imagePreview:not(.creatorName) {
 	width: 550px; 
 	height: 300px; 
 	margin-top: 10px;
@@ -321,9 +329,105 @@ input[type="radio"] {
 	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
 }
 
+.itemListWrap {
+	display: flex;
+	justify-content: space-between; /* 수평 중앙 정렬 */
+	align-items: baseline;
+	width: 320px;
+	padding: 10px 20px;
+	border: 2px solid #ccc;
+	border-radius: 8px;
+	box-sizing: border-box;
+	margin-bottom: 20px;
+	
+}
+.trashImg {
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	padding: 5px 12px;
+}
+.trashImg:hover, .addImg img:hover {
+	cursor: pointer;
+}
+
+/* 아이템 선택 체크박스 */
+.chooseItem {
+	border: 1px solid #ccc;
+	padding: 8px 10px;
+	margin-bottom: 12px;
+	padding-left: 40px; /* 체크박스의 왼쪽 여백 */
+	position: relative;
+}
+.chooseItem input[type="checkbox"] {
+	opacity: 0; /* 기본 체크박스 숨기기 */
+	position: absolute;
+	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+}
+
+.chooseItem input[type="checkbox"] + label::before {
+	content: '';
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border: 2px solid #ccc;
+	background-color: #fff;
+	margin-left: 10px;
+	vertical-align: middle;
+	border-radius: 4px;
+	position: absolute; /* 체크박스 위치 조정 */
+	left: 0; /* 체크박스의 왼쪽 위치 조정 */
+	top: 8px;
+	transform: translateY(0); /* 수직 중앙 정렬 */
+}
+
+.chooseItem input[type="checkbox"]:checked + label::before {
+	background-color: #FFAB40;
+	border-color: #FFAB40;
+}
+
+.chooseItem input[type="checkbox"]:checked + label::after {
+	content: '✓';
+	position: absolute;
+	top: 17px;
+	left: 3.5%;
+	transform: translate(-50%, -50%);
+	color: #fff;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+/* 수량제한, 배송여부 버튼 */
+#amountLimitWarp label, #deliveryStatusWarp label {
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 8px 0;
+    margin: 3px 0;
+    cursor: pointer;
+    caret-color: transparent;
+    width: 48%;
+    text-align: center;
+}
+
+#amountLimitWarp label.selected, #deliveryStatusWarp label.selected {
+	border: 2px solid #FFAB40;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.rewardListWrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 320px;
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
 
 /* ----- 버튼 ----- */
-#reset, #itemRegist {
+#reset, #itemRegist, #rewardRegist {
 	height: 40px;
 	margin: 10px 0;
 	border-radius: 10px;
@@ -334,21 +438,33 @@ input[type="radio"] {
 	background-color: #ffffff;
 	border: 2px solid #ccc;
 }
-#itemRegist {	/* 등록 */
+#itemRegist, #rewardRegist {	/* 등록 */
 	width: 75%;
 	border: none;
 	background-color: #FFAB40;
 /* 	color: #ffffff; */
 }
 
-#reset:hover, #itemRegist:hover {
+#reset:hover, #itemRegist:hover, .button:hover, #rewardRegist:hover {
 	cursor: pointer;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 
+/* ----- 창작자 정보 ---------- */
+.creatorName {
+	width: 110px; 
+	height: 110px; 
+	margin-right: 30px;
+}
 
-
+.creatorName img {
+	width: 100%;
+	height: 100%;
+	border: 1px solid #ccc;
+	border-radius: 50%;
+	object-fit: cover;
+}
 
 /* ----- 창작자 가이드 ----------- */
 .creatorGuide {
@@ -389,19 +505,21 @@ input[type="radio"] {
 #popupWrap {
 	/* ------------ 임시 ------------------------ */
 	/* 프로젝트 등록 작업 완료 후 지우기!!!!!!!!! */
-/* 	display: none; */
+	display: none;
 	/* ------------------------------------------ */
 	position: fixed;
     left: 50%;
     top: 160px;
     transform: translate(-50%, 0%);
-    width: 800px; height: auto;
+    width: 800px; height: 530px;
     box-sizing: border-box;;
     background-color: #f1f3f5;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     z-index: 9999;
     border-radius: 10px;
     padding: 20px 30px;
+    overflow: auto;
+	overflow-x: none;
 }
 
 #popupTop {
@@ -414,6 +532,7 @@ input[type="radio"] {
 #popupContent {
 	display: flex;
 	justify-content: space-between;
+	gap: 20px; /* 요소들 사이의 간격 */
 }
 #popupContent p {
 	line-height: 200%;

@@ -1,8 +1,12 @@
 package com.itwillbs.with_me.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemVO {
 	// 1. 멤버변수 선언
 	// ---- 생성자 정의 생략(기본 생성자 활용) ------

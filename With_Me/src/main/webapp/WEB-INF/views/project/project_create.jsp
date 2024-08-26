@@ -44,7 +44,7 @@ $(function() {
     $("#projectMenuList li:eq(2)").click();
 	// -------------------------------------------------------------------------------
     
-    // 세부 카테고리 조회(ajax)
+    // 카테고리 변경 시 AJAX 요청 전송(세부카테고리 불러오기)
 	$("#project_category").change(function() {
 		let project_category = $("#project_category").val();
 		if (project_category) {
@@ -72,7 +72,6 @@ $(function() {
 			$("#project_category_detail").empty().append("<option disabled selected hidden>세부 카테고리를 선택하세요.</option>");
 		}
 	});
-    
     
     // 제목 길이 체크
     function checkTitleLength() {
@@ -142,26 +141,25 @@ $(function() {
         }
     });
     
-    // 검색 태그 Enter(SpaceBar) 누름 이벤트
-    $("#search_tag").on("keypress", function(event) {
-    	let keyCode = event.keyCode;
+	// 검색 태그 Enter(SpaceBar) 누름 이벤트
+	$("#search_tag").on("keypress", function(event) {
+		let keyCode = event.keyCode;
 		if(keyCode == 13 || keyCode == 32) {	// Enter(13) 또는 SpaceBar(32) 누를 시
-            event.preventDefault(); // 폼 제출 방지
-            let tagValue = $(this).val().trim();	// 입력된 태그 값을 가져와서 공백 제거
-            if (checkTagResult) {	// 검색태그 검사 적합여부 true
-            	if (tagValue && tagContainer.children().length < maxTags) {    // 유효한 태그와 태그 개수가 최대 개수보다 적은 경우
-                    // 새로운 태그 추가
-                    tagContainer.append("<span class='tag'>" + tagValue + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></span>");
-                    // 태그 카운트 업데이트
-                    updateTagCount();
-                    // 입력 필드 비우기
-                    $(this).val("");
-                    
-                } else if (tagContainer.children().length >= maxTags) {
-                    alert("태그는 최대 " + maxTags + "개까지만 추가할 수 있습니다.");
-                }
+			event.preventDefault(); // 폼 제출 방지
+			let tagValue = $(this).val().trim();	// 입력된 태그 값을 가져와서 공백 제거
+			if (checkTagResult) {	// 검색태그 검사 적합여부 true
+				if (tagValue && tagContainer.children().length < maxTags) {    // 유효한 태그와 태그 개수가 최대 개수보다 적은 경우
+			       // 새로운 태그 추가
+			       tagContainer.append("<span class='tag'>" + tagValue + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></span>");
+			       // 태그 카운트 업데이트
+			       updateTagCount();
+			       // 입력 필드 비우기
+			       $(this).val("");
+				} else if (tagContainer.children().length >= maxTags) {
+				    alert("태그는 최대 " + maxTags + "개까지만 추가할 수 있습니다.");
+				}
 			}
-    	}
+		}
 	});
     
 	// 태그 삭제 이벤트
@@ -251,7 +249,6 @@ $(function() {
         }
     });
     
-    
     // ========================================================================================
     // [ 후원 구성 ]
     // 아이템 이름 글자 수
@@ -292,20 +289,137 @@ $(function() {
         }
     });
 	
-	// + 버튼 클릭 시 새로운 input 필드 추가 (최대 10개까지)
+	// '+' 버튼 클릭 시 새로운 input 필드 추가 (최대 15개까지)
     $("#addOption").on("click", function() {
     	let inputCount = $("#objectiveWrap input[type='text']").length;
-    	if (inputCount < 15) { // 현재 input 개수가 10개 미만일 때만 추가
+    	if (inputCount < 15) { // 현재 input 개수가 15개 미만일 때만 추가
 	        let newInput = $("<input type='text' name='item_option_name' class='itemText'>");
-	        $("#objectiveWrap").append(newInput);	// objectiveWrap 안의 마지막 input 요소 뒤에 새 input 요소 추가
+	        $("#objectiveWrap").append(newInput);	// objectiveWrap의 마지막 input 요소 뒤에 새 input 요소 추가
+	        newInput.focus();	// 새로운 input 필드에 포커스 이동
     	} else {
             alert("옵션 항목은 최대 15개까지 추가할 수 있습니다.");
         }
-
-        
     });
     
+	// 등록 버튼 클릭 시 AJAX 요청 전송(아이템 등록 및 리스트 조회)
+    $("#itemRegist").on("click", function(event) {
+        if ($("#item_name").val().trim() === "") {
+	    	event.preventDefault(); // 기본 폼 제출 동작 방지(if 문 바깥에 있으니까 success시 폼 리셋이 안되더라..)
+        	alert("아이템 이름을 입력해주세요!");
+        } else if (!$("input[name='item_condition']:checked").val()) {
+	    	event.preventDefault(); // 기본 폼 제출 동작 방지
+        	alert("옵션 조건을 선택해주세요!");
+		} else {
+	        $.ajax({
+	            type: "POST",
+	            url: "RegistItem",
+	            data : {
+	            	project_idx : $("input[name='project_idx']").val(), 
+	            	item_name : $("#item_name").val(), 
+	            	item_condition : $("input[name='item_condition']:checked").val(), 
+	            	// 모든 .itemText의 값을 배열로 수집하고 |로 연결
+	                multiple_option: $(".itemText").map(function() {
+			            if ($(this).val().trim() !== "") {  // 빈 값이 아닌 경우만 포함
+			                return $(this).val();
+			            }
+	                }).get().join('|') // 값들을 |로 연결하여 문자열로 변환
+				},
+				dataType : "json",
+	            success: function(response) {
+	                // 받은 응답 데이터로 리스트를 업데이트
+	                updateItemList(response);
+	                // 폼 리셋
+	                $("#registItemForm")[0].reset();
+	            },
+	            error: function() {
+	                alert("아이템 등록에 실패하였습니다.");
+	            }
+	        });	// ajax 끝
+			
+		}
+	});
+	
+	// 아이템 리스트 출력
+    function updateItemList(itemList) {
+		// 기존 리스트 초기화
+        $("#itemListContainer").empty();
+        $("#chooseItemContainer").empty();
+
+        // 서버로부터 받은 아이템 리스트를 사용하여 새로운 리스트 생성
+        itemList.forEach(function(item) {
+			let listItem =  
+            	`<div class="itemListWrap">
+	            	<div class="itemList">
+						<h4>${item.item_name}</h4>
+						<p>
+							<b>옵션조건(${item.item_condition})</b><br>
+							${item.multiple_option}
+						</p>
+						<br>
+					</div>
+					<div class="trashImg" data-item-idx="${item.item_idx}">
+						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+					</div>
+				</div>`;
+			
+			$("#itemListContainer").append(listItem);
+			$("#chooseItemContainer").append('<input type="checkbox" name="reward_item_idx" value="${item.item_name}">');
+        });
+    }
     
+	// 아이템 삭제 이벤트
+	$(document).on("click", ".trashImg", function() {
+	    let item_idx = $(this).data("item-idx");  // 클릭된 아이콘의 item_idx 추출
+	
+	    if (confirm("정말로 삭제하시겠습니까?")) {
+	    	// AJAX 활용하여 "DeleteItem" 서블릿 요청(파라미터 : item_idx) - POST
+	    	$.ajax({
+	            type: "POST",
+	            url: "DeleteItem",  // 서버의 삭제 처리 URL
+	            data: {
+	            	"item_idx" : item_idx
+	            },
+	            dataType: "json",
+	            success: function(response) {
+	            	console.log(JSON.stringify(response));
+					if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+						alert("잘못된 접근입니다!");
+					} else if(!response.result) { // 댓글 삭제 실패일 경우
+	                    alert("아이템 삭제에 실패하였습니다.");
+					} else if(response.result) { // 댓글 삭제 성공일 경우
+// 						location.reload(); // 현재 페이지 갱신
+// 						$(`div[data-item-idx="${item_idx}"]`).closest(".itemListWrap").remove();
+	                	// 콘솔 로그 추가: 삭제 시도
+	                    console.log("item_index : ", item_idx);	// ------ 이건 뜨는데
+	
+	                    // 삭제 성공 시 해당 아이템 UI에서 제거
+            	        let itemToRemove = $(`div[data-item-idx="${item_idx}"]`).closest(".itemListWrap");
+	                    console.log("Item to remove : ", itemToRemove);	// 삭제할 요소 로그
+	                    // ------ Item to remove: ce.fn.init {length: 0, prevObject: ce.fn.init}
+						// ------ length 가 안뜸 ㅎㅎㅎㅎㅎ
+	                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	                    // 아이템 삭제는 되는데 UI에서 remove() 안되는 문제
+						// location.reload(); 하면 되긴 하는데 갱신 안하고 지우고싶다.. 
+	                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	                    itemToRemove.remove(); // 요소 제거
+	                }
+	            },
+	            error: function() {
+	                alert("아이템 삭제 요청에 실패하였습니다.");
+	            }
+	        });
+	    }
+	});
+	
+	// 구성 설명 글자 수(후원 제목)
+    $("#reward_title").keyup(function() {
+    	let rewardTitleLength = $("#reward_title").val().length;
+        $("#rewardTitleLength").text(rewardTitleLength);
+    });
+    
+	
+	
+	
     // ========================================================================================
     // [ 프로젝트 계획 ]
 	// 프로젝트 소개 미리보기
@@ -363,6 +477,54 @@ $(function() {
     	let projectPolicyLength = $("#project_policy").val().length;
         $("#projectPolicyLength").text(projectPolicyLength);
     });
+    
+    
+    // ========================================================================================
+    // [ 창작자 정보 ]
+	// 창작자 이름 길이 체크
+    function checkCreatorName() {
+        let nameLength = $("#creator_name").val().length;
+        $("#nameLength").text(nameLength);
+        if (nameLength > 20) {
+            alert("창작자 이름은 20자 까지만 입력 가능합니다!");
+            $("#checkCreatorName").css("color", "red");
+        } else {
+            $("#checkCreatorName").text(""); // 메시지 제거
+        }
+    }
+    
+    // 창작자 이름 글자 수 체크
+    $("#creator_name").keyup(function() {
+    	checkCreatorName();
+    });
+    
+	// 프로필 이미지 미리보기
+	$("#creator_image").on("change", function(event) {
+	    let file = event.target.files[0];
+	    let reader = new FileReader(); 
+	    reader.onload = function(e) {
+	        $("#creator_image_preview").attr("src", e.target.result);
+	    }
+	    reader.readAsDataURL(file);
+	});
+    
+	// 창작자 소개 길이 체크
+    function checkCreatorIntroduce() {
+        let introduceLength = $("#creator_introduce").val().length;
+        $("#introduceLength").text(introduceLength);
+        if (introduceLength > 300) {
+            alert("창작자 소개는 300자 까지만 입력 가능합니다!");
+            $("#checkCreatorIntroduce").css("color", "red");
+        } else {
+            $("#checkCreatorIntroduce").text(""); // 메시지 제거
+        }
+    }
+    
+    // 창작자 소개 글자 수 체크
+    $("#creator_introduce").keyup(function() {
+    	checkCreatorIntroduce();
+    });
+    
     
     
     
@@ -661,6 +823,23 @@ $(function() {
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
 					<h3>내가 만든 아이템</h3>
+					<div id="itemListContainer">
+						<c:forEach var="item" items="${itemList}">
+							<div class="itemListWrap">
+	           					<div class="itemList">
+	           						<h4>${item.item_name}</h4>
+	           						<p>
+		           						<b>옵션조건(${item.item_condition})</b><br>
+		           						${item.multiple_option}
+	           						</p>
+	           						<br>
+								</div>
+	           					<div class="trashImg" data-item-idx="${item.item_idx}">
+	           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+								</div>
+							</div>
+						</c:forEach>
+					</div>
 				</div>
 				<div class="projectContentWrap">
 					<div class="projectWriteBorder">
@@ -669,7 +848,7 @@ $(function() {
 							아이템은 후원에 포함되는 구성 품목을 말합니다.<br>
 							특별한 물건부터 의미있는 경험까지 후원을 구성할 아이템을 만들어 보세요.
 						</p>
-						<form action="RegistItem" method="post">
+						<form id="registItemForm">
 							<input type="hidden" name="project_idx" value="${project.project_idx}">
 							<b>아이템 이름</b>
 							<input type="text" name="item_name" id="item_name" maxlength="50" style="width: 100%;">
@@ -700,11 +879,12 @@ $(function() {
 										2개 이상의 옵션 항목을 만들어주세요.<br>
 										한 칸에 하나의 옵션을 작성해주세요.
 									</p>
-									<input type="button" id="addOption" value="+" style="margin-bottom: 10px;">
+									<span id="addOption" class="addImg" style="margin-bottom: 10px;">
+		           						<img alt="+아이콘" src="${pageContext.request.contextPath}/resources/image/add_icon.png">
+									</span>
 								</div>
 								<input type="text" name="item_option_name" class="itemText" placeholder="예) 240mm">
 								<input type="text" name="item_option_name" class="itemText" placeholder="예) 250mm">
-								
 							</div>
 							
 							<hr class="dividingLine2">
@@ -712,8 +892,6 @@ $(function() {
 								<input type="reset" id="reset" value="초기화">
 								<input type="submit" id="itemRegist" value="등록">
 							</div>
-							
-							
 						</form>
 					</div>
 					<br><br>
@@ -724,12 +902,99 @@ $(function() {
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
 					<h3>내가 만든 후원</h3>
+					<div id="rewardListContainer">
+						<div class="rewardListWrap">
+							<div class="rewardList">
+								<h2>1,000원+</h2>
+								<h4>선물 없이 후원하기</h4>
+							</div>
+						</div>
+<%-- 						<c:forEach var="reward" items="${rewardList}"> --%>
+<!-- 							<div class="rewardListWrap"> -->
+<!-- 	           					<div class="rewardList"> -->
+<%-- 	           						<h2>${reward.reward_price}원+</h2> --%>
+<%-- 	           						<h4>${reward.reward_title}</h4> --%>
+<!-- 	           						<p> -->
+<!-- 	           							아이템 | 아이템 -->
+<!-- 	           							수량 : 00개 -->
+<!-- 	           						</p> -->
+<!-- 	           						<br> -->
+<!-- 								</div> -->
+<%-- 	           					<div class="trashImg" data-reward-idx="${reward.reward_idx}"> --%>
+<%-- 	           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png"> --%>
+<!-- 								</div> -->
+<!-- 							</div> -->
+<%-- 						</c:forEach> --%>
+					</div>
 				</div>
 				<div class="projectContentWrap">
 					<div class="projectWriteBorder">
-						
-						
-						
+						<h3>후원 구성하기</h3>
+						<p>
+							다양한 금액대로 여러 개의 리워드를 만들어주세요.<br>
+							펀딩 성공률이 높아지고, 더 많은 후원 금액을 모금할 수 있어요.
+						</p>
+						<form id="registRewardForm">
+							<input type="hidden" name="project_idx" value="${project.project_idx}">
+							<b>아이템 선택</b>
+							<div id="chooseItemContainer">
+								<c:forEach var="item" items="${itemList}">
+									<div class="chooseItem">
+										<input type="checkbox" name="reward_item_idx" id="item${item.item_idx}" value="${item.item_idx}">
+										<label for="item${item.item_idx}">${item.item_name}</label><br>
+									</div>
+								</c:forEach>
+							</div>
+							<br>
+							
+							<b>구성 설명</b>
+							<p>어떤 아이템으로 구성되었는지 쉽게 알 수 있는 설명을 입력해주세요.</p>
+							<input type="text" name="reward_title" id="reward_title" placeholder="예) 강아지 간식, 배송비 포함" maxlength="50" style="width: 100%;">
+							<div class="LengthCount">
+								<p><span id="rewardTitleLength">0</span>/50</p>
+							</div>
+							
+							<hr class="dividingLine2">
+							<div id="amountLimitContainer">
+								<b>수량 제한</b>
+								<div id="amountLimitWarp" style="display: flex; justify-content: space-between;">
+									<input type="radio" name="amount_limit" id="amountLimit_Y" value="Y">
+									<label for="amountLimit_Y">있음</label>
+									<input type="radio" name="amount_limit" id="amountLimit_N" value="N">
+									<label for="amountLimit_N">없음</label>
+								</div>
+							</div>
+							
+							<hr class="dividingLine2">
+							<div id="deliveryStatusContainer">
+								<b>배송 여부</b>
+								<div id="deliveryStatusWarp" style="display: flex; justify-content: space-between;">
+									<input type="radio" name="delivery_status" id="deliveryStatus_Y" value="Y">
+									<label for="deliveryStatus_Y">네</label>
+									<input type="radio" name="delivery_status" id="deliveryStatus_N" value="N">
+									<label for="deliveryStatus_N">아니오</label>
+								</div>
+							</div>
+							
+							<hr class="dividingLine2">
+							<b>후원 금액</b>
+							<table style="border: 1px solid #ccc; width: 100%;">
+								<tr>
+									<td>
+										<input type="text" name="reward_price" id="reward_price" placeholder="1000원 이상의 금액을 입력하세요." maxlength="10" style="border: none; text-align: right; width: 565px;">
+									</td>
+									<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
+								</tr>
+							</table>
+							<span id="checkRewardPrice"></span>
+							
+							<br>
+							<hr class="dividingLine2">
+							<div style="display: flex; justify-content: space-between;">
+								<input type="reset" id="reset" value="초기화">
+								<input type="submit" id="rewardRegist" value="등록">
+							</div>
+						</form>
 					</div>
 					<br><br>
 				</div>
@@ -927,23 +1192,17 @@ $(function() {
 		<div id="writeContainer5" class="writeContainer">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
-					<h3>창작자 정보<span class="essential">&nbsp;*</span></h3>
+					<h3>창작자 이름<span class="essential">&nbsp;*</span></h3>
 					<p>
-						창작자 정보 창작자 정보 창작자 정보 창작자 정보 창작자 정보
+						창작자 개인이나 팀을 대표할 수 있는 이름을 써주세요.
 					</p>
 					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">가이드 가이드 가이드!</p>
-						<p>
-							가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명
-						</p>
-					</div>
 				</div>
 				<div class="projectContentWrap">
-					<input type="text" name="" id="">
+					<input type="text" name="creator_name" id="creator_name" maxlength="20">
 					<div class="LengthCheck">
-						<span id=""></span>
-						<p><span id="">0</span>/30</p>
+						<span id="checkCreatorName"></span>
+						<p><span id="nameLength">0</span>/20</p>
 					</div>
 					<br><br>
 				</div>
@@ -952,24 +1211,87 @@ $(function() {
 			<hr class="dividingLine">
 			<div class="projectWriteWrap">
 				<div class="projectExplanationWrap">
-					<h3>창작자 정보<span class="essential">&nbsp;*</span></h3>
+					<h3>프로필 이미지<span class="essential">&nbsp;*</span></h3>
 					<p>
-						창작자 정보 창작자 정보 창작자 정보 창작자 정보 창작자 정보
+						창작자 개인이나 팀을 대표할 수 있는 사진을 올려주세요.
 					</p>
 					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">가이드 가이드 가이드!</p>
+				</div>
+				<div class="projectContentWrap" style="display: flex; align-items: center;">
+					<input type="file" name="creator_image" id="creator_image">
+					<div class="imagePreview creatorName">
+						<img id="creator_image_preview">
+					</div>
+					<div>
+						<label for="creator_image">
+							<div class="fileUpload" style="width: 410px;">
+								<span class="uploadImg">
+									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+									이미지 업로드
+								</span>
+							</div>
+						</label>
 						<p>
-							가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명 가이드 설명
+							파일 형식은 jpg 또는 gif로, 사이즈는 가로 200px, <br>
+							세로 200px 이상으로 올려주세요.
 						</p>
 					</div>
+					<br><br> 
+				</div>
+			</div>
+			
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>창작자 소개<span class="essential">&nbsp;*</span></h3>
+					<p>
+						2~3문장으로 창작자님의 이력과 간단한 소개를 써주세요.
+					</p>
+					<br>
 				</div>
 				<div class="projectContentWrap">
-					<input type="text" name="" id="">
+					<textarea name="creator_introduce" id="creator_introduce" rows="5" cols="10" placeholder="간단한 이력과 소개를 써주세요." maxlength="300"></textarea>
 					<div class="LengthCheck">
-						<span id=""></span>
-						<p><span id="">0</span>/30</p>
+						<span id="checkCreatorIntroduce"></span>
+						<p><span id="introduceLength">0</span>/300</p>
 					</div>
+					<br><br> 
+				</div>
+			</div>
+			
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>본인 인증<span class="essential">&nbsp;*</span></h3>
+					<p>
+						창작자 본인 명의의 휴대번호로 인증해주세요.
+					</p>
+					<br>
+				</div>
+				<div class="projectContentWrap">
+					<input type="button" value="본인인증하기" class="button" onclick="selfIdentification()">
+					<br><br> 
+				</div>
+			</div>
+			
+			<hr class="dividingLine">
+			<div class="projectWriteWrap">
+				<div class="projectExplanationWrap">
+					<h3>입금 계좌<span class="essential">&nbsp;*</span></h3>
+					<p>
+						후원금을 전달받을 계좌를 등록해주세요.
+						법인사업자는 법인 계좌로만 정산받을 수 있습니다.
+					</p>
+					<br>
+				</div>
+				<div class="projectContentWrap">
+					<input type="button" value="계좌등록하기" class="button" onclick="accountRegist()">
+					<p>
+						<span class="importanceImg">
+							<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
+						</span>
+						본인인증 후 계좌등록이 가능합니다.
+					</p>
 					<br><br> 
 				</div>
 			</div>

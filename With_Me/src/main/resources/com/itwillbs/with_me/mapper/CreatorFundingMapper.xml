@@ -111,4 +111,28 @@
 	WHERE project_idx = #{project_idx}
 </select>
 
+<!-- 아이템 등록 -->
+<insert id="insertItem">
+	INSERT INTO item_info
+	VALUES (
+		null	-- AUTO_INCREMENT
+		, #{project_idx}
+		, #{item_name}
+		, #{item_condition}
+		, #{multiple_option}
+	)
+</insert>
+
+<!-- 아이템 리스트 조회 -SELECT -->
+<select id="selectItemList" resultType="item">
+	SELECT *
+	FROM item_info
+	WHERE project_idx = #{project_idx}
+</select>
+
+<delete id="deleteItem">
+	DELETE FROM item_info
+	WHERE item_idx=#{item_idx}
+</delete>
+
 </mapper>
