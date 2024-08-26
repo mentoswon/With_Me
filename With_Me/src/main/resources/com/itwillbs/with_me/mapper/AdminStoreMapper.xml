@@ -53,10 +53,6 @@
 	</select>
 	
 	
-	
-	
-	
-	
 	<!-- 전체 상품 수 조회 - SELECT -->
 	<!-- 검색 기능 추가를 위해 검색어에 따른 결과 게시물 수 조회 -->
 	<select id="selectProcutListCount" resultType="int">
@@ -96,6 +92,14 @@
 		FROM product_info
 		WHERE product_idx = #{product_idx}
 	</select>
+	
+	<!-- 상품삭제 -->
+	<delete id="deleteProduct">
+		DELETE
+		FROM product_info
+		WHERE product_idx = #{product_idx}
+	</delete>
+	
 </mapper>
 
 

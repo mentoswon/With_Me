@@ -52,20 +52,9 @@
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
-	// 프로젝트 등록 승인/거부
-	function projectApproval(isAuthorize, project_idx){
-		let msg = "";
-		
-		if(isAuthorize == 'YES') {
-			msg = "승인";
-		} else if(isAuthorize == 'NO') {
-			msg = "거부";
-		}
-		
-		if(confirm("프로젝트 등록을 " + msg + "하시겠습니까?")){
-			location.href="AdminProjectApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
-		}
-	}
+function productDetail(productIdx) {
+	location.href="ProductDetail?product_idx=" + productIdx;
+}	
 </script>
 </head>
 <body>
@@ -121,9 +110,19 @@
 								<td>
 									<fmt:formatDate value="${pl.product_created}" pattern="yy-MM-dd HH:mm" />
 								</td>
-								<td>${pl.product_status}</td>
+								<c:choose>
+									<c:when test="${pl.product_status eq 1}">
+										<td>판매중</td>
+									</c:when>
+									<c:when test="${pl.product_status eq 2}">
+										<td>판매중지</td>
+									</c:when>
+									<c:when test="${pl.product_status eq 2}">
+										<td>품절</td>
+									</c:when>
+								</c:choose>
 								<td>
-									<input type="button" value="상세보기" onclick="location.href='ProductDetail'">
+									<input type="button" value="상세보기" onclick="productDetail(${pl.product_idx})">
 								</td>
 							</tr>
 						</c:forEach>

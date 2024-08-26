@@ -37,9 +37,9 @@
 var categoryObject = {
 	"푸드": ["사료", "껌류", "수제간식"],
 	"패션/위생": ["의류"],
-	"식기/급수기": ["급수기"],
-	"장난감/훈련": ["인형"],
-	"하우스/안전": ["계단/스텝", "매트"]
+	"식기/급수기": ["급수기", "급수기"],
+	"장난감/훈련": ["장난감", "훈련용품"],
+	"하우스/안전": ["하우스", "울타리", "기타안전용품"]
 }
 window.onload = function() {
   var product_categorySel = document.getElementById("product_category");

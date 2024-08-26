@@ -32,4 +32,10 @@ public class AdminStoreService {
 		return mapper.selectProduct(product_idx);
 	}
 	
+	// 상품 삭제
+	public int removeProduct(int product_idx) {
+		return mapper.deleteProduct(product_idx);
+	}
+	
+	
 }

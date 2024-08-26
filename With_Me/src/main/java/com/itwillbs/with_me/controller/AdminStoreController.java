@@ -99,6 +99,13 @@ public class AdminStoreController {
 	@PostMapping("ProductRegistPro")
 	public String productRegistPro(StoreVO store, HttpServletRequest request, HttpSession session, Model model) {
 		
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		
 		// 파일 업로드 처리
 		String realPath = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
 		
@@ -191,24 +198,37 @@ public class AdminStoreController {
 	
 	// 상품 상세 보기
 	@GetMapping("ProductDetail")
-	public String productDetail(int product_idx, Model model) {
+	public String productDetail(int product_idx, Model model, StoreVO store, HttpSession session) {
+		
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
 		
 		// 상품 상세정보 조회 요청
-		StoreVO store = service.getProduct(product_idx);
+		StoreVO product = service.getProduct(product_idx);
 		
-		System.out.println(store);
+		System.out.println("product : " + product);
 		
 		// 조회 결과가 없을 경우 "존재하지 않는 게시물입니다" 출력 및 이전페이지 돌아가기 처리
-		if(store == null) {
+		if(product == null) {
 			model.addAttribute("msg", "존재하지 않는 상품입니다");
 			return "result/fail";
 		}
 		
-		model.addAttribute("store", store);
+		model.addAttribute("product", product);
+		
+//		List<StoreVO> productList = service.getProductDetailList(store);
+		
 		
 		// 뷰페이지에서 파일 목록의 효율적 처리를 위해 파일명만 별도로 List 객체에 저장
 		List<String> fileList = new ArrayList<String>();
-		fileList.add(store.getProduct_img());
+		fileList.add(product.getProduct_img());
+		
+		System.out.println("fileList : " + fileList);
+		
 		
 		// List 객체를 반복하면서 파일명에서 원본 파일명을 추출
 		List<String> originalFileList = new ArrayList<String>();
@@ -223,6 +243,28 @@ public class AdminStoreController {
 		model.addAttribute("originalFileList", originalFileList);
 		
 		return "admin/admin_store_detail";
+	}
+	
+	@GetMapping("ProductDelete")
+	public String productDelete(
+			int product_idx, @RequestParam(defaultValue = "1") int pageNum,
+			HttpSession session, Model model) throws Exception {
+		
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		
+		// 지울 상품 조회
+		StoreVO store = service.getProduct(product_idx);
+		System.out.println("store : " + store);
+		
+		// 상품 삭제 작업
+		int deleteCount = service.removeProduct(product_idx);
+		
+		return "";
 	}
 	
 	

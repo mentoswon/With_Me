@@ -26,6 +26,7 @@ public interface AdminStoreMapper {
 	// 상품 상세보기
 	StoreVO selectProduct(int product_idx);
 
-	
+	// 상품 삭제
+	int deleteProduct(int product_idx);
 	
 }
