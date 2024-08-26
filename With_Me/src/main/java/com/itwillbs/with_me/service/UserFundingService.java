@@ -43,15 +43,6 @@ public class UserFundingService {
 		return mapper.selectRewardList(project_idx);
 	}
 
-	// 창작자에 등록되어있는지
-	public String getCreatorName(String mem_email) {
-		return mapper.selectCreatorName(mem_email);
-	}
-
-	// 창작자가 아닌 사람 정보 가져오기
-	public MemberVO getMemberInfo(String mem_email) {
-		return mapper.selectMemberInfo(mem_email);
-	}
 
 	// 리워드별 아이템 목록
 	public List<ItemVO> getItemList(String item_list, String[] item_idx) {

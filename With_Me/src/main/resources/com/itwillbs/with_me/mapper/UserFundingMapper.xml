@@ -115,19 +115,4 @@
 	</select>	
 	
 	
-	<!-- 창작자에 등록되어있는지 -->
-	<select id="selectCreatorName">
-		SELECT creator_name
-		FROM creator_info
-		WHERE creator_email = #{mem_email}
-	</select>
-	
-	<!-- 창작자가 아닌 사람 정보 가져오기 -->
-	<select id="selectMemberInfo" resultType="member">
-		SELECT *
-		FROM member
-		WHERE mem_email = #{mem_email}
-	</select>
-	
-	
 </mapper>

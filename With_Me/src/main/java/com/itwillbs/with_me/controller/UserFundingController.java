@@ -181,35 +181,6 @@ public class UserFundingController {
 	}
 	
 	
-	// ================================================================================
-	// 마이페이지로 넘어가는 부분
-	@GetMapping("MemberInfoTest")
-	public String memberInfoTest(MemberVO member, Model model) {
-//		System.out.println(member);
-		String mem_email = member.getMem_email();
-		
-		// 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자 이름 가져오기
-		String creatorName = service.getCreatorName(mem_email);
-		
-		System.out.println("creatorName : " + creatorName);
-		
-		if(creatorName == null) {
-			MemberVO notCreatorMember= service.getMemberInfo(mem_email);
-			
-			System.out.println("창작자 아닌 사람 정보 : " + notCreatorMember);
-			
-			model.addAttribute("notCreatorMember", notCreatorMember);
-		} else {
-			MemberVO creatorMember = service.getMemberInfo(mem_email);
-			
-			System.out.println("창작자 맞는 사람 정보 : " + creatorMember);
-			
-			model.addAttribute("creatorMember", creatorMember);
-		}
-		
-		return "mypage/mypageTest";
-	}
-	
 	
 	
 	
