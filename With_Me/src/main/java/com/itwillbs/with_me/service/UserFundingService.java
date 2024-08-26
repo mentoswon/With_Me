@@ -43,11 +43,17 @@ public class UserFundingService {
 		return mapper.selectRewardList(project_idx);
 	}
 
-
-	// 리워드별 아이템 목록
-	public List<ItemVO> getItemList(String item_list, String[] item_idx) {
-		return mapper.selectItemList(item_list, item_idx);
+	// 리워드 별 아이템
+	public List<Map<String, Object>> getRewardItemList(int reward_idx) {
+		return mapper.selectRewardItemList(reward_idx);
 	}
+	
+	// 리워드가 객관식일 경우 아이템 옵션
+	public List<Map<String, Object>> getItemOpionList(String item_idx) {
+		return mapper.selectItemOptionList(item_idx);
+	}
+
+
 	
 
 

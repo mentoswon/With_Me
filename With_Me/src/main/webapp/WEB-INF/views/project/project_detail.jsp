@@ -154,23 +154,56 @@
 					<div id="fundingOptions">
 						<h4>후원 선택</h4>
 						<div class="wrap">
-							<div class="reward" id="reward_default" >
-								<div class="reward_amt"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원</div>
+						
+							<%-- 일반후원은 클릭하면 바로 결제페이지로 이동 --%>
+							<div class="reward" id="reward_default" onclick="fundInProgress()">
+							
+								<div class="reward_amt"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원
+									<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
+								</div>
 								<div class="reward_title">일반 후원하기</div>
 							</div>
 							
 							<c:forEach var="rewardList" items="${rewardList}">
 								<div class="reward">
-									<div class="reward_amt"><fmt:formatNumber pattern="#,###">${rewardList.reward_price}</fmt:formatNumber>원</div> 
+									<div class="reward_amt"><fmt:formatNumber pattern="#,###">${rewardList.reward_price}</fmt:formatNumber>원
+										<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
+									</div> 
 									<div class="reward_title">${rewardList.reward_title}</div>
 									
-									<!-- 옵션이 있으면 셀렉박스 표출됨 -->
-									<c:if test="">
-										<select>
-											<option></option>
-										</select>
-									</c:if>
-								
+									<div class="reward_item_wrap">
+										<c:forEach var="rewardItemList" items="${rewardItemList}">
+											<c:if test="${rewardList.reward_idx eq rewardItemList.reward_idx}">
+												<div class="reward_item">
+													<div class="reward_item_name">- ${rewardItemList.item_name}</div>
+													
+													<!-- 옵션이 있으면 셀렉박스 표출됨 -->
+													<div class="reward_item_option">
+														<c:choose>
+															<c:when test="${rewardItemList.item_condition eq '객관식'}">
+																<select>
+																	<c:forEach var="itemOptions" items="${itemOptions}">
+																		<option>${itemOptions.splited_item_option}</option>
+																	</c:forEach>
+																</select>
+															</c:when>
+															<c:otherwise>
+																<input type="text" placeholder="옵션을 입력해주세요.">												</c:otherwise>
+														</c:choose>
+													</div>
+												</div>
+											</c:if>
+										</c:forEach>
+									</div>
+									
+									<%-- AJAX 사용 필요 --%>
+									<form action="" name="">
+										<input type="hidden" value="">
+										<input type="hidden" value="">
+										<input type="hidden" value="">
+										<input type="hidden" value="">
+										<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
+									</form>
 								</div>
 							</c:forEach>
 						</div>
@@ -248,6 +281,33 @@
 			let modal = document.querySelectorAll('.modal');
 			let report = document.querySelector('#report');
 			let closeBtn = document.querySelector('.close_btn');
+			// ==========================================================================
+			// -------------------------------------------------------------------------			
+			// 후원 선택 (옵션 띄우기)
+			let reward = document.querySelectorAll(".reward");
+			let reward_item = document.querySelectorAll(".reward_item");
+			let reward_item_option = document.querySelectorAll(".reward_item_option");
+			let rewardSubmitBtn = document.querySelectorAll(".rewardSubmitBtn");
+			
+			$(reward).on('click', function() { 
+// 				console.log("reward clicked!"); // 확인 완료
+				
+				// 클릭한 리워드에 있는 아이템에 있는 옵션에 클래스 on 붙이기
+				$(reward).removeClass("on");
+				$(this).addClass("on");
+				
+				// 클릭 시 border 변경
+				$(reward).css('border','2px solid #eee');
+				
+				if($(this).hasClass("on")){
+					$(this).css('border','2px solid #ffab40');
+				}
+			});
+			
+			function fundInProgress(){
+				location.href="FundInProgress?reward_amt=1000&reward_title=일반 후원하기";
+			}
+			// ==========================================================================
 			// -------------------------------------------------------------------------
 			// 신고하기
 			// 팝업 오픈
@@ -263,18 +323,23 @@
 			// -------------------------------------------------------------------------
 			// 신고 폼
 			function reportType(type){
-// 				console.log(type); // 오케이 .. 뜬다..
-
+				console.log(type); // 오케이 .. 뜬다..
+				
 				
 			}
-							
+			
+			
 			
 			// 신고하기 end
 			// ==========================================================================
-			// 팔로우
+			// 팔로우 - AJAX
 			function confirmFollow(creatorName){
-				confirm(creatorName + "님을 팔로우 하시겠습니까?");
+				if(confirm(creatorName + "님을 팔로우 하시겠습니까?")){
+					
+				}
+				
 			}
+			
 			
 		</script>
 	</body>

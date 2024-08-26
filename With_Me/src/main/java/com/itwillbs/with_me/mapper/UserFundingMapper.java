@@ -35,8 +35,12 @@ public interface UserFundingMapper {
 	// 후원 리워드 리스트
 	List<RewardVO> selectRewardList(int project_idx);
 
-	// 리워드별 아이템 목록
-	List<ItemVO> selectItemList(@Param("item_list")String item_list, @Param("item_idx") String[] item_idx);
+	// 리워드 별 아이템
+	List<Map<String, Object>> selectRewardItemList(int reward_idx);
+
+	// 리워드가 객관식일 경우 아이템 옵션
+	List<Map<String, Object>> selectItemOptionList(String item_idx);
+
 	
 
 

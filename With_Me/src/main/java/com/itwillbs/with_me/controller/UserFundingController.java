@@ -8,12 +8,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.MemberVO;
@@ -25,6 +28,9 @@ import com.itwillbs.with_me.vo.RewardVO;
 public class UserFundingController {
 	@Autowired
 	private UserFundingService service;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@GetMapping("ProjectList")
 	public String projectList(ProjectVO project, Model model, 
@@ -140,7 +146,7 @@ public class UserFundingController {
          
         // 팔로워 계산 end ---------------
         
-        // --------------------------------------------------------------
+        // ===================================================================
         
         // 프로젝트별 후원 정보 가져오기 ------------
         int project_idx = (int) project_detail.get("project_idx");
@@ -148,36 +154,63 @@ public class UserFundingController {
         List<RewardVO> rewardList = service.getReward(project_idx);
         
 //        System.out.println("rewardList : " + rewardList);
-        // 후원별 아이템 가져와야함
-        String item_list;
+        
+        // --------------------------------------------------------------
+        
+        // 리워드별 아이템 가져오기
+        List<Map<String, Object>> rewardItemList = new ArrayList<Map<String,Object>>();
         
         for(int i = 0 ; i < rewardList.size() ; i++) {
-        	item_list = rewardList.get(i).getReward_item_idx();
+        	int reward_idx = rewardList.get(i).getReward_idx();
         	
-//        	System.out.println("item_list : " + item_list);
-        	
-        	String[] item_idx = null ;
-        	
-        	if(item_list.contains("|")) {
-        		item_idx = item_list.split("|"); 
-        	}
-        	System.out.println("item_idx : " + Arrays.toString(item_idx)); // [1,|,2]
-        	
-        	List<ItemVO> itemList = service.getItemList(item_list, item_idx);
-        	
-        	System.out.println("가져온 아이템 리스트 : " + itemList);
+        	rewardItemList = service.getRewardItemList(reward_idx);
         }
         
-        // 아이템별 옵션도 가져와야함 ?
+        // 확인
+//        System.out.println("rewardItemList : " + rewardItemList);
         
+        // 객관식일 경우 아이템별 옵션도 가져와야함 
+        List<Map<String, Object>> itemOptions = new ArrayList<Map<String,Object>>();
+        
+        for(int i = 0; i < rewardItemList.size() ; i++) {
+        	String item_idx = (String) rewardItemList.get(i).get("splited_item_idx");
+        	
+        	if(rewardItemList.get(i).get("item_condition").equals("객관식")) {
+        		itemOptions = service.getItemOpionList(item_idx);
+        	}
+        }
+        // 확인
+        System.out.println("itemOptions : " + itemOptions);
         
         // 후원 정보 가져오기 end --------
         
         // =========================================================
 		model.addAttribute("project_detail", project_detail);
 		model.addAttribute("rewardList", rewardList);
+		model.addAttribute("rewardItemList", rewardItemList);
+		model.addAttribute("itemOptions", itemOptions);
 		
 		return "project/project_detail";
+	}
+	
+	
+	// 후원 진행
+	@GetMapping("FundInProgress")
+	public String fundInProgress(int reward_amt, String reward_title, HttpSession session, MemberVO member,
+								Model model) {
+//		System.out.println("reward_amt, reward_title : " + reward_amt + ", " + reward_title);		
+		String id = (String) session.getAttribute("sId");
+//		System.out.println(id);
+		member.setMem_email(id);
+		
+		// 아이디로 회원 정보 가져오기
+		member = memberService.getMember(member);
+//		System.out.println("member : " + member);
+		
+		// =========================================================================
+		model.addAttribute("member", member);
+		
+		return "project/fund_in_progress";
 	}
 	
 	
@@ -186,15 +219,22 @@ public class UserFundingController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

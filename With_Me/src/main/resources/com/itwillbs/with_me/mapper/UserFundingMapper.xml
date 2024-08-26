@@ -101,18 +101,44 @@
 	<!-- 후원 리워드 리스트 -->
 	<select id="selectRewardList" resultType="reward">
 		SELECT *
-		FROM reward_info
-		WHERE project_idx = #{project_idx}
+		FROM reward_info r JOIN item_info i
+		ON r.reward_item_idx = i.item_idx  
+		WHERE r.project_idx = #{project_idx}
 	</select>
 	
+	<!-- 리워드 별 아이템 -->
+	<select id="selectRewardItemList" resultType="hashmap">
+		SELECT 
+			r.project_idx
+			, r.reward_idx
+			, r.reward_title
+			, r.reward_item_idx
+			, SUBSTRING_INDEX(SUBSTRING_INDEX(reward_item_idx, "|", numbers.n), "|" , -1) AS splited_item_idx
+			, (SELECT item_name FROM item_info WHERE item_idx = splited_item_idx) AS item_name
+			, (SELECT item_condition FROM item_info WHERE item_idx = splited_item_idx) AS item_condition
+		FROM (
+			SELECT 1 AS n UNION ALL 
+			SELECT 2 UNION ALL
+			SELECT 3 UNION ALL
+			SELECT 4 UNION ALL
+			SELECT 5) AS numbers
+	   	INNER JOIN reward_info r
+		ON CHAR_LENGTH(reward_item_idx) - CHAR_LENGTH(REPLACE(reward_item_idx, "|", "")) >= numbers.n - 1
+		ORDER BY reward_item_idx;
+	</select>
 	
-	<!-- 리워드별 아이템 리스트 -->
-	<select id="selectItemList" resultType="item">
-		SELECT *
-		FROM item_info
-		WHERE item_idx = #{item_list}
-		OR item_idx = #{item_idx}
-	</select>	
-	
+	<!-- 아이템 옵션 -->
+	<select id="selectItemOptionList" resultType="hashmap">
+		SELECT *, SUBSTRING_INDEX(SUBSTRING_INDEX(multiple_option, "|", numbers.n), "|" , -1) AS splited_item_option
+		from (
+			SELECT 1 AS n UNION ALL 
+			SELECT 2 UNION ALL
+			SELECT 3 UNION ALL
+			SELECT 4 UNION ALL
+			SELECT 5) AS numbers
+	    INNER JOIN item_info
+	    ON CHAR_LENGTH(multiple_option) - CHAR_LENGTH(REPLACE(multiple_option, "|", "")) >= numbers.n - 1
+		WHERE item_idx = 1;
+	</select>
 	
 </mapper>
