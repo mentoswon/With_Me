@@ -75,12 +75,13 @@
 				<div class="content">
 					<table border="1">
 						<tr>
+<!-- 							<th>상품명</th> -->
 							<th>주문번호</th>
 							<th>상품번호</th>
-							<th>상품명</th>
+							<th>결제상태</th>
+							<th>결제일</th>
 							<th>결제금액</th>
 							<th>결제방법</th>
-							<th>결제일</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
 						<c:set var="pageNum" value="1" />
@@ -93,10 +94,36 @@
 							<tr align="center">
 								<td>${PHL.order_product_idx}</td>
 								<td>${PHL.product_idx}</td>
-								<td>${PHL.product_name}</td>
-								<td>${PHL.order_pay_cost}</td>
+								<td>
+									<c:choose>
+										<c:when test="${PHL.order_pay_status eq 1}">결제 완료</c:when>
+										<c:when test="${PHL.order_pay_status eq 2}">미결제</c:when>
+									</c:choose>
+								</td>
+								<td>
+									<%-- 
+									테이블 조회를 Map 타입으로 관리 시 날짜 및 시각 데이터가
+									LocalXXX 타입으로 관리됨(ex. LocalDate, LocalTime, LocalDateTime)
+									=> 날짜 및 시각 정보 조회 시 2024-08-21T16:47:59 형식으로 저장되어 있음
+									=> 일반 Date 타입에서 사용하는 형태로 파싱 후 다시 포맷팅 작업 필요
+									=> JSTL fmt 라이브러리 - <fmt:parseDate> 태그 활용하여 파싱 후
+									   <fmt:formatDate> 태그 활용하여 포맷팅 수행
+									   var 속성 : 파싱 후 해당 날짜 및 시각 정보를 다룰 객체명(변수명)
+									   value 속성 : 파싱할 대상 날짜 데이터
+									   pattern 속성 : 파싱할 대상 날짜 데이터의 기존 형식(2024-08-21T16:47:59)에 대한 패턴 지정
+									                  => 날짜와 시각 사이의 구분자 T 도 정확하게 명시
+									                     (단, 구분자 T 는 단순 텍스트로 취급하기 위해 '' 로 둘러쌈)
+									   type 속성 : 대상 날짜 파싱 타입(time : 시각, date : 날짜, both : 둘 다)
+									--%>
+									<fmt:parseDate var="order_pay_date" value="${PHL.order_pay_date}" 
+													pattern="yyyy-MM-dd'T'HH:mm:ss" type="both" />
+									<%-- 파싱 후 날짜 및 시각 형식 : Wed Aug 21 16:47:59 KST 2024 --%>
+									<%-- 파싱된 날짜 및 시각이 저장된 Date 객체의 포맷팅 수행 --%>								
+									<%-- 년년년년-월월-일일 시시:분분:초초 형태로 포맷팅 --%>
+									<fmt:formatDate value="${order_pay_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+								</td>
+								<td><fmt:formatNumber value="${PHL.order_pay_cost}" pattern="#,###"/>원</td>
 								<td>${PHL.pay_method_name}</td>
-								<td>${PHL.order_pay_date}</td>
 							</tr>
 						</c:forEach>
 						<c:if test="${empty purchaseHistorylist}">

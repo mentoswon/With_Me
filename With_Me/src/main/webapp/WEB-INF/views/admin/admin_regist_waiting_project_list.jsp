@@ -111,7 +111,7 @@
 								<td>${PL.project_title}</td>
 								<td>${PL.project_category}</td>
 								<td>${PL.project_category_detail}</td>
-								<td>${PL.target_price}</td>
+								<td><fmt:formatNumber pattern="#,###">${PL.target_price}</fmt:formatNumber>원</td>
 								<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
 								<td>
 									<input type="button" value="승인" onclick="projectApproval('YES', ${PL.project_idx})">

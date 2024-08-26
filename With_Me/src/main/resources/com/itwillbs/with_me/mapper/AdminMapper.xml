@@ -78,37 +78,45 @@
 	<!-- 후원내역 개수 조회 -->
 	<select id="selectSponsorshipHistoryListCount" resultType="int">
 		SELECT COUNT(*)
-		FROM project_payment pp JOIN funding_user fu
-		ON pp.pro_funding_idx = fu.funding_idx
+		FROM project_payment pp
 		JOIN pay_method pm
 		ON pp.pro_funding_pay_method_idx = pm.pay_method_idx
+		JOIN funding_user fu
+		ON fu.funding_idx = pp.pro_funding_idx
+		JOIN project_info pi
+		ON pi.project_idx = fu.funding_project_idx
+		WHERE pro_mem_email = #{member.mem_email}
 		<if test="!searchKeyword.equals('')">
-			WHERE 
-				pp.pro_pay_idx like concat('%',#{searchKeyword},'%')
+			AND (
+				pi.project_title like concat('%',#{searchKeyword},'%')
 				or pp.pro_funding_idx like concat('%',#{searchKeyword},'%')
-				or fu.funding_project_idx like concat('%',#{searchKeyword},'%') -- 임시로 프로젝트 번호 사용
+				or pp.pro_pay_status like concat('%',#{searchKeyword},'%')
+				or pp.pro_pay_date like concat('%',#{searchKeyword},'%')
 				or pp.pro_pay_amt like concat('%',#{searchKeyword},'%')
 				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
-				or pp.pro_pay_date like concat('%',#{searchKeyword},'%')
+			)
 		</if>
 	</select>
 	
 	<!-- 후원내역 조회 -->
-	<select id="selectSponsorshipHistory" resultType="String">
-		SELECT pp.pro_pay_idx, pp.pro_funding_idx, fu.funding_project_idx, pp.pro_pay_amt, pm.pay_method_name, pp.pro_pay_date
-		FROM project_payment pp JOIN funding_user fu
-		ON pp.pro_funding_idx = fu.funding_idx
+	<select id="selectSponsorshipHistory" resultType="Map">
+		SELECT * 
+		FROM project_payment pp
 		JOIN pay_method pm
 		ON pp.pro_funding_pay_method_idx = pm.pay_method_idx
+		JOIN funding_user fu
+		ON fu.funding_idx = pp.pro_funding_idx
+		JOIN project_info pi
+		ON pi.project_idx = fu.funding_project_idx
 		WHERE pro_mem_email = #{member.mem_email}
 		<if test="!searchKeyword.equals('')">
 			AND (
-				pp.pro_pay_idx like concat('%',#{searchKeyword},'%')
+				pi.project_title like concat('%',#{searchKeyword},'%')
 				or pp.pro_funding_idx like concat('%',#{searchKeyword},'%')
-				or fu.funding_project_idx like concat('%',#{searchKeyword},'%') -- 임시로 프로젝트 번호 사용
+				or pp.pro_pay_status like concat('%',#{searchKeyword},'%')
+				or pp.pro_pay_date like concat('%',#{searchKeyword},'%')
 				or pp.pro_pay_amt like concat('%',#{searchKeyword},'%')
 				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
-				or pp.pro_pay_date like concat('%',#{searchKeyword},'%')
 			)
 		</if>
 		ORDER BY
@@ -121,37 +129,35 @@
 	<!-- 구매내역 개수 조회 -->
 	<select id="selectPurchaseHistoryListCount" resultType="int">
 		SELECT COUNT(*)
-		FROM product_payment pp JOIN product_info pi
-		ON pp.product_idx = pi.product_idx
-		JOIN pay_method pm
-		ON pp.order_pay_method_idx = pm.pay_method_idx
-		<if test="!searchKeyword.equals('')">
-			WHERE 
-				pp.order_product_idx like concat('%',#{searchKeyword},'%')
-				or pp.product_idx like concat('%',#{searchKeyword},'%')
-				or pi.product_name like concat('%',#{searchKeyword},'%')
-				or pp.order_pay_cost like concat('%',#{searchKeyword},'%')
-				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
-				or pp.order_pay_date like concat('%',#{searchKeyword},'%')
-		</if>
-	</select>
-	
-	<!-- 구매내역 조회 -->
-	<select id="selectPurchaseHistory" resultType="String">
-		SELECT pp.order_product_idx, pp.product_idx, pi.product_name, pp.order_pay_cost, pm.pay_method_name, pp.order_pay_date
-		FROM product_payment pp JOIN product_info pi
-		ON pp.product_idx = pi.product_idx
-		JOIN pay_method pm
+		FROM product_payment pp JOIN pay_method pm
 		ON pp.order_pay_method_idx = pm.pay_method_idx
 		WHERE order_mem_email = #{member.mem_email}
 		<if test="!searchKeyword.equals('')">
 			AND (
 				pp.order_product_idx like concat('%',#{searchKeyword},'%')
 				or pp.product_idx like concat('%',#{searchKeyword},'%')
-				or pi.product_name like concat('%',#{searchKeyword},'%')
 				or pp.order_pay_cost like concat('%',#{searchKeyword},'%')
-				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
+				or pp.order_pay_status like concat('%',#{searchKeyword},'%')
 				or pp.order_pay_date like concat('%',#{searchKeyword},'%')
+				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
+			)
+		</if>
+	</select>
+	
+	<!-- 구매내역 조회 -->
+	<select id="selectPurchaseHistory" resultType="Map">
+		SELECT * 
+		FROM product_payment pp JOIN pay_method pm
+		ON pp.order_pay_method_idx = pm.pay_method_idx
+		WHERE order_mem_email = #{member.mem_email}
+		<if test="!searchKeyword.equals('')">
+			AND (
+				pp.order_product_idx like concat('%',#{searchKeyword},'%')
+				or pp.product_idx like concat('%',#{searchKeyword},'%')
+				or pp.order_pay_cost like concat('%',#{searchKeyword},'%')
+				or pp.order_pay_status like concat('%',#{searchKeyword},'%')
+				or pp.order_pay_date like concat('%',#{searchKeyword},'%')
+				or pm.pay_method_name like concat('%',#{searchKeyword},'%')
 			)
 		</if>
 		ORDER BY

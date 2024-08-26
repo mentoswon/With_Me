@@ -1,6 +1,7 @@
 package com.itwillbs.with_me.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,22 +32,22 @@ public class AdminService {
 	}
 	
 	// 후원내역 개수 조회
-	public int getSponsorshipHistoryListCount(String searchKeyword) {
-		return mapper.selectSponsorshipHistoryListCount(searchKeyword);
+	public int getSponsorshipHistoryListCount(String searchKeyword, MemberVO member) {
+		return mapper.selectSponsorshipHistoryListCount(searchKeyword, member);
 	}
 	
 	// 후원내역 조회
-	public List<String> getSponsorshipHistory(int startRow, int listLimit, String searchKeyword, MemberVO member) {
+	public List<Map<String, Object>> getSponsorshipHistory(int startRow, int listLimit, String searchKeyword, MemberVO member) {
 		return mapper.selectSponsorshipHistory(startRow, listLimit, searchKeyword, member);
 	}
 	
 	// 구매내역 개수 조회
-	public int getPurchaseHistoryListCount(String searchKeyword) {
-		return mapper.selectPurchaseHistoryListCount(searchKeyword);
+	public int getPurchaseHistoryListCount(String searchKeyword, MemberVO member) {
+		return mapper.selectPurchaseHistoryListCount(searchKeyword, member);
 	}
 	
 	// 구매내역 조회
-	public List<String> getPurchaseHistory(int startRow, int listLimit, String searchKeyword, MemberVO member) {
+	public List<Map<String, Object>> getPurchaseHistory(int startRow, int listLimit, String searchKeyword, MemberVO member) {
 		return mapper.selectPurchaseHistory(startRow, listLimit, searchKeyword, member);
 	}
 	

@@ -75,13 +75,12 @@
 				<div class="content">
 					<table border="1">
 						<tr>
-							<th>결제번호</th>
+							<th>프로젝트 제목</th>
 							<th>후원번호</th>
-<!-- 							<th>프로젝트명</th> -->
-							<th>프로젝트 번호</th> <%-- 임시로 프로젝트 번호 사용 --%>
-							<th>후원금액</th>
-							<th>결제방법</th>
+							<th>결제상태</th>
 							<th>결제일</th>
+							<th>결제금액</th>
+							<th>결제방법</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
 						<c:set var="pageNum" value="1" />
@@ -92,12 +91,38 @@
 						</c:if>
 						<c:forEach var="SHL" items="${sponsorshipHistoryList}">
 							<tr align="center">
-								<td>${SHL.pro_pay_idx}</td>
+								<td>${SHL.project_title}</td>
 								<td>${SHL.pro_funding_idx}</td>
-								<td>${SHL.funding_project_idx}</td>
-								<td>${SHL.pro_pay_amt}</td>
+								<td>
+									<c:choose>
+										<c:when test="${SHL.pro_pay_status eq 1}">결제 완료</c:when>
+										<c:when test="${SHL.pro_pay_status eq 2}">미결제</c:when>
+									</c:choose>
+								</td>
+								<td>
+									<%-- 
+									테이블 조회를 Map 타입으로 관리 시 날짜 및 시각 데이터가
+									LocalXXX 타입으로 관리됨(ex. LocalDate, LocalTime, LocalDateTime)
+									=> 날짜 및 시각 정보 조회 시 2024-08-21T16:47:59 형식으로 저장되어 있음
+									=> 일반 Date 타입에서 사용하는 형태로 파싱 후 다시 포맷팅 작업 필요
+									=> JSTL fmt 라이브러리 - <fmt:parseDate> 태그 활용하여 파싱 후
+									   <fmt:formatDate> 태그 활용하여 포맷팅 수행
+									   var 속성 : 파싱 후 해당 날짜 및 시각 정보를 다룰 객체명(변수명)
+									   value 속성 : 파싱할 대상 날짜 데이터
+									   pattern 속성 : 파싱할 대상 날짜 데이터의 기존 형식(2024-08-21T16:47:59)에 대한 패턴 지정
+									                  => 날짜와 시각 사이의 구분자 T 도 정확하게 명시
+									                     (단, 구분자 T 는 단순 텍스트로 취급하기 위해 '' 로 둘러쌈)
+									   type 속성 : 대상 날짜 파싱 타입(time : 시각, date : 날짜, both : 둘 다)
+									--%>
+									<fmt:parseDate var="pro_pay_date" value="${SHL.pro_pay_date}" 
+													pattern="yyyy-MM-dd'T'HH:mm:ss" type="both" />
+									<%-- 파싱 후 날짜 및 시각 형식 : Wed Aug 21 16:47:59 KST 2024 --%>
+									<%-- 파싱된 날짜 및 시각이 저장된 Date 객체의 포맷팅 수행 --%>								
+									<%-- 년년년년-월월-일일 시시:분분:초초 형태로 포맷팅 --%>
+									<fmt:formatDate value="${pro_pay_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+								</td>
+								<td><fmt:formatNumber value="${SHL.pro_pay_amt}" pattern="#,###"/>원</td>
 								<td>${SHL.pay_method_name}</td>
-								<td>${SHL.pro_pay_date}</td>
 							</tr>
 						</c:forEach>
 						<c:if test="${empty sponsorshipHistoryList}">

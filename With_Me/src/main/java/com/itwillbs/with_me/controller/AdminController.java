@@ -135,11 +135,13 @@ public class AdminController {
 			model.addAttribute("targetURL", "./");
 			return "result/fail";
 		}
+		// 후원내역을 조회할 회원의 회원정보 조회
+		member = memberService.getMember(member);
 		// 페이징 처리
 //		int listLimit = 5; // 페이지 당 목록 개수
 		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
 		
-		int listCount = adminService.getSponsorshipHistoryListCount(searchKeyword); // 총 목록 개수
+		int listCount = adminService.getSponsorshipHistoryListCount(searchKeyword, member); // 총 목록 개수
 //		System.out.println("listCount : " + listCount);
 		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
@@ -167,9 +169,8 @@ public class AdminController {
 		
 		// 후원내역 조회
 		// 검색어는 기본적으로 "" 널스트링
-		member = memberService.getMember(member);
-		List<String> sponsorshipHistoryList = adminService.getSponsorshipHistory(startRow, listLimit, searchKeyword, member);
-//		System.out.println("sponsorshipDetailList : " + sponsorshipDetailList);
+		List<Map<String, Object>> sponsorshipHistoryList = adminService.getSponsorshipHistory(startRow, listLimit, searchKeyword, member);
+//		System.out.println("sponsorshipHistoryList : " + sponsorshipHistoryList);
 		
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
 //		System.out.println("pageInfo : " + pageInfo);
@@ -194,11 +195,13 @@ public class AdminController {
 			model.addAttribute("targetURL", "./");
 			return "result/fail";
 		}
+		// 구매내역을 조회할 회원의 회원정보 조회
+		member = memberService.getMember(member);
 		// 페이징 처리
 //		int listLimit = 5; // 페이지 당 목록 개수
 		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
 		
-		int listCount = adminService.getPurchaseHistoryListCount(searchKeyword); // 총 목록 개수
+		int listCount = adminService.getPurchaseHistoryListCount(searchKeyword, member); // 총 목록 개수
 //		System.out.println("listCount : " + listCount);
 		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
@@ -226,8 +229,7 @@ public class AdminController {
 		
 		// 구매내역 조회
 		// 검색어는 기본적으로 "" 널스트링
-		member = memberService.getMember(member);
-		List<String> purchaseHistorylist = adminService.getPurchaseHistory(startRow, listLimit, searchKeyword, member);
+		List<Map<String, Object>> purchaseHistorylist = adminService.getPurchaseHistory(startRow, listLimit, searchKeyword, member);
 //		System.out.println("purchaseHistorylist : " + purchaseHistorylist);
 		
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);

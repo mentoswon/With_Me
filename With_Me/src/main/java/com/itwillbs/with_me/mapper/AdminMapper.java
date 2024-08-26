@@ -1,6 +1,7 @@
 package com.itwillbs.with_me.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -23,17 +24,17 @@ public interface AdminMapper {
 	int updateAdminAuth(MemberVO member);
 	
 	// 후원내역 개수 조회
-	int selectSponsorshipHistoryListCount(String searchKeyword);
+	int selectSponsorshipHistoryListCount(@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
 	
 	// 후원내역 조회
-	List<String> selectSponsorshipHistory(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
+	List<Map<String, Object>> selectSponsorshipHistory(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
 										@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
 	
 	// 구매내역 개수 조회
-	int selectPurchaseHistoryListCount(String searchKeyword);
+	int selectPurchaseHistoryListCount(@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
 	
 	// 구매내역 조회
-	List<String> selectPurchaseHistory(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
+	List<Map<String, Object>> selectPurchaseHistory(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
 										@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
 	
 	// 프로젝트 개수 조회

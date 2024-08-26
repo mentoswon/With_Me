@@ -113,8 +113,8 @@
 							<th>프로젝트 제목</th>
 							<th>카테고리</th>
 							<th>세부 카테고리</th>
-							<th>목표 후원 금액</th>
-							<th>프로젝트 기간</th>
+							<th>누적 후원 금액</th>
+							<th>남은 기간</th>
 							<th>프로젝트 취소</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
@@ -124,14 +124,26 @@
 							<%-- pageNum 변수에 pageNum 파라미터값 저장 --%>
 							<c:set var="pageNum" value="${param.pageNum}" />
 						</c:if>
+						<%-- 오늘 날짜 추출 --%>
+						<c:set var="now" value="<%=new java.util.Date()%>" />
+						<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+						<%-- 오늘 날짜 추출 end --%>
 						<c:forEach var="PL" items="${projectList}">
 							<tr align="center">
 								<td>${PL.project_code}</td>
 								<td>${PL.project_title}</td>
 								<td>${PL.project_category}</td>
 								<td>${PL.project_category_detail}</td>
-								<td>${PL.target_price}</td>
-								<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
+								<td>
+									<%-- 임시로 목표 후원 금액 출력 --%>
+									<fmt:formatNumber value="${PL.target_price}" pattern="#,###"/>원
+								</td>
+								<%-- 남은 날짜 계산 --%>
+								<fmt:parseNumber var="strDate" value="${now.time/(1000*60*60*24)}" integerOnly="true"></fmt:parseNumber>
+								<fmt:parseNumber var="endDate" value="${PL.funding_end_date.time/(1000*60*60*24)}" integerOnly="true"></fmt:parseNumber>
+								<c:set var="leftDay" value="${endDate - strDate}"/>
+								<%-- 남은 날짜 계산 end --%>
+								<td>${leftDay}일 후에 종료</td>
 								<td>
 									<input type="button" value="승인" onclick="projectCancel('YES', ${PL.project_idx})">
 									<input type="button" value="거부" onclick="projectCancel('NO', ${PL.project_idx})">
