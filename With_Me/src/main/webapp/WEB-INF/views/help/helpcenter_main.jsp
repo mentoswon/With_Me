@@ -90,30 +90,30 @@
 				<h3>무엇을 도와드릴까요?</h3>
 			</div>
 			<br>
-			<div align="left" class="groupTitle">
+			<div align="left" class="groupcreator_qna_1.jspTitle">
 				<h4>도움말</h4>
 			</div>
 			<div class="qnaGroup">
 				<div class="qnaList">
 					<h5>위드미 기본</h5>
-					<span class="basicList"><a href="">위드미(withme)는 무엇인가요?</a></span>
-					<span class="basicList"><a href="">크라우드펀딩과 후원이란 무엇인가요?</a></span>
-					<span class="basicList"><a href="">프로젝트 후원은 무엇인가요?</a></span>
-					<span class="basicList"><a href="">선물은 무엇인가요?</a></span>
+					<span class="basicList"><a href="Basic1">위드미(withme)는 무엇인가요?</a></span>
+					<span class="basicList"><a href="Basic2">크라우드펀딩과 후원이란 무엇인가요?</a></span>
+					<span class="basicList"><a href="Basic3">프로젝트 후원은 무엇인가요?</a></span>
+					<span class="basicList"><a href="Basic4">선물은 무엇인가요?</a></span>
 				</div>	
 				
 				<div class="qnaList">
 					<h5>후원자 질문</h5>
-					<span class="creatorQna"><a href="">결제는 언제 되나요?</a></span>
-					<span class="creatorQna"><a href="">후원을 변경하거나 취소할 수 있나요?</a></span>
-					<span class="creatorQna"><a href="">가능한 결제수단은 무엇인가요?</a></span>
+					<span class="creatorQna"><a href="CreatorQna1">결제는 언제 되나요?</a></span>
+					<span class="creatorQna"><a href="CreatorQna2">후원을 변경하거나 취소할 수 있나요?</a></span>
+					<span class="creatorQna"><a href="CreatorQna3">가능한 결제수단은 무엇인가요?</a></span>
 				</div>	
 				
 				<div class="qnaList">
 					<h5>프로젝트 올리기</h5>
-					<span class="upload"><a href="">심사관련 자주 묻는 질문</a></span>
-					<span class="upload"><a href="">프로젝트 주요일정이 어떻게 되나요?</a></span>
-					<span class="upload"><a href="">프로젝트 시작에는 어떤 자격요건이 필요한가요?</a></span>
+					<span class="upload"><a href="UploadQna1">심사관련 자주 묻는 질문</a></span>
+					<span class="upload"><a href="UploadQna2">프로젝트 주요일정이 어떻게 되나요?</a></span>
+					<span class="upload"><a href="UploadQna3">프로젝트 시작에는 어떤 자격요건이 필요한가요?</a></span>
 				</div>	
 			</div>
 		
