@@ -12,14 +12,13 @@ section {
 h4 {
 	font-size: 24px;
 	margin-bottom: 20px;
-	
+}	
 	
 /*  con01  */
 
 .inner .con01 .userInfo {
 	margin: 60px 0;
 }
-
 
 .inner .con01 .userInfo .infoWrapper {
 	border: 1px solid #eee;
