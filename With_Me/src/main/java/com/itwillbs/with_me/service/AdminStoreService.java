@@ -1,6 +1,7 @@
 package com.itwillbs.with_me.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,16 @@ public class AdminStoreService {
 	// 상품 삭제
 	public int removeProduct(int product_idx) {
 		return mapper.deleteProduct(product_idx);
+	}
+	
+	// 상품 수정
+	public int modifyProduct(StoreVO store) {
+		return mapper.updateProduct(store);
+	}
+	
+	// 상품 이미지 삭제
+	public int removeProductImg(Map<String, String> map) {
+		return mapper.deleteProductImg(map);
 	}
 	
 	

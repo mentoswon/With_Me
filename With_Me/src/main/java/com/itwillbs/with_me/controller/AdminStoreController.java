@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -152,9 +153,9 @@ public class AdminStoreController {
 		String pImgName1 = UUID.randomUUID().toString().substring(0, 8) + "_" + pImg1.getOriginalFilename();
 		
 		// 업로드 할 파일이 존재할 경우(원본 파일명이 널스트링이 아닐 경우)에만 
-		// BoardVO 객체에 서브디렉토리명과 함께 파일명 저장
+		// StoreVO 객체에 서브디렉토리명과 함께 파일명 저장
 		// => 단, 업로드 파일이 선택되지 않은 파일은 파일명에 null 값이 저장되므로
-		//    파일명 저장 전 BoardVO 객체의 파일명에 해당하는 멤버변수값을 널스트링("") 으로 변경
+		//    파일명 저장 전 StoreVO 객체의 파일명에 해당하는 멤버변수값을 널스트링("") 으로 변경
 		store.setProduct_img("");
 		
 		if(!pImg1.getOriginalFilename().equals("")) {
@@ -245,6 +246,7 @@ public class AdminStoreController {
 		return "admin/admin_store_detail";
 	}
 	
+	// 상품삭제
 	@GetMapping("ProductDelete")
 	public String productDelete(
 			int product_idx, @RequestParam(defaultValue = "1") int pageNum,
@@ -264,9 +266,157 @@ public class AdminStoreController {
 		// 상품 삭제 작업
 		int deleteCount = service.removeProduct(product_idx);
 		
-		return "";
+		if(deleteCount > 0) {
+			// --------------------------------------------------------------------
+			// DB에서 게시물 정보 삭제 완료 시 실제 업로드 된 파일 삭제 처리 추가
+			// 실제 업로드 경로 알아내기
+			String realPath = session.getServletContext().getRealPath(uploadPath);
+			
+			// 파일 삭제에 사용될 파일명(최대 3개)를 List 또는 배열에 저장하여 처리 코드 중복 제거
+			String[] arrFileNames = {
+				store.getProduct_img()
+			};
+//			System.out.println("삭제할 파일 목록 : " + Arrays.toString(arrFileNames));
+			
+			// 향상된 for문 활용하여 배열 반복
+			for(String fileName : arrFileNames) {
+				// 파일명이 널스트링("")이 아닐 경우 판별하여 파일 삭제
+				if(!fileName.equals("")) {
+					// 업로드 경로와 파일명(서브디렉토리 경로 포함) 결합하여 Path 객체 생성
+					Path path = Paths.get(realPath, fileName);
+					System.out.println("실제 삭제 대상 : " + path.toString());
+					
+					// Files 클래스의 deleteIfExists() 메서드 호출하여 파일 존재할 경우 삭제 처리
+					Files.deleteIfExists(path);
+				}
+			}
+			// --------------------------------------------------------------------
+			
+			model.addAttribute("msg", "삭제 성공!");
+			model.addAttribute("targetURL", "AdminStore?pageNum=" + pageNum);
+			return "result/success";
+		} else {
+			model.addAttribute("msg", "삭제 실패!");
+			return "result/fail";
+		}
 	}
 	
+	// 상품수정
+	@GetMapping("ProductModify")
+	public String productModifyForm(int product_idx, HttpSession session, Model model) {
+		
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		
+		// 상품 1개 조회
+		StoreVO store = service.getProduct(product_idx);
+		System.out.println("store : " + store);
+		model.addAttribute("store", store);
+		
+		// 뷰페이지에서 파일 목록의 효율적 처리를 위해 파일명만 별도로 List 객체에 저장
+		List<String> fileList = new ArrayList<String>();
+		fileList.add(store.getProduct_img());
+		
+		// List 객체를 반복하면서 파일명에서 원본 파일명을 추출
+		List<String> originalFileList = new ArrayList<String>();
+		for(String file : fileList) {
+			if(!file.equals("")) {
+				// "_" 기호 다음(해당 인덱스값 + 1)부터 끝까지 추출하여 리스트에 추가
+				originalFileList.add(file.substring(file.indexOf("_") + 1));
+			} else {
+				 // 파일이 존재하지 않을 경우 널스트링 값 추가
+				originalFileList.add("");
+			}
+		}
+		// Model 객체에 파일 목록 저장
+		model.addAttribute("fileList", fileList);
+		model.addAttribute("originalFileList", originalFileList);
+		
+		return "admin/admin_store_modify";
+	}
+	
+	// 상품 수정 - 파일 삭제
+	@GetMapping("ProductDeleteFile")
+	public String productDeleteFile(@RequestParam Map<String, String> map, HttpSession session) throws Exception {
+		
+		System.out.println("map : " + map);
+		
+		int deleteCount = service.removeProductImg(map);
+		
+		// DB 에서 해당 파일명 삭제 완료 시 실제 파일도 삭제 처리
+		if(deleteCount > 0) {
+			// 실제 업로드 경로 알아내기
+			String realPath = session.getServletContext().getRealPath(uploadPath);
+			
+			// 전송된 파일명이 널스트링("") 아닐 경우 파일 삭제 처리
+			if(!map.get("product_img").equals("")) {
+				// 업로드 경로와 파일명(서브디렉토리 경로 포함) 결합해서 Path 객체 생성
+				Path path = Paths.get(realPath, map.get("product_img"));
+				// 파일 삭제
+				Files.deleteIfExists(path);
+			}
+		}
+		return "redirect:/ProductModify?product_idx=" + map.get("product_idx") + "&pageNum=" + map.get("pageNum");
+	}
+	
+	// 상품 수정
+	@PostMapping("ProductModify")
+	public String productModifyPro(
+			StoreVO store, @RequestParam(defaultValue = "1") String pageNum,
+			HttpSession session, Model model, int product_idx) throws Exception {
+		
+//		StoreVO pu = service.getProduct(product_idx);
+		
+		System.out.println("store : " + store);
+		
+		// 실제 업로드 경로 알아내기
+		String realPath = session.getServletContext().getRealPath(uploadPath);
+		
+		// 날짜별 서브디렉토리 생성하여 기본 경로에 결합
+		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
+		LocalDate today = LocalDate.now();
+		String datePattern = "yyyy/MM/dd"; // 형식 변경에 사용할 패턴 문자열 지정
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern);
+		subDir = today.format(dtf); // LocalDate - DateTimeFormatter
+		realPath += "/" + subDir;
+		Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
+		
+		// 디렉토리 생성 처리
+		Files.createDirectories(path);
+		
+		// 파일명 중복 방지
+		MultipartFile pImg = store.getProduct_img_file1();
+		String imgName = UUID.randomUUID().toString().substring(0, 8) + "_" + pImg.getOriginalFilename();
+		
+		System.out.println("imgName : " + imgName);
+		
+		store.setProduct_img("");
+		
+		if(!pImg.getOriginalFilename().equals("")) {
+			store.setProduct_img(subDir + "/" + imgName);
+		}
+		
+		// 수정 작업 요청
+		int updateCount = service.modifyProduct(store);
+		
+		if(updateCount > 0) {
+			if(!pImg.getOriginalFilename().equals("")) {
+				// File 객체 생성 시 생성자에 업로드 경로명과 파일명 전달
+				pImg.transferTo(new File(realPath, imgName));
+			}
+			
+			// 글 상세정보 조회 페이지 리다이렉트(파라미터 : 글번호, 페이지번호)
+			return "redirect:/AdminStore?product_idx=" + store.getProduct_idx() + "&pageNum=" + pageNum;
+		} else {
+			model.addAttribute("msg", "상품 수정 실패!");
+			return "result/fail";
+		}
+		
+	}
 	
 }
 

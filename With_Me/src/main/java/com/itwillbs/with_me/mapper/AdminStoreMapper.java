@@ -1,6 +1,7 @@
 package com.itwillbs.with_me.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -28,5 +29,11 @@ public interface AdminStoreMapper {
 
 	// 상품 삭제
 	int deleteProduct(int product_idx);
+
+	// 상품 수정
+	int updateProduct(StoreVO store);
+
+	// 상품 이미지 삭제
+	int deleteProductImg(Map<String, String> map);
 	
 }

@@ -100,6 +100,34 @@
 		WHERE product_idx = #{product_idx}
 	</delete>
 	
+	<!-- 상품수정 -->
+	<update id="updateProduct">
+		UPDATE product_info
+		SET
+			product_code = #{product_code}
+			, product_name = #{product_name}
+			, product_description = #{product_description}
+			, product_category = #{product_category}
+			, product_category_detail = #{product_category_detail}
+			, product_price = #{product_price}
+			, product_stock = #{product_stock}
+			, product_status = #{product_status}
+			<if test="!product_img.equals('')">
+				, product_img = #{product_img} -- product_img 존재할 경우 UPDATE 항목 추가
+			</if>
+		WHERE
+			product_idx = #{product_idx}	
+	</update>
+	
+	<!-- 상품이미지 삭제 -->
+	<update id="deleteProductImg">
+		UPDATE product_info
+		SET
+			product_img = CASE WHEN product_img = #{product_img} THEN '' ELSE product_img END
+		WHERE 
+			product_idx = #{product_idx}
+	</update>
+	
 </mapper>
 
 

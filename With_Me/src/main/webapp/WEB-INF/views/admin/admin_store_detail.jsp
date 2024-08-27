@@ -189,7 +189,7 @@ function confirmDelete() {
 	<!-- 게시판 상세내용 보기 -->
 	<article id="articleForm">
 		<h2 align="center">상품 상세내용</h2>
-			<form action="MemberJoinPro" name="joinForm" method="post">
+<!-- 			<form action="MemberJoinPro" name="joinForm" method="post"> -->
 				<section class="joinForm1">
 					<input type="hidden" name="product_idx">
 					<table id="tb01">
@@ -199,14 +199,14 @@ function confirmDelete() {
 							<td>상품코드</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="product_code" value="${product.product_code}" id="product_code"></td>
+							<td><input type="text" name="product_code" value="${product.product_code}" id="product_code" readonly="readonly"></td>
 						</tr>	
 						<tr>
 							<td>상품명</td>
 						</tr>
 						<tr>
 							<td>
-								<input type="text" name="product_name" id="product_name" value="${product.product_name}">
+								<input type="text" name="product_name" id="product_name" readonly="readonly" value="${product.product_name}">
 							</td>
 						</tr>	
 						<tr>
@@ -214,7 +214,7 @@ function confirmDelete() {
 						</tr>
 						<tr>
 							<td>
-								<input type="text" name="product_description" id="product_description" value="${product.product_description}">
+								<input type="text" name="product_description" id="product_description" readonly="readonly" value="${product.product_description}">
 							</td> 
 						</tr>	
 						<tr>
@@ -222,7 +222,7 @@ function confirmDelete() {
 						</tr>
 						<tr>
 			                <td>
-			                    <select name="product_category" id="product_category">
+			                    <select name="product_category" id="product_category" disabled="disabled">
 			                        <option value="">카테고리를 선택하세요</option>
 			                    </select>
 			                </td>
@@ -232,7 +232,7 @@ function confirmDelete() {
 						</tr>
 						<tr>
 			                <td>
-			                    <select name="product_category_detail" id="product_category_detail">
+			                    <select name="product_category_detail" id="product_category_detail" disabled="disabled">
 			                        <option value="">세부 카테고리를 선택하세요</option>
 			                    </select>
 			                </td>
@@ -241,14 +241,14 @@ function confirmDelete() {
 							<td>상품가격</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="product_price" id="product_price" value="${product.product_price}">
+							<td><input type="text" name="product_price" id="product_price" readonly="readonly" value="${product.product_price}">
 							</td>
 						</tr>
 						<tr>
 							<td>재고수량</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="product_stock" id="product_stock" value="${product.product_stock}">
+							<td><input type="text" name="product_stock" id="product_stock" readonly="readonly" value="${product.product_stock}">
 							</td>
 						</tr>	
 						<tr>
@@ -266,17 +266,53 @@ function confirmDelete() {
 									<td>품절</td>
 								</c:when>
 							</c:choose>
+						</tr>
+						<tr>
+							<th>상품사진</th>
+							<td class="write_td_right" colspan="2">
+								<div>
+									<img
+										src="${pageContext.request.contextPath}/resources/upload/${product.product_img}"
+										id="img1" class="car_image" selected>
+								</div>
+							</td>
+						</tr>
+						<tr><th width="70">파일</th>
+							<td colspan="3" id="product_img">
+								<%-- List 객체("fileList") 크기만큼 반복문을 통해 파일명 출력 --%>
+								<c:forEach var="file" items="${fileList}">
+									<%-- 단, 파일명(file 객체)가 비어있지 않을 경우메나 출력 --%>
+									<c:if test="${not empty file}">
+										<%-- [ JSTL - functions 라이브러리 함수 활용하여 원본 파일명 추출하기 ] --%> 
+										<%-- 1) split() 함수 활용하여 "_" 구분자로 분리 후 두번째 인덱스 값 사용 --%>
+			<%-- 							split() : ${fn:split(file, "_")[1]}<br> --%>
+			
+										<%-- 2) substring() 함수 활용하여 시작인덱스부터 지정 인덱스까지 문자열 추출 --%>
+										<%--    (단, 전체 파일명의 길이를  --%>
+			<%-- 							<c:set var="fileLength" value="${fn:length(file)}" /> --%>
+			<%-- 							<c:set var="delimIndex" value="${fn:indexOf(file, '_')}" /> --%>
+			<%-- <%-- 							substring() : ${fn:substring(file, 시작인덱스, 끝인덱스)} --%>
+			<%-- 							substring() : ${fn:substring(file, delimIndex + 1, fileLength)}<br> --%>
+			
+										<%-- 3) substringAfter() 함수 활용하여 시작인덱스부터 끝까지 추출 --%>
+			<%-- 							substringAfter() : ${fn:substringAfter(file, '_')}<br> --%>
+										<c:set var="orginalFileName" value="${fn:substringAfter(file, '_')}"/>
+<%-- 										<input type="hidden" name="originalFileName" value="${originalFileName}" /> --%>
+										${file}
+									</c:if>
+								</c:forEach> 
+							</td>
 						</tr>	
 						<tr>
 							<td align="center"><br>
-								<input type="submit" value="가입">
+								<input type="button" value="목록" onclick="location.href='AdminStore?pageNum=${param.pageNum}'">
 								<input type="button" value="수정" onclick="location.href='ProductModify?product_idx=${product.product_idx}&pageNum=${param.pageNum}'">
 								<input type="button" value="삭제" onclick="confirmDelete()">
 							</td>
 						</tr>
 					</table>
 				</section>
-			</form>
+<!-- 			</form> -->
 	</article>
 	<footer>
 		<%-- 회사 소개 영역(inc/bottom.jsp) 페이지 삽입 --%>
