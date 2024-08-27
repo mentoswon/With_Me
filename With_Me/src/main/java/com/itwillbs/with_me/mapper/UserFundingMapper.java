@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.itwillbs.with_me.vo.ItemVO;
+import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
@@ -40,6 +40,21 @@ public interface UserFundingMapper {
 
 	// 리워드가 객관식일 경우 아이템 옵션
 	List<Map<String, Object>> selectItemOptionList(String item_idx);
+
+	// 사용자 배송지 가져오기
+	List<AddressVO> selectUserAddress(MemberVO member);
+
+	// 기본 배송지 여부 확인
+	int selectAddressIsDefault(String id);
+
+	// 기본 배송지 변경
+	int updateDefaultAddress(String id);
+
+	// 1. 기본 배송지 변경하고 새로운 기본배송지 설정
+	void insertNewDefaultAddress(AddressVO new_address);
+
+	// 2. 나머지 배송지 등록
+	void insertNewAddress(AddressVO new_address);
 
 	
 

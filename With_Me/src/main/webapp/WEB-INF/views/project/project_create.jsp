@@ -200,7 +200,7 @@ $(function() {
             $("#checkTargetPrice").text("50만원 이상의 금액을 입력해주세요.");
             $("#checkTargetPrice").css("color", "red");
         } else if (numericValue > 9999999999) {
-            $("#checkTargetPrice").text("9,999,999,999원 이하인 금액을 입력해주세요.");
+            $("#checkTargetPrice").text("9,999,999,999원 이하의 금액을 입력해주세요.");
             $("#checkTargetPrice").css("color", "red");
 		} else {
             $("#checkTargetPrice").text("");
@@ -262,21 +262,18 @@ $(function() {
     $('#subjectiveWrap').hide();
     $('#objectiveWrap').hide();
 	$("input[name='item_condition']").on("change", function() {
-        // 모든 라벨에서 selected 클래스를 제거
+        // 옵션조건 관련 레이블 제거
         $("label").removeClass("selected");
-        
+        $("label[for='none'], label[for='subjective'], label[for='objective']").removeClass("selected");
         // 체크된 라디오 버튼의 for 속성과 일치하는 라벨에 selected 클래스 추가
         $("label[for='" + $(this).attr("id") + "']").addClass("selected");
-        
         // 선택된 라디오 버튼의 값을 가져옴
         let selectedValue = $(this).val();
-		
 		// input 초기화
         $('#subjectiveWrap input').val('');
         $('#objectiveWrap input[type="text"]').val('');
         $('#objectiveWrap input[type="text"]').slice(2).remove(); // 처음 2개 외의 input 제거
 
-        
         if (selectedValue == "주관식") {	// 주관식 선택 시
             $("#subjectiveWrap").show();
             $("#objectiveWrap").hide();
@@ -335,7 +332,6 @@ $(function() {
 	                alert("아이템 등록에 실패하였습니다.");
 	            }
 	        });	// ajax 끝
-			
 		}
 	});
 	
@@ -407,7 +403,7 @@ $(function() {
 	            error: function() {
 	                alert("아이템 삭제 요청에 실패하였습니다.");
 	            }
-	        });
+	        });	// ajax 끝
 	    }
 	});
 	
@@ -417,8 +413,51 @@ $(function() {
         $("#rewardTitleLength").text(rewardTitleLength);
     });
     
+	// 수량제한 선택 이벤트
+	$("input[name='amount_limit']").on("change", function() {
+		$("label[for='amountLimit_Y'], label[for='amountLimit_N']").removeClass("selected");
+	    $("label[for='" + $(this).attr("id") + "']").addClass("selected");
+	    let selectedValue = $(this).val();
+	 });	
 	
+	// 배송여부 선택 이벤트
+	$("input[name='delivery_status']").on("change", function() {
+	    $("label[for='deliveryStatus_Y'], label[for='deliveryStatus_N']").removeClass("selected");
+        $("label[for='" + $(this).attr("id") + "']").addClass("selected");
+        let selectedValue = $(this).val();
+	 });	
 	
+	// 후원 금액 입력 이벤트
+    $("#reward_price").on("input", function(event) {
+        let value = $(this).val();
+        // 숫자만 남기기
+        value = value.replace(/[^0-9]/g, "");
+        // 숫자 포맷팅
+        if (value) {
+            value = parseInt(value, 10).toLocaleString("ko-KR");	// 세자리 마다 콤마(,) 붙여줌
+        }
+        $(this).val(value);
+
+        // 1000원 이상인지 체크
+        let numericValue = parseInt(value.replace(/,/g, ""), 10) || 0;
+        if (numericValue < 1000) {
+            $("#checkRewardPrice").text("1000원 이상의 금액을 입력해주세요.");
+            $("#checkRewardPrice").css("color", "red");
+        } else if (numericValue > 10000000) {
+            $("#checkRewardPrice").text("10,000,000원 이하의 금액을 입력해주세요.");
+            $("#checkRewardPrice").css("color", "red");
+		} else {
+            $("#checkRewardPrice").text("");
+        }
+    });
+
+    // 숫자 입력만 허용하는 keypress 이벤트
+    $("#reward_price").on("keypress", function(event) {
+    	let keyCode = event.keyCode;
+        if (keyCode < 48 || keyCode > 57) {
+            event.preventDefault();
+        }
+    });
 	
     // ========================================================================================
     // [ 프로젝트 계획 ]
@@ -525,10 +564,27 @@ $(function() {
     	checkCreatorIntroduce();
     });
     
-    
+    // -----------------------------------------------
+    // 본인인증(cool sms)
     
     
 });	// ready 이벤트 끝
+
+// 입금 계좌 등록
+function linkAccount() {
+	// 새 창을 열어서 사용자 인증 서비스 요청
+	// => 금융결제원 오픈API - 2.1.1. 사용자인증 API (3-legged) 서비스
+	// ----------------------------------------------------------------
+	// 빈 창으로 새 창 띄운 후 해당 창에 사용자 인증 페이지 표시
+	let authWindow = window.open("about:blank", "authWindow", "width=500,height=700");
+	authWindow.location = "https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
+							+ "response_type=code"
+							+ "&client_id=4066d795-aa6e-4720-9383-931d1f60d1a9"
+							+ "&redirect_uri=http://localhost:8081/mvc_board/callback"
+							+ "&scope=login inquiry transfer"
+							+ "&state=12345678901234567890123456789012"
+								+ "&auth_type=0";
+}
 
 </script>
 </head>
@@ -626,7 +682,7 @@ $(function() {
 					</p>
 				</div>
 				<div class="projectContentWrap">
-					<input type="text" name="project_title" id="project_title" placeholder="제목을 입력해주세요." value="${project.project_title}">
+					<input type="text" name="project_title" id="project_title" placeholder="제목을 입력해주세요." value="${project.project_title}" maxlength="30">
 					<div class="LengthCheck">
 						<span id="checkLengthTitle"></span>
 						<p><span id="titleLength">0</span>/30</p>
@@ -1285,7 +1341,7 @@ $(function() {
 					<br>
 				</div>
 				<div class="projectContentWrap">
-					<input type="button" value="계좌등록하기" class="button" onclick="accountRegist()">
+					<input type="button" value="계좌등록하기" class="button" onclick="linkAccount()">
 					<p>
 						<span class="importanceImg">
 							<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
