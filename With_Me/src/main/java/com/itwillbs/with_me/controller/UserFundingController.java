@@ -3,7 +3,6 @@ package com.itwillbs.with_me.controller;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.UserFundingService;
-import com.itwillbs.with_me.vo.ItemVO;
+import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -194,26 +194,76 @@ public class UserFundingController {
 	}
 	
 	
-	// 후원 진행
+	// 후원 진행 - 일반 후원 (금액만)
 	@GetMapping("FundInProgress")
-	public String fundInProgress(int reward_amt, String reward_title, HttpSession session, MemberVO member,
-								Model model) {
+	public String fundInProgress(@RequestParam(defaultValue = "0") int reward_amt, 
+								 @RequestParam(defaultValue = "") String reward_title,
+								 HttpSession session, MemberVO member, Model model) {
 //		System.out.println("reward_amt, reward_title : " + reward_amt + ", " + reward_title);		
 		String id = (String) session.getAttribute("sId");
-//		System.out.println(id);
+		
+		if(id == null) {
+			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberLogin");
+			session.setAttribute("prevURL", "FundInProgress");
+			return "result/fail";
+		}
+		
 		member.setMem_email(id);
 		
 		// 아이디로 회원 정보 가져오기
 		member = memberService.getMember(member);
 //		System.out.println("member : " + member);
 		
+		// 아이디로 주소 정보 가져오기
+		List<AddressVO> userAddress = service.getUserAddress(member);
+		
 		// =========================================================================
 		model.addAttribute("member", member);
+		model.addAttribute("userAddress", userAddress);
 		
 		return "project/fund_in_progress";
 	}
 	
 	
+	// 배송지 등록
+	@PostMapping("RegistAddress")
+	public String registAddress(AddressVO new_address, HttpSession session) {
+		System.out.println("new_address : " + new_address);
+		
+		String id = (String) session.getAttribute("sId");
+		
+		// insert를 할건데 
+		// 1. 기본 배송지 설정이 이미 돼있으면 (on / null)
+		// address_is_default = Y 인걸 찾아서 N으로 바꾸고 새로 등록하는걸 Y로 바꿔야함.
+		// 2. 기본 배송지 설정된거 없으면 그냥 등록
+		// 3. 기본 배송지 설정된거 있는데 안바꿔도 그냥 등록
+		
+		// 일단 기본배송지 등록된거 있는지 확인 먼저 필요
+		int isDefaultCount = service.getAddressIsDefault(id);
+//		System.out.println("isDefaultCount : " + isDefaultCount);
+		
+		if(isDefaultCount == 1) {
+			if(new_address.getAddress_is_default() == null) { // 기본 배송지 있는데 안 바꾸면 그냥 등록 !
+				service.registNewAddress(new_address);
+			} else if(new_address.getAddress_is_default().equals("on")) { // 새 주소 등록하면서 기본 배송지 설정 !
+					
+			// 기본배송지가 있으면 그걸 N으로 바꿔야함 -> update
+				int updateCount = service.modifyDefaultAddress(id);
+				
+				// 바꾸고 새로운 기본배송지 insert
+				if(updateCount > 0) {
+					service.registNewDefaultAddress(new_address);
+				}
+			}
+		} else {
+			// 기본 배송지도 없고, 기본 배송지 설정 안 하고 그냥 등록 ! (기본이든 기본 아니든)
+			service.registNewAddress(new_address);
+			
+		}
+		
+		return "redirect:/FundInProgress";
+	}
 	
 	
 	

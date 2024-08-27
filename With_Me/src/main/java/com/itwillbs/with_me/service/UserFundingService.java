@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.UserFundingMapper;
-import com.itwillbs.with_me.vo.ItemVO;
+import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
@@ -52,6 +52,32 @@ public class UserFundingService {
 	public List<Map<String, Object>> getItemOpionList(String item_idx) {
 		return mapper.selectItemOptionList(item_idx);
 	}
+
+	// 사용자 배송지 가져오기
+	public List<AddressVO> getUserAddress(MemberVO member) {
+		return mapper.selectUserAddress(member);
+	}
+
+	// 기본 배송지 여부 확인
+	public int getAddressIsDefault(String id) {
+		return mapper.selectAddressIsDefault(id);
+	}
+
+	// 기본 배송지 변경
+	public int modifyDefaultAddress(String id) {
+		return mapper.updateDefaultAddress(id);
+	}
+
+	// 1. 기본 배송지 변경하고 새로운 기본배송지 설정
+	public void registNewDefaultAddress(AddressVO new_address) {
+		mapper.insertNewDefaultAddress(new_address);
+	}
+
+	// 2. 나머지 배송지 등록
+	public void registNewAddress(AddressVO new_address) {
+		mapper.insertNewAddress(new_address);
+	}
+
 
 
 	

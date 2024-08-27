@@ -144,6 +144,7 @@
 					
 					<!-- 후원자가 고른 후원 아이템 -->
 					<!-- display: none 해두고 추가되면 뜨게 할 것 -->
+					<%-- AJAX 사용 필요 --%>
 					<div id="choosenFunding">
 						<h4>후원 선택</h4>
 						<div class="wrap">
@@ -156,7 +157,7 @@
 						<div class="wrap">
 						
 							<%-- 일반후원은 클릭하면 바로 결제페이지로 이동 --%>
-							<div class="reward" id="reward_default" onclick="fundInProgress()">
+							<div class="reward" id="reward_default" onclick="location.href='FundInProgress?reward_amt=1000&reward_title=일반후원하기'">
 							
 								<div class="reward_amt"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원
 									<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
@@ -196,12 +197,11 @@
 										</c:forEach>
 									</div>
 									
-									<%-- AJAX 사용 필요 --%>
-									<form action="" name="">
-										<input type="hidden" value="">
-										<input type="hidden" value="">
-										<input type="hidden" value="">
-										<input type="hidden" value="">
+									<form action="" method="post">
+										<input type="hidden" value="" name="">
+										<input type="hidden" value="" name="">
+										<input type="hidden" value="" name="">
+										<input type="hidden" value="" name="">
 										<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
 									</form>
 								</div>
@@ -303,23 +303,20 @@
 					$(this).css('border','2px solid #ffab40');
 				}
 			});
-			
-			function fundInProgress(){
-				location.href="FundInProgress?reward_amt=1000&reward_title=일반 후원하기";
-			}
 			// ==========================================================================
 			// -------------------------------------------------------------------------
 			// 신고하기
 			// 팝업 오픈
-			report.onclick = function(){
-				modal[0].classList.add('on');
-			}
+			
+			$(report).on('click', function() { 
+				$(modal).addClass("on");
+			});
 			
 			// -------------------------------------------------------------------------
 			// 닫기 버튼
-			closeBtn.onclick = function(){
-				modal[0].classList.remove('on');
-			}
+			$(closeBtn).on('click', function() { 
+				$(modal).removeClass("on");
+			});
 			// -------------------------------------------------------------------------
 			// 신고 폼
 			function reportType(type){
@@ -327,8 +324,6 @@
 				
 				
 			}
-			
-			
 			
 			// 신고하기 end
 			// ==========================================================================
