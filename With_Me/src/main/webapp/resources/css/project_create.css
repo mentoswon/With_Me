@@ -270,11 +270,11 @@ input[type="file"] {
 	width: 100%;
 }
 
-/* ----- 펀딩계획 - 목표금액 ---------- */
+/* ----- 펀딩계획 ---------- */
+/* 목표금액 */
 .projectWriteBorder {
 	border: 2px solid #ccc;
 	padding: 15px;
-	
 }
 #estimateAmountWrap {
 	background-color: #fafafa;
@@ -293,13 +293,39 @@ input[type="file"] {
 .amountArea:not(:first-child) {
 	color: #aaa;
 }
-.fontModify {
+.fontModify, .redFont {
 	color: red;
+}
+
+/* 요금제 선택 */
+.smallFont {
+	font-size: 15px;
+}
+
+.paymentButton {
+	width: 100%;
+	height: 40px;
+	background-color: #fff;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	cursor: pointer;
+}
+.paymentButton.selected {
+	background-color: #FFAB40;
+	border-color: #FFAB40;
+}
+
+.paymentWrap {
+	border: 2px solid #ccc;
+	padding: 30px 60px;
+}
+.paymentWrap.selectedBorder {
+	border: 2px solid #FFAB40;
 }
 
 /* ----- 후원 구성 ---------- */
 
-/* ----- 옵션 조건 ---------- */
+/* 옵션 조건 */
 input[type="radio"] {
 	display: none;
 }
@@ -327,6 +353,12 @@ input[type="radio"] {
 	border-color: #ccc;
 	box-sizing: border-box;
 	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
+}
+
+#itemListContainer {
+	height: 670px;
+	overflow: auto;
+	overflow-x: hidden;
 }
 
 .itemListWrap {

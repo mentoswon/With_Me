@@ -10,6 +10,7 @@ import com.itwillbs.with_me.mapper.CreatorFundingMapper;
 import com.itwillbs.with_me.vo.CommonCodeVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.RewardVO;
 
 @Service
 public class CreatorFundingService {
@@ -72,6 +73,16 @@ public class CreatorFundingService {
 	// 아이템 삭제 요청
 	public int deleteItem(String item_idx) {
 		return mapper.deleteItem(item_idx);
+	}
+
+	// 후원 구성 등록 요청
+	public int registReward(Map<String, String> map) {
+		return mapper.insertReward(map);
+	}
+
+	// 후원 구성 리스트 조회 요청
+	public List<RewardVO> getRewardList(String project_idx) {
+		return mapper.selectRewardList(project_idx);
 	}
 
 

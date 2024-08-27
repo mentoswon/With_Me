@@ -66,7 +66,7 @@
 	INSERT INTO project_info
 	VALUES (
 		null										-- project_idx
-		, CONCAT('project_ ', #{project_idx} + 1)	-- project_code
+		, CONCAT('project_', #{project_idx} + 1)	-- project_code
 		, '작성중'									-- project_status
 		, #{creator_idx}							-- creator_idx
 		, #{project.project_category}				-- project_category
@@ -111,7 +111,7 @@
 	WHERE project_idx = #{project_idx}
 </select>
 
-<!-- 아이템 등록 -->
+<!-- 아이템 등록 -INSERT -->
 <insert id="insertItem">
 	INSERT INTO item_info
 	VALUES (
@@ -130,9 +130,33 @@
 	WHERE project_idx = #{project_idx}
 </select>
 
+<!-- 아이템 삭제 - DELETE -->
 <delete id="deleteItem">
 	DELETE FROM item_info
 	WHERE item_idx=#{item_idx}
 </delete>
+
+<!-- 후원 구성 등록 - INSERT -->
+<insert id="insertReward">
+	INSERT INTO reward_info
+	VALUSE (
+		null	-- AUTO_INCREMENT
+		, #{project_idx}
+		, #{reward_title}
+		, #{reward_item_idx}
+		, null				-- reward_explain
+		, #{amount_limit}
+		, #{item_amount}
+		, #{delivery_status}
+		, #{reward_price}
+	)
+</insert>
+
+<!-- 후원 구성 리스트 조회 - SELECT -->
+<select id="selectRewardList" resultType="reward">
+	SELECT *
+	FROM reward_info
+	WHERE project_idx = #{project_idx}
+</select>
 
 </mapper>

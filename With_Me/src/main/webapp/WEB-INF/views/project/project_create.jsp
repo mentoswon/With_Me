@@ -249,6 +249,20 @@ $(function() {
         }
     });
     
+    // ------------------------------------
+    // basic을 기본 선택으로 설정
+	$("#basic").text("선택완료").addClass("selected");
+    $("#basic").closest(".paymentWrap").addClass("selectedBorder");
+    
+    // 요금제 선택 이벤트
+    $(".paymentButton").click(function() {
+		$(".paymentButton").text("선택하기").removeClass("selected");
+		$(".paymentWrap").removeClass("selectedBorder");
+		
+		$(this).text("선택완료").addClass("selected");
+		$(this).closest(".paymentWrap").addClass("selectedBorder");
+	});
+    
     // ========================================================================================
     // [ 후원 구성 ]
     // 아이템 이름 글자 수
@@ -366,6 +380,8 @@ $(function() {
 	// 아이템 삭제 이벤트
 	$(document).on("click", ".trashImg", function() {
 	    let item_idx = $(this).data("item-idx");  // 클릭된 아이콘의 item_idx 추출
+	    let item = $(this).parent();	// 아이템 삭제할 영역
+	    console.log("item : " + item.html());
 	
 	    if (confirm("정말로 삭제하시겠습니까?")) {
 	    	// AJAX 활용하여 "DeleteItem" 서블릿 요청(파라미터 : item_idx) - POST
@@ -383,21 +399,7 @@ $(function() {
 					} else if(!response.result) { // 댓글 삭제 실패일 경우
 	                    alert("아이템 삭제에 실패하였습니다.");
 					} else if(response.result) { // 댓글 삭제 성공일 경우
-// 						location.reload(); // 현재 페이지 갱신
-// 						$(`div[data-item-idx="${item_idx}"]`).closest(".itemListWrap").remove();
-	                	// 콘솔 로그 추가: 삭제 시도
-	                    console.log("item_index : ", item_idx);	// ------ 이건 뜨는데
-	
-	                    // 삭제 성공 시 해당 아이템 UI에서 제거
-            	        let itemToRemove = $(`div[data-item-idx="${item_idx}"]`).closest(".itemListWrap");
-	                    console.log("Item to remove : ", itemToRemove);	// 삭제할 요소 로그
-	                    // ------ Item to remove: ce.fn.init {length: 0, prevObject: ce.fn.init}
-						// ------ length 가 안뜸 ㅎㅎㅎㅎㅎ
-	                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	                    // 아이템 삭제는 되는데 UI에서 remove() 안되는 문제
-						// location.reload(); 하면 되긴 하는데 갱신 안하고 지우고싶다.. 
-	                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	                    itemToRemove.remove(); // 요소 제거
+	                    $(item).remove(); // 삭제된 아이템 요소 제거
 	                }
 	            },
 	            error: function() {
@@ -407,7 +409,8 @@ $(function() {
 	    }
 	});
 	
-	// 구성 설명 글자 수(후원 제목)
+	// ------------------------------------------
+	// 후원 이름 글자 수
     $("#reward_title").keyup(function() {
     	let rewardTitleLength = $("#reward_title").val().length;
         $("#rewardTitleLength").text(rewardTitleLength);
@@ -418,7 +421,53 @@ $(function() {
 		$("label[for='amountLimit_Y'], label[for='amountLimit_N']").removeClass("selected");
 	    $("label[for='" + $(this).attr("id") + "']").addClass("selected");
 	    let selectedValue = $(this).val();
+	    $("#item_amount").val('');
+	    $("#checkItemAmount").text('');
 	 });	
+	
+	// 수량제한 있음 선택 시 이벤트
+	$("#itemAmountWrap").hide();	// 초기에는 아이템 개수 입력란 숨김
+	$("input[name='amount_limit']").change(function() {
+        if ($("#amountLimit_Y").is(":checked")) {
+            $("#itemAmountWrap").show();  // '있음' 선택 시 보이기
+		    $("#item_amount").val('1');
+        } else {
+            $("#itemAmountWrap").hide();  // '없음' 선택 시 숨기기
+        }
+    });
+	
+	// 아이템 개수 입력 이벤트
+    $("#item_amount").on("input", function(event) {
+        let value = $(this).val();
+        // 숫자만 남기기
+        value = value.replace(/[^0-9]/g, "");
+        // 숫자 포맷팅
+        if (value) {
+            value = parseInt(value, 10).toLocaleString("ko-KR");	// 세자리 마다 콤마(,) 붙여줌
+        }
+        $(this).val(value);
+
+        // 아이템 개수 체크
+        let numericValue = parseInt(value.replace(/,/g, ""), 10) || 0;
+        if (numericValue < 1) {
+            $("#checkItemAmount").text("1개 이상의 개수를 입력해주세요.");
+            $("#checkItemAmount").css("color", "red");
+        } else if (numericValue >= 1000) {
+            $("#checkItemAmount").text("1,000개 이하의 개수를 입력해주세요.");
+            $("#checkItemAmount").css("color", "red");
+		} else {
+            $("#checkItemAmount").text("");
+        }
+    });
+
+    // 숫자 입력만 허용하는 keypress 이벤트
+    $("#item_amount").on("keypress", function(event) {
+    	let keyCode = event.keyCode;
+        if (keyCode < 48 || keyCode > 57) {
+            event.preventDefault();
+        }
+    });
+	
 	
 	// 배송여부 선택 이벤트
 	$("input[name='delivery_status']").on("change", function() {
@@ -430,9 +479,7 @@ $(function() {
 	// 후원 금액 입력 이벤트
     $("#reward_price").on("input", function(event) {
         let value = $(this).val();
-        // 숫자만 남기기
         value = value.replace(/[^0-9]/g, "");
-        // 숫자 포맷팅
         if (value) {
             value = parseInt(value, 10).toLocaleString("ko-KR");	// 세자리 마다 콤마(,) 붙여줌
         }
@@ -443,7 +490,7 @@ $(function() {
         if (numericValue < 1000) {
             $("#checkRewardPrice").text("1000원 이상의 금액을 입력해주세요.");
             $("#checkRewardPrice").css("color", "red");
-        } else if (numericValue > 10000000) {
+        } else if (numericValue >= 10000000) {
             $("#checkRewardPrice").text("10,000,000원 이하의 금액을 입력해주세요.");
             $("#checkRewardPrice").css("color", "red");
 		} else {
@@ -459,6 +506,90 @@ $(function() {
         }
     });
 	
+
+	// 등록 버튼 클릭 시 AJAX 요청 전송(후원 등록 및 리스트 조회)
+    $("#rewardRegist").on("click", function(event) {
+        if (!$("input[name='reward_item_idx']:checked").val()) {
+	    	event.preventDefault(); // 기본 폼 제출 동작 방지
+        	alert("아이템을 선택해주세요!");
+        } else if ($("#reward_title").val().trim() === "") {
+	    	event.preventDefault(); // 기본 폼 제출 동작 방지
+        	alert("후원 이름을 입력해주세요!");
+        } else if (!$("input[name='amount_limit']:checked").val()) {
+        	event.preventDefault(); // 기본 폼 제출 동작 방지
+	        alert("수량 제한을 선택해주세요!");
+        } else if ($("#amountLimit_Y").is(":checked") && $("#item_amount").val() == "") {
+        	event.preventDefault(); // 기본 폼 제출 동작 방지
+	        	alert("아이템 개수를 입력해주세요!");
+		} else if (!$("input[name='delivery_status']:checked").val()) {
+	    	event.preventDefault(); // 기본 폼 제출 동작 방지
+        	alert("배송 여부를 선택해주세요!");
+        } else if ($("#reward_price").val().trim() === "" || $("#reward_price").val() < 1000) {
+	    	event.preventDefault(); // 기본 폼 제출 동작 방지
+        	alert("후원 금액을 입력해주세요!");
+		} else {
+	        $.ajax({
+	            type: "POST",
+	            url: "RegistReward",
+	            data : {
+	            	project_idx : $("input[name='project_idx']").val(), 
+	            	reward_title : $("#reward_title").val(), 
+	            	// 체크된 reward_item_idx의 값을 배열로 수집하고 |로 연결
+	                reward_item_idx: $("input[name='reward_item_idx']:checked").map(function() {
+			            if ($(this).val().trim() !== "") {  // 빈 값이 아닌 경우만 포함
+			                return $(this).val();
+			            }
+	                }).get().join('|'), // 값들을 |로 연결하여 문자열로 변환
+	                amount_limit: $("input[name='amount_limit']:checked").val(),
+	                item_amount: $("#item_amount").val().trim(),
+	                delivery_status: $("input[name='delivery_status']:checked").val(),
+	                reward_price: $("#reward_price").val().trim()
+				},
+				dataType : "json",
+	            success: function(response) {
+	            	// 임시) 
+	            	alert("후원 구성 등록 성공!");
+	            	
+	                // 받은 응답 데이터로 리스트를 업데이트
+// 	                updateRewardList(response);
+	                // 폼 리셋
+	                $("#registRewardForm")[0].reset();
+	            },
+	            error: function() {
+	                alert("후원 구성 등록에 실패하였습니다.");
+	            }
+	        });	// ajax 끝
+		}
+	});
+	
+	// 후원 구성 리스트 출력
+//     function updateRewardList(itemList) {
+// 		// 기존 리스트 초기화
+//         $("#rewardListContainer").empty();
+//         $("#chooseRewardContainer").empty();
+
+//         // 서버로부터 받은 아이템 리스트를 사용하여 새로운 리스트 생성
+//         itemList.forEach(function(item) {
+// 			let listItem =  
+//             	`<div class="itemListWrap">
+// 	            	<div class="itemList">
+// 						<h4>${item.item_name}</h4>
+// 						<p>
+// 							<b>옵션조건(${item.item_condition})</b><br>
+// 							${item.multiple_option}
+// 						</p>
+// 						<br>
+// 					</div>
+// 					<div class="trashImg" data-item-idx="${item.item_idx}">
+// 						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+// 					</div>
+// 				</div>`;
+			
+// 			$("#itemListContainer").append(listItem);
+// 			$("#chooseItemContainer").append('<input type="checkbox" name="reward_item_idx" value="${item.item_name}">');
+//         });
+//     }
+    
     // ========================================================================================
     // [ 프로젝트 계획 ]
 	// 프로젝트 소개 미리보기
@@ -865,7 +996,38 @@ function linkAccount() {
 						</p>
 					</div>
 					<div class="projectContentWrap">
-						<div class="projectWriteBorder">
+						<div class="paymentWrap">
+							<h2>Basic</h2>
+							<p>
+								플랫폼 수수료 <span class="redFont">5%</span><br>
+								<span class="smallFont">+결제 수수료 3%</span>
+							</p>
+							<div align="center">
+								<p>
+									<b style="color: #FFAB40; font-size: 20px;">✓</b> 위드미 펀딩의 기본 기능으로 나만의 프로젝트를 실현하세요.
+								</p>
+								<button id="basic" class="paymentButton">선택하기</button>
+							</div>
+						</div>
+						<br>
+						
+						<div class="paymentWrap">
+							<h2 class="redFont">Premium</h2>
+							<p>
+								Basic 요금제 기본 수수료<br>
+								<span class="smallFont">
+									+광고 대행 수수료<br>
+									※ 광고 대행 수수료는 심사 요청 시 선결제로 진행됩니다.<br>
+									광고 대행 수수료 = 펀딩일정(1주일 기준) * 10만원
+								</span>
+							</p>
+							<div align="center">
+								<p>
+									<b style="color: #FFAB40; font-size: 20px;">✓</b> 프리미엄 요금제 선택 시 우선적으로 메인페이지 상단에 노출될 수 있어요!
+								</p>
+								<button id="premium" class="paymentButton">선택하기</button>
+							</div>
+							
 						</div>
 						<br><br>
 					</div>
@@ -931,10 +1093,10 @@ function linkAccount() {
 							<div id="objectiveWrap">
 								<b>옵션 항목</b>
 								<div style="display: flex; justify-content: space-between; align-items: flex-end;">
-									<p>
+									<span>
 										2개 이상의 옵션 항목을 만들어주세요.<br>
 										한 칸에 하나의 옵션을 작성해주세요.
-									</p>
+									</span>
 									<span id="addOption" class="addImg" style="margin-bottom: 10px;">
 		           						<img alt="+아이콘" src="${pageContext.request.contextPath}/resources/image/add_icon.png">
 									</span>
@@ -1003,8 +1165,8 @@ function linkAccount() {
 							</div>
 							<br>
 							
-							<b>구성 설명</b>
-							<p>어떤 아이템으로 구성되었는지 쉽게 알 수 있는 설명을 입력해주세요.</p>
+							<b>후원 이름</b><br>
+							<span>어떤 아이템으로 구성되었는지 쉽게 알 수 있는 설명을 입력해주세요.</span>
 							<input type="text" name="reward_title" id="reward_title" placeholder="예) 강아지 간식, 배송비 포함" maxlength="50" style="width: 100%;">
 							<div class="LengthCount">
 								<p><span id="rewardTitleLength">0</span>/50</p>
@@ -1020,6 +1182,16 @@ function linkAccount() {
 									<label for="amountLimit_N">없음</label>
 								</div>
 							</div>
+							<table id="itemAmountWrap" style="border: 1px solid #ccc; width: 100%;">
+								<tr>
+									<td>
+										<input type="text" name="item_amount" id="item_amount" maxlength="5" style="border: none; text-align: right; width: 565px;">
+									</td>
+									<td style="text-align: center; padding-bottom: 2px;" width="40px">개</td>
+								</tr>
+							</table>
+							<span id="checkItemAmount"></span>
+							
 							
 							<hr class="dividingLine2">
 							<div id="deliveryStatusContainer">
@@ -1033,7 +1205,8 @@ function linkAccount() {
 							</div>
 							
 							<hr class="dividingLine2">
-							<b>후원 금액</b>
+							<b>후원 금액</b><br>
+							<span>제작 및 전달에 필요한 모든 비용(포장비, 배송비 등)이 포함된 금액으로 입력해주세요.</span>
 							<table style="border: 1px solid #ccc; width: 100%;">
 								<tr>
 									<td>

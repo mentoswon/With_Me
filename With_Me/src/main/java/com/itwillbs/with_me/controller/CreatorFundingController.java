@@ -19,6 +19,7 @@ import com.itwillbs.with_me.service.CreatorFundingService;
 import com.itwillbs.with_me.vo.CommonCodeVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.RewardVO;
 
 @Controller
 public class CreatorFundingController {
@@ -201,5 +202,24 @@ public class CreatorFundingController {
 		return jo.toString();
 	}
 	
+	// 후원 구성 등록 및 리스트 조회 하기
+	@ResponseBody
+	@PostMapping("RegistReward")
+	public List<RewardVO> registReward(@RequestParam Map<String, String> map) {
+		System.out.println("map : " + map);
+		
+		String project_idx = map.get("project_idx");
+		System.out.println("project_idx : " + project_idx);
+		
+		// 후원 구성 등록
+		int insertCount = service.registReward(map);
+		List<RewardVO> rewardList = null;
+		
+		if (insertCount > 0) {	// 아이템 등록 성공
+			// 후원 구성 리스트 조회
+			rewardList = service.getRewardList(project_idx);
+		}
+		return rewardList;
+	}
 	
 }
