@@ -243,23 +243,32 @@ public class AdminController {
 		return "admin/admin_member_purchase_history_list";
 	}
 	
-	// 관리자 - 프로젝트관리 - 등록신청관리
-	@GetMapping("AdminRegistWaitingProjectList")
-	public String adminRegistWaitingProjectList(@RequestParam(defaultValue = "1") int pageNum,
-												@RequestParam(defaultValue ="") String searchKeyword,
-												@RequestParam(defaultValue = "5") int listLimit,
-												HttpSession session, Model model) {
+	// 관리자 - 프로젝트관리 - 등록신청관리, 진행중인 프로젝트, 종료된 프로젝트
+	@GetMapping("AdminProjectList")
+	public String adminProjectList(@RequestParam(defaultValue = "1") int pageNum,
+									@RequestParam(defaultValue ="") String searchKeyword,
+									@RequestParam(defaultValue = "5") int listLimit,
+									HttpSession session, Model model, String status) {
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
 			model.addAttribute("msg", "관리자 권한이 없습니다.");
 			model.addAttribute("targetURL", "./");
 			return "result/fail";
 		}
+		// 파라미터로 받아온 status 값에 따라 projectStatus 값 설정
+		String projectStatus = "";
+		if(status.equals("등록대기")) {
+			projectStatus = "심사중";
+		} else if(status.equals("진행중")) {
+			projectStatus = "승인";
+		} else if(status.equals("종료")) {
+			projectStatus = "종료";
+		}
 		// 페이징 처리
 //		int listLimit = 5; // 페이지 당 목록 개수
 		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
 		
-		int listCount = adminService.getProjectListCount(searchKeyword, "심사중"); // 총 목록 개수
+		int listCount = adminService.getProjectListCount(searchKeyword, projectStatus); // 총 목록 개수
 //		System.out.println("listCount : " + listCount);
 		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
@@ -281,13 +290,13 @@ public class AdminController {
 		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
 		if(pageNum < 1 || pageNum > maxPage) {
 			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "AdminRegistWaitingProjectList?pageNum=1");
+			model.addAttribute("targetURL", "AdminProjectList?pageNum=1&status=" + status);
 			return "result/fail";
 		}
 		
 		// 프로젝트 목록 조회
 		// 검색어는 기본적으로 "" 널스트링
-		List<ProjectVO> projectList = adminService.getProjectList(startRow, listLimit, searchKeyword, "심사중");
+		List<ProjectVO> projectList = adminService.getProjectList(startRow, listLimit, searchKeyword, projectStatus);
 //		System.out.println("projectList : " + projectList);
 		
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
@@ -297,7 +306,7 @@ public class AdminController {
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("pageInfo", pageInfo);
 		
-		return "admin/admin_regist_waiting_project_list";
+		return "admin/admin_project_list";
 	}
 	
 	// 프로젝트 등록 승인/거부
@@ -338,63 +347,6 @@ public class AdminController {
 		}
 	}
 	
-	// 관리자 - 프로젝트관리 - 진행중인 프로젝트
-	@GetMapping("AdminProgressProjectList")
-	public String adminProgressProjectList(@RequestParam(defaultValue = "1") int pageNum,
-										@RequestParam(defaultValue ="") String searchKeyword,
-										@RequestParam(defaultValue = "5") int listLimit,
-										HttpSession session, Model model) {
-		// 관리자 권한이 없는 경우 접근 차단
-		if(session.getAttribute("sIsAdmin").equals("N")) {
-			model.addAttribute("msg", "관리자 권한이 없습니다.");
-			model.addAttribute("targetURL", "./");
-			return "result/fail";
-		}
-		// 페이징 처리
-//		int listLimit = 5; // 페이지 당 목록 개수
-		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
-		
-		int listCount = adminService.getProjectListCount(searchKeyword, "승인"); // 총 목록 개수
-//		System.out.println("listCount : " + listCount);
-		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
-		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
-		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
-		int endPage = startPage + pageListLimit - 1;
-		if(endPage > maxPage) {
-			endPage = maxPage;
-		}
-		
-		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
-		if(maxPage == 0) {
-			maxPage = 1;
-		}
-		
-		if(endPage > maxPage) {
-			endPage = maxPage;
-		}
-		
-		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
-		if(pageNum < 1 || pageNum > maxPage) {
-			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "AdminProgressProjectList?pageNum=1");
-			return "result/fail";
-		}
-		
-		// 프로젝트 목록 조회
-		// 검색어는 기본적으로 "" 널스트링
-		List<ProjectVO> projectList = adminService.getProjectList(startRow, listLimit, searchKeyword, "승인");
-//		System.out.println("projectList : " + projectList);
-		
-		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
-//		System.out.println("pageInfo : " + pageInfo);
-		
-		// 프로젝트 목록, 페이징 정보 Model 객체에 저장 -> admin_progress_project_list.jsp 로 전달
-		model.addAttribute("projectList", projectList);
-		model.addAttribute("pageInfo", pageInfo);
-		
-		return "admin/admin_progress_project_list";
-	}
-	
 	// 프로잭트 취소 신청여부 확인
 	@ResponseBody
 	@PostMapping("IsCancelExists")
@@ -407,7 +359,7 @@ public class AdminController {
 		
 		// 프로젝트 취소 신청여부 판별
 		boolean isCancelExists = false; // 취소신청 여부를 저장할 변수 선언(true : 신청함, false : 신청하지 않음)
-		if(projectCancel != null) { // 취소신청을 했을 경우
+		if(projectCancel != null) { // 취소신청을 했을 경우 isCancelExists 값을 true로 변경
 			isCancelExists = true;
 		}
 		// 리턴 데이터를 Map 객체에 저장

@@ -28,21 +28,21 @@ public interface AdminMapper {
 	
 	// 후원내역 조회
 	List<Map<String, Object>> selectSponsorshipHistory(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
-										@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
+													@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
 	
 	// 구매내역 개수 조회
 	int selectPurchaseHistoryListCount(@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
 	
 	// 구매내역 조회
 	List<Map<String, Object>> selectPurchaseHistory(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
-										@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
+													@Param("searchKeyword") String searchKeyword, @Param("member") MemberVO member);
 	
 	// 프로젝트 개수 조회
 	int selectProjectListCount(@Param("searchKeyword") String searchKeyword, @Param("projectStatus") String projectStatus);
 	
 	// 프로젝트 목록 조회
 	List<ProjectVO> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
-										@Param("searchKeyword") String searchKeyword, @Param("projectStatus") String projectStatus);
+									@Param("searchKeyword") String searchKeyword, @Param("projectStatus") String projectStatus);
 	
 	// 프로젝트 상태 변경
 	int updateProjectStatus(@Param("project") ProjectVO project, @Param("status") String status);

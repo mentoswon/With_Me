@@ -179,6 +179,9 @@
 			<when test="projectStatus.equals('승인')">
 				project_status = '승인'
 			</when>
+			<when test="projectStatus.equals('종료')">
+				project_status = '종료'
+			</when>
 		</choose>
 		<if test="!searchKeyword.equals('')">
 			AND (
@@ -204,6 +207,9 @@
 			</when>
 			<when test="projectStatus.equals('승인')">
 				project_status = '승인'
+			</when>
+			<when test="projectStatus.equals('종료')">
+				project_status = '종료'
 			</when>
 		</choose>
 		<if test="!searchKeyword.equals('')">

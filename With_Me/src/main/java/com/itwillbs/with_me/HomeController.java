@@ -38,7 +38,8 @@ public class HomeController {
 		// 세션 아이디가 없을 경우(=로그인 하지 않은 경우) 관리자 권한이 없도록 설정
 		if(session.getAttribute("sId") == null) {
 			session.setAttribute("sIsAdmin", "N");
-			session.setMaxInactiveInterval(60 * 60);
+			// 세션 타이머 1시간으로 변경
+			session.setMaxInactiveInterval(60 * 60); // 60초 * 60분 = 3600
 		}
 		
 		return "index";

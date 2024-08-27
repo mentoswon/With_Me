@@ -10,11 +10,11 @@
 			</ul>
 		</li>
 		<li class="depth01">
-			<a href="#">프로젝트관리</a>
+			<a href="AdminProjectList?status=등록대기">프로젝트관리</a>
 			<ul class="depth02">
-				<li><a href="AdminRegistWaitingProjectList">등록신청관리</a></li>
-				<li><a href="AdminProgressProjectList">진행중인 프로젝트</a></li>
-				<li><a href="#">종료된 프로젝트</a></li>
+				<li><a href="AdminProjectList?status=등록대기">등록신청관리</a></li>
+				<li><a href="AdminProjectList?status=진행중">진행중인 프로젝트</a></li>
+				<li><a href="AdminProjectList?status=종료">종료된 프로젝트</a></li>
 			</ul>
 		</li>
 		<li class="depth01">
