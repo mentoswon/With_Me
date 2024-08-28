@@ -244,7 +244,7 @@ textarea {
 input[type="file"] {
 	display: none;
 }
-.uploadImg img, .trashImg img, .importanceImg img, .addImg img {
+.uploadImg img, .trashImg img, .trashImg2 img, .importanceImg img, .addImg img {
 	width: 22px;
 	height: 22px;
 	vertical-align: text-bottom;	/* 글자와 정렬 맞추기 */
@@ -359,9 +359,10 @@ input[type="radio"] {
 	height: 670px;
 	overflow: auto;
 	overflow-x: hidden;
+    margin-right: 45px;
 }
 
-.itemListWrap {
+.itemListWrap, .rewardListWrap {
 	display: flex;
 	justify-content: space-between; /* 수평 중앙 정렬 */
 	align-items: baseline;
@@ -373,12 +374,12 @@ input[type="radio"] {
 	margin-bottom: 20px;
 	
 }
-.trashImg {
+.trashImg, .trashImg2 {
 	border: 1px solid #ccc;
 	border-radius: 8px;
 	padding: 5px 12px;
 }
-.trashImg:hover, .addImg img:hover {
+.trashImg:hover, .trashImg2:hover, .addImg img:hover {
 	cursor: pointer;
 }
 
@@ -444,18 +445,6 @@ input[type="radio"] {
 #amountLimitWarp label.selected, #deliveryStatusWarp label.selected {
 	border: 2px solid #FFAB40;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-.rewardListWrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    width: 320px;
-    padding: 10px 20px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    margin-bottom: 20px;
 }
 
 /* ----- 버튼 ----- */

@@ -371,17 +371,24 @@ $(function() {
 						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
 					</div>
 				</div>`;
+				
+			let listItem2 =  
+            	`<div class="chooseItem">
+					<input type="checkbox" name="reward_item_idx" id="item${item.item_idx}" value="${item.item_idx}">
+					<label for="item${item.item_idx}">${item.item_name}</label><br>
+				</div>`;
 			
 			$("#itemListContainer").append(listItem);
-			$("#chooseItemContainer").append('<input type="checkbox" name="reward_item_idx" value="${item.item_name}">');
+			$("#chooseItemContainer").append(listItem2);
         });
     }
     
 	// 아이템 삭제 이벤트
 	$(document).on("click", ".trashImg", function() {
 	    let item_idx = $(this).data("item-idx");  // 클릭된 아이콘의 item_idx 추출
-	    let item = $(this).parent();	// 아이템 삭제할 영역
-	    console.log("item : " + item.html());
+	    let removeItem = $(this).parent();	// 아이템 삭제할 영역
+// 	    console.log("removeItem : " + removeItem.html());
+	    let removeItem2 = $("input[name='reward_item_idx'][value='" + item_idx + "']").parent();
 	
 	    if (confirm("정말로 삭제하시겠습니까?")) {
 	    	// AJAX 활용하여 "DeleteItem" 서블릿 요청(파라미터 : item_idx) - POST
@@ -396,10 +403,13 @@ $(function() {
 	            	console.log(JSON.stringify(response));
 					if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
 						alert("잘못된 접근입니다!");
-					} else if(!response.result) { // 댓글 삭제 실패일 경우
+					} else if(!response.result) { // 삭제 실패일 경우
 	                    alert("아이템 삭제에 실패하였습니다.");
-					} else if(response.result) { // 댓글 삭제 성공일 경우
-	                    $(item).remove(); // 삭제된 아이템 요소 제거
+					} else if(response.result) { // 삭제 성공일 경우
+	                    // 삭제된 아이템 요소 제거
+	                    $(removeItem).remove(); 
+	                    $(removeItem2).remove(); 
+	                    
 	                }
 	            },
 	            error: function() {
@@ -467,7 +477,6 @@ $(function() {
             event.preventDefault();
         }
     });
-	
 	
 	// 배송여부 선택 이벤트
 	$("input[name='delivery_status']").on("change", function() {
@@ -543,15 +552,12 @@ $(function() {
 	                amount_limit: $("input[name='amount_limit']:checked").val(),
 	                item_amount: $("#item_amount").val().trim(),
 	                delivery_status: $("input[name='delivery_status']:checked").val(),
-	                reward_price: $("#reward_price").val().trim()
+	                reward_price: $("#reward_price").val().trim().replace(/,/g, '') // 쉼표 제거
 				},
 				dataType : "json",
 	            success: function(response) {
-	            	// 임시) 
-	            	alert("후원 구성 등록 성공!");
-	            	
 	                // 받은 응답 데이터로 리스트를 업데이트
-// 	                updateRewardList(response);
+	                updateRewardList(response);
 	                // 폼 리셋
 	                $("#registRewardForm")[0].reset();
 	            },
@@ -563,33 +569,71 @@ $(function() {
 	});
 	
 	// 후원 구성 리스트 출력
-//     function updateRewardList(itemList) {
-// 		// 기존 리스트 초기화
-//         $("#rewardListContainer").empty();
-//         $("#chooseRewardContainer").empty();
+    function updateRewardList(rewardList) {
+		// 기존 리스트 초기화
+        $("#rewardListContainer").empty();
+        $("#chooseRewardContainer").empty();
 
-//         // 서버로부터 받은 아이템 리스트를 사용하여 새로운 리스트 생성
-//         itemList.forEach(function(item) {
-// 			let listItem =  
-//             	`<div class="itemListWrap">
-// 	            	<div class="itemList">
-// 						<h4>${item.item_name}</h4>
-// 						<p>
-// 							<b>옵션조건(${item.item_condition})</b><br>
-// 							${item.multiple_option}
-// 						</p>
-// 						<br>
-// 					</div>
-// 					<div class="trashImg" data-item-idx="${item.item_idx}">
-// 						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
-// 					</div>
-// 				</div>`;
+        // 서버로부터 받은 후원 구성 리스트를 사용하여 새로운 리스트 생성
+        rewardList.forEach(function(reward) {
+			let listReward =  
+            	`<div class="rewardListWrap">
+					<div class="rewardList">
+						<h2>${reward.reward_price}원+</h2>
+						<h4>${reward.reward_title}</h4>
+						<p>
+							${reward.item_details}<br>
+							<c:if test="${reward.amount_limit == 'Y'}">
+								수량 : ${reward.item_amount}개
+							</c:if>
+						</p>
+						<br>
+					</div>
+					<div class="trashImg2" data-reward-idx="${reward.reward_idx}">
+						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+					</div>
+				</div>`;
 			
-// 			$("#itemListContainer").append(listItem);
-// 			$("#chooseItemContainer").append('<input type="checkbox" name="reward_item_idx" value="${item.item_name}">');
-//         });
-//     }
+			$("#itemListContainer").append(listItem);
+			$("#chooseItemContainer").append('<input type="checkbox" name="reward_item_idx" value="${item.item_name}">');
+        });
+    }
     
+
+	// 후원 구성 삭제 이벤트
+	$(document).on("click", ".trashImg2", function() {
+	    let reward_idx = $(this).data("reward-idx");  // 클릭된 아이콘의 reward_idx 추출
+	    let removeReward = $(this).parent();	// 아이템 삭제할 영역
+// 	    console.log("removeReward : " + removeReward.html());
+	
+	    if (confirm("정말로 삭제하시겠습니까?")) {
+	    	// AJAX 활용하여 "DeleteItem" 서블릿 요청(파라미터 : item_idx) - POST
+	    	$.ajax({
+	            type: "POST",
+	            url: "DeleteReward",  // 서버의 삭제 처리 URL
+	            data: {
+	            	"reward_idx" : reward_idx
+	            },
+	            dataType: "json",
+	            success: function(response) {
+	            	console.log(JSON.stringify(response));
+					if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+						alert("잘못된 접근입니다!");
+					} else if(!response.result) { // 삭제 실패일 경우
+	                    alert("후원 구성 삭제에 실패하였습니다.");
+					} else if(response.result) { // 삭제 성공일 경우
+	                    // 삭제된 아이템 요소 제거
+	                    $(removeReward).remove(); 
+	                    
+	                }
+	            },
+	            error: function() {
+	                alert("후원 구성 삭제 요청에 실패하였습니다.");
+	            }
+	        });	// ajax 끝
+	    }
+	});
+	
     // ========================================================================================
     // [ 프로젝트 계획 ]
 	// 프로젝트 소개 미리보기
@@ -1127,22 +1171,24 @@ function linkAccount() {
 								<h4>선물 없이 후원하기</h4>
 							</div>
 						</div>
-<%-- 						<c:forEach var="reward" items="${rewardList}"> --%>
-<!-- 							<div class="rewardListWrap"> -->
-<!-- 	           					<div class="rewardList"> -->
-<%-- 	           						<h2>${reward.reward_price}원+</h2> --%>
-<%-- 	           						<h4>${reward.reward_title}</h4> --%>
-<!-- 	           						<p> -->
-<!-- 	           							아이템 | 아이템 -->
-<!-- 	           							수량 : 00개 -->
-<!-- 	           						</p> -->
-<!-- 	           						<br> -->
-<!-- 								</div> -->
-<%-- 	           					<div class="trashImg" data-reward-idx="${reward.reward_idx}"> --%>
-<%-- 	           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png"> --%>
-<!-- 								</div> -->
-<!-- 							</div> -->
-<%-- 						</c:forEach> --%>
+						<c:forEach var="reward" items="${rewardList}">
+							<div class="rewardListWrap">
+	           					<div class="rewardList">
+	           						<h2>${reward.reward_price}원+</h2>
+	           						<h4>${reward.reward_title}</h4>
+	           						<p>
+										${reward.item_details}<br>
+										<c:if test="${reward.amount_limit == 'Y'}">
+											수량 : ${reward.item_amount}개
+										</c:if>
+									</p>
+	           						<br>
+								</div>
+	           					<div class="trashImg2" data-reward-idx="${reward.reward_idx}">
+	           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+								</div>
+							</div>
+						</c:forEach>
 					</div>
 				</div>
 				<div class="projectContentWrap">

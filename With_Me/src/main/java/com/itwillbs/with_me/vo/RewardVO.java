@@ -14,7 +14,6 @@ public class RewardVO {
 //	private String sponsor_item_name; 0821 컬럼 삭제로 멤버변수도 삭제
 	private String reward_title;
 	private String reward_item_idx;
-	private String reward_explain;
 	private String amount_limit;
 	private int item_amount;
 	private String delivery_status;

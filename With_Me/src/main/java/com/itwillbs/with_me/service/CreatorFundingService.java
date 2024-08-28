@@ -1,5 +1,6 @@
 package com.itwillbs.with_me.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,8 +82,13 @@ public class CreatorFundingService {
 	}
 
 	// 후원 구성 리스트 조회 요청
-	public List<RewardVO> getRewardList(String project_idx) {
+	public List<HashMap<String, String>> getRewardList(String project_idx) {
 		return mapper.selectRewardList(project_idx);
+	}
+
+	// 후원 구성 삭제 요청
+	public int deleteReward(String reward_idx) {
+		return mapper.deleteReward(reward_idx);
 	}
 
 

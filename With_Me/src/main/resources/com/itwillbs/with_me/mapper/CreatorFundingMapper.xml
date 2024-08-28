@@ -125,7 +125,9 @@
 
 <!-- 아이템 리스트 조회 -SELECT -->
 <select id="selectItemList" resultType="item">
-	SELECT *
+	SELECT 
+		item_idx, project_idx, item_name, item_condition, 
+		REPLACE(multiple_option, '|', ' | ') AS multiple_option
 	FROM item_info
 	WHERE project_idx = #{project_idx}
 </select>
@@ -133,30 +135,46 @@
 <!-- 아이템 삭제 - DELETE -->
 <delete id="deleteItem">
 	DELETE FROM item_info
-	WHERE item_idx=#{item_idx}
+	WHERE item_idx = #{item_idx}
 </delete>
 
 <!-- 후원 구성 등록 - INSERT -->
 <insert id="insertReward">
 	INSERT INTO reward_info
-	VALUSE (
+	VALUES (
 		null	-- AUTO_INCREMENT
 		, #{project_idx}
 		, #{reward_title}
 		, #{reward_item_idx}
-		, null				-- reward_explain
 		, #{amount_limit}
-		, #{item_amount}
+		<if test="item_amount != null and item_amount != ''">
+			, #{item_amount}	-- 수량제한 있음 일 경우
+        </if>
+        <if test="item_amount == null or item_amount == ''">
+			, NULL	-- 수량제한 없음 일 경우
+        </if>
 		, #{delivery_status}
 		, #{reward_price}
 	)
 </insert>
 
 <!-- 후원 구성 리스트 조회 - SELECT -->
-<select id="selectRewardList" resultType="reward">
-	SELECT *
-	FROM reward_info
-	WHERE project_idx = #{project_idx}
+<select id="selectRewardList" resultType="hashmap">
+	SELECT 
+		r.*,
+		(SELECT GROUP_CONCAT(i.item_name SEPARATOR ' | ')
+		 FROM item_info i
+		 WHERE FIND_IN_SET(i.item_idx, REPLACE(r.reward_item_idx, '|', ','))
+		) AS item_details	-- reward_item_idx 로 item_name 추출
+	FROM 
+		reward_info r
+	WHERE 
+		r.project_idx = #{project_idx}
 </select>
 
+<!-- 후원 구성 삭제 - DELETE -->
+<delete id="deleteReward">
+	DELETE FROM reward_info
+	WHERE reward_idx = #{reward_idx}
+</delete>
 </mapper>

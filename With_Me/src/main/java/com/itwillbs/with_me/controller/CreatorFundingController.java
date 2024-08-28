@@ -139,9 +139,12 @@ public class CreatorFundingController {
 	    
 	    // 아이템 리스트 조회
 	    List<ItemVO> itemList = service.getItemList(project_idx);
-	    
+	    // 후원 구성 리스트 조회
+		List<HashMap<String, String>> rewardList = service.getRewardList(project_idx);
+
 	    model.addAttribute("category_detail", category_detail);
 	    model.addAttribute("itemList", itemList);
+	    model.addAttribute("rewardList", rewardList);
 	    model.addAttribute("project", project);
 
 	    return "project/project_create";
@@ -184,9 +187,9 @@ public class CreatorFundingController {
 		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
-		// 아이템 삭제
+		// 아이템 삭제 요청
 		int deleteCount = service.deleteItem(item_idx);
-		// 등록 요청 처리 결과 판별
+		// 삭제 요청 처리 결과 판별
 		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
 		if(deleteCount > 0) {
 			resultMap.put("result", true);
@@ -205,7 +208,7 @@ public class CreatorFundingController {
 	// 후원 구성 등록 및 리스트 조회 하기
 	@ResponseBody
 	@PostMapping("RegistReward")
-	public List<RewardVO> registReward(@RequestParam Map<String, String> map) {
+	public List<HashMap<String, String>> registReward(@RequestParam Map<String, String> map) {
 		System.out.println("map : " + map);
 		
 		String project_idx = map.get("project_idx");
@@ -213,7 +216,7 @@ public class CreatorFundingController {
 		
 		// 후원 구성 등록
 		int insertCount = service.registReward(map);
-		List<RewardVO> rewardList = null;
+		List<HashMap<String, String>> rewardList = null;
 		
 		if (insertCount > 0) {	// 아이템 등록 성공
 			// 후원 구성 리스트 조회
@@ -222,4 +225,29 @@ public class CreatorFundingController {
 		return rewardList;
 	}
 	
+	// 후원 구성 삭제
+	@ResponseBody
+	@PostMapping("DeleteReward")
+	public String deleteReward(@RequestParam("reward_idx") String reward_idx) throws Exception {
+		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		// 후원 구성 삭제 요청
+		int deleteCount = service.deleteReward(reward_idx);
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		if(deleteCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+	}
 }
+

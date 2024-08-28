@@ -1,5 +1,6 @@
 package com.itwillbs.with_me.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,10 @@ public interface CreatorFundingMapper {
 	int insertReward(Map<String, String> map);
 
 	// 후원 구성 리스트 조회
-	List<RewardVO> selectRewardList(String project_idx);
+	List<HashMap<String, String>> selectRewardList(String project_idx);
+
+	// 후원 구성 삭제
+	int deleteReward(String reward_idx);
 
 
 
