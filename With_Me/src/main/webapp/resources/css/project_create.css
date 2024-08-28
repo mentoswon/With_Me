@@ -362,6 +362,13 @@ input[type="radio"] {
     margin-right: 45px;
 }
 
+#rewardListContainer {
+    height: 1065px;
+    overflow: auto;
+    overflow-x: hidden;
+    margin-right: 45px;
+}
+
 .itemListWrap, .rewardListWrap {
 	display: flex;
 	justify-content: space-between; /* 수평 중앙 정렬 */
