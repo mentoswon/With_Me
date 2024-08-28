@@ -81,4 +81,32 @@ public class MemberService {
 	public List<MemberVO> getMember() {
 		return mapper.selectMember();
 	}
+
+	// 이메일로 창작자이름 조회
+	public String getCreatorName(String mem_email) {
+		return mapper.selectCreator(mem_email);
+	}
+
+	// 이메일로 창작자 정보 가져오기
+	public MemberVO getCreatorInfo(String mem_email) {
+		return mapper.selectCreatorInfo(mem_email);
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -15,24 +15,27 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        margin: 0;
-        padding: 0;
-/*         display: flex; */
-        flex-direction: column;
-        align-items: center;
-    }
-    article {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        width: 100%;
-        margin-top: 20px;
-    }
+
+	body {
+	    font-family: Arial, sans-serif;
+	    background-color: #f9f9f9;
+	    margin: 0;
+	    padding: 0;
+	    text-align: center; /* body 내 모든 내용 중앙 정렬 */
+	}
+	
+	article {
+	    display: inline-block; /* 중앙 정렬을 위해 inline-block 사용 */
+	    background-color: #fff;
+	    padding: 20px;
+	    border-radius: 10px;
+	    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+	    max-width: 600px;
+	    width: 100%;
+	    margin-top: 20px;
+	    text-align: left; /* article 내 텍스트 왼쪽 정렬 */
+	}
+    
     h1 {
         text-align: center;
         margin-bottom: 20px;
@@ -56,62 +59,14 @@
         border: 1px solid #ccc;
         font-size: 14px;
     }
-/* 	.update { */
-/* 	        width: calc(100% - 20px); */
-/* 	        padding: 10px; */
-/* 	        margin: 5px 0; */
-/* 	        border-radius: 5px; */
-/* 	        border: 1px solid #ccc; */
-/* 	        font-size: 14px; */
-/* 	} */
-/*     input[type="button"] { */
-/*         width: auto; */
-/*         background-color: #007bff; */
-/*         color: white; */
-/*         cursor: pointer; */
-/*     } */
-/*     input[type="button"]:hover { */
-/*         background-color: #0056b3; */
-/*     } */
-/*     input[type="submit"], */
-/*     input[type="reset"] { */
-/*         width: 48%; */
-/*         background-color: #28a745; */
-/*         color: white; */
-/*         cursor: pointer; */
-/*         margin-right: 4%; */
-/*     } */
-/*     input[type="reset"] { */
-/*         background-color: #ffc107; */
-/*         margin-right: 0; */
-/*     } */
-/*     input[type="submit"]:hover { */
-/*         background-color: #218838; */
-/*     } */
-/*     input[type="reset"]:hover { */
-/*         background-color: #e0a800; */
-/*     } */
-/*     .full-width-button { */
-/*         width: 100%; */
-/*         margin-top: 20px; */
-/*     } */
-/*     .full-width-button input[type="button"] { */
-/*         background-color: #dc3545; */
-/*         color: white; */
-/*         width: 100%; */
-/*     } */
-/*     .full-width-button input[type="button"]:hover { */
-/*         background-color: #c82333; */
-/*     } */
-/*     .note { */
-/*         font-size: 12px; */
-/*         color: #666; */
-/*         margin-top: -10px; */
-/*     } */
-/*     .result { */
-/*         font-size: 12px; */
-/*         color: red; */
-/*     } */
+	.update {
+ 	        width: calc(100% - 20px);
+ 	        padding: 10px; 
+ 	        margin: 5px 0; 
+ 	        border-radius: 5px; 
+ 	        border: 1px solid #ccc; 
+ 	        font-size: 14px; 
+ 	}
 </style>
 </head>
 <body>	
@@ -128,14 +83,14 @@
 							<td>이름</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="mem_name" size="6" id="mem_name" pattern="^[가-힣]{2,5}$" title="한글 2-5글자"></td>
+							<td><input type="text" name="mem_name" size="6" id="mem_name" value="${member.mem_name}" pattern="^[가-힣]{2,5}$" title="한글 2-5글자"></td>
 						</tr>	
 						<tr>
 							<td>이메일</td>
 						</tr>
 						<tr>
 							<td>
-								<input type="text" name="mem_email" id="mem_email" size="15" placeholder="이메일입력" onblur="checkEmail()">
+								<input type="text" name="mem_email" id="mem_email" value="${member.mem_email} size="15" placeholder="이메일입력" onblur="checkEmail()">
 								<div id="checkEmailResult"></div>
 							</td>
 						</tr>	
@@ -163,12 +118,12 @@
 						</tr>
 						<tr>
 							<td>
-								<input type="text" name="mem_post_code" id="mem_post_code" size="6" readonly>
+								<input type="text" name="mem_post_code" id="mem_post_code" value="${member.mem_post_code}" size="6" readonly>
 								<input type="button" value="주소검색" id="btnSearchAddress">
 								<br>
-								<input type="text" name="mem_add1" id="mem_add1" size="30" placeholder="기본주소">
+								<input type="text" name="mem_add1" id="mem_add1" value="${member.mem_add1}" size="30" placeholder="기본주소">
 								<br>
-								<input type="text" name="mem_add2" id="mem_add2" size="30" placeholder="상세주소">
+								<input type="text" name="mem_add2" id="mem_add2" value="${member.mem_add2}" size="30" placeholder="상세주소">
 							</td>
 						</tr>	
 						<tr>
@@ -178,7 +133,7 @@
 							<td id="tdjumin">(생년월일 6자리를 입력해주세요)</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="mem_birthday" size="15" id="mem_birthday" maxlength="14" required="required" onblur="checkJumin()">
+							<td><input type="text" name="mem_birthday" size="15" id="mem_birthday" value="${member.mem_birthday}" maxlength="14" required="required" onblur="checkJumin()">
 								<div id="checkBirthResult"></div>
 							</td>
 						</tr>
@@ -189,7 +144,7 @@
 							<td id="tdtel">(휴대폰 번호를 입력 시 "-"를 입력해주세요)</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="mem_tel" size="10" id="mem_tel" maxlength="13" required="required" onblur="checkTel()">
+							<td><input type="text" name="mem_tel" size="10" id="mem_tel" value="${member.mem_tel}" maxlength="13" required="required" onblur="checkTel()">
 								<div id="checkTelResult"></div>
 							</td>
 						</tr>	

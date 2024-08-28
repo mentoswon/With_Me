@@ -350,19 +350,42 @@ public class MemberController {
 			model.addAttribute("targetURL", "MemberLogin");
 			return "result/fail";
 		}
-		member.setMem_email(id);
-		member = service.getMember(member);
-		
-		System.out.println("member : " + member);
-		
-		model.addAttribute("member", member);
+      System.out.println("member : !!!!!!!!!!" + member);
+	    String mem_email = member.getMem_email();
+	        
+	    // 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자 이름 가져오기
+	    String creatorName = service.getCreatorName(mem_email);
+	    
+	    System.out.println("creatorName : " + creatorName);
+	    
+	    if(creatorName == null) {
+	        MemberVO notCreatorMember = service.getCreatorInfo(mem_email);
+	            
+	        System.out.println("창작자 아닌 사람 정보 : " + notCreatorMember);
+	        
+	        model.addAttribute("notCreatorMember", notCreatorMember);
+	    } else {
+	        MemberVO creatorMember = service.getCreatorInfo(mem_email);
+	            
+	        System.out.println("창작자 맞는 사람 정보 : " + creatorMember);
+	            
+	        model.addAttribute("creatorMember", creatorMember);
+	    }
 		
 		return "mypage/mypage";
 	}
 	
 	// 마이페이지(개인정보)
 	@GetMapping("MypageInfo")
-	public String mypageInfo() {
+	public String mypageInfo(MemberVO member, Model model, HttpSession session) {
+		
+		String id = (String)session.getAttribute("sId");
+		
+		member.setMem_email(id);
+		member = service.getMember(member);
+//		System.out.println("member !!!!!!!!!!!! : " + member);
+		model.addAttribute("member", member);
+		
 		return "mypage/mypage_info2";
 	}
 	

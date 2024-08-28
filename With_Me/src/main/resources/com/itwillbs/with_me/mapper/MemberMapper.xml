@@ -89,6 +89,24 @@
 		WHERE
 			email = #{email}
 	</delete>
+	
+	<!-- 이메일로 창작자 이름 조회 -->
+	<select id="selectCreator" resultType="String">
+		SELECT c.creator_name
+		FROM member m JOIN creator_info c
+		ON m.mem_email = c.creator_email
+		WHERE m.mem_email = #{mem_email}
+	</select>
+	
+	
+	<!-- 이메일로 창작자 조회 -->
+	<select id="selectCreatorInfo" resultType="member">
+		SELECT c.creator_email, c.creator_name, c.creator_image, c.creator_introduce,
+			   c.phone_auth_status
+		FROM member m JOIN creator_info c
+		ON m.mem_email = c.creator_email
+		WHERE m.mem_email = #{mem_email}
+	</select>
 </mapper>
 
 
