@@ -146,11 +146,13 @@
 		SELECT *
 		FROM user_address
 		WHERE address_mem_email = #{mem_email}
+		ORDER BY address_is_default DESC 
+				, address_receiver_name
 	</select>
 	
 	<!-- 기본 배송지 여부 확인 -->
 	<select id="selectAddressIsDefault" resultType="int">
-		SELECT COUNT(address_is_default)
+		SELECT COUNT(*)
 		FROM user_address
 		WHERE address_mem_email = #{id}
 		AND address_is_default = 'Y';
@@ -200,4 +202,9 @@
 			</choose>			
 		)
 	</insert>
+	
+	<delete id="deleteAddress">
+		DELETE FROM user_address
+		WHERE address_idx = #{address_idx}
+	</delete>
 </mapper>

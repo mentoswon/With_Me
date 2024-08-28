@@ -99,7 +99,7 @@
 							<button class="like Btn">
 								<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
 							</button>
-							<button class="goFund Btn">이 프로젝트 후원하기</button>
+							<button class="goFund Btn" id="goFund" onclick="goToScroll()">이 프로젝트 후원하기</button>
 						</div>
 					</div>
 				</div>
@@ -107,7 +107,7 @@
 			
 			<section class="con02">
 				<div class="left">
-				
+					<img alt="상세 이미지" src="http://c3d2306t1.itwillbs.com/soneson/resources/upload/2023/12/17/bal_img_content.png" class="detailImg">
 				</div>
 				
 				<div class="right">
@@ -189,7 +189,8 @@
 																</select>
 															</c:when>
 															<c:otherwise>
-																<input type="text" placeholder="옵션을 입력해주세요.">												</c:otherwise>
+																<input type="text" placeholder="옵션을 입력해주세요.">
+															</c:otherwise>
 														</c:choose>
 													</div>
 												</div>
@@ -281,6 +282,14 @@
 			let modal = document.querySelectorAll('.modal');
 			let report = document.querySelector('#report');
 			let closeBtn = document.querySelector('.close_btn');
+			// ==========================================================================
+			// 이 프로젝트 후원하기 클릭 시 스크롤 이동
+			function goToScroll() {
+			    let location = document.querySelector(".reward").offsetTop;
+			    window.scrollTo({top: location, behavior: 'smooth'});
+			}
+				
+				
 			// ==========================================================================
 			// -------------------------------------------------------------------------			
 			// 후원 선택 (옵션 띄우기)

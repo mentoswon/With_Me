@@ -1,20 +1,24 @@
 package com.itwillbs.with_me.controller;
 
+import java.lang.reflect.Member;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.UserFundingService;
@@ -217,6 +221,7 @@ public class UserFundingController {
 		
 		// 아이디로 주소 정보 가져오기
 		List<AddressVO> userAddress = service.getUserAddress(member);
+//		System.out.println("userAddress : " + userAddress);
 		
 		// =========================================================================
 		model.addAttribute("member", member);
@@ -241,7 +246,6 @@ public class UserFundingController {
 		
 		// 일단 기본배송지 등록된거 있는지 확인 먼저 필요
 		int isDefaultCount = service.getAddressIsDefault(id);
-//		System.out.println("isDefaultCount : " + isDefaultCount);
 		
 		if(isDefaultCount == 1) {
 			if(new_address.getAddress_is_default() == null) { // 기본 배송지 있는데 안 바꾸면 그냥 등록 !
@@ -266,6 +270,41 @@ public class UserFundingController {
 	}
 	
 	
+	// 배송지 삭제
+	@ResponseBody
+	@GetMapping("DeleteAddress")
+	public String deleteAddress(AddressVO address, HttpSession session, MemberVO member) {
+		System.out.println("address : " + address);
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int deleteCount = service.removeAddress(address);
+		
+		// 주소 삭제 요청
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		if(deleteCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+		
+	}
+	
+	// 기본 배송지 변경
+	@PostMapping("ChangeDefaultAddress")
+	public String changeDefaultAddress(AddressVO address) {
+		System.out.println("address : " + address);
+		
+		return "";
+	}
 	
 	
 	

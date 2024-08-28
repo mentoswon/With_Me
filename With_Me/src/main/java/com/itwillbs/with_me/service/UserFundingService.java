@@ -58,6 +58,11 @@ public class UserFundingService {
 		return mapper.selectUserAddress(member);
 	}
 
+	// 기본 배송지 가져오기
+//	public List<AddressVO> getDefaultAddress(MemberVO member) {
+//		return null;
+//	}
+	
 	// 기본 배송지 여부 확인
 	public int getAddressIsDefault(String id) {
 		return mapper.selectAddressIsDefault(id);
@@ -77,6 +82,13 @@ public class UserFundingService {
 	public void registNewAddress(AddressVO new_address) {
 		mapper.insertNewAddress(new_address);
 	}
+
+	// 배송지 삭제
+	public int removeAddress(AddressVO address) {
+		
+		return mapper.deleteAddress(address);
+	}
+
 
 
 

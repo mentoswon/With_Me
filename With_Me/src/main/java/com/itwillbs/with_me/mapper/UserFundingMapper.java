@@ -56,6 +56,9 @@ public interface UserFundingMapper {
 	// 2. 나머지 배송지 등록
 	void insertNewAddress(AddressVO new_address);
 
+	// 배송지 삭제
+	int deleteAddress(AddressVO address);
+
 	
 
 

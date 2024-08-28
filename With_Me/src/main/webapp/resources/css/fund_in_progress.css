@@ -17,7 +17,8 @@ h4 {
 .infoWrapper {
 	border: 1px solid #eee;
 	border-radius: 10px;
-	padding: 30px;
+	padding: 20px;
+	margin-bottom: 5px;
 }
 
 /*  con01  */
@@ -58,6 +59,7 @@ h4 {
     background-color: #eee;
     border-radius: 10px;
     align-content: center;
+    cursor: pointer;
 }
 
 .inner .con02 .addressInfo .AddAddressBtn img {
@@ -74,12 +76,33 @@ h4 {
     padding-bottom: 15px;
 }
 
+.inner .con02 .addressInfo .infoWrapper .addressWrapper .left {
+	width: 60%;
+}
+
+/* 기본 배송지 표시 */
+.default_simbol {
+	padding: 0px 5px;
+	margin-left: 10px;
+	background-color: #ffab40;
+	font-size: 13px;
+	color: #fff;
+	border-radius: 3px;
+}
+
 .inner .con02 .addressInfo .infoWrapper .addressWrapper .left div {
 	margin-bottom: 8px;
 }
 
 .inner .con02 .addressInfo .infoWrapper .addressWrapper .left div:last-child {
 	margin: 0;
+}
+
+.inner .con02 .addressInfo .infoWrapper .addressWrapper .changeAddressBtn {
+	cursor: pointer;
+	padding: 5px;
+	background-color: #eee;
+	border-radius: 5px;
 }
 /*  con03  */
 
@@ -133,7 +156,7 @@ h4 {
 .modal .modal_popup {
 /*팝업*/
     position: absolute;
-    width: 40%;
+    width: 30%;
     height: 55%;
     top: 35%;
     left: 50%;
@@ -157,7 +180,7 @@ h4 {
 	margin-bottom: 20px;
 }
 
-.modal .modal_popup .content.add div:last-child label {
+.modal .modal_popup .content.add .addressForm label {
 	display: flex;
 	align-items: center;
 }
@@ -187,11 +210,6 @@ h4 {
 	margin-right: 15px;
 }
 
-/* 체크 됐을 때 색깔 변경 */
-#isDefault:checked + label{
-	background-color: #ffab40;
-}
-
 /* 배송지 등록 버튼 */
 #addRegBtn {
 	border: none;
@@ -199,16 +217,47 @@ h4 {
 	background-color: #ffab40;
 	color: #fff;
 	cursor: pointer;
+	font-size: 16px;
+	padding: 5px;
+	margin-top: 30px;
 }
 
 /* 배송지 변경 */
+.modal .modal_popup .content.change .infoWrapper {
+	position: relative;
+}
+
+.modal .modal_popup .content.change .infoWrapper .deleteAddress{
+	position: absolute;
+	top: 37%;
+    right: 4%;
+	padding: 5px;
+	background-color: #eee;
+	font-size: 13px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
 .modal .modal_popup .content.change .infoWrapper label {
 	display: flex;
 	align-items: center;
+	cursor: pointer;
 }
 
 .modal .modal_popup .content.change .infoWrapper label input {
 	margin-right: 30px;
+}
+
+#changeBtn {
+	width: 100%;
+	margin-top: 30px;
+	border: none;
+	border-radius: 5px;
+	background-color: #ffab40;
+	color: #fff;
+	cursor: pointer;
+	font-size: 16px;
+	padding: 5px;
 }
 
 .modal.on {
@@ -220,5 +269,6 @@ h4 {
 	top: 20px;
 	right: 20px;
 	width: 20px;
+	cursor: pointer;
 }
 
