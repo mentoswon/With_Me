@@ -129,8 +129,11 @@
 	<!-- 구매내역 개수 조회 -->
 	<select id="selectPurchaseHistoryListCount" resultType="int">
 		SELECT COUNT(*)
-		FROM product_payment pp JOIN pay_method pm
+		FROM product_payment pp
+		JOIN pay_method pm
 		ON pp.order_pay_method_idx = pm.pay_method_idx
+		JOIN product_info pi
+		ON pi.product_idx = pp.product_idx
 		WHERE order_mem_email = #{member.mem_email}
 		<if test="!searchKeyword.equals('')">
 			AND (
@@ -147,8 +150,11 @@
 	<!-- 구매내역 조회 -->
 	<select id="selectPurchaseHistory" resultType="Map">
 		SELECT * 
-		FROM product_payment pp JOIN pay_method pm
+		FROM product_payment pp
+		JOIN pay_method pm
 		ON pp.order_pay_method_idx = pm.pay_method_idx
+		JOIN product_info pi
+		ON pi.product_idx = pp.product_idx
 		WHERE order_mem_email = #{member.mem_email}
 		<if test="!searchKeyword.equals('')">
 			AND (
@@ -178,9 +184,11 @@
 			</when>
 			<when test="projectStatus.equals('승인')">
 				project_status = '승인'
+				AND funding_end_date &gt; now()
 			</when>
 			<when test="projectStatus.equals('종료')">
-				project_status = '종료'
+				project_status = '승인'
+				AND funding_end_date &lt; now()
 			</when>
 		</choose>
 		<if test="!searchKeyword.equals('')">
@@ -207,9 +215,11 @@
 			</when>
 			<when test="projectStatus.equals('승인')">
 				project_status = '승인'
+				AND funding_end_date &gt; now()
 			</when>
 			<when test="projectStatus.equals('종료')">
-				project_status = '종료'
+				project_status = '승인'
+				AND funding_end_date &lt; now()
 			</when>
 		</choose>
 		<if test="!searchKeyword.equals('')">

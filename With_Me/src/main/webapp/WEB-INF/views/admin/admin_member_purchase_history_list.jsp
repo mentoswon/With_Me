@@ -75,9 +75,8 @@
 				<div class="content">
 					<table border="1">
 						<tr>
-<!-- 							<th>상품명</th> -->
-							<th>주문번호</th>
-							<th>상품번호</th>
+							<th>상품코드</th>
+							<th>상품명</th>
 							<th>결제상태</th>
 							<th>결제일</th>
 							<th>결제금액</th>
@@ -92,8 +91,8 @@
 						</c:if>
 						<c:forEach var="PHL" items="${purchaseHistorylist}">
 							<tr align="center">
-								<td>${PHL.order_product_idx}</td>
-								<td>${PHL.product_idx}</td>
+								<td>${PHL.product_code}</td>
+								<td>${PHL.product_name}</td>
 								<td>
 									<c:choose>
 										<c:when test="${PHL.order_pay_status eq 1}">결제 완료</c:when>

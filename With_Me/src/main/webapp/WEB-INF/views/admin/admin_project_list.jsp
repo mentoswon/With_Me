@@ -150,6 +150,9 @@
 									<th>프로젝트 취소</th>
 								</c:when>
 								<c:when test="${param.status eq '종료'}">
+									<th>최종 달성한 후원 금액</th>
+									<th>종료일</th>
+									<th>비고</th>
 								</c:when>
 							</c:choose>
 						</tr>
@@ -193,6 +196,9 @@
 										</td>
 									</c:when>
 									<c:when test="${param.status eq '종료'}">
+										<td><fmt:formatNumber value="${PL.target_price}" pattern="#,###"/>원 <%-- 임시로 목표 후원 금액 출력 --%></td>
+										<td>${PL.funding_end_date}</td>
+										<td>...</td>
 									</c:when>
 								</c:choose>
 							</tr>

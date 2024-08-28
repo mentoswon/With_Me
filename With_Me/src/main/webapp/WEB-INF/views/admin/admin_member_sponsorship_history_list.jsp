@@ -75,8 +75,8 @@
 				<div class="content">
 					<table border="1">
 						<tr>
+							<th>프로젝트 코드</th>
 							<th>프로젝트 제목</th>
-							<th>후원번호</th>
 							<th>결제상태</th>
 							<th>결제일</th>
 							<th>결제금액</th>
@@ -91,8 +91,8 @@
 						</c:if>
 						<c:forEach var="SHL" items="${sponsorshipHistoryList}">
 							<tr align="center">
+								<td>${SHL.project_code}</td>
 								<td>${SHL.project_title}</td>
-								<td>${SHL.pro_funding_idx}</td>
 								<td>
 									<c:choose>
 										<c:when test="${SHL.pro_pay_status eq 1}">결제 완료</c:when>

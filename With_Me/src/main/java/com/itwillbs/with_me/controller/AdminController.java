@@ -302,7 +302,7 @@ public class AdminController {
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
 //		System.out.println("pageInfo : " + pageInfo);
 		
-		// 프로젝트 목록, 페이징 정보 Model 객체에 저장 -> admin_regist_waiting_project_list.jsp 로 전달
+		// 프로젝트 목록, 페이징 정보 Model 객체에 저장 -> admin_project_list.jsp 로 전달
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("pageInfo", pageInfo);
 		
