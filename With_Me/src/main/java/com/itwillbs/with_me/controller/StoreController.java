@@ -64,7 +64,7 @@ public class StoreController {
 		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
 		if(pageNum < 1 || pageNum > maxPage) {
 			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "Store");
+			model.addAttribute("targetURL", "StoreList");
 			
 			return "result/fail";
 		}

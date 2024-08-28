@@ -224,11 +224,11 @@
 						</c:when>
 						<c:when test="${searchKeyword ne ''}">
 							<c:choose>
-								<c:when test="${param.productCategory_detail eq null}">
-									<h2>${param.productCategory}</h2>
+								<c:when test="${param.product_category_detail eq null}">
+									<h2>${param.product_category}</h2>
 								</c:when>
 								<c:otherwise>
-									<h2>${param.productCategory} > ${productCategory_detail}</h2> 
+									<h2>${param.product_category} > ${product_category_detail}</h2> 
 								</c:otherwise>
 							</c:choose>
 						</c:when>

@@ -13,11 +13,11 @@
 		}
 	}
 	
-	function storeList(productCategory, productCategory_detail) {
-		if(category_detail != "") {
-			location.href="StoreList?productCategory=" + productCategory + "&productCategory_detail=" + productCategory_detail;
+	function StoreList(productCategory, productCategory_detail) {
+		if(productCategory_detail != "") {
+			location.href="StoreList?product_category=" + productCategory + "&product_category_detail=" + productCategory_detail;
 		} else {
-			location.href="StoreList?productCategory=" + productCategory;
+			location.href="StoreList?product_category=" + productCategory;
 		}
 	}
 	
@@ -104,7 +104,7 @@
 		</ul>
 		
 		<%-- 검색 form 태그 추가 예정 --%>
-		<form action="ProjectList">
+		<form action="StoreList">
 			<input type="text" id="search" name="searchKeyword" value="${param.searchKeyword}">
 			<input type="submit" id="searchBtn" value="">		
 		</form>

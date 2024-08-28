@@ -21,12 +21,12 @@
 				<choose>
 					<when test="productCategory_detail == null">
 						product_category = #{productCategory}
-						AND	product_status = '판매중'
+						AND	product_status = '1'
 					</when>
 					<otherwise>
-						project_category = #{productCategory}
+						product_category = #{productCategory}
 						AND product_category_detail = #{productCategory_detail}
-						AND	product_status = '판매중'
+						AND	product_status = '1'
 					</otherwise>
 				</choose>
 			</otherwise>
@@ -42,18 +42,18 @@
 				or product_category_detail like concat('%',#{searchKeyword},'%')
 				or product_name like concat('%',#{searchKeyword},'%') 	
 				or product_description like concat('%',#{searchKeyword},'%') 	
-				or p.project_category_detail like concat('%',#{searchKeyword},'%') 
+				 
 			</when>
 			<otherwise>
 				<choose>
 					<when test="productCategory_detail == null">
 						product_category = #{productCategory}
-						AND product_status = '판매중'
+						AND product_status = '1'
 					</when>
 					<otherwise>
 						product_category = #{productCategory}
 						AND product_category_detail = #{productCategory_detail}
-						AND product_status = '판매중'
+						AND product_status = '1'
 					</otherwise>
 				</choose>
 			</otherwise>
