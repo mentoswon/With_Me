@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.itwillbs.with_me.mapper.StoreMapper">
+	<select id="selectBoardListCount" resultType="int">
+		SELECT count(*)
+		FROM product_info
+		WHERE 
+		<choose>
+			<when test="!searchKeyword.equals('')">
+				product_category like concat('%',#{searchKeyword},'%') 	
+				or product_category_detail like concat('%',#{searchKeyword},'%') 	
+				or product_name like concat('%',#{searchKeyword},'%') 	
+				or product_description like concat('%',#{searchKeyword},'%') 	
+				or product_category_detail like concat('%',#{searchKeyword},'%') 
+			</when>
+			<otherwise>
+				<choose>
+					<when test="productCategory_detail == null">
+						product_category = #{productCategory}
+						AND	product_status = '판매중'
+					</when>
+					<otherwise>
+						project_category = #{productCategory}
+						AND product_category_detail = #{productCategory_detail}
+						AND	product_status = '판매중'
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="selectStoreList" resultType="hashmap">
+		SELECT *
+		FROM product_info 
+		WHERE
+		<choose>
+			<when test="!searchKeyword.equals('')">
+				product_category like concat('%',#{searchKeyword},'%')
+				or product_category_detail like concat('%',#{searchKeyword},'%')
+				or product_name like concat('%',#{searchKeyword},'%') 	
+				or product_description like concat('%',#{searchKeyword},'%') 	
+				or p.project_category_detail like concat('%',#{searchKeyword},'%') 
+			</when>
+			<otherwise>
+				<choose>
+					<when test="productCategory_detail == null">
+						product_category = #{productCategory}
+						AND product_status = '판매중'
+					</when>
+					<otherwise>
+						product_category = #{productCategory}
+						AND product_category_detail = #{productCategory_detail}
+						AND product_status = '판매중'
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		limit
+			#{startRow}
+			, #{listLimit}
+	
+	
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

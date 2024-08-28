@@ -210,11 +210,29 @@
 </head>
 <body>
 		<header>
-			<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/inc/store_top.jsp"></jsp:include>
 		</header>
 		<div class="inner">
 			<section class="sec01">
 				<div class="mainWrapper">
+					<c:choose>
+						<c:when test="${searchKeyword ne '' && empty StoreList}">
+						<p>
+						검색결과가 없습니다. <br><br>
+						이용에 불편을 드려 죄송합니다.
+						</p>
+						</c:when>
+						<c:when test="${searchKeyword ne ''}">
+							<c:choose>
+								<c:when test="${param.productCategory_detail eq null}">
+									<h2>${param.productCategory}</h2>
+								</c:when>
+								<c:otherwise>
+									<h2>${param.productCategory} > ${productCategory_detail}</h2> 
+								</c:otherwise>
+							</c:choose>
+						</c:when>
+					</c:choose>
 					<div class="productMain">
 						<div class="mainBanner">
 							<img class="bannerImg" alt="배너" src="${pageContext.request.contextPath}/resources/image/cuteDog3.jpg">
@@ -228,7 +246,7 @@
 							<div class="boxWrapper">
 								<div class="productBox01">
 									<div class="product_image">
-										<a href="#">
+										<a href="StoreDetail">
 											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
 										</a>
 									</div>
@@ -239,7 +257,7 @@
 								</div>	
 								<div class="productBox01">
 									<div class="product_image">
-										<a href="#">
+										<a href="StoreDetail">
 											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
 										</a>
 									</div>
@@ -250,13 +268,13 @@
 								</div>	
 								<div class="productBox01">
 									<div class="product_image">
-										<a href="#">
+										<a href="StoreDetail">
 											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
 										</a>
 									</div>
 									<div class="product_info">
 										<h4>00,000원</h4>
-										<a href="#">제품명제품명</a>
+										<a href="StoreDetail">제품명제품명</a>
 									</div>
 								</div>	
 								<div class="productBox01">
@@ -278,6 +296,30 @@
 					</div>
 				</div>
 			
+			</section>
+			
+			<section id="pageList">
+				<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
+				<input type="button" value="이전" onclick="location.href='ProjectList?pageNum=${pageNum - 1}'"
+						<c:if test="${pageNum <= 1}">disabled</c:if> >
+				
+				<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
+				<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+					
+					<c:choose>
+						<c:when test="${pageNum eq i}">
+							<b>${i}</b>
+						</c:when>
+						<c:otherwise>
+							<a href="ProjectList?pageNum=${i}">${i}</a>
+						</c:otherwise>
+					</c:choose>
+				
+		<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
+				</c:forEach>
+				
+				<input type="button" value="다음" onclick="location.href='ProjectList?pageNum=${pageNum + 1}'"
+						<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 			</section>
 		</div>
 		

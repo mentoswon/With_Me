@@ -13,11 +13,11 @@
 		}
 	}
 	
-	function projectList(category, category_detail) {
+	function storeList(productCategory, productCategory_detail) {
 		if(category_detail != "") {
-			location.href="ProjectList?project_category=" + category + "&project_category_detail=" + category_detail;
+			location.href="StoreList?productCategory=" + productCategory + "&productCategory_detail=" + productCategory_detail;
 		} else {
-			location.href="ProjectList?project_category=" + category;
+			location.href="StoreList?productCategory=" + productCategory;
 		}
 	}
 	
@@ -62,43 +62,43 @@
 		
 		<ul>
 			<li class="depth01">
-				<a href="javascript:projectList('푸드', '')"> 푸드 </a>
+				<a href="javascript:StoreList('푸드', '')"> 푸드 </a>
 				<ul class="depth02">
-					<li><button value="사료" onclick="projectList('푸드', this.value)" >사료</button></li>
-					<li><button value="껌류" onclick="projectList('푸드', this.value)" >껌류</button></li>
-					<li><button value="수제간식" onclick="projectList('푸드', this.value)" >수제간식</button></li>
+					<li><button value="사료" onclick="StoreList('푸드', this.value)" >사료</button></li>
+					<li><button value="껌류" onclick="StoreList('푸드', this.value)" >껌류</button></li>
+					<li><button value="수제간식" onclick="StoreList('푸드', this.value)" >수제간식</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
-				<a href="javascript:projectList('패션/위생', '')"> 패션 / 위생 </a>
+				<a href="javascript:StoreList('패션/위생', '')"> 패션 / 위생 </a>
 				<ul class="depth02">
-					<li><button value="의류" onclick="projectList('패션/위생',this.value)" >의류</button></li>
+					<li><button value="의류" onclick="StoreList('패션/위생',this.value)" >의류</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
-				<a href="javascript:projectList('식기/급수기', '')"> 식기 / 급수기 </a>
+				<a href="javascript:StoreList('식기/급수기', '')"> 식기 / 급수기 </a>
 				<ul class="depth02">
-					<li><button value="급식기" onclick="projectList('식기/급수기',this.value)" >급식기</button></li>
-					<li><button value="급수기" onclick="projectList('식기/급수기',this.value)" >급수기</button></li>
+					<li><button value="급식기" onclick="StoreList('식기/급수기',this.value)" >급식기</button></li>
+					<li><button value="급수기" onclick="StoreList('식기/급수기',this.value)" >급수기</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
-				<a href="javascript:projectList('장난감/훈련', '')"> 장난감 / 훈련 </a>
+				<a href="javascript:StoreList('장난감/훈련', '')"> 장난감 / 훈련 </a>
 				<ul class="depth02">
-					<li><button value="장난감" onclick="projectList('장난감/훈련',this.value)" >장난감</button></li>
-					<li><button value="훈련용품" onclick="projectList('장난감/훈련',this.value)" >훈련용품</button></li>
+					<li><button value="장난감" onclick="StoreList('장난감/훈련',this.value)" >장난감</button></li>
+					<li><button value="훈련용품" onclick="StoreList('장난감/훈련',this.value)" >훈련용품</button></li>
 				</ul>
 			</li>
 			
 			<li class="depth01">
-				<a href="javascript:projectList('하우스/안전', '')"> 하우스 / 안전 </a>
+				<a href="javascript:StoreList('하우스/안전', '')"> 하우스 / 안전 </a>
 				<ul class="depth02">
-					<li><button value="하우스" onclick="projectList('하우스/안전',this.value)" >하우스</button></li>
-					<li><button value="울타리" onclick="projectList('하우스/안전',this.value)" >울타리</button></li>
-					<li><button value="기타안전용품" onclick="projectList('하우스/안전',this.value)" >기타안전용품</button></li>
+					<li><button value="하우스" onclick="StoreList('하우스/안전',this.value)" >하우스</button></li>
+					<li><button value="울타리" onclick="StoreList('하우스/안전',this.value)" >울타리</button></li>
+					<li><button value="기타안전용품" onclick="StoreList('하우스/안전',this.value)" >기타안전용품</button></li>
 				</ul>
 			</li>
 		</ul>

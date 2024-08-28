@@ -25,29 +25,14 @@
 					</div>
 					<div id="infoArea">
 						<span class="category">${project_detail.project_category} > ${project_detail.project_category_detail}</span>
+						<button>공유</button>
 						<h4>${project_detail.project_title}</h4>
 						<div class="fundInfo1">
 							<div>
-								<span>모인 금액</span>
+								<span>가격</span>
 								<ul>
 									<li><h4><fmt:formatNumber pattern="#,###">${project_detail.funding_amt}</fmt:formatNumber></h4></li>
 									<li>원</li>
-									
-									<%-- 펀딩률 --%>
-									<fmt:parseNumber var="funding_amt" value="${project_detail.funding_amt*1.0}" ></fmt:parseNumber>
-									<fmt:parseNumber var="target_price" value="${project_detail.target_price}" ></fmt:parseNumber>
-									
-									<c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
-									
-									<c:choose>
-										<c:when test="${fund_rate eq 0.0}">
-											<li class="fund_rate">&nbsp;&nbsp; 0%</li>
-										</c:when>
-										<c:otherwise>
-											<li class="fund_rate">&nbsp;&nbsp; ${fund_rate}%</li>
-										</c:otherwise>
-									</c:choose>
-									<%-- 펀딩률 end --%>
 								</ul>
 							</div>
 							<div>
@@ -60,38 +45,12 @@
 						</div>
 						<div class="fundInfo2">
 							<dl>
-								<dt>목표금액</dt>
+								<dt>가격</dt>
 								<dd><fmt:formatNumber pattern="#,###">${project_detail.target_price}</fmt:formatNumber> 원</dd>
 							</dl>
-							<dl>
-								<dt>펀딩기간</dt>
-								<dd>${project_detail.funding_start_date} ~ ${project_detail.funding_end_date}</dd>
-								
-								<!-- 오늘 날짜 추출 -->
-								<c:set var="now" value="<%=new java.util.Date()%>" />
-								<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
-								<!-- 오늘 날짜 추출 end -->
-								
-								<!-- 남은 날짜 계산 -->
-								<fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
-								<fmt:parseNumber value="${project_detail.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-								<c:set value="${endDate - strDate}" var="leftDay"/>
-								<!-- 남은 날짜 계산 end -->
-								
-								<dd id="leftDay" style="<c:if test="${leftDay eq 0}">background-color:#ffab40; color:#ffffff;font-weight: bold;</c:if>">
-									<c:choose>
-										<c:when test="${leftDay eq 0}">
-											오늘 마감이에요 !
-										</c:when>
-										<c:otherwise>
-											<c:out value="${leftDay}"></c:out>일 남았어요 !
-										</c:otherwise>
-									</c:choose>
-								</dd>
-							</dl>
-							<dl>
-								<dt>결제</dt>
-								<dd>목표금액 달성 시 <b>${project_detail.pay_date}</b>에 결제 진행</dd> <!-- 마감일 다음날 결제 예정일 -->
+							<dl> 
+								<dt>배송</dt>
+								<dd><b>평일 16시 전 주문하면 오늘 출발  </b>(무료배송)</dd> <!-- 마감일 다음날 결제 예정일 -->
 							</dl>
 						</div>
 						
@@ -99,7 +58,8 @@
 							<button class="like Btn">
 								<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
 							</button>
-							<button class="goFund Btn">이 프로젝트 후원하기</button>
+							<button class="goFund Btn">상품문의하기</button>
+							<button class="goFund Btn">구매하기</button>
 						</div>
 					</div>
 				</div>
