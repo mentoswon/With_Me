@@ -244,7 +244,7 @@ textarea {
 input[type="file"] {
 	display: none;
 }
-.uploadImg img, .trashImg img, .trashImg2 img, .importanceImg img, .addImg img {
+.uploadImg img, .trashImg img, .trashImg2 img, .importanceImg img, .addImg img, .deleteImg img {
 	width: 22px;
 	height: 22px;
 	vertical-align: text-bottom;	/* 글자와 정렬 맞추기 */
@@ -367,6 +367,22 @@ input[type="radio"] {
     overflow: auto;
     overflow-x: hidden;
     margin-right: 45px;
+}
+
+/* 스크롤바 css */
+#itemListContainer::-webkit-scrollbar, #rewardListContainer::-webkit-scrollbar {
+    width: 10px;
+}
+#itemListContainer::-webkit-scrollbar-track, #rewardListContainer::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    border-radius: 10px;
+}
+#itemListContainer::-webkit-scrollbar-thumb, #rewardListContainer::-webkit-scrollbar-thumb { 
+    background-color: rgba(204, 204, 204, 0.7);
+    border-radius: 10px;
+}
+#itemListContainer::-webkit-scrollbar-button, #rewardListContainer::-webkit-scrollbar-button {
+    display: none;
 }
 
 .itemListWrap, .rewardListWrap {

@@ -177,4 +177,28 @@
 	DELETE FROM reward_info
 	WHERE reward_idx = #{reward_idx}
 </delete>
+
+<!-- 프로젝트 임시저장 - UPDATE -->
+<update id="updateProject">
+	UPDATE project_info
+	SET 
+		project_category = #{project_category},
+		project_category_detail = #{project_category_detail},
+		project_title = #{project_title},
+		project_summary = #{project_summary},
+		project_image = #{project_image},
+		search_tag = #{search_tag},
+		target_price = #{target_price},
+		funding_commission = #{funding_commission},
+--		funding_premium = #{funding_premium},
+		funding_start_date = #{funding_start_date},
+		funding_end_date = #{funding_end_date},
+		project_introduce = #{project_introduce},
+		project_budget = #{project_budget},
+		project_schedule = #{project_schedule},
+		project_team_introduce = #{project_team_introduce},
+		project_sponsor = #{project_sponsor},
+		project_policy = #{project_policy},
+	WHERE project_idx = #{project_idx};
+</update>
 </mapper>

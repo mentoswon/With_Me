@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.CreatorFundingMapper;
 import com.itwillbs.with_me.vo.CommonCodeVO;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
@@ -89,6 +90,11 @@ public class CreatorFundingService {
 	// 후원 구성 삭제 요청
 	public int deleteReward(String reward_idx) {
 		return mapper.deleteReward(reward_idx);
+	}
+
+	// 프로젝트 임시저장 요청
+	public int modifyProject(ProjectVO project) {
+		return mapper.updateProject(project);
 	}
 
 

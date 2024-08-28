@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.CommonCodeVO;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
@@ -57,6 +58,9 @@ public interface CreatorFundingMapper {
 
 	// 후원 구성 삭제
 	int deleteReward(String reward_idx);
+
+	// 프로젝트 임시저장
+	int updateProject(ProjectVO project);
 
 
 

@@ -1,5 +1,9 @@
 package com.itwillbs.with_me.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.with_me.service.CreatorFundingService;
 import com.itwillbs.with_me.vo.CommonCodeVO;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
@@ -25,6 +31,9 @@ import com.itwillbs.with_me.vo.RewardVO;
 public class CreatorFundingController {
 	@Autowired
 	private CreatorFundingService service;
+	
+	// 가상의 경로명 저장(이클립스 프로젝트 상의 경로)
+	private String uploadPath = "/resources/upload"; 
 	
 	// 프로젝트 만들기 페이지
 	@GetMapping("ProjectStart")
@@ -237,6 +246,100 @@ public class CreatorFundingController {
 		// 삭제 요청 처리 결과 판별
 		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
 		if(deleteCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+	}
+
+	// 프로젝트 저장하기
+	@ResponseBody
+	@PostMapping("SaveProject")
+	public String saveProject(ProjectVO project, CreatorVO creator, HttpSession session) throws Exception {
+		System.out.println("project : " + project);
+		System.out.println("creator : " + creator);
+
+		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		String realPath = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
+		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
+		
+		// 이미지 등록 - 프로젝트 번호 별 서브디렉토리 생성
+		subDir = "FUND" + "/" + project.getProject_idx();
+		// 기존 실제 업로드 경로에 서브 디렉토리(모델명 경로) 결합
+		realPath += "/" + subDir;
+		
+		System.out.println("realPath : " + realPath);
+		// => D:\Spring\workspace_spring5\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\With_Me\resources\ upload/FUND/4
+		
+		try {
+			// 해당 디렉토리를 실제 경로에 생성(단, 존재하지 않을 경우에만 자동 생성)
+			Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
+			Files.createDirectories(path);	// 실제 경로 생성
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// ----------------------------------
+		// 실제 업로드 되는 파일 처리
+		MultipartFile mProjectImg = project.getProjectImg();
+		MultipartFile mIntroduceImg = project.getIntroduceImg();
+		MultipartFile mBudgetImg = project.getBudgetImg();
+		MultipartFile mScheduleImg = project.getScheduleImg();
+		MultipartFile mInteteamInterducerduceImg = project.getInteteamInterducerduceImg();
+		MultipartFile mSponsorImg = project.getSponsorImg();
+		
+		// MultipartFile 객체의 getOriginalFile() 메서드 호출 시 업로드 한 원본 파일명 리턴
+		// => 주의! 업로드 파일이 존재하지 않으면 파일명에 null 값이 아닌 널스트링값 저장됨
+		System.out.println("프로젝트 대표 이미지 : " + mProjectImg.getOriginalFilename());
+		System.out.println("프로젝트 소개 이미지 : " + mIntroduceImg.getOriginalFilename());
+		
+		// 파일명 저장 전 ProjectVO 객체의 파일명에 해당하는 멤버변수값을 널스트링("") 으로 변경
+		project.setProject_image("");
+		project.setProject_introduce("");
+		project.setProject_budget("");
+		project.setProject_schedule("");
+		project.setProject_team_interduce("");
+		project.setProject_sponsor("");
+		
+		System.out.println("project22 : " + project);
+
+		if(!mProjectImg.getOriginalFilename().equals("")) {
+			project.setProject_image(subDir + "/" + mProjectImg.getOriginalFilename());
+		}
+		if(!mIntroduceImg.getOriginalFilename().equals("")) {
+			project.setProject_introduce(subDir + "/" + mIntroduceImg.getOriginalFilename());
+		}
+		if(!mBudgetImg.getOriginalFilename().equals("")) {
+			project.setProject_budget(subDir + "/" + mBudgetImg.getOriginalFilename());
+		}
+		if(!mScheduleImg.getOriginalFilename().equals("")) {
+			project.setProject_schedule(subDir + "/" + mScheduleImg.getOriginalFilename());
+		}
+		if(!mInteteamInterducerduceImg.getOriginalFilename().equals("")) {
+			project.setProject_team_interduce(subDir + "/" + mInteteamInterducerduceImg.getOriginalFilename());
+		}
+		if(!mSponsorImg.getOriginalFilename().equals("")) {
+			project.setProject_sponsor(subDir + "/" + mSponsorImg.getOriginalFilename());
+		}
+		System.out.println("project333 : " + project);
+		// 프로젝트 임시저장(update)
+		int updateCount = service.modifyProject(project);
+		
+		// 창작자 정보 임시저장(update)
+//		int updateCount2 = service.modifyCreator(creator);
+		
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		if(updateCount > 0) {
 			resultMap.put("result", true);
 		} else {
 			resultMap.put("result", false);

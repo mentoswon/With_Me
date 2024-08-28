@@ -14,6 +14,88 @@
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script type="text/javascript">
 $(function() {
+	// [ 저장하기 ]
+	$("#save").on('click', function() {
+		// FormData 객체 생성
+		let formData = new FormData();
+
+		formData.append("project_idx", $("input[name='project_idx']").val());
+		formData.append("project_category", $("#project_category").val());
+		formData.append("project_category_detail", $("#project_category_detail").val());
+		formData.append("project_title", $("#project_title").val());
+		formData.append("project_summary", $("#project_summary").val());
+		
+		// 파일 업로드 필드 확인
+		let projectImageFile = $("#project_image")[0].files[0];
+	    if (projectImageFile) {
+	        formData.append("projectImg", projectImageFile);
+	    }
+	    
+		formData.append("search_tag", $("#search_tag").val());
+		
+		// 쉼표 제거 및 빈 문자열 체크
+		let targetPrice = $("#target_price").val().trim().replace(/,/g, ''); // 쉼표 제거
+		formData.append("target_price", targetPrice ? targetPrice : 0); // 빈 문자열을 0으로 전환(not null)
+		let fundingCommission = $("#funding_commission").val().trim().replace(/,/g, '');
+	    formData.append("funding_commission", fundingCommission ? fundingCommission : 0); // 빈 문자열을 0으로 전환
+	    
+	    // 날짜 형식 체크 및 변환
+	    let fundingStartDate = $("#funding_start_date").val();
+	    formData.append("funding_start_date", fundingStartDate ? fundingStartDate : ""); 
+	    let fundingEndDate = $("#funding_end_date").val();
+	    formData.append("funding_end_date", fundingEndDate ? fundingEndDate : ""); 
+		
+		// 파일 업로드 필드 확인
+	    let introduceImgFile = $("#project_introduce")[0].files[0];
+	    if (introduceImgFile) {
+	        formData.append("introduceImg", introduceImgFile);
+	    }
+
+	    let budgetImgFile = $("#project_budget")[0].files[0];
+	    if (budgetImgFile) {
+	        formData.append("budgetImg", budgetImgFile);
+	    }
+
+	    let scheduleImgFile = $("#project_schedule")[0].files[0];
+	    if (scheduleImgFile) {
+	        formData.append("scheduleImg", scheduleImgFile);
+	    }
+
+	    let teamIntroduceImgFile = $("#project_team_introduce")[0].files[0];
+	    if (teamIntroduceImgFile) {
+	        formData.append("teamIntroduceImg", teamIntroduceImgFile);
+	    }
+
+	    let sponsorImgFile = $("#project_sponsor")[0].files[0];
+	    if (sponsorImgFile) {
+	        formData.append("sponsorImg", sponsorImgFile);
+	    }
+
+		$.ajax({
+			type: 'POST',
+			url: 'SaveProject',
+			data: formData,
+	        processData: false,  // 파일 업로드를 위해 필요
+	        contentType: false,  // 파일 업로드를 위해 필요
+			success: function(response) {
+				console.log(JSON.stringify(response));
+				if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+					alert("잘못된 접근입니다!");
+				} else if(!response.result) {
+                    alert("프로젝트 저장에 실패하였습니다.");
+				} else if(response.result) {
+				alert('프로젝트가 저장되었습니다.');
+				// 추가적인 성공 처리 (예: UI 업데이트)
+                    
+                }
+			},
+			error: function() {
+				alert('프로젝트 저장에 실패하였습니다.');
+			}
+		});	// ajax 끝
+	});
+	
+    // ========================================================================================
 	// [ 기본 정보 ]
 	let tagContainer = $("#tagContainer");
     let tagCount = $("#tagCount");
@@ -38,10 +120,10 @@ $(function() {
     });
 	
 	// 초기 상태로 첫 번째 메뉴와 콘텐츠가 보이도록 설정
-//     $("#projectMenuList li:eq(0)").click();
+    $("#projectMenuList li:eq(0)").click();
 	// -------------------------------------------------------------------------------
 	// 임시) 초기 상태로 세 번째 메뉴와 콘텐츠가 보이도록 설정
-    $("#projectMenuList li:eq(2)").click();
+//     $("#projectMenuList li:eq(2)").click();
 	// -------------------------------------------------------------------------------
     
     // 카테고리 변경 시 AJAX 요청 전송(세부카테고리 불러오기)
@@ -128,8 +210,8 @@ $(function() {
 	});
     
     // 검색 태그 입력값 유효성 검사
-    $("#search_tag").keyup(function() {
-    	 let tagValue = $("#search_tag").val();  // 입력된 태그 값을 가져옴
+    $("#search_tag_text").keyup(function() {
+    	 let tagValue = $("#search_tag_text").val();  // 입력된 태그 값을 가져옴
         if (!regexTag.exec(tagValue)) {  // 불일치
         	$("#checkTagResult").html("한글, 숫자로만 입력 가능합니다!<br>공백, 특수문자 불가");
         	$("#checkTagResult").css("color", "red");
@@ -142,21 +224,23 @@ $(function() {
     });
     
 	// 검색 태그 Enter(SpaceBar) 누름 이벤트
-	$("#search_tag").on("keypress", function(event) {
+	$("#search_tag_text").on("keypress", function(event) {
 		let keyCode = event.keyCode;
 		if(keyCode == 13 || keyCode == 32) {	// Enter(13) 또는 SpaceBar(32) 누를 시
 			event.preventDefault(); // 폼 제출 방지
 			let tagValue = $(this).val().trim();	// 입력된 태그 값을 가져와서 공백 제거
 			if (checkTagResult) {	// 검색태그 검사 적합여부 true
 				if (tagValue && tagContainer.children().length < maxTags) {    // 유효한 태그와 태그 개수가 최대 개수보다 적은 경우
-			       // 새로운 태그 추가
-			       tagContainer.append("<span class='tag'>" + tagValue + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></span>");
-			       // 태그 카운트 업데이트
-			       updateTagCount();
-			       // 입력 필드 비우기
-			       $(this).val("");
+					// 새로운 태그 추가
+					tagContainer.append("<span class='tag'>" + tagValue + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></span>");
+					// 태그 카운트 업데이트
+					updateTagCount();
+					// hidden input 업데이트
+	                updateHiddenTagValue();
+					// 입력 필드 비우기
+					$(this).val("");
 				} else if (tagContainer.children().length >= maxTags) {
-				    alert("태그는 최대 " + maxTags + "개까지만 추가할 수 있습니다.");
+					alert("태그는 최대 " + maxTags + "개까지만 추가할 수 있습니다.");
 				}
 			}
 		}
@@ -173,6 +257,19 @@ $(function() {
         let currentTagCount = tagContainer.children().length;
         tagCount.text(currentTagCount);
     }
+    
+    // hidden input 업데이트 함수
+    function updateHiddenTagValue() {
+		let tags = [];
+		$("#tagContainer").children().each(function() {
+			tags.push($(this).text().trim());
+		});
+		$("#search_tag").val(tags.join("|"));  // 태그를 구분자 | 로 연결하여 hidden input에 설정
+	}
+    
+    // 폼 로드 시 함수실행
+    updateTagCount();
+    updateHiddenTagValue();
     
     // ========================================================================================
     // [ 펀딩 계획 ]
@@ -231,6 +328,9 @@ $(function() {
         $("#withmeCommission").text(totalPlatformFee.toLocaleString('ko-KR'));
         $("#totalCommission").text(totalCommission.toLocaleString('ko-KR'));
         $("#estimateAmount").text(estimateAmount.toLocaleString('ko-KR'));
+		
+		// 총 수수료를 hidden input에 설정
+		$("#funding_commission").val(totalCommission);
     }
 
     // 예상 수령액 초기화
@@ -409,7 +509,6 @@ $(function() {
 	                    // 삭제된 아이템 요소 제거
 	                    $(removeItem).remove(); 
 	                    $(removeItem2).remove(); 
-	                    
 	                }
 	            },
 	            error: function() {
@@ -686,13 +785,18 @@ $(function() {
 	    reader.readAsDataURL(file);
 	});
 
-    // 프로젝트 정책 글자 수
-    $("#project_policy").keyup(function() {
+    // 프로젝트 정책 글자 수 체크 함수
+    function checkPolicyLength() {
     	let projectPolicyLength = $("#project_policy").val().length;
         $("#projectPolicyLength").text(projectPolicyLength);
+    }
+    // 프로젝트 정책 글자 수 체크
+    checkPolicyLength();	// 페이지 로드 시 체크
+    $("#project_policy").keyup(function() {
+    	checkPolicyLength();
     });
     
-    
+
     // ========================================================================================
     // [ 창작자 정보 ]
 	// 창작자 이름 길이 체크
@@ -765,815 +869,824 @@ function linkAccount() {
 </head>
 <body>
 	<%-- ---------- 프로젝트 등록 페이지 헤더 ---------- --%>
-	<header>
-		<div id="topWrap">
-			<a href="#">← 내가 만든 프로젝트</a>
-			<a href="./" class="main_logo">
-				<c:choose>
-					<c:when test="${empty project.project_image}">
-						<img alt="기본 이미지" src="${pageContext.request.contextPath}/resources/image/withme.png">
-					</c:when>
-					<c:otherwise>
-						<img alt="프로젝트 대표 이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
-					</c:otherwise>
-				</c:choose>
-			</a>
-			<div>
-				<input type="button" id="save" value="저장하기">
-				<input type="submit" id="request" value="심사요청" disabled>
-			</div>
-		</div>
-	</header>
-	
-	<%-- ---------- 프로젝트 등록 메뉴바 ---------- --%>
-	<section id="projectInfo">
-		<div id="projectInfoWrap">
-			<div id="projectMenuTop">
-				<img alt="로고" src="${pageContext.request.contextPath}/resources/image/image.png">
+<!-- 	<form id="projectForm" action="SubmitProject" method="post" enctype="multipart/form-data"> -->
+		<header>
+			<div id="topWrap">
+				<a href="#">← 내가 만든 프로젝트</a>
+				<a href="./" class="main_logo">
+					<img alt="위드미 로고" src="${pageContext.request.contextPath}/resources/image/withme.png">
+				</a>
 				<div>
-					<h2>${project.project_title}</h2>
-					<p style="line-height: 200%;">${project.project_category}</p>
+					<input type="button" id="save" value="저장하기">
+					<input type="submit" id="request" value="심사요청" disabled>
 				</div>
 			</div>
-		</div>
-	</section>
-	<section id="projectCreateMenu">
-		<div id="projectMenuWrap">
-			<div id="projectMenu">
-				<ul id="projectMenuList">
-					<li class="writeList active" data-index="1">
-						<span>기본 정보</span>
-					</li>
-					<li class="writeList" data-index="2">
-						<span>펀딩 계획</span>
-					</li>
-					<li class="writeList" data-index="3">
-						<span>후원 구성</span>
-					</li>
-					<li class="writeList" data-index="4">
-						<span>프로젝트 계획</span>
-					</li>
-					<li class="writeList" data-index="5">
-						<span>창작자 정보</span>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</section>
-	
-	<article>
-		<%-- ---------- 기본 정보 ---------- --%>
-		<div id="writeContainer1" class="writeContainer">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 카테고리<span class="essential">&nbsp;*</span></h3>
-					<p>
-						프로젝트 성격과 가장 일치하는 카테고리를 선택해주세요.<br>
-						적합하지 않을 경우 운영자에 의해 조정될 수 있습니다.
-					</p>
-				</div>
-				<div class="projectContentWrap">
-					<select id="project_category" class="select" name="project_category">
-						<c:forEach var="category" items="${category}">
-							<option value="${category.common_code_name}" <c:if test="${project.project_category eq category.common_code_name}">selected</c:if>>${category.common_code_name}</option>
-						</c:forEach>
-					</select>
-					<br><br>
-					<select id="project_category_detail" class="select" name="project_category_detail">
-						<option disabled selected hidden>세부 카테고리를 선택하세요.</option>
-						<c:forEach var="categoryDetail" items="${category_detail}">
-							<option value="${categoryDetail.common_code_name}">${categoryDetail.common_code_name}</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 제목<span class="essential">&nbsp;*</span></h3>
-					<p>
-						프로젝트의 주제, 창작물의 품목이 명확하게 드러나는 멋진 제목을 붙여주세요.
-					</p>
-				</div>
-				<div class="projectContentWrap">
-					<input type="text" name="project_title" id="project_title" placeholder="제목을 입력해주세요." value="${project.project_title}" maxlength="30">
-					<div class="LengthCheck">
-						<span id="checkLengthTitle"></span>
-						<p><span id="titleLength">0</span>/30</p>
-					</div>
-					<br><br>
-				</div>
-			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 요약<span class="essential">&nbsp;*</span></h3>
-					<p>
-						후원자 분들이 프로젝트를 빠르게 이해할 수 있도록 명확하고 간략하게 소개해주세요.
-					</p>
-					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">프로젝트 요약은 어디에 표시되나요?</p>
-						<p>프로젝트 카드형 목록에서 프로젝트 제목 하단에 표시됩니다.</p>
-					</div>
-				</div>
-				<div class="projectContentWrap">
-					<textarea name="project_summary" id="project_summary" rows="5" cols="10" placeholder="프로젝트 요약을 입력해주세요." maxlength="50"></textarea>
-					<div class="LengthCheck">
-						<span id="checkLengthSummary"></span>
-						<p><span id="summaryLength">0</span>/50</p>
-					</div>
-					<br><br>
-				</div>
-			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 대표 이미지<span class="essential">&nbsp;*</span></h3>
-					<p>
-						프로젝트를 나타낼 이미지를 등록해 주세요.
-					</p>
-				</div>
-				<div class="projectContentWrap">
-					<input type="file" name="project_image" id="project_image">
-					<label for="project_image">
-						<div class="fileUpload">
-							<span class="uploadImg">
-								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-								이미지 업로드
-							</span>
-						</div>
-					</label>
-					<div class="imagePreview">
-						<img id="project_image_preview">
-					</div>
-					<br><br>
-				</div>
-			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>검색 태그</h3>
-					<p>
-						잠재 후원자의 관심사를 고려한 검색 태그를 입력해주세요.<br>
-						위드미에서 해당 태그로 검색한 후원자가 프로젝트를 발견할 수 있습니다.
-					</p>
-					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">무관한 태그는 후원자의 불편을 초래합니다!</p>
-						<p>
-							반드시 프로젝트에 관련된 태그만 사용해 주세요. 
-							프로젝트와 무관한 태그 설적으로 후원자 신고가 누적될 시 프로젝트에 재재가 가해질 수 있습니다.
-						</p>
-					</div>
-				</div>
-				<div class="projectContentWrap">
-					<input type="text" name="search_tag" id="search_tag" placeholder="Enter를 눌러 핵심 키워드를 등록해주세요.">
-					<div class="LengthCheck">
-						<span id="checkTagResult" style="color: #ccc; font-size: 13px;">문자로만 최소 1자 이상 입력해주세요.</span>
-						<p><span id="tagCount">0</span>/5개</p>
-					</div>
-					<div class="tag-container" id="tagContainer">
-		                <!-- 태그가 여기에 추가됨 -->
-		            </div>
-					<br><br>
-				</div>
-			</div>
-		</div>
+		</header>
 		
-		<%-- ---------- 펀딩 계획 ---------- --%>
-		<div id="writeContainer2" class="writeContainer">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>목표 금액<span class="essential">&nbsp;*</span></h3>
-					<p>
-						프로젝트를 완수하기 위해 필요한 금액을 설정해주세요.
-					</p>
-					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">목표금액 설정 시 꼭 알아두세요!</p>
-						<p>
-							1. 종료일까지 목표금액을 달성하지 못하면 후원자 결제가 진행되지 않습니다.<br>
-							2. 후원 취소 및 결제 누락을 대비해 10% 이상 초과 달성을 목표로 해주세요.<br>
-							3. 제작비, 선물 배송비, 인건비, 예비 비용 등을 함께 고려해주세요 .<br>
-							4. 목표금액은 50만원 이상 1억 미만으로 설정해 주세요.<br>
-						</p>
-					</div>
-				</div>
-				<div class="projectContentWrap">
-					<div class="projectWriteBorder">
-						<h4>목표금액</h4>
-						<table style="border: 1px solid #ccc; width: 100%;">
-							<tr>
-								<td>
-									<input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." maxlength="14" style="border: none; text-align: right; width: 565px;">
-								</td>
-								<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
-							</tr>
-						</table>
-						<span id="checkTargetPrice"></span>
-						
-						
-						<div id="estimateAmountWrap">
-							<div class="amountArea">
-								<h4>목표금액 달성 시 예상 수령액</h4>
-								<h3 class="fontModify"><span id="estimateAmount">0</span>원</h3>
-							</div>
-							<hr class="dividingLine2">
-							<div class="amountArea">
-								<p>총 수수료</p>
-								<span><span id="totalCommission">0</span>원</span>
-								<input type="hidden" name="funding_commission" id="funding_commission">	<%-- 수수료 --%>
-							</div>
-							<div class="amountArea">
-								<p>결제대행 수수료 (총 결제 성공금액의 3% + VAT)</p>
-								<span><span id="createCommission">0</span>원</span>
-							</div>
-							<div class="amountArea">
-								<p>위드미 수수료 (총 결제 성공금액의 5% + VAT)</p>
-								<span><span id="withmeCommission">0</span>원</span>
-							</div>
-						</div>
+		<%-- ---------- 프로젝트 등록 메뉴바 ---------- --%>
+		<section id="projectInfo">
+			<div id="projectInfoWrap">
+				<div id="projectMenuTop">
+					<c:choose>
+						<c:when test="${empty project.project_image}">
+							<img alt="프로젝트 대표 이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
+						</c:when>
+						<c:otherwise>
+							<img alt="프로젝트 대표 이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+						</c:otherwise>
+					</c:choose>
+					<div>
+						<h2>${project.project_title}</h2>
+						<p style="line-height: 200%;">${project.project_category}</p>
 					</div>
 				</div>
 			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>펀딩 일정<span class="essential">&nbsp;*</span></h3>
-					<p>
-						설정한 날짜가 되면 펀딩이 자동 시작됩니다.<br>
-						펀딩 시작 전까지 날짜를 변경할 수 있습니다.
-					</p>
-					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">펀딩기간 설정 시 꼭 알아두세요!</p>
-						<p>
-							선택하신 시작일 9시에 펀딩이 시작됩니다.<br>
-							선택하신 종료일 다음 날 0시에 펀딩이 종료됩니다.<br>
-							프로젝트가 성공하면 펀딩 종료 다음 날 후원금이 결제됩니다.<br>
-							결제가 이루어지지 않은 경우 24시간 간격으로 7일 동안 결제를 시도합니다.<br>
-							모금액은 후원자 결제 종료 다음 날부터 7일째 되는 날 입금됩니다.
-						</p>
-					</div>
-				</div>
-				<div class="projectContentWrap">
-					<jsp:include page="/WEB-INF/views/project/calendar.jsp"></jsp:include>
-					<br><br>
+		</section>
+		<section id="projectCreateMenu">
+			<div id="projectMenuWrap">
+				<div id="projectMenu">
+					<ul id="projectMenuList">
+						<li class="writeList active" data-index="1">
+							<span>기본 정보</span>
+						</li>
+						<li class="writeList" data-index="2">
+							<span>펀딩 계획</span>
+						</li>
+						<li class="writeList" data-index="3">
+							<span>후원 구성</span>
+						</li>
+						<li class="writeList" data-index="4">
+							<span>프로젝트 계획</span>
+						</li>
+						<li class="writeList" data-index="5">
+							<span>창작자 정보</span>
+						</li>
+					</ul>
 				</div>
 			</div>
-			
-<!-- 			<div id="selectChargeWrap" style="display: none;"> -->
-			<div id="selectChargeWrap">
-				<hr class="dividingLine">
+		</section>
+		
+		<article>
+			<%-- ---------- 기본 정보 ---------- --%>
+			<div id="writeContainer1" class="writeContainer">
 				<div class="projectWriteWrap">
 					<div class="projectExplanationWrap">
-						<h3>요금제 선택<span class="essential">&nbsp;*</span></h3>
+						<h3>프로젝트 카테고리<span class="essential">&nbsp;*</span></h3>
 						<p>
-							프로젝트 진행 목적에 적합한 요금제를 선택해 주세요.<br>
-							프로젝트가 승인된 이후에는 요금제를 변경할 수 없으니 신중히 선택해주세요.
+							프로젝트 성격과 가장 일치하는 카테고리를 선택해주세요.<br>
+							적합하지 않을 경우 운영자에 의해 조정될 수 있습니다.
 						</p>
 					</div>
 					<div class="projectContentWrap">
-						<div class="paymentWrap">
-							<h2>Basic</h2>
-							<p>
-								플랫폼 수수료 <span class="redFont">5%</span><br>
-								<span class="smallFont">+결제 수수료 3%</span>
-							</p>
-							<div align="center">
-								<p>
-									<b style="color: #FFAB40; font-size: 20px;">✓</b> 위드미 펀딩의 기본 기능으로 나만의 프로젝트를 실현하세요.
-								</p>
-								<button id="basic" class="paymentButton">선택하기</button>
-							</div>
-						</div>
-						<br>
-						
-						<div class="paymentWrap">
-							<h2 class="redFont">Premium</h2>
-							<p>
-								Basic 요금제 기본 수수료<br>
-								<span class="smallFont">
-									+광고 대행 수수료<br>
-									※ 광고 대행 수수료는 심사 요청 시 선결제로 진행됩니다.<br>
-									광고 대행 수수료 = 펀딩일정(1주일 기준) * 10만원
-								</span>
-							</p>
-							<div align="center">
-								<p>
-									<b style="color: #FFAB40; font-size: 20px;">✓</b> 프리미엄 요금제 선택 시 우선적으로 메인페이지 상단에 노출될 수 있어요!
-								</p>
-								<button id="premium" class="paymentButton">선택하기</button>
-							</div>
-							
+						<select id="project_category" class="select" name="project_category">
+							<c:forEach var="category" items="${category}">
+								<option value="${category.common_code_name}" <c:if test="${project.project_category eq category.common_code_name}">selected</c:if>>${category.common_code_name}</option>
+							</c:forEach>
+						</select>
+						<br><br>
+						<select id="project_category_detail" class="select" name="project_category_detail">
+							<option disabled selected hidden>세부 카테고리를 선택하세요.</option>
+							<c:forEach var="categoryDetail" items="${category_detail}">
+								<option value="${categoryDetail.common_code_name}" <c:if test="${project.project_category_detail eq categoryDetail.common_code_name}">selected</c:if>>${categoryDetail.common_code_name}</option>
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+	
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로젝트 제목<span class="essential">&nbsp;*</span></h3>
+						<p>
+							프로젝트의 주제, 창작물의 품목이 명확하게 드러나는 멋진 제목을 붙여주세요.
+						</p>
+					</div>
+					<div class="projectContentWrap">
+						<input type="text" name="project_title" id="project_title" placeholder="제목을 입력해주세요." maxlength="30" value="${project.project_title}">
+						<div class="LengthCheck">
+							<span id="checkLengthTitle"></span>
+							<p><span id="titleLength">0</span>/30</p>
 						</div>
 						<br><br>
 					</div>
 				</div>
-			</div>
-			
-		</div>
-		
-		<%-- ---------- 후원 구성 ---------- --%>
-		<div id="writeContainer3" class="writeContainer">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>내가 만든 아이템</h3>
-					<div id="itemListContainer">
-						<c:forEach var="item" items="${itemList}">
-							<div class="itemListWrap">
-	           					<div class="itemList">
-	           						<h4>${item.item_name}</h4>
-	           						<p>
-		           						<b>옵션조건(${item.item_condition})</b><br>
-		           						${item.multiple_option}
-	           						</p>
-	           						<br>
-								</div>
-	           					<div class="trashImg" data-item-idx="${item.item_idx}">
-	           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
-								</div>
-							</div>
-						</c:forEach>
-					</div>
-				</div>
-				<div class="projectContentWrap">
-					<div class="projectWriteBorder">
-						<h3>아이템 만들기</h3>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로젝트 요약<span class="essential">&nbsp;*</span></h3>
 						<p>
-							아이템은 후원에 포함되는 구성 품목을 말합니다.<br>
-							특별한 물건부터 의미있는 경험까지 후원을 구성할 아이템을 만들어 보세요.
+							후원자 분들이 프로젝트를 빠르게 이해할 수 있도록 명확하고 간략하게 소개해주세요.
 						</p>
-						<form id="registItemForm">
-							<input type="hidden" name="project_idx" value="${project.project_idx}">
-							<b>아이템 이름</b>
-							<input type="text" name="item_name" id="item_name" maxlength="50" style="width: 100%;">
-							<div class="LengthCount">
-								<p><span id="itemNameLength">0</span>/50</p>
-							</div>
-							<br>
-							
-							<b>옵션 조건</b>
-							<div id="optionCondition" style="display: flex; justify-content: space-between;">
-								<input type="radio" name="item_condition" id="none" value="없음">
-								<label for="none">없음</label>
-								<input type="radio" name="item_condition" id="subjective" value="주관식">
-								<label for="subjective">주관식</label>
-								<input type="radio" name="item_condition" id="objective" value="객관식">
-								<label for="objective">객관식</label>
-							</div>
-							<br>
-							
-							<div id="subjectiveWrap">
-								<b>옵션 항목</b>
-								<input type="text" name="item_option_name" class="itemText" placeholder="예) 각인문구를 작성해주세요.">
-							</div>
-							<div id="objectiveWrap">
-								<b>옵션 항목</b>
-								<div style="display: flex; justify-content: space-between; align-items: flex-end;">
-									<span>
-										2개 이상의 옵션 항목을 만들어주세요.<br>
-										한 칸에 하나의 옵션을 작성해주세요.
-									</span>
-									<span id="addOption" class="addImg" style="margin-bottom: 10px;">
-		           						<img alt="+아이콘" src="${pageContext.request.contextPath}/resources/image/add_icon.png">
-									</span>
-								</div>
-								<input type="text" name="item_option_name" class="itemText" placeholder="예) 240mm">
-								<input type="text" name="item_option_name" class="itemText" placeholder="예) 250mm">
-							</div>
-							
-							<hr class="dividingLine2">
-							<div style="display: flex; justify-content: space-between;">
-								<input type="reset" id="reset" value="초기화">
-								<input type="submit" id="itemRegist" value="등록">
-							</div>
-						</form>
-					</div>
-					<br><br>
-				</div>
-			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>내가 만든 후원</h3>
-					<div id="rewardListContainer">
-						<div class="rewardListWrap">
-							<div class="rewardList">
-								<h2>1,000원+</h2>
-								<h4>선물 없이 후원하기</h4>
-							</div>
+						<br>
+						<div class="creatorGuide">
+							<p class="emphasis">프로젝트 요약은 어디에 표시되나요?</p>
+							<p>프로젝트 카드형 목록에서 프로젝트 제목 하단에 표시됩니다.</p>
 						</div>
-						<c:forEach var="reward" items="${rewardList}">
-							<div class="rewardListWrap">
-	           					<div class="rewardList">
-	           						<h2>${reward.reward_price}원+</h2>
-	           						<h4>${reward.reward_title}</h4>
-	           						<p>
-										${reward.item_details}<br>
-										<c:if test="${reward.amount_limit == 'Y'}">
-											수량 : ${reward.item_amount}개
-										</c:if>
-									</p>
-	           						<br>
-								</div>
-	           					<div class="trashImg2" data-reward-idx="${reward.reward_idx}">
-	           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
-								</div>
-							</div>
-						</c:forEach>
+					</div>
+					<div class="projectContentWrap">
+						<textarea name="project_summary" id="project_summary" rows="5" cols="10" placeholder="프로젝트 요약을 입력해주세요." maxlength="50">${project.project_summary}</textarea>
+						<div class="LengthCheck">
+							<span id="checkLengthSummary"></span>
+							<p><span id="summaryLength">0</span>/50</p>
+						</div>
+						<br><br>
 					</div>
 				</div>
-				<div class="projectContentWrap">
-					<div class="projectWriteBorder">
-						<h3>후원 구성하기</h3>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로젝트 대표 이미지<span class="essential">&nbsp;*</span></h3>
 						<p>
-							다양한 금액대로 여러 개의 리워드를 만들어주세요.<br>
-							펀딩 성공률이 높아지고, 더 많은 후원 금액을 모금할 수 있어요.
-						</p>
-						<form id="registRewardForm">
-							<input type="hidden" name="project_idx" value="${project.project_idx}">
-							<b>아이템 선택</b>
-							<div id="chooseItemContainer">
-								<c:forEach var="item" items="${itemList}">
-									<div class="chooseItem">
-										<input type="checkbox" name="reward_item_idx" id="item${item.item_idx}" value="${item.item_idx}">
-										<label for="item${item.item_idx}">${item.item_name}</label><br>
-									</div>
-								</c:forEach>
-							</div>
-							<br>
-							
-							<b>후원 이름</b><br>
-							<span>어떤 아이템으로 구성되었는지 쉽게 알 수 있는 설명을 입력해주세요.</span>
-							<input type="text" name="reward_title" id="reward_title" placeholder="예) 강아지 간식, 배송비 포함" maxlength="50" style="width: 100%;">
-							<div class="LengthCount">
-								<p><span id="rewardTitleLength">0</span>/50</p>
-							</div>
-							
-							<hr class="dividingLine2">
-							<div id="amountLimitContainer">
-								<b>수량 제한</b>
-								<div id="amountLimitWarp" style="display: flex; justify-content: space-between;">
-									<input type="radio" name="amount_limit" id="amountLimit_Y" value="Y">
-									<label for="amountLimit_Y">있음</label>
-									<input type="radio" name="amount_limit" id="amountLimit_N" value="N">
-									<label for="amountLimit_N">없음</label>
-								</div>
-							</div>
-							<table id="itemAmountWrap" style="border: 1px solid #ccc; width: 100%;">
-								<tr>
-									<td>
-										<input type="text" name="item_amount" id="item_amount" maxlength="5" style="border: none; text-align: right; width: 565px;">
-									</td>
-									<td style="text-align: center; padding-bottom: 2px;" width="40px">개</td>
-								</tr>
-							</table>
-							<span id="checkItemAmount"></span>
-							
-							
-							<hr class="dividingLine2">
-							<div id="deliveryStatusContainer">
-								<b>배송 여부</b>
-								<div id="deliveryStatusWarp" style="display: flex; justify-content: space-between;">
-									<input type="radio" name="delivery_status" id="deliveryStatus_Y" value="Y">
-									<label for="deliveryStatus_Y">네</label>
-									<input type="radio" name="delivery_status" id="deliveryStatus_N" value="N">
-									<label for="deliveryStatus_N">아니오</label>
-								</div>
-							</div>
-							
-							<hr class="dividingLine2">
-							<b>후원 금액</b><br>
-							<span>제작 및 전달에 필요한 모든 비용(포장비, 배송비 등)이 포함된 금액으로 입력해주세요.</span>
-							<table style="border: 1px solid #ccc; width: 100%;">
-								<tr>
-									<td>
-										<input type="text" name="reward_price" id="reward_price" placeholder="1000원 이상의 금액을 입력하세요." maxlength="10" style="border: none; text-align: right; width: 565px;">
-									</td>
-									<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
-								</tr>
-							</table>
-							<span id="checkRewardPrice"></span>
-							
-							<br>
-							<hr class="dividingLine2">
-							<div style="display: flex; justify-content: space-between;">
-								<input type="reset" id="reset" value="초기화">
-								<input type="submit" id="rewardRegist" value="등록">
-							</div>
-						</form>
-					</div>
-					<br><br>
-				</div>
-			</div>
-			
-		</div>
-		<%-- ---------- 프로젝트 계획 ---------- --%>
-		<div id="writeContainer4" class="writeContainer">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 소개<span class="essential">&nbsp;*</span></h3>
-					<p>
-						프로젝트에 대해 자세히 설명해 주세요.
-					</p>
-					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">다음 내용이 포함되도록 작성해 주세요!</p>
-						<p>
-							Q. 무엇을 만들기 위한 프로젝트인가요?<br>
-							Q. 프로젝트를 간단히 소개한다면?<br>
-							Q. 이 프로젝트가 왜 의미있나요?<br>
-							Q. 이 프로젝트를 시작하게 된 배경이 무엇인가요?
+							프로젝트를 나타낼 이미지를 등록해 주세요.
 						</p>
 					</div>
-				</div>
-				<div class="projectContentWrap">
-					<input type="file" name="project_introduce" id="project_introduce">
-					<label for="project_introduce">
-						<div class="fileUpload">
-							<span class="uploadImg">
-								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-								소개 이미지 업로드
-							</span>
-						</div>
-					</label>
-					<div class="imagePreview">
-						<img id="project_introduce_preview">
-					</div>
-					<br><br>
-				</div>
-			</div>
-
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 예산<span class="essential">&nbsp;*</span></h3>
-					<p>
-						설정하신 목표 금액을 어디에 사용 예정이 신지 구체적인 지출 항목으로 적어주세요.
-					</p>
-					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">다음 항목을 확인해주세요!</p>
-						<p>
-							예산은 ‘제작비’가 아닌 구체적인 ‘항목’으로 적어주세요.<br>
-							이번 프로젝트의 실행에 필요한 비용으로만 작성해 주세요.<br>
-							예시) 목표금액은 아래의 지출 항목으로 사용할 예정입니다.
-						</p>
-					</div>
-				</div>
-				<div class="projectContentWrap">
-					<input type="file" name="project_budget" id="project_budget">
-					<label for="project_budget">
-						<div class="fileUpload">
-							<span class="uploadImg">
-								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-								예산 이미지 업로드
-							</span>
-						</div>
-					</label>
-					<div class="imagePreview">
-						<img id="project_budget_preview">
-					</div>
-					<br><br>
-				</div>
-			</div>
-
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 일정</h3>
-					<p>
-						작업 일정을 구체적인 날짜와 함께 작성하세요.<br>
-						후원자가 일정을 보면서 어떤 작업이 진행될지 알 수 있어야 합니다.<br>
-						펀딩 종료 이후의 제작 일정을 반드시 포함하세요.
-					</p>
-					<br>
-					<div class="creatorGuide">
-						<p class="emphasis">아래의 양식을 참고하여 작성해보세요!</p>
-						<p>
-							(예시)<br>
-							0월 0일: 현재 제품 시안 및 1차 샘플 제작<br>
-							0월 0일: 펀딩 시작일<br>
-							0월 0일: 펀딩 종료일<br>
-							0월 0일: 제품 디테일 보완<br>
-							0월 0일: 제품 발주 시작<br>
-							0월 0일: 후가공 처리 및 포장 작업<br>
-							0월 0일: 선물 예상 전달일
-						</p>
-					</div>
-				</div>
-				<div class="projectContentWrap">
-					<input type="file" name="project_schedule" id="project_schedule">
-					<label for="project_schedule">
-						<div class="fileUpload">
-							<span class="uploadImg">
-								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-								일정 이미지 업로드
-							</span>
-						</div>
-					</label>
-					<div class="imagePreview">
-						<img id="project_schedule_preview">
-					</div>
-					<br><br>
-				</div>
-			</div>
-
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 팀 소개</h3>
-					<p>
-						프로젝트를 진행하는 팀(혹은 개인)을 알려주세요.<br>
-						이 프로젝트를 완수할 수 있다는 점을 후원자가 알 수 있어야 합니다.
-					</p>
-					<br>
-				</div>
-				<div class="projectContentWrap">
-					<input type="file" name="project_team_introduce" id="project_team_introduce">
-					<label for="project_team_introduce">
-						<div class="fileUpload">
-							<span class="uploadImg">
-								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-								팀소개 이미지 업로드
-							</span>
-						</div>
-					</label>
-					<div class="imagePreview">
-						<img id="project_team_introduce_preview">
-					</div>
-					<br><br>
-				</div>
-			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>후원 설명</h3>
-					<p>
-						후원자가 후원 금액별로 받을 수 있는 선물을 상세하게 알려주세요.
-					</p>
-					<br>
-				</div>
-				<div class="projectContentWrap">
-					<input type="file" name="project_sponsor" id="project_sponsor">
-					<label for="project_sponsor">
-						<div class="fileUpload">
-							<span class="uploadImg">
-								<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-								후원 설명 이미지 업로드
-							</span>
-						</div>
-					</label>
-					<div class="imagePreview">
-						<img id="project_sponsor_preview">
-					</div>
-					<br><br>
-				</div>
-			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로젝트 정책</h3>
-					<p>
-						펀딩 종료 후 후원자의 불만 또는 분쟁 발생 시 중요한 기준이 될 수 있습니다. 
-						신중히 작성해 주세요.
-					</p>
-					<br>
-				</div>
-				<div class="projectContentWrap">
-					<div class="projectWriteBorder">
-						<h4>프로젝트 정책</h4>
-						<p>이 프로젝트의 정책을 기입해주세요.</p>
-						<textarea name="project_policy" id="project_policy" rows="8" cols="10" maxlength="10000" style="width: 100%;"></textarea>
-						<div class="LengthCount">
-							<p><span id="projectPolicyLength">0</span>/1000</p>
-						</div>
-					</div>
-					<br><br>
-				</div>
-			</div>
-		</div>
-		<%-- ---------- 창작자 정보 ---------- --%>
-		<div id="writeContainer5" class="writeContainer">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>창작자 이름<span class="essential">&nbsp;*</span></h3>
-					<p>
-						창작자 개인이나 팀을 대표할 수 있는 이름을 써주세요.
-					</p>
-					<br>
-				</div>
-				<div class="projectContentWrap">
-					<input type="text" name="creator_name" id="creator_name" maxlength="20">
-					<div class="LengthCheck">
-						<span id="checkCreatorName"></span>
-						<p><span id="nameLength">0</span>/20</p>
-					</div>
-					<br><br>
-				</div>
-			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>프로필 이미지<span class="essential">&nbsp;*</span></h3>
-					<p>
-						창작자 개인이나 팀을 대표할 수 있는 사진을 올려주세요.
-					</p>
-					<br>
-				</div>
-				<div class="projectContentWrap" style="display: flex; align-items: center;">
-					<input type="file" name="creator_image" id="creator_image">
-					<div class="imagePreview creatorName">
-						<img id="creator_image_preview">
-					</div>
-					<div>
-						<label for="creator_image">
-							<div class="fileUpload" style="width: 410px;">
+					<div class="projectContentWrap">
+						<input type="file" name="projectImg" id="project_image">
+						<label for="project_image">
+							<div class="fileUpload">
 								<span class="uploadImg">
 									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
 									이미지 업로드
 								</span>
 							</div>
 						</label>
+						<div class="imagePreview">
+							<img id="project_image_preview">
+						</div>
+						<br><br>
+					</div>
+				</div>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>검색 태그</h3>
 						<p>
-							파일 형식은 jpg 또는 gif로, 사이즈는 가로 200px, <br>
-							세로 200px 이상으로 올려주세요.
+							잠재 후원자의 관심사를 고려한 검색 태그를 입력해주세요.<br>
+							위드미에서 해당 태그로 검색한 후원자가 프로젝트를 발견할 수 있습니다.
 						</p>
+						<br>
+						<div class="creatorGuide">
+							<p class="emphasis">무관한 태그는 후원자의 불편을 초래합니다!</p>
+							<p>
+								반드시 프로젝트에 관련된 태그만 사용해 주세요. 
+								프로젝트와 무관한 태그 설적으로 후원자 신고가 누적될 시 프로젝트에 재재가 가해질 수 있습니다.
+							</p>
+						</div>
 					</div>
-					<br><br> 
-				</div>
-			</div>
-			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>창작자 소개<span class="essential">&nbsp;*</span></h3>
-					<p>
-						2~3문장으로 창작자님의 이력과 간단한 소개를 써주세요.
-					</p>
-					<br>
-				</div>
-				<div class="projectContentWrap">
-					<textarea name="creator_introduce" id="creator_introduce" rows="5" cols="10" placeholder="간단한 이력과 소개를 써주세요." maxlength="300"></textarea>
-					<div class="LengthCheck">
-						<span id="checkCreatorIntroduce"></span>
-						<p><span id="introduceLength">0</span>/300</p>
+					<div class="projectContentWrap">
+						<input type="text" id="search_tag_text" placeholder="Enter를 눌러 핵심 키워드를 등록해주세요.">
+						<input type="hidden" name="search_tag" id="search_tag" value="${project.search_tag}">
+						<div class="LengthCheck">
+							<span id="checkTagResult" style="color: #ccc; font-size: 13px;">문자로만 최소 1자 이상 입력해주세요.</span>
+							<p><span id="tagCount">0</span>/5개</p>
+						</div>
+						<div class="tag-container" id="tagContainer">
+			                <!-- 구분자로 문자열을 분리하고 각 태그를 반복 출력 -->
+			                <c:forTokens items="${project.search_tag}" delims="|" var="tag">
+			                	<span class='tag'>
+			                		${tag}
+			                		<span class='removeTag'>
+			                			<img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'>
+			                		</span>
+			                	</span>
+			                </c:forTokens>
+			            </div>
+						<br><br>
 					</div>
-					<br><br> 
 				</div>
 			</div>
 			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>본인 인증<span class="essential">&nbsp;*</span></h3>
-					<p>
-						창작자 본인 명의의 휴대번호로 인증해주세요.
-					</p>
-					<br>
+			<%-- ---------- 펀딩 계획 ---------- --%>
+			<div id="writeContainer2" class="writeContainer">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>목표 금액<span class="essential">&nbsp;*</span></h3>
+						<p>
+							프로젝트를 완수하기 위해 필요한 금액을 설정해주세요.
+						</p>
+						<br>
+						<div class="creatorGuide">
+							<p class="emphasis">목표금액 설정 시 꼭 알아두세요!</p>
+							<p>
+								1. 종료일까지 목표금액을 달성하지 못하면 후원자 결제가 진행되지 않습니다.<br>
+								2. 후원 취소 및 결제 누락을 대비해 10% 이상 초과 달성을 목표로 해주세요.<br>
+								3. 제작비, 선물 배송비, 인건비, 예비 비용 등을 함께 고려해주세요 .<br>
+								4. 목표금액은 50만원 이상 1억 미만으로 설정해 주세요.<br>
+							</p>
+						</div>
+					</div>
+					<div class="projectContentWrap">
+						<div class="projectWriteBorder">
+							<h4>목표금액</h4>
+							<table style="border: 1px solid #ccc; width: 100%;">
+								<tr>
+									<td>
+										<input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." maxlength="14" style="border: none; text-align: right; width: 565px;">
+									</td>
+									<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
+								</tr>
+							</table>
+							<span id="checkTargetPrice"></span>
+							
+							
+							<div id="estimateAmountWrap">
+								<div class="amountArea">
+									<h4>목표금액 달성 시 예상 수령액</h4>
+									<h3 class="fontModify"><span id="estimateAmount">0</span>원</h3>
+								</div>
+								<hr class="dividingLine2">
+								<div class="amountArea">
+									<p>총 수수료</p>
+									<span><span id="totalCommission">0</span>원</span>
+									<input type="hidden" name="funding_commission" id="funding_commission" value="0">
+								</div>
+								<div class="amountArea">
+									<p>결제대행 수수료 (총 결제 성공금액의 3% + VAT)</p>
+									<span><span id="createCommission">0</span>원</span>
+								</div>
+								<div class="amountArea">
+									<p>위드미 수수료 (총 결제 성공금액의 5% + VAT)</p>
+									<span><span id="withmeCommission">0</span>원</span>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="projectContentWrap">
-					<input type="button" value="본인인증하기" class="button" onclick="selfIdentification()">
-					<br><br> 
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>펀딩 일정<span class="essential">&nbsp;*</span></h3>
+						<p>
+							설정한 날짜가 되면 펀딩이 자동 시작됩니다.<br>
+							펀딩 시작 전까지 날짜를 변경할 수 있습니다.
+						</p>
+						<br>
+						<div class="creatorGuide">
+							<p class="emphasis">펀딩기간 설정 시 꼭 알아두세요!</p>
+							<p>
+								선택하신 시작일 9시에 펀딩이 시작됩니다.<br>
+								선택하신 종료일 다음 날 0시에 펀딩이 종료됩니다.<br>
+								프로젝트가 성공하면 펀딩 종료 다음 날 후원금이 결제됩니다.<br>
+								결제가 이루어지지 않은 경우 24시간 간격으로 7일 동안 결제를 시도합니다.<br>
+								모금액은 후원자 결제 종료 다음 날부터 7일째 되는 날 입금됩니다.
+							</p>
+						</div>
+					</div>
+					<div class="projectContentWrap">
+						<jsp:include page="/WEB-INF/views/project/calendar.jsp"></jsp:include>
+						<br><br>
+					</div>
 				</div>
+				
+	<!-- 			<div id="selectChargeWrap" style="display: none;"> -->
+				<div id="selectChargeWrap">
+					<hr class="dividingLine">
+					<div class="projectWriteWrap">
+						<div class="projectExplanationWrap">
+							<h3>요금제 선택<span class="essential">&nbsp;*</span></h3>
+							<p>
+								프로젝트 진행 목적에 적합한 요금제를 선택해 주세요.<br>
+								프로젝트가 승인된 이후에는 요금제를 변경할 수 없으니 신중히 선택해주세요.
+							</p>
+						</div>
+						<div class="projectContentWrap">
+							<div class="paymentWrap">
+								<h2>Basic</h2>
+								<p>
+									플랫폼 수수료 <span class="redFont">5%</span><br>
+									<span class="smallFont">+결제 수수료 3%</span>
+								</p>
+								<div align="center">
+									<p>
+										<b style="color: #FFAB40; font-size: 20px;">✓</b> 위드미 펀딩의 기본 기능으로 나만의 프로젝트를 실현하세요.
+									</p>
+									<button id="basic" class="paymentButton">선택하기</button>
+								</div>
+							</div>
+							<br>
+							
+							<div class="paymentWrap">
+								<h2 class="redFont">Premium</h2>
+								<p>
+									Basic 요금제 기본 수수료<br>
+									<span class="smallFont">
+										+광고 대행 수수료<br>
+										※ 광고 대행 수수료는 심사 요청 시 선결제로 진행됩니다.<br>
+										광고 대행 수수료 = 펀딩일정(1주일 기준) * 10만원
+									</span>
+								</p>
+								<div align="center">
+									<p>
+										<b style="color: #FFAB40; font-size: 20px;">✓</b> 프리미엄 요금제 선택 시 우선적으로 메인페이지 상단에 노출될 수 있어요!
+									</p>
+									<button id="premium" class="paymentButton">선택하기</button>
+								</div>
+								
+							</div>
+							<br><br>
+						</div>
+					</div>
+				</div>
+				
 			</div>
 			
-			<hr class="dividingLine">
-			<div class="projectWriteWrap">
-				<div class="projectExplanationWrap">
-					<h3>입금 계좌<span class="essential">&nbsp;*</span></h3>
-					<p>
-						후원금을 전달받을 계좌를 등록해주세요.
-						법인사업자는 법인 계좌로만 정산받을 수 있습니다.
-					</p>
-					<br>
+			<%-- ---------- 후원 구성 ---------- --%>
+			<div id="writeContainer3" class="writeContainer">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>내가 만든 아이템</h3>
+						<div id="itemListContainer">
+							<c:forEach var="item" items="${itemList}">
+								<div class="itemListWrap">
+		           					<div class="itemList">
+		           						<h4>${item.item_name}</h4>
+		           						<p>
+			           						<b>옵션조건(${item.item_condition})</b><br>
+			           						${item.multiple_option}
+		           						</p>
+		           						<br>
+									</div>
+		           					<div class="trashImg" data-item-idx="${item.item_idx}">
+		           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+									</div>
+								</div>
+							</c:forEach>
+						</div>
+					</div>
+					<div class="projectContentWrap">
+						<div class="projectWriteBorder">
+							<h3>아이템 만들기</h3>
+							<p>
+								아이템은 후원에 포함되는 구성 품목을 말합니다.<br>
+								특별한 물건부터 의미있는 경험까지 후원을 구성할 아이템을 만들어 보세요.
+							</p>
+							<form id="registItemForm">
+								<input type="hidden" name="project_idx" value="${project.project_idx}">
+								<b>아이템 이름</b>
+								<input type="text" name="item_name" id="item_name" maxlength="50" style="width: 100%;">
+								<div class="LengthCount">
+									<p><span id="itemNameLength">0</span>/50</p>
+								</div>
+								<br>
+								
+								<b>옵션 조건</b>
+								<div id="optionCondition" style="display: flex; justify-content: space-between;">
+									<input type="radio" name="item_condition" id="none" value="없음">
+									<label for="none">없음</label>
+									<input type="radio" name="item_condition" id="subjective" value="주관식">
+									<label for="subjective">주관식</label>
+									<input type="radio" name="item_condition" id="objective" value="객관식">
+									<label for="objective">객관식</label>
+								</div>
+								<br>
+								
+								<div id="subjectiveWrap">
+									<b>옵션 항목</b>
+									<input type="text" name="item_option_name" class="itemText" placeholder="예) 각인문구를 작성해주세요.">
+								</div>
+								<div id="objectiveWrap">
+									<b>옵션 항목</b>
+									<div style="display: flex; justify-content: space-between; align-items: flex-end;">
+										<span>
+											2개 이상의 옵션 항목을 만들어주세요.<br>
+											한 칸에 하나의 옵션을 작성해주세요.
+										</span>
+										<span id="addOption" class="addImg" style="margin-bottom: 10px;">
+			           						<img alt="+아이콘" src="${pageContext.request.contextPath}/resources/image/add_icon.png">
+										</span>
+									</div>
+									<input type="text" name="item_option_name" class="itemText" placeholder="예) 240mm">
+									<input type="text" name="item_option_name" class="itemText" placeholder="예) 250mm">
+								</div>
+								
+								<hr class="dividingLine2">
+								<div style="display: flex; justify-content: space-between;">
+									<input type="reset" id="reset" value="초기화">
+									<input type="submit" id="itemRegist" value="등록">
+								</div>
+							</form>
+						</div>
+						<br><br>
+					</div>
 				</div>
-				<div class="projectContentWrap">
-					<input type="button" value="계좌등록하기" class="button" onclick="linkAccount()">
-					<p>
-						<span class="importanceImg">
-							<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
-						</span>
-						본인인증 후 계좌등록이 가능합니다.
-					</p>
-					<br><br> 
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>내가 만든 후원</h3>
+						<div id="rewardListContainer">
+							<div class="rewardListWrap">
+								<div class="rewardList">
+									<h2>1,000원+</h2>
+									<h4>선물 없이 후원하기</h4>
+								</div>
+							</div>
+							<c:forEach var="reward" items="${rewardList}">
+								<div class="rewardListWrap">
+		           					<div class="rewardList">
+		           						<h2>${reward.reward_price}원+</h2>
+		           						<h4>${reward.reward_title}</h4>
+		           						<p>
+											${reward.item_details}<br>
+											<c:if test="${reward.amount_limit == 'Y'}">
+												수량 : ${reward.item_amount}개
+											</c:if>
+										</p>
+		           						<br>
+									</div>
+		           					<div class="trashImg2" data-reward-idx="${reward.reward_idx}">
+		           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+									</div>
+								</div>
+							</c:forEach>
+						</div>
+					</div>
+					<div class="projectContentWrap">
+						<div class="projectWriteBorder">
+							<h3>후원 구성하기</h3>
+							<p>
+								다양한 금액대로 여러 개의 리워드를 만들어주세요.<br>
+								펀딩 성공률이 높아지고, 더 많은 후원 금액을 모금할 수 있어요.
+							</p>
+							<form id="registRewardForm">
+								<input type="hidden" name="project_idx" value="${project.project_idx}">
+								<b>아이템 선택</b>
+								<div id="chooseItemContainer">
+									<c:forEach var="item" items="${itemList}">
+										<div class="chooseItem">
+											<input type="checkbox" name="reward_item_idx" id="item${item.item_idx}" value="${item.item_idx}">
+											<label for="item${item.item_idx}">${item.item_name}</label><br>
+										</div>
+									</c:forEach>
+								</div>
+								<br>
+								
+								<b>후원 이름</b><br>
+								<span>어떤 아이템으로 구성되었는지 쉽게 알 수 있는 설명을 입력해주세요.</span>
+								<input type="text" name="reward_title" id="reward_title" placeholder="예) 강아지 간식, 배송비 포함" maxlength="50" style="width: 100%;">
+								<div class="LengthCount">
+									<p><span id="rewardTitleLength">0</span>/50</p>
+								</div>
+								
+								<hr class="dividingLine2">
+								<div id="amountLimitContainer">
+									<b>수량 제한</b>
+									<div id="amountLimitWarp" style="display: flex; justify-content: space-between;">
+										<input type="radio" name="amount_limit" id="amountLimit_Y" value="Y">
+										<label for="amountLimit_Y">있음</label>
+										<input type="radio" name="amount_limit" id="amountLimit_N" value="N">
+										<label for="amountLimit_N">없음</label>
+									</div>
+								</div>
+								<table id="itemAmountWrap" style="border: 1px solid #ccc; width: 100%;">
+									<tr>
+										<td>
+											<input type="text" name="item_amount" id="item_amount" maxlength="5" style="border: none; text-align: right; width: 565px;">
+										</td>
+										<td style="text-align: center; padding-bottom: 2px;" width="40px">개</td>
+									</tr>
+								</table>
+								<span id="checkItemAmount"></span>
+								
+								
+								<hr class="dividingLine2">
+								<div id="deliveryStatusContainer">
+									<b>배송 여부</b>
+									<div id="deliveryStatusWarp" style="display: flex; justify-content: space-between;">
+										<input type="radio" name="delivery_status" id="deliveryStatus_Y" value="Y">
+										<label for="deliveryStatus_Y">네</label>
+										<input type="radio" name="delivery_status" id="deliveryStatus_N" value="N">
+										<label for="deliveryStatus_N">아니오</label>
+									</div>
+								</div>
+								
+								<hr class="dividingLine2">
+								<b>후원 금액</b><br>
+								<span>제작 및 전달에 필요한 모든 비용(포장비, 배송비 등)이 포함된 금액으로 입력해주세요.</span>
+								<table style="border: 1px solid #ccc; width: 100%;">
+									<tr>
+										<td>
+											<input type="text" name="reward_price" id="reward_price" placeholder="1000원 이상의 금액을 입력하세요." maxlength="10" style="border: none; text-align: right; width: 565px;">
+										</td>
+										<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
+									</tr>
+								</table>
+								<span id="checkRewardPrice"></span>
+								
+								<br>
+								<hr class="dividingLine2">
+								<div style="display: flex; justify-content: space-between;">
+									<input type="reset" id="reset" value="초기화">
+									<input type="submit" id="rewardRegist" value="등록">
+								</div>
+							</form>
+						</div>
+						<br><br>
+					</div>
+				</div>
+				
+			</div>
+			<%-- ---------- 프로젝트 계획 ---------- --%>
+			<div id="writeContainer4" class="writeContainer">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로젝트 소개<span class="essential">&nbsp;*</span></h3>
+						<p>
+							프로젝트에 대해 자세히 설명해 주세요.
+						</p>
+						<br>
+						<div class="creatorGuide">
+							<p class="emphasis">다음 내용이 포함되도록 작성해 주세요!</p>
+							<p>
+								Q. 무엇을 만들기 위한 프로젝트인가요?<br>
+								Q. 프로젝트를 간단히 소개한다면?<br>
+								Q. 이 프로젝트가 왜 의미있나요?<br>
+								Q. 이 프로젝트를 시작하게 된 배경이 무엇인가요?
+							</p>
+						</div>
+					</div>
+					<div class="projectContentWrap">
+						<input type="file" name="introduceImg" id="project_introduce">
+						<label for="project_introduce">
+							<div class="fileUpload">
+								<span class="uploadImg">
+									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+									소개 이미지 업로드
+								</span>
+							</div>
+						</label>
+						<div class="imagePreview">
+							<img id="project_introduce_preview">
+						</div>
+						<br><br>
+					</div>
+				</div>
+	
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로젝트 예산<span class="essential">&nbsp;*</span></h3>
+						<p>
+							설정하신 목표 금액을 어디에 사용 예정이 신지 구체적인 지출 항목으로 적어주세요.
+						</p>
+						<br>
+						<div class="creatorGuide">
+							<p class="emphasis">다음 항목을 확인해주세요!</p>
+							<p>
+								예산은 ‘제작비’가 아닌 구체적인 ‘항목’으로 적어주세요.<br>
+								이번 프로젝트의 실행에 필요한 비용으로만 작성해 주세요.<br>
+								예시) 목표금액은 아래의 지출 항목으로 사용할 예정입니다.
+							</p>
+						</div>
+					</div>
+					<div class="projectContentWrap">
+						<input type="file" name="budgetImg" id="project_budget">
+						<label for="project_budget">
+							<div class="fileUpload">
+								<span class="uploadImg">
+									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+									예산 이미지 업로드
+								</span>
+							</div>
+						</label>
+						<div class="imagePreview">
+							<img id="project_budget_preview">
+						</div>
+						<br><br>
+					</div>
+				</div>
+	
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로젝트 일정</h3>
+						<p>
+							작업 일정을 구체적인 날짜와 함께 작성하세요.<br>
+							후원자가 일정을 보면서 어떤 작업이 진행될지 알 수 있어야 합니다.<br>
+							펀딩 종료 이후의 제작 일정을 반드시 포함하세요.
+						</p>
+						<br>
+						<div class="creatorGuide">
+							<p class="emphasis">아래의 양식을 참고하여 작성해보세요!</p>
+							<p>
+								(예시)<br>
+								0월 0일: 현재 제품 시안 및 1차 샘플 제작<br>
+								0월 0일: 펀딩 시작일<br>
+								0월 0일: 펀딩 종료일<br>
+								0월 0일: 제품 디테일 보완<br>
+								0월 0일: 제품 발주 시작<br>
+								0월 0일: 후가공 처리 및 포장 작업<br>
+								0월 0일: 선물 예상 전달일
+							</p>
+						</div>
+					</div>
+					<div class="projectContentWrap">
+						<input type="file" name="scheduleImg" id="project_schedule">
+						<label for="project_schedule">
+							<div class="fileUpload">
+								<span class="uploadImg">
+									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+									일정 이미지 업로드
+								</span>
+							</div>
+						</label>
+						<div class="imagePreview">
+							<img id="project_schedule_preview">
+						</div>
+						<br><br>
+					</div>
+				</div>
+	
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로젝트 팀 소개</h3>
+						<p>
+							프로젝트를 진행하는 팀(혹은 개인)을 알려주세요.<br>
+							이 프로젝트를 완수할 수 있다는 점을 후원자가 알 수 있어야 합니다.
+						</p>
+						<br>
+					</div>
+					<div class="projectContentWrap">
+						<input type="file" name="inteteamInterducerduceImg" id="project_team_introduce">
+						<label for="project_team_introduce">
+							<div class="fileUpload">
+								<span class="uploadImg">
+									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+									팀소개 이미지 업로드
+								</span>
+							</div>
+						</label>
+						<div class="imagePreview">
+							<img id="project_team_introduce_preview">
+						</div>
+						<br><br>
+					</div>
+				</div>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>후원 설명</h3>
+						<p>
+							후원자가 후원 금액별로 받을 수 있는 선물을 상세하게 알려주세요.
+						</p>
+						<br>
+					</div>
+					<div class="projectContentWrap">
+						<input type="file" name="sponsorImg" id="project_sponsor">
+						<label for="project_sponsor">
+							<div class="fileUpload">
+								<span class="uploadImg">
+									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+									후원 설명 이미지 업로드
+								</span>
+							</div>
+						</label>
+						<div class="imagePreview">
+							<img id="project_sponsor_preview">
+						</div>
+						<br><br>
+					</div>
+				</div>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로젝트 정책</h3>
+						<p>
+							펀딩 종료 후 후원자의 불만 또는 분쟁 발생 시 중요한 기준이 될 수 있습니다. 
+							신중히 작성해 주세요.
+						</p>
+						<br>
+					</div>
+					<div class="projectContentWrap">
+						<div class="projectWriteBorder">
+							<h4>프로젝트 정책</h4>
+							<p>이 프로젝트의 정책을 기입해주세요.</p>
+							<textarea name="project_policy" id="project_policy" rows="8" cols="10" maxlength="10000" style="width: 100%;">${project.project_policy}</textarea>
+							<div class="LengthCount">
+								<p><span id="projectPolicyLength">0</span>/1000</p>
+							</div>
+						</div>
+						<br><br>
+					</div>
 				</div>
 			</div>
-		</div>
-		
-		
-	</article>
+			<%-- ---------- 창작자 정보 ---------- --%>
+			<div id="writeContainer5" class="writeContainer">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>창작자 이름<span class="essential">&nbsp;*</span></h3>
+						<p>
+							창작자 개인이나 팀을 대표할 수 있는 이름을 써주세요.
+						</p>
+						<br>
+					</div>
+					<div class="projectContentWrap">
+						<input type="text" name="creator_name" id="creator_name" maxlength="20">
+						<div class="LengthCheck">
+							<span id="checkCreatorName"></span>
+							<p><span id="nameLength">0</span>/20</p>
+						</div>
+						<br><br>
+					</div>
+				</div>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>프로필 이미지<span class="essential">&nbsp;*</span></h3>
+						<p>
+							창작자 개인이나 팀을 대표할 수 있는 사진을 올려주세요.
+						</p>
+						<br>
+					</div>
+					<div class="projectContentWrap" style="display: flex; align-items: center;">
+						<input type="file" name="creator_image" id="creator_image">
+						<div class="imagePreview creatorName">
+							<img id="creator_image_preview">
+						</div>
+						<div>
+							<label for="creator_image">
+								<div class="fileUpload" style="width: 410px;">
+									<span class="uploadImg">
+										<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+										이미지 업로드
+									</span>
+								</div>
+							</label>
+							<p>
+								파일 형식은 jpg 또는 gif로, 사이즈는 가로 200px, <br>
+								세로 200px 이상으로 올려주세요.
+							</p>
+						</div>
+						<br><br> 
+					</div>
+				</div>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>창작자 소개<span class="essential">&nbsp;*</span></h3>
+						<p>
+							2~3문장으로 창작자님의 이력과 간단한 소개를 써주세요.
+						</p>
+						<br>
+					</div>
+					<div class="projectContentWrap">
+						<textarea name="creator_introduce" id="creator_introduce" rows="5" cols="10" placeholder="간단한 이력과 소개를 써주세요." maxlength="300"></textarea>
+						<div class="LengthCheck">
+							<span id="checkCreatorIntroduce"></span>
+							<p><span id="introduceLength">0</span>/300</p>
+						</div>
+						<br><br> 
+					</div>
+				</div>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>본인 인증<span class="essential">&nbsp;*</span></h3>
+						<p>
+							창작자 본인 명의의 휴대번호로 인증해주세요.
+						</p>
+						<br>
+					</div>
+					<div class="projectContentWrap">
+						<input type="button" value="본인인증하기" class="button" onclick="selfIdentification()">
+						<br><br> 
+					</div>
+				</div>
+				
+				<hr class="dividingLine">
+				<div class="projectWriteWrap">
+					<div class="projectExplanationWrap">
+						<h3>입금 계좌<span class="essential">&nbsp;*</span></h3>
+						<p>
+							후원금을 전달받을 계좌를 등록해주세요.
+							법인사업자는 법인 계좌로만 정산받을 수 있습니다.
+						</p>
+						<br>
+					</div>
+					<div class="projectContentWrap">
+						<input type="button" value="계좌등록하기" class="button" onclick="linkAccount()">
+						<p>
+							<span class="importanceImg">
+								<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
+							</span>
+							본인인증 후 계좌등록이 가능합니다.
+						</p>
+						<br><br> 
+					</div>
+				</div>
+			</div>
+		</article>
+<!-- 	</form> -->
 	
 	<%-- ---------- 프로젝트 심사 기준 확인 팝업창 ---------- --%>
 	<div id="popupWrap">

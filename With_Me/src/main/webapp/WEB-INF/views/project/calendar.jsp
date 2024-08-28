@@ -217,7 +217,7 @@ $(document).ready(function() {
 
 	<b>시작일</b><br>
 	<div class="date-input">
-		<input type="text" id="start_date" readonly="readonly" placeholder="시작 날짜를 선택해주세요.">
+		<input type="text" id="start_date" readonly="readonly" placeholder="시작 날짜를 선택해주세요." value="${project.funding_start_date}">
 		<span class="calendar-icon">
 			<img alt="캘린더아이콘" src="${pageContext.request.contextPath}/resources/image/calendar.png">
 		</span>
@@ -226,7 +226,7 @@ $(document).ready(function() {
 
 	<b>종료일</b><br>
 	<div class="date-input">
-		<input type="text" id="end_date" readonly="readonly" placeholder="종료 날짜를 선택해주세요.">
+		<input type="text" id="end_date" readonly="readonly" placeholder="종료 날짜를 선택해주세요." value="${project.funding_end_date}">
 		<span class="calendar-icon">
 			<img alt="캘린더아이콘" src="${pageContext.request.contextPath}/resources/image/calendar.png">
 		</span>
@@ -245,5 +245,5 @@ $(document).ready(function() {
 
 
 <%-- 시작일, 종료일 전달 --%>
-<input type="hidden" id="funding_start_date" name="funding_start_date" readonly>
-<input type="hidden" id="funding_end_date" name="funding_end_date" readonly>
+<input type="hidden" id="funding_start_date" name="funding_start_date" value="${project.funding_start_date}" readonly>
+<input type="hidden" id="funding_end_date" name="funding_end_date" value="${project.funding_end_date}" readonly>
