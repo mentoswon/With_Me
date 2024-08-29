@@ -3,6 +3,32 @@ section {
 	margin: 40px 0;
 }
 
+/* 옵션 표시 */
+.optionResult {
+	margin-top : 15px;
+}
+
+.optionResult > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    width: 100%;
+}
+
+.optionResult > div .removeTag {
+	display: block;
+    width: 15px;
+    height: 15px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.optionResult > div .removeTag img {
+	width: 100%;
+	height: 100%;
+}
+
 .itemWrapper {
 	display: flex;
 	justify-content: space-between;
@@ -219,21 +245,20 @@ color: #fff;
 	padding: 15px 10px;
 	border-radius: 5px;
 	border: 2px solid #eee;
-	cursor: pointer;
 }
 
 .con02 .right #fundingOptions .wrap .reward:hover {
 	border: 2px solid #ffab40;
 }
 
-.con02 .right #fundingOptions .wrap .reward .reward_amt {
+.con02 .right #fundingOptions .wrap .reward .reward_price {
 	font-size: 26px;
 	font-weight: bold;
 	margin-bottom: 15px;
 	position: relative;
 }
 
-.con02 .right #fundingOptions .wrap .reward .reward_amt .more {
+.con02 .right #fundingOptions .wrap .reward .reward_price .more {
 	position: absolute;
 	width: 20px;
 	top: 10%;
@@ -255,10 +280,6 @@ color: #fff;
 	border-radius: 5px;
 	cursor: pointer;
 	display: none;
-}
-
-.con02 .right #fundingOptions .wrap .reward .reward_item_wrap {
-	padding-left: 10px;
 }
 
 .con02 .right #fundingOptions .wrap .reward .reward_item_wrap .reward_item{

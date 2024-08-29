@@ -92,9 +92,9 @@
 	
 	<!-- 팔로워 수 계산 -->
 	<select id="countFollower" resultType="int">
-		SELECT COUNT(*)
+		SELECT IfNULL(COUNT(*),0)
 		FROM follow
-		WHERE follow_mem_email = #{creator_email}
+		WHERE follow_creator = #{creator_email}
 	</select>
 	
 	

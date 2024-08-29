@@ -1,6 +1,5 @@
 package com.itwillbs.with_me.controller;
 
-import java.lang.reflect.Member;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -157,7 +156,7 @@ public class UserFundingController {
 //        System.out.println("project_idx : " + project_idx);
         List<RewardVO> rewardList = service.getReward(project_idx);
         
-//        System.out.println("rewardList : " + rewardList);
+        System.out.println("rewardList : " + rewardList);
         
         // --------------------------------------------------------------
         
@@ -198,12 +197,42 @@ public class UserFundingController {
 	}
 	
 	
-	// 후원 진행 - 일반 후원 (금액만)
-	@GetMapping("FundInProgress")
-	public String fundInProgress(@RequestParam(defaultValue = "0") int reward_amt, 
-								 @RequestParam(defaultValue = "") String reward_title,
-								 HttpSession session, MemberVO member, Model model) {
-//		System.out.println("reward_amt, reward_title : " + reward_amt + ", " + reward_title);		
+	// 후원 진행
+//	@GetMapping("FundInProgress")
+//	public String fundInProgress(@RequestParam(defaultValue = "0") int reward_amt, 
+//								 @RequestParam(defaultValue = "") String reward_title,
+//								 HttpSession session, MemberVO member, Model model) {
+////		System.out.println("reward_amt, reward_title : " + reward_amt + ", " + reward_title);		
+//		String id = (String) session.getAttribute("sId");
+//		
+//		if(id == null) {
+//			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+//			model.addAttribute("targetURL", "MemberLogin");
+//			session.setAttribute("prevURL", "FundInProgress");
+//			return "result/fail";
+//		}
+//		
+//		member.setMem_email(id);
+//		
+//		// 아이디로 회원 정보 가져오기
+//		member = memberService.getMember(member);
+////		System.out.println("member : " + member);
+//		
+//		// 아이디로 주소 정보 가져오기
+//		List<AddressVO> userAddress = service.getUserAddress(member);
+////		System.out.println("userAddress : " + userAddress);
+//		
+//		// =========================================================================
+//		model.addAttribute("member", member);
+//		model.addAttribute("userAddress", userAddress);
+//		
+//		return "project/fund_in_progress";
+//	}
+	
+	@PostMapping("FundInProgress")
+	public String fundInProgress(@RequestParam Map<String, Object> map, HttpSession session, MemberVO member, Model model) {
+		System.out.println("map : " + map);	
+		
 		String id = (String) session.getAttribute("sId");
 		
 		if(id == null) {
@@ -224,8 +253,13 @@ public class UserFundingController {
 //		System.out.println("userAddress : " + userAddress);
 		
 		// =========================================================================
+		// 선택한 후원 정보 띄우기
+		
+		
+		// =========================================================================
 		model.addAttribute("member", member);
 		model.addAttribute("userAddress", userAddress);
+		model.addAttribute("selectedReward", map);
 		
 		return "project/fund_in_progress";
 	}

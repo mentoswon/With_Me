@@ -107,16 +107,15 @@
 				<div class="rewardInfo">
 					<h4>결제 정보</h4>
 					<div class="infoWrapper">
+						<div>${selectedReward.reward_title}</div>
 						<div>
-							<div>제품명</div>
-							
 							<%-- foreach --%>
 							<div>제품 구성</div>
 							<div>&nbsp;&nbsp;&nbsp; 옵션 : </div>
 							
-							<div>원 </div>
-							<div class="">추가 후원금 : </div>
 						</div>
+						<div>${selectedReward.reward_price}원 </div>
+						<div class="">추가 후원금 : </div>
 					</div>
 				</div>
 			</section>
@@ -260,9 +259,9 @@
 				}
 			});
 			
-			$(document).on('click', 'input[name=address]', function(){
-			    console.log("확인");
-// 			    $(this).prop("checked", true);
+			$(document).on('click', 'input:radio[name=address]', function(){
+			    console.log($("input:radio[name='address']:checked").val());
+				
 			});
 			
 			// -------------------------------------------------------------------------

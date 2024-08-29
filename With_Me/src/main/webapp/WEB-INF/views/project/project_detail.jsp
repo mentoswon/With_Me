@@ -157,54 +157,63 @@
 						<div class="wrap">
 						
 							<%-- 일반후원은 클릭하면 바로 결제페이지로 이동 --%>
-							<div class="reward" id="reward_default" onclick="location.href='FundInProgress?reward_amt=1000&reward_title=일반후원하기'">
+<!-- 							<div class="reward" id="reward_default" onclick="location.href='FundInProgress?reward_amt=1000&reward_title=일반후원하기'"> -->
+							<div class="reward" id="reward_default">
 							
-								<div class="reward_amt"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원
+								<div class="reward_price"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원
 									<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
 								</div>
 								<div class="reward_title">일반 후원하기</div>
+								<form action="FundInProgress" method="post">
+									<input type="hidden" value="1000" name="reward_price">
+									<input type="hidden" value="일반 후원하기" name="reward_title">
+									<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
+								</form>
 							</div>
 							
 							<c:forEach var="rewardList" items="${rewardList}">
 								<div class="reward">
-									<div class="reward_amt"><fmt:formatNumber pattern="#,###">${rewardList.reward_price}</fmt:formatNumber>원
+									<div class="reward_price"><fmt:formatNumber pattern="#,###">${rewardList.reward_price}</fmt:formatNumber>원
 										<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
 									</div> 
 									<div class="reward_title">${rewardList.reward_title}</div>
 									
-									<div class="reward_item_wrap">
-										<c:forEach var="rewardItemList" items="${rewardItemList}">
-											<c:if test="${rewardList.reward_idx eq rewardItemList.reward_idx}">
-												<div class="reward_item">
-													<div class="reward_item_name">- ${rewardItemList.item_name}</div>
-													
-													<!-- 옵션이 있으면 셀렉박스 표출됨 -->
-													<div class="reward_item_option">
-														<c:choose>
-															<c:when test="${rewardItemList.item_condition eq '객관식'}">
-																<select>
-																	<c:forEach var="itemOptions" items="${itemOptions}">
-																		<option>${itemOptions.splited_item_option}</option>
-																	</c:forEach>
-																</select>
-															</c:when>
-															<c:otherwise>
-																<input type="text" placeholder="옵션을 입력해주세요.">
-															</c:otherwise>
-														</c:choose>
+									<form action="FundInProgress" method="post">
+										<div class="reward_item_wrap">
+											<c:forEach var="rewardItemList" items="${rewardItemList}">
+												<c:if test="${rewardList.reward_idx eq rewardItemList.reward_idx}">
+													<div class="reward_item">
+														<div class="reward_item_name">- ${rewardItemList.item_name}</div>
+														
+														<!-- 옵션이 있으면 셀렉박스 표출됨 -->
+														<div class="reward_item_option">
+															<c:choose>
+																<c:when test="${rewardItemList.item_condition eq '객관식'}">
+																	<select class="reward_item_option_select option">
+																		<option>옵션을 선택해주세요.</option>
+																		<c:forEach var="itemOptions" items="${itemOptions}">
+																			<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
+																		</c:forEach>
+																	</select>
+																</c:when>
+																<c:otherwise>
+																	<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write option" >
+																</c:otherwise>
+															</c:choose>
+														</div>
 													</div>
-												</div>
-											</c:if>
-										</c:forEach>
-									</div>
-									
-									<form action="" method="post">
-										<input type="hidden" value="" name="">
-										<input type="hidden" value="" name="">
-										<input type="hidden" value="" name="">
-										<input type="hidden" value="" name="">
+												</c:if>
+											</c:forEach>
+										</div>
+										
+										<input type="hidden" value="${rewardList.reward_title}" name="reward_title">
+										<input type="hidden" value="${rewardList.reward_price}" name="reward_price">
+										<input type="hidden" value="${project_detail.project_idx}" name="funding_project_idx" id="funding_project_idx">
+										<input type="hidden" value="${rewardList.reward_idx}" name="funding_reward_idx" id="funding_reward_idx">
+										<input type="hidden" value="" name="funding_item_option" id="funding_item_option"> <%-- | 로 구분해서 넣을거임 --%>
 										<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
 									</form>
+									<div class="optionResult"></div>
 								</div>
 							</c:forEach>
 						</div>
@@ -288,15 +297,14 @@
 			    let location = document.querySelector(".reward").offsetTop;
 			    window.scrollTo({top: location, behavior: 'smooth'});
 			}
-				
-				
 			// ==========================================================================
-			// -------------------------------------------------------------------------			
 			// 후원 선택 (옵션 띄우기)
 			let reward = document.querySelectorAll(".reward");
 			let reward_item = document.querySelectorAll(".reward_item");
-			let reward_item_option = document.querySelectorAll(".reward_item_option");
+			let reward_item_option_select = document.querySelectorAll(".reward_item_option_select");
+			let reward_item_option_write = document.querySelectorAll(".reward_item_option_write");
 			let rewardSubmitBtn = document.querySelectorAll(".rewardSubmitBtn");
+			let optionResult = document.querySelectorAll(".optionResult");
 			
 			$(reward).on('click', function() { 
 // 				console.log("reward clicked!"); // 확인 완료
@@ -311,9 +319,65 @@
 				if($(this).hasClass("on")){
 					$(this).css('border','2px solid #ffab40');
 				}
+				
+				
 			});
 			// ==========================================================================
-			// -------------------------------------------------------------------------
+			// 리워드 옵션 유효성 검사
+			$(rewardSubmitBtn).on('click', function() { 
+				if($(reward_item_option_write).val() == ""){
+					alert("옵션을 입력해주세요.");
+					$(reward_item_option_write).focus();
+					
+					return false;
+				}
+				
+				if($(reward_item_option_select).val() == ""){
+					alert("옵션을 선택해주세요.");
+					$(reward_item_option_select).focus();
+					
+					return false;
+				}
+			});
+				
+			// ------------------------------------------------------------------------
+			// 리워드 옵션 업데이트 (객관식)
+			$(".reward_item_option_select.option").on('change', function() {
+				let option_title = $(this).closest($(".reward_item")).find($(".reward_item_name")).text();
+				
+				if($(".reward_item_option_select_value").length >= 1){
+					alert("옵션은 1개만 선택가능합니다.");
+					
+					return ;
+				}
+				
+				$(".reward.on").find($(".optionResult")).append("<div class='reward_item_option_select_value'>" + option_title + " : " + $(this).val().trim() + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></div>");
+			});
+			
+			// 리워드 옵션 업데이트 (주관식)
+			$(".reward_item_option_write.option").on('change', function() {
+				let option_title = $(this).closest($(".reward_item")).find($(".reward_item_name")).text();
+				
+				
+				if($(".reward_item_option_write_value").length >= 1){
+					alert("옵션은 1개만 선택가능합니다.");
+					
+					return;
+				}
+				
+				$(".reward.on").find($(".optionResult")).append("<div class='reward_item_option_write_value'>" + option_title + " : " + $(this).val().trim() + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></div>");
+// 				let options = [];
+				
+// 				options.push($(this).val().trim());
+				
+// 				console.log(options.join("|"));
+
+				// input hidden 에 value 값 넣어주기
+// 				$("#funding_item_option").val(options.join("|"));
+			});
+				
+				
+			// ==========================================================================
 			// 신고하기
 			// 팝업 오픈
 			
@@ -344,6 +408,11 @@
 				
 			}
 			
+			document.addEventListener('keydown', function(event) {
+			  if (event.keyCode === 13) {
+			    event.preventDefault();
+			  };
+			}, true);
 			
 		</script>
 	</body>
