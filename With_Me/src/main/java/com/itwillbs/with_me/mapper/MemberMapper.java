@@ -38,9 +38,9 @@ public interface MemberMapper {
 	List<MemberVO> selectMember();
 
 	// 이메일로 창작자 조회
-	String selectCreator(String mem_email);
+	MemberVO selectCreator(MemberVO member);
 
 	// 이메일로 창작자 정보 가져오기
-	MemberVO selectCreatorInfo(String mem_email);
+	MemberVO selectCreatorInfo(MemberVO member);
 
 }

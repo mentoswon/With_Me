@@ -350,27 +350,30 @@ public class MemberController {
 			model.addAttribute("targetURL", "MemberLogin");
 			return "result/fail";
 		}
-      System.out.println("member : !!!!!!!!!!" + member);
-	    String mem_email = member.getMem_email();
-	        
+		
+		member.setMem_email(id);
+		member = service.getMember(member);
+		System.out.println("member : !!!!!!!!!!" + member);
 	    // 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자 이름 가져오기
-	    String creatorName = service.getCreatorName(mem_email);
+//	    String creatorName = service.getCreatorName(member);
+	    MemberVO creatorName = service.getCreatorName(member);
 	    
 	    System.out.println("creatorName : " + creatorName);
+	    model.addAttribute("creatorName", creatorName);
 	    
-	    if(creatorName == null) {
-	        MemberVO notCreatorMember = service.getCreatorInfo(mem_email);
-	            
-	        System.out.println("창작자 아닌 사람 정보 : " + notCreatorMember);
-	        
-	        model.addAttribute("notCreatorMember", notCreatorMember);
-	    } else {
-	        MemberVO creatorMember = service.getCreatorInfo(mem_email);
-	            
-	        System.out.println("창작자 맞는 사람 정보 : " + creatorMember);
-	            
-	        model.addAttribute("creatorMember", creatorMember);
-	    }
+//	    if(creatorName == null) {
+//	        MemberVO notCreatorMember = service.getCreatorInfo(member);
+//	            
+//	        System.out.println("창작자 아닌 사람 정보 : " + notCreatorMember);
+//	        
+//	        model.addAttribute("notCreatorMember", notCreatorMember);
+//	    } else {
+//	        MemberVO creatorMember = service.getCreatorInfo(member);
+//	            
+//	        System.out.println("창작자 맞는 사람 정보 : " + creatorMember);
+//	            
+//	        model.addAttribute("creatorMember", creatorMember);
+//	    }
 		
 		return "mypage/mypage";
 	}

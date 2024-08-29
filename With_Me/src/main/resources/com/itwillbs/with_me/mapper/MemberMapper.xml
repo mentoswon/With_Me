@@ -91,7 +91,7 @@
 	</delete>
 	
 	<!-- 이메일로 창작자 이름 조회 -->
-	<select id="selectCreator" resultType="String">
+	<select id="selectCreator" resultType="member">
 		SELECT c.creator_name
 		FROM member m JOIN creator_info c
 		ON m.mem_email = c.creator_email

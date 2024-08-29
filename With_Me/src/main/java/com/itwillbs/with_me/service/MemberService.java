@@ -83,13 +83,13 @@ public class MemberService {
 	}
 
 	// 이메일로 창작자이름 조회
-	public String getCreatorName(String mem_email) {
-		return mapper.selectCreator(mem_email);
+	public MemberVO getCreatorName(MemberVO member) {
+		return mapper.selectCreator(member);
 	}
 
 	// 이메일로 창작자 정보 가져오기
-	public MemberVO getCreatorInfo(String mem_email) {
-		return mapper.selectCreatorInfo(mem_email);
+	public MemberVO getCreatorInfo(MemberVO member) {
+		return mapper.selectCreatorInfo(member);
 	}
 	
 }
