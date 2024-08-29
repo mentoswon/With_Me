@@ -85,7 +85,14 @@ public class StoreController {
 	
 	// 스토어 상품 상세 페이지 이동 
 	@GetMapping("StoreDetail")
-	public String storeDetail() {
+	public String storeDetail(StoreVO store, Model model) {
+		System.out.println("StoreDetail : " + store);
+		String product_code = store.getProduct_code();
+		
+		// 상품 가져오기 
+		Map<String,Object> product_detail = service.getProduct(product_code);
+		System.out.println("가져온 상품 : " + product_detail);
+		
 		return "store/store_detail";
 	}
 }

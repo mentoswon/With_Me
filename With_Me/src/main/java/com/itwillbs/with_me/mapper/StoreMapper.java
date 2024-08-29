@@ -21,6 +21,9 @@ public interface StoreMapper {
 							@Param("productCategory_detail")String productCategory_detail, 
 							@Param("startRow")int startRow, 
 							@Param("listLimit")int listLimit);
+
+	// 상품 상세정보 가져오기
+	Map<String, Object> selectProduct(String product_code);
 	
 
 }

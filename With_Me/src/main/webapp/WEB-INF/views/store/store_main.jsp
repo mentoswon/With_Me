@@ -215,81 +215,92 @@
 		<div class="inner">
 			<section class="sec01">
 				<div class="mainWrapper">
-					<c:choose>
-						<c:when test="${searchKeyword ne '' && empty StoreList}">
-						<p>
-						검색결과가 없습니다. <br><br>
-						이용에 불편을 드려 죄송합니다.
-						</p>
-						</c:when>
-						<c:when test="${searchKeyword ne ''}">
-							<c:choose>
-								<c:when test="${param.product_category_detail eq null}">
-									<h2>${param.product_category}</h2>
-								</c:when>
-								<c:otherwise>
-									<h2>${param.product_category} > ${product_category_detail}</h2> 
-								</c:otherwise>
-							</c:choose>
-						</c:when>
-					</c:choose>
 					<div class="productMain">
 						<div class="mainBanner">
 							<img class="bannerImg" alt="배너" src="${pageContext.request.contextPath}/resources/image/cuteDog3.jpg">
 						</div>
-						<div class="product_Category">
-							<div class="orderWrapper"> 
-								<span class="orderSelect" id="orderList01" onclick="location.href=''">인기순</span>
-								<span class="orderSelect" id="orderList02" onclick="location.href=''">추천순</span>
-								<span class="orderSelect" id="orderList03" onclick="location.href=''">최신순</span>
-							</div>
-							<div class="boxWrapper">
-								<div class="productBox01">
-									<div class="product_image">
-										<a href="StoreDetail">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-										</a>
+						<c:choose>
+							<c:when test="${searchKeyword ne '' && empty StoreList}">
+							<p>
+							검색결과가 없습니다. <br><br>
+							이용에 불편을 드려 죄송합니다.
+							</p>
+							</c:when>
+							<c:when test="${searchKeyword ne ''}">
+								<c:choose>
+									<c:when test="${param.product_category_detail eq null}">
+										<h2>${param.product_category}</h2>
+									</c:when>
+									<c:otherwise>
+										<h2>${param.product_category} > ${product_category_detail}</h2> 
+									</c:otherwise>
+								</c:choose>
+								
+								<%-- 페이지 번호 기본값 1로 설정 --%>
+								<c:set var="pageNum" value="1"/>
+								<c:if test="${not empty param.pageNum}">
+									<c:set var="pageNum" value="${param.pageNum}"/>
+								</c:if>
+									
+								<div class="product_Category">
+									<div class="orderWrapper"> 
+										<span class="orderSelect" id="orderList01" onclick="location.href=''">인기순</span>
+										<span class="orderSelect" id="orderList02" onclick="location.href=''">추천순</span>
+										<span class="orderSelect" id="orderList03" onclick="location.href=''">최신순</span>
 									</div>
-									<div class="product_info">
-										<h4>00,000원</h4>
-										<a href="#">제품명제품명</a>
+								<c:forEach var="product" items="${StoreList}">
+									<div class="boxWrapper">
+										<div class="productBox01">
+											<div class="product_image">
+												<a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
+													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+												</a>
+											</div>
+											<div class="product_info">
+												<h4><a href="ProductDetail?product_name=${product.product_name}&product_code=${product.product_code}">$product.product_price</a></h4>
+												<h3><a href="ProductDetail?product_name=${product.product_name}&product_code=${product.product_code}">$product.product_name</a></h3>
+											</div>
+										</div>	
+										<div class="productBox01">
+											<div class="product_image">
+												<a href="StoreDetail">
+													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+												</a>
+											</div>
+											<div class="product_info">
+												<h4>00,000원</h4>
+												<a href="#">제품명제품명</a>
+											</div>
+										</div>	
+										<div class="productBox01">
+											<div class="product_image">
+												<a href="StoreDetail">
+													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+												</a>
+											</div>
+											<div class="product_info">
+												<h4>00,000원</h4>
+												<a href="StoreDetail">제품명제품명</a>
+											</div>
+										</div>	
+										<div class="productBox01">
+											<div class="product_image">
+												<a href="#">
+													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+												</a>
+											</div>
+											<div class="product_info">
+												<h4>00,000원</h4>
+												<a href="#">제품명제품명</a>
+											</div>
+										</div>	
 									</div>
-								</div>	
-								<div class="productBox01">
-									<div class="product_image">
-										<a href="StoreDetail">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-										</a>
-									</div>
-									<div class="product_info">
-										<h4>00,000원</h4>
-										<a href="#">제품명제품명</a>
-									</div>
-								</div>	
-								<div class="productBox01">
-									<div class="product_image">
-										<a href="StoreDetail">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-										</a>
-									</div>
-									<div class="product_info">
-										<h4>00,000원</h4>
-										<a href="StoreDetail">제품명제품명</a>
-									</div>
-								</div>	
-								<div class="productBox01">
-									<div class="product_image">
-										<a href="#">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-										</a>
-									</div>
-									<div class="product_info">
-										<h4>00,000원</h4>
-										<a href="#">제품명제품명</a>
-									</div>
-								</div>	
-							</div>
-						</div>
+								</c:forEach>
+								</div>
+							</c:when>
+						</c:choose>
+						
+						
 					</div>
 					<div class="rankList">
 					
@@ -300,7 +311,7 @@
 			
 			<section id="pageList">
 				<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-				<input type="button" value="이전" onclick="location.href='ProjectList?pageNum=${pageNum - 1}'"
+				<input type="button" value="이전" onclick="location.href='StoreList?pageNum=${pageNum - 1}'"
 						<c:if test="${pageNum <= 1}">disabled</c:if> >
 				
 				<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
@@ -318,7 +329,7 @@
 		<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
 				</c:forEach>
 				
-				<input type="button" value="다음" onclick="location.href='ProjectList?pageNum=${pageNum + 1}'"
+				<input type="button" value="다음" onclick="location.href='StoreList?pageNum=${pageNum + 1}'"
 						<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 			</section>
 		</div>
