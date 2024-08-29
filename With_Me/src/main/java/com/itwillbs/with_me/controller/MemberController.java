@@ -12,12 +12,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
 
 @Controller
 public class MemberController {
@@ -342,7 +345,8 @@ public class MemberController {
 	
 	// 마이페이지
 	@GetMapping("MemberInfo")
-	public String memberInfo(MemberVO member, Model model, HttpSession session) {
+	public String memberInfo(MemberVO member, Model model, HttpSession session, ProjectVO project,
+							@RequestParam(defaultValue = "1") int pageNum) {
 		String id = (String)session.getAttribute("sId");
 		// 미로그인 시 로그인 페이지로 이동
 		if(id == null) {
@@ -351,30 +355,69 @@ public class MemberController {
 			return "result/fail";
 		}
 		
+		// 한 페이지에서 표시할 글 목록 개수 지정 (jsp 에서 가져옴)
+		int listLimit = 8;
+		
+		// 조회 시작 행 번호 계산
+		int startRow = (pageNum - 1) * listLimit;
+		
+		// --------------------------------------------------------------------
+		
+		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
+		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
+//		int listCount = service.getBoardListCount();
+//		
+//		System.out.println("listCount : " + listCount);
+//		
+//		int pageListLimit = 3;
+//		
+//		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+//		
+//		int startPage = (pageNum -1) / pageListLimit * pageListLimit + 1;
+//		
+//		int endPage = startPage + pageListLimit - 1;
+//		
+//		// 수정 !! 검색 결과가 없을 때 해당페이지는 존재하지 않습니다가 뜨는 경우를 위해 
+//		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0이면 1로 변경
+//		if(maxPage == 0) {
+//			maxPage = 1;
+//		}
+//		
+//		if(endPage > maxPage) {
+//			endPage = maxPage;
+//		}
+//		
+//		// 전달받은 페이지 번호가 1보다 작거나 최대 번호보다 클 경우
+//		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
+//		if(pageNum < 1 || pageNum > maxPage) {
+//			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+//			model.addAttribute("targetURL", "ProjectList");
+//			
+//			return "result/fail";
+//		}
+		
+		
 		member.setMem_email(id);
 		member = service.getMember(member);
 		System.out.println("member : !!!!!!!!!!" + member);
-	    // 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자 이름 가져오기
-//	    String creatorName = service.getCreatorName(member);
-	    MemberVO creatorName = service.getCreatorName(member);
-	    
-	    System.out.println("creatorName : " + creatorName);
-	    model.addAttribute("creatorName", creatorName);
-	    
-//	    if(creatorName == null) {
-//	        MemberVO notCreatorMember = service.getCreatorInfo(member);
-//	            
-//	        System.out.println("창작자 아닌 사람 정보 : " + notCreatorMember);
-//	        
-//	        model.addAttribute("notCreatorMember", notCreatorMember);
-//	    } else {
-//	        MemberVO creatorMember = service.getCreatorInfo(member);
-//	            
-//	        System.out.println("창작자 맞는 사람 정보 : " + creatorMember);
-//	            
-//	        model.addAttribute("creatorMember", creatorMember);
-//	    }
 		
+		// 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자 이름 가져오기
+		CreatorVO creatorInfo = service.getCreatorName(member);
+		// 창작자가 아닌 사람의 경우 멤버 테이블을 사용하기 위해서 member테이블값 가져오기
+		MemberVO memberInfo = service.getMember(member);
+	    // 창작자라면 올린 프로젝트, 후원한 프로젝트를 보여줘야하기에 project_info에서 값 가져오기
+//		List<ProjectVO> projectInfo = service.getProjectList(member);
+//		ProjectVO projectInfo = service.getProject(member);
+		
+		
+		System.out.println("creatorInfo : " + creatorInfo);
+	    System.out.println("memberInfo : " + memberInfo);
+//	    System.out.println("projectInfo : " + projectInfo);
+	    
+	    model.addAttribute("creatorInfo", creatorInfo);
+	    model.addAttribute("memberInfo", memberInfo);
+//	    model.addAttribute("projectInfo", projectInfo);
+	    
 		return "mypage/mypage";
 	}
 	

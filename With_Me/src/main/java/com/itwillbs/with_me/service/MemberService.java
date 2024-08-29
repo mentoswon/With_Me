@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.MemberMapper;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
 
 @Service
 public class MemberService {
@@ -83,13 +85,18 @@ public class MemberService {
 	}
 
 	// 이메일로 창작자이름 조회
-	public MemberVO getCreatorName(MemberVO member) {
+	public CreatorVO getCreatorName(MemberVO member) {
 		return mapper.selectCreator(member);
 	}
 
-	// 이메일로 창작자 정보 가져오기
-	public MemberVO getCreatorInfo(MemberVO member) {
-		return mapper.selectCreatorInfo(member);
+//	// 프로젝트 정보 조회
+//	public ProjectVO getProject(MemberVO member) {
+//		return mapper.selectProject(member);
+//	}
+
+	// 프로젝트 정보 조회
+	public List<ProjectVO> getProjectList(MemberVO member) {
+		return mapper.selectProjectList(member);
 	}
 	
 }

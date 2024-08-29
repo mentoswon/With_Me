@@ -45,66 +45,218 @@ $(function() {
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
 	<%-- ---------- 프로젝트 등록 메뉴바 ---------- --%>
-	<section id="MemberInfo">
-		<div id="projectInfoWrap">
-			<div id="MypageMenuTop">
-				<div style="text-align: center; display: flex;">
-					<h2>${member.mem_name}</h2>
-					<button class="option" type="button" onclick="location.href='MypageInfo'">
-						<img src="${pageContext.request.contextPath}/resources/image/mypage.png" width="25">
-					</button>
+	<div class="inner">
+		<section id="MemberInfo">
+			<div id="projectInfoWrap">
+				<div id="MypageMenuTop">
+					<div style="text-align: center; display: flex;">
+						<c:choose>
+					        <c:when test="${not empty creatorInfo and not empty creatorInfo.creator_name}">
+					            <h3>${creatorInfo.creator_name}</h3>
+					        </c:when>
+					        <c:otherwise>
+					            <h3>${memberInfo.mem_name}</h3>
+					        </c:otherwise>
+					    </c:choose>
+						<button class="option" type="button" onclick="location.href='MypageInfo'">
+							<img src="${pageContext.request.contextPath}/resources/image/mypage.png" width="25">
+						</button>
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-	<section id="MemberMypage">
-		<div id="MypageMenuWrap">
-			<div id="MypageMenu">
-				<ul id="MypageMenuList">
-					<li class="writeList active" data-index="1">
-						<span>프로필</span>
-					</li>
-					<li class="writeList" data-index="2">
-						<span>좋아요</span>
-					</li>
-					<li class="writeList" data-index="3">
-						<span>올린 프로젝트</span>
-					</li>
-					<li class="writeList" data-index="4">
-						<span>후원한 프로젝트</span>
-					</li>
-					<li class="writeList" data-index="5">
-						<span>팔로워</span>
-					</li>
-					<li class="writeList" data-index="6">
-						<span>팔로잉</span>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</section>
-	
-	<article>
-		<div id="writeContainer1" class="writeContainer">
-			<div class="MypageWriteWrap">
-				<div class="MypageExplanationWrap">
-					<p>
-						등록된 소개가 없습니다.
-					</p>
+		</section>
+		<section id="MemberMypage">
+			<div id="MypageMenuWrap">
+				<div id="MypageMenu">
+					<ul id="MypageMenuList">
+						<li class="writeList active" data-index="1">
+							<span>프로필</span>
+						</li>
+						<li class="writeList" data-index="2">
+							<span>좋아요</span>
+						</li>
+						<li class="writeList" data-index="3">
+							<span>올린 프로젝트</span>
+						</li>
+						<li class="writeList" data-index="4">
+							<span>후원한 프로젝트</span>
+						</li>
+						<li class="writeList" data-index="5">
+							<span>팔로워</span>
+						</li>
+						<li class="writeList" data-index="6">
+							<span>팔로잉</span>
+						</li>
+					</ul>
 				</div>
 			</div>
-		</div>
-		<div id="writeContainer2" class="writeContainer">
-			<div class="MypageWriteWrap">
-				<div class="MypageExplanationWrap">
-					<p>
-						등록된 소개가 없습니다.22
-					</p>
+		</section>
+		
+		<article>
+			<div id="writeContainer1" class="writeContainer">
+				<div class="MypageWriteWrap">
+					<div class="MypageExplanationWrap">
+					    <c:choose>
+					        <c:when test="${not empty creatorInfo and not empty creatorInfo.creator_introduce}">
+					            <p>${creatorInfo.creator_introduce}</p>
+					        </c:when>
+					        <c:otherwise>
+					            <p>등록된 소개가 없습니다.</p>
+					        </c:otherwise>
+					    </c:choose>
+					</div>
 				</div>
 			</div>
-		</div>
-	</article>
-	
+			<div id="writeContainer2" class="writeContainer">
+				<div class="MypageWriteWrap">
+					<div class="MypageExplanationWrap">
+						<p>
+							좋아요가 없습니다.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div id="writeContainer3" class="writeContainer">
+				<div class="MypageWriteWrap">
+					<div class="MypageExplanationWrap">
+						<div class="inner">
+							<section class="sec02">
+								<c:choose>
+									<c:when test="${not empty projectInfo}">
+										<div class="itemList">
+											<div class="itemWrapper">
+											
+											<!-- 오늘 날짜 추출 -->
+											<c:set var="now" value="<%=new java.util.Date()%>" />
+											<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+											<!-- 오늘 날짜 추출 end -->
+											
+											<c:forEach var="project" items="${projectInfo}">
+											
+												<c:if test="${project.funding_end_date > today}">
+													<div class="item">
+														<div class="item_image">
+															<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
+																<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+															</a>
+															<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+															
+															<!-- 나중에 쓸 채워진 하트 -->
+							<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
+														</div>
+														<div class="item_info">
+															<h4><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
+															<h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
+														</div>
+														
+														<div class="fund_info">
+															<div class="fund_leftWrap">
+																<%-- 펀딩률 --%>
+																<fmt:parseNumber var="funding_amt" value="${project.funding_amt*1.0}" ></fmt:parseNumber>
+																<fmt:parseNumber var="target_price" value="${project.target_price}" ></fmt:parseNumber>
+																
+																<c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
+																
+																<c:choose>
+																	<c:when test="${fund_rate eq 0.0}">
+																		<div class="fund_rate">0%</div>
+																	</c:when>
+																	<c:otherwise>
+																		<div class="fund_rate">${fund_rate}%</div>
+																	</c:otherwise>
+																</c:choose>
+																<%-- 펀딩률 end --%>
+																
+																<div class="fund_amt"><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
+															</div>
+															<div class="fund_etc">
+																<c:choose>
+																	<c:when test="${leftDay eq 0}">
+																		오늘 마감
+																	</c:when>
+																	<c:otherwise>
+																	
+																		<!-- 남은 날짜 계산 -->
+																		<fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+																		<fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
+																		<c:set value="${endDate - strDate}" var="leftDay"/>
+																		<!-- 남은 날짜 계산 end -->
+																		
+																		<c:out value="${leftDay}" />일 남음
+																	</c:otherwise>
+																</c:choose>
+															</div> <%-- 남은 날짜/오늘 마감/오픈 날짜/펀딩 성공 --%>
+														</div>
+				<!-- 										<div class="fund_rate_var"></div> -->
+														<progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+													</div>
+												</c:if>
+											</c:forEach>
+											</div>
+										</div>
+									</c:when>
+							        <c:otherwise>
+							            <p>등록된 소개가 없습니다.</p>
+							        </c:otherwise>
+								</c:choose>
+							</section>
+							
+							<section id="pageList">
+								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
+								<input type="button" value="이전" onclick="location.href='ProjectList?pageNum=${pageNum - 1}'"
+										<c:if test="${pageNum <= 1}">disabled</c:if> >
+								
+								<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
+								<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+									
+									<c:choose>
+										<c:when test="${pageNum eq i}">
+											<b>${i}</b>
+										</c:when>
+										<c:otherwise>
+											<a href="ProjectList?pageNum=${i}">${i}</a>
+										</c:otherwise>
+									</c:choose>
+								
+						<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
+								</c:forEach>
+								
+								<input type="button" value="다음" onclick="location.href='ProjectList?pageNum=${pageNum + 1}'"
+										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="writeContainer4" class="writeContainer">
+				<div class="MypageWriteWrap">
+					<div class="MypageExplanationWrap">
+						<p>
+							후원한 프로젝트가 없습니다.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div id="writeContainer5" class="writeContainer">
+				<div class="MypageWriteWrap">
+					<div class="MypageExplanationWrap">
+						<p>
+							팔로워가 없습니다.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div id="writeContainer6" class="writeContainer">
+				<div class="MypageWriteWrap">
+					<div class="MypageExplanationWrap">
+						<p>
+							팔로우한 사용자가 없습니다.
+						</p>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
 	<footer>
 		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 	</footer>

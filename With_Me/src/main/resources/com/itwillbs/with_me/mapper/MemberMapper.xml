@@ -90,23 +90,28 @@
 			email = #{email}
 	</delete>
 	
-	<!-- 이메일로 창작자 이름 조회 -->
-	<select id="selectCreator" resultType="member">
-		SELECT c.creator_name
-		FROM member m JOIN creator_info c
-		ON m.mem_email = c.creator_email
-		WHERE m.mem_email = #{mem_email}
-	</select>
-	
-	
 	<!-- 이메일로 창작자 조회 -->
-	<select id="selectCreatorInfo" resultType="member">
-		SELECT c.creator_email, c.creator_name, c.creator_image, c.creator_introduce,
-			   c.phone_auth_status
+	<select id="selectCreator" resultType="creator">
+		SELECT c.creator_idx, c.creator_email, c.creator_name, c.creator_image, c.creator_introduce, c.phone_auth_status
 		FROM member m JOIN creator_info c
 		ON m.mem_email = c.creator_email
 		WHERE m.mem_email = #{mem_email}
 	</select>
+	
+	<!-- 프로젝트 정보 조회 -->
+	<select id="selectProjectList" resultType="project">
+		SELECT p.project_idx, p.project_code, p.project_status, p.project_category,
+			   p.project_category_detail, p.project_title, p.project_image, p.search_tag,
+		       p.target_price, p.funding_start_date, p.funding_end_date, p.project_introduce, p.project_budget,
+		       p.project_team_introduce, p.project_sponsor, p.project_policy, p.project_submit_date,
+		       p.project_summary, c.creator_name, c.creator_email
+		FROM member m JOIN creator_info c
+		ON m.mem_email = c.creator_email
+		JOIN project_info p
+		ON c.creator_idx = p.creator_idx
+		WHERE m.mem_email = #{mem_email}
+	</select>
+	
 </mapper>
 
 

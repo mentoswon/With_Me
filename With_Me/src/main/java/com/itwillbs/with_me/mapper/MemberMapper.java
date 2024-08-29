@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
 
 @Mapper
 public interface MemberMapper {
@@ -38,9 +40,12 @@ public interface MemberMapper {
 	List<MemberVO> selectMember();
 
 	// 이메일로 창작자 조회
-	MemberVO selectCreator(MemberVO member);
+	CreatorVO selectCreator(MemberVO member);
 
-	// 이메일로 창작자 정보 가져오기
-	MemberVO selectCreatorInfo(MemberVO member);
+//	// 프로젝트 정보 조회
+//	ProjectVO selectProject(MemberVO member);
+
+	// 프로젝트 정보 조회
+	List<ProjectVO> selectProjectList(MemberVO member);
 
 }
