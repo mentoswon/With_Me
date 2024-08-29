@@ -114,8 +114,6 @@ $(function() {
 	    
 	    formData.append("creator_introduce", $("#creator_introduce").val());
 	    
-	    
-
 		$.ajax({
 			type: 'POST',
 			url: 'SaveProject',
@@ -933,7 +931,7 @@ function linkAccount() {
 <!-- 	<form id="projectForm" action="SubmitProject" method="post" enctype="multipart/form-data"> -->
 		<header>
 			<div id="topWrap">
-				<a href="#">← 내가 만든 프로젝트</a>
+				<a href="MyProject">← 내가 만든 프로젝트</a>
 				<a href="./" class="main_logo">
 					<img alt="위드미 로고" src="${pageContext.request.contextPath}/resources/image/withme.png">
 				</a>

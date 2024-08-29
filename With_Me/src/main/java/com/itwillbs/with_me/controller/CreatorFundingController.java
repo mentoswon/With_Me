@@ -64,7 +64,7 @@ public class CreatorFundingController {
 		}
 		
 		// 작성중인 프로젝트 목록 조회
-		ProjectVO project = service.getProjectList(id);
+		ProjectVO project = service.getWritingProjectList(id);
 		System.out.println("project : " + project);
 		model.addAttribute("project", project);
 		
@@ -434,5 +434,22 @@ public class CreatorFundingController {
 		
 		return jo.toString();
 	}
+	
+	
+	
+	// ===============================================================================
+	// 내가만든 프로젝트
+	@GetMapping("MyProject")
+	public String myProject(HttpSession session, Model model) {
+		String id = (String)session.getAttribute("sId");
+		
+		// 프로젝트 목록 조회
+		List<ProjectVO> projectList = service.getProjectList(id);
+		
+		model.addAttribute("projectList", projectList);
+		
+		return "mypage/my_project";
+	}
+	
 }
 

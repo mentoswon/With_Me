@@ -6,7 +6,7 @@
     
 <mapper namespace="com.itwillbs.with_me.mapper.CreatorFundingMapper">
 <!-- 작성중인 프로젝트 목록 조회 - SELECT -->
-<select id="selectProjectList" resultType="project">
+<select id="selectWritingProjectList" resultType="project">
 	SELECT *
 	FROM project_info
 	WHERE creator_idx = (
@@ -210,6 +210,14 @@
 		creator_image = #{creator_image},
 		creator_introduce = #{creator_introduce}
 	WHERE creator_email = #{creator_email}
-		
 </update>
+
+<select id="selectProjectList" resultType="hashmap">
+	SELECT *
+	FROM project_info
+	WHERE creator_idx = (
+		SELECT creator_idx
+		FROM creator_info
+		WHERE creator_email = #{id})
+</select>
 </mapper>

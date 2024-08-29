@@ -20,8 +20,8 @@ public class CreatorFundingService {
 	private CreatorFundingMapper mapper;
 
 	// 작성중인 프로젝트 목록 조회 요청
-	public ProjectVO getProjectList(String id) {
-		return mapper.selectProjectList(id);
+	public ProjectVO getWritingProjectList(String id) {
+		return mapper.selectWritingProjectList(id);
 	}
 
 	// 상위공통코드 FUND 인 컬럼(카테고리) 조회 요청
@@ -106,6 +106,11 @@ public class CreatorFundingService {
 	// 창작자정보 임시저장 요청
 	public int modifyCreator(CreatorVO creator) {
 		return mapper.updateCreator(creator);
+	}
+
+	// 프로젝트 목록 조회
+	public List<ProjectVO> getProjectList(String id) {
+		return mapper.selectProjectList(id);
 	}
 
 
