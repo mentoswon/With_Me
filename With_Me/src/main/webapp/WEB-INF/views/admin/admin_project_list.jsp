@@ -7,7 +7,19 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>index</title>
+<title>
+	<c:choose>
+		<c:when test="${param.status eq '등록대기'}">
+			위드미 | 관리자-등록신청관리
+		</c:when>
+		<c:when test="${param.status eq '진행중'}">
+			위드미 | 관리자-진행중인 프로젝트
+		</c:when>
+		<c:when test="${param.status eq '종료'}">
+			위드미 | 관리자-종료된 프로젝트
+		</c:when>
+	</c:choose>
+</title>
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <style>
