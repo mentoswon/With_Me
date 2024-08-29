@@ -77,7 +77,7 @@ public class StoreController {
 		// --------------------------------------------------------------------
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
 		// --------------------------------------------------------------------
-		model.addAttribute("projectList", StoreList);
+		model.addAttribute("StoreList", StoreList);
 		model.addAttribute("pageInfo", pageInfo);
 		
 		return "store/store_main";

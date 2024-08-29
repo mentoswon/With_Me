@@ -248,8 +248,8 @@
 										<span class="orderSelect" id="orderList02" onclick="location.href=''">추천순</span>
 										<span class="orderSelect" id="orderList03" onclick="location.href=''">최신순</span>
 									</div>
-								<c:forEach var="product" items="${StoreList}">
 									<div class="boxWrapper">
+									<c:forEach var="product" items="${StoreList}">
 										<div class="productBox01">
 											<div class="product_image">
 												<a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
@@ -257,8 +257,8 @@
 												</a>
 											</div>
 											<div class="product_info">
-												<h4><a href="ProductDetail?product_name=${product.product_name}&product_code=${product.product_code}">$product.product_price</a></h4>
-												<h3><a href="ProductDetail?product_name=${product.product_name}&product_code=${product.product_code}">$product.product_name</a></h3>
+												<h4><a href="ProductDetail?product_name=${product.product_name}&product_code=${product.product_code}">${product.product_price}</a></h4>
+												<span><a href="ProductDetail?product_name=${product.product_name}&product_code=${product.product_code}">${product.product_name}</a></span>
 											</div>
 										</div>	
 										<div class="productBox01">
@@ -294,8 +294,8 @@
 												<a href="#">제품명제품명</a>
 											</div>
 										</div>	
+									</c:forEach>
 									</div>
-								</c:forEach>
 								</div>
 							</c:when>
 						</c:choose>
@@ -322,7 +322,7 @@
 							<b>${i}</b>
 						</c:when>
 						<c:otherwise>
-							<a href="ProjectList?pageNum=${i}">${i}</a>
+							<a href="StoreList?pageNum=${i}">${i}</a>
 						</c:otherwise>
 					</c:choose>
 				
