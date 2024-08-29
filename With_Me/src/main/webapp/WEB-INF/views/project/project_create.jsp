@@ -18,7 +18,8 @@ $(function() {
 	$("#save").on('click', function() {
 		// FormData 객체 생성
 		let formData = new FormData();
-
+		
+		// [ 기본정보 ]
 		formData.append("project_idx", $("input[name='project_idx']").val());
 		formData.append("project_category", $("#project_category").val());
 		formData.append("project_category_detail", $("#project_category_detail").val());
@@ -29,10 +30,15 @@ $(function() {
 		let projectImageFile = $("#project_image")[0].files[0];
 	    if (projectImageFile) {
 	        formData.append("projectImg", projectImageFile);
+	    } else {
+	    	// 새 파일 선택되지 않았을 경우 기존 파일 경로 전송
+	    	formData.append("project_image", $("#projectImg").val());
 	    }
 	    
 		formData.append("search_tag", $("#search_tag").val());
 		
+		// ---------------------------------------------------
+		// [ 펀딩계획 ]
 		// 쉼표 제거 및 빈 문자열 체크
 		let targetPrice = $("#target_price").val().trim().replace(/,/g, ''); // 쉼표 제거
 		formData.append("target_price", targetPrice ? targetPrice : 0); // 빈 문자열을 0으로 전환(not null)
@@ -45,39 +51,78 @@ $(function() {
 	    let fundingEndDate = $("#funding_end_date").val();
 	    formData.append("funding_end_date", fundingEndDate ? fundingEndDate : ""); 
 		
+	    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	    // 요금제 선택 시 append 나중에~~
+	    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		// ---------------------------------------------------
+		// [ 프로젝트 계획 ]
 		// 파일 업로드 필드 확인
 	    let introduceImgFile = $("#project_introduce")[0].files[0];
 	    if (introduceImgFile) {
 	        formData.append("introduceImg", introduceImgFile);
+	    } else {
+	    	// 새 파일 선택되지 않았을 경우 기존 파일 경로 전송
+	    	formData.append("project_introduce", $("#introduceImg").val());
 	    }
 
 	    let budgetImgFile = $("#project_budget")[0].files[0];
 	    if (budgetImgFile) {
 	        formData.append("budgetImg", budgetImgFile);
+	    } else {
+	    	// 새 파일 선택되지 않았을 경우 기존 파일 경로 전송
+	    	formData.append("project_budget", $("#budgetImg").val());
 	    }
 
 	    let scheduleImgFile = $("#project_schedule")[0].files[0];
 	    if (scheduleImgFile) {
 	        formData.append("scheduleImg", scheduleImgFile);
+	    } else {
+	    	// 새 파일 선택되지 않았을 경우 기존 파일 경로 전송
+	    	formData.append("project_schedule", $("#scheduleImg").val());
 	    }
 
 	    let teamIntroduceImgFile = $("#project_team_introduce")[0].files[0];
 	    if (teamIntroduceImgFile) {
 	        formData.append("teamIntroduceImg", teamIntroduceImgFile);
+	    } else {
+	    	// 새 파일 선택되지 않았을 경우 기존 파일 경로 전송
+	    	formData.append("project_team_introduce", $("#teamIntroduceImg").val());
 	    }
 
 	    let sponsorImgFile = $("#project_sponsor")[0].files[0];
 	    if (sponsorImgFile) {
 	        formData.append("sponsorImg", sponsorImgFile);
+	    } else {
+	    	// 새 파일 선택되지 않았을 경우 기존 파일 경로 전송
+	    	formData.append("project_sponsor", $("#sponsorImg").val());
 	    }
+	    
+		formData.append("project_policy", $("#project_policy").val());
+		
+		// ---------------------------------------------------
+	    // [ 창작자정보 ]
+	    formData.append("creator_name", $("#creator_name").val());
+	    
+	    let creatorImgFile = $("#creator_image")[0].files[0];
+	    if (creatorImgFile) {
+	        formData.append("creatorImg", creatorImgFile);
+	    } else {
+	    	// 새 파일 선택되지 않았을 경우 기존 파일 경로 전송
+	    	formData.append("creator_image", $("#creatorImg").val());
+	    }
+	    
+	    formData.append("creator_introduce", $("#creator_introduce").val());
+	    
+	    
 
 		$.ajax({
 			type: 'POST',
 			url: 'SaveProject',
 			data: formData,
-	        processData: false,  // 파일 업로드를 위해 필요
-	        contentType: false,  // 파일 업로드를 위해 필요
-			success: function(response) {
+			processData: false,  // 중요: 데이터 처리를 하지 않도록 설정
+		    contentType: false,  // 중요: 콘텐츠 타입을 설정하지 않음
+		    success: function(response) {
 				console.log(JSON.stringify(response));
 				if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
 					alert("잘못된 접근입니다!");
@@ -89,6 +134,7 @@ $(function() {
                     
                 }
 			},
+			dataType : "json",
 			error: function() {
 				alert('프로젝트 저장에 실패하였습니다.');
 			}
@@ -250,6 +296,7 @@ $(function() {
     tagContainer.on("click", ".removeTag", function() {
         $(this).parent().remove(); // 현재 태그 요소를 삭제
         updateTagCount(); // 태그 개수 업데이트
+        updateHiddenTagValue();	// hidden input 업데이트
     });
 
     // 태그 개수 업데이트 함수
@@ -277,7 +324,15 @@ $(function() {
     const PAYMENT_FEE_RATE = 0.03; // 결제대행 수수료 3%
     const PLATFORM_FEE_RATE = 0.05; // 위드미 수수료 5%
     const VAT_RATE = 0.1; // 부가세 10%
+	
+	// 페이지 로드 시 목표금액 초기값 처리
+    let initialValue = $("#target_price").val().replace(/[^0-9]/g, ""); // 기존 값에서 숫자만 추출
+    initialValue = parseInt(initialValue, 10) || 0;
+    $("#target_price").val(initialValue.toLocaleString("ko-KR")); // 포맷팅된 값으로 입력 필드 업데이트
 
+    // 초기값으로 수수료 및 예상 수령액 계산
+    calculateEstimateAmounts(initialValue);
+    
     // 목표금액 입력 시 이벤트 처리
     $("#target_price").on("input", function(event) {
         let value = $(this).val();
@@ -810,10 +865,31 @@ $(function() {
             $("#checkCreatorName").text(""); // 메시지 제거
         }
     }
+
+	// 창작자 소개 길이 체크
+    function checkCreatorIntroduce() {
+        let introduceLength = $("#creator_introduce").val().length;
+        $("#introduceLength").text(introduceLength);
+        if (introduceLength > 300) {
+            alert("창작자 소개는 300자 까지만 입력 가능합니다!");
+            $("#checkCreatorIntroduce").css("color", "red");
+        } else {
+            $("#checkCreatorIntroduce").text(""); // 메시지 제거
+        }
+    }
+
+	// 페이지 로드 시 창작자 이름과 소개 길이 표시
+    checkCreatorName();
+    checkCreatorIntroduce();
     
     // 창작자 이름 글자 수 체크
     $("#creator_name").keyup(function() {
     	checkCreatorName();
+    });
+    
+    // 창작자 소개 글자 수 체크
+    $("#creator_introduce").keyup(function() {
+    	checkCreatorIntroduce();
     });
     
 	// 프로필 이미지 미리보기
@@ -826,22 +902,7 @@ $(function() {
 	    reader.readAsDataURL(file);
 	});
     
-	// 창작자 소개 길이 체크
-    function checkCreatorIntroduce() {
-        let introduceLength = $("#creator_introduce").val().length;
-        $("#introduceLength").text(introduceLength);
-        if (introduceLength > 300) {
-            alert("창작자 소개는 300자 까지만 입력 가능합니다!");
-            $("#checkCreatorIntroduce").css("color", "red");
-        } else {
-            $("#checkCreatorIntroduce").text(""); // 메시지 제거
-        }
-    }
     
-    // 창작자 소개 글자 수 체크
-    $("#creator_introduce").keyup(function() {
-    	checkCreatorIntroduce();
-    });
     
     // -----------------------------------------------
     // 본인인증(cool sms)
@@ -889,10 +950,10 @@ function linkAccount() {
 				<div id="projectMenuTop">
 					<c:choose>
 						<c:when test="${empty project.project_image}">
-							<img alt="프로젝트 대표 이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
+							<img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
 						</c:when>
 						<c:otherwise>
-							<img alt="프로젝트 대표 이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+							<img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 						</c:otherwise>
 					</c:choose>
 					<div>
@@ -985,7 +1046,7 @@ function linkAccount() {
 						</div>
 					</div>
 					<div class="projectContentWrap">
-						<textarea name="project_summary" id="project_summary" rows="5" cols="10" placeholder="프로젝트 요약을 입력해주세요." maxlength="50">${project.project_summary}</textarea>
+						<textarea name="project_summary" id="project_summary" rows="5" cols="10" placeholder="프로젝트 요약을 입력해주세요." maxlength="50"><c:if test="${not empty project.project_summary}">${project.project_summary}</c:if></textarea>
 						<div class="LengthCheck">
 							<span id="checkLengthSummary"></span>
 							<p><span id="summaryLength">0</span>/50</p>
@@ -1003,6 +1064,8 @@ function linkAccount() {
 						</p>
 					</div>
 					<div class="projectContentWrap">
+						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
+						<input type="hidden" id="projectImg" value="${project.project_image}">
 						<input type="file" name="projectImg" id="project_image">
 						<label for="project_image">
 							<div class="fileUpload">
@@ -1013,7 +1076,7 @@ function linkAccount() {
 							</div>
 						</label>
 						<div class="imagePreview">
-							<img id="project_image_preview">
+							<img id="project_image_preview" <c:if test="${not empty project.project_image}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_image}"</c:if>>
 						</div>
 						<br><br>
 					</div>
@@ -1084,7 +1147,7 @@ function linkAccount() {
 							<table style="border: 1px solid #ccc; width: 100%;">
 								<tr>
 									<td>
-										<input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." maxlength="14" style="border: none; text-align: right; width: 565px;">
+										<input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." maxlength="14" value="${project.target_price}" style="border: none; text-align: right; width: 565px;">
 									</td>
 									<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
 								</tr>
@@ -1410,6 +1473,8 @@ function linkAccount() {
 						</div>
 					</div>
 					<div class="projectContentWrap">
+						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
+						<input type="hidden" id="introduceImg" value="${project.project_introduce}">
 						<input type="file" name="introduceImg" id="project_introduce">
 						<label for="project_introduce">
 							<div class="fileUpload">
@@ -1420,7 +1485,7 @@ function linkAccount() {
 							</div>
 						</label>
 						<div class="imagePreview">
-							<img id="project_introduce_preview">
+							<img id="project_introduce_preview" <c:if test="${not empty project.project_introduce}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_introduce}"</c:if>>
 						</div>
 						<br><br>
 					</div>
@@ -1444,6 +1509,8 @@ function linkAccount() {
 						</div>
 					</div>
 					<div class="projectContentWrap">
+						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
+						<input type="hidden" id="budgetImg" value="${project.project_budget}">
 						<input type="file" name="budgetImg" id="project_budget">
 						<label for="project_budget">
 							<div class="fileUpload">
@@ -1454,7 +1521,7 @@ function linkAccount() {
 							</div>
 						</label>
 						<div class="imagePreview">
-							<img id="project_budget_preview">
+							<img id="project_budget_preview"  <c:if test="${not empty project.project_budget}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_budget}"</c:if>>
 						</div>
 						<br><br>
 					</div>
@@ -1485,6 +1552,8 @@ function linkAccount() {
 						</div>
 					</div>
 					<div class="projectContentWrap">
+						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
+						<input type="hidden" id="scheduleImg" value="${project.project_schedule}">
 						<input type="file" name="scheduleImg" id="project_schedule">
 						<label for="project_schedule">
 							<div class="fileUpload">
@@ -1495,7 +1564,7 @@ function linkAccount() {
 							</div>
 						</label>
 						<div class="imagePreview">
-							<img id="project_schedule_preview">
+							<img id="project_schedule_preview" <c:if test="${not empty project.project_schedule}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_schedule}"</c:if>>
 						</div>
 						<br><br>
 					</div>
@@ -1512,7 +1581,9 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<input type="file" name="inteteamInterducerduceImg" id="project_team_introduce">
+						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
+						<input type="hidden" id="teamIntroduceImg" value="${project.project_team_introduce}">
+						<input type="file" name="teamIntroduceImg" id="project_team_introduce">
 						<label for="project_team_introduce">
 							<div class="fileUpload">
 								<span class="uploadImg">
@@ -1522,7 +1593,7 @@ function linkAccount() {
 							</div>
 						</label>
 						<div class="imagePreview">
-							<img id="project_team_introduce_preview">
+							<img id="project_team_introduce_preview" <c:if test="${not empty project.project_team_introduce}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_team_introduce}"</c:if>>
 						</div>
 						<br><br>
 					</div>
@@ -1538,6 +1609,8 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
+						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
+						<input type="hidden" id="sponsorImg" value="${project.project_sponsor}">
 						<input type="file" name="sponsorImg" id="project_sponsor">
 						<label for="project_sponsor">
 							<div class="fileUpload">
@@ -1548,7 +1621,7 @@ function linkAccount() {
 							</div>
 						</label>
 						<div class="imagePreview">
-							<img id="project_sponsor_preview">
+							<img id="project_sponsor_preview" <c:if test="${not empty project.project_sponsor}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_sponsor}"</c:if>>
 						</div>
 						<br><br>
 					</div>
@@ -1588,7 +1661,7 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<input type="text" name="creator_name" id="creator_name" maxlength="20">
+						<input type="text" name="creator_name" id="creator_name" maxlength="20" value="${creator.creator_name}">
 						<div class="LengthCheck">
 							<span id="checkCreatorName"></span>
 							<p><span id="nameLength">0</span>/20</p>
@@ -1607,9 +1680,18 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap" style="display: flex; align-items: center;">
-						<input type="file" name="creator_image" id="creator_image">
+						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
+						<input type="hidden" id="creatorImg" value="${creator.creator_image}">
+						<input type="file" name="creatorImg" id="creator_image">
 						<div class="imagePreview creatorName">
-							<img id="creator_image_preview">
+							<c:choose>
+								<c:when test="${empty creator.creator_image or creator.creator_image == ''}">
+									<img id="creator_image_preview" src="${pageContext.request.contextPath}/resources/image/creatorImg_icon.png">
+								</c:when>
+								<c:otherwise>
+									<img id="creator_image_preview" src="${pageContext.request.contextPath}/resources/upload/${creator.creator_image}">
+								 </c:otherwise>
+							</c:choose>
 						</div>
 						<div>
 							<label for="creator_image">
@@ -1639,7 +1721,7 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<textarea name="creator_introduce" id="creator_introduce" rows="5" cols="10" placeholder="간단한 이력과 소개를 써주세요." maxlength="300"></textarea>
+						<textarea name="creator_introduce" id="creator_introduce" rows="5" cols="10" placeholder="간단한 이력과 소개를 써주세요." maxlength="300"><c:if test="${not empty creator.creator_introduce}">${creator.creator_introduce}</c:if></textarea>
 						<div class="LengthCheck">
 							<span id="checkCreatorIntroduce"></span>
 							<p><span id="introduceLength">0</span>/300</p>

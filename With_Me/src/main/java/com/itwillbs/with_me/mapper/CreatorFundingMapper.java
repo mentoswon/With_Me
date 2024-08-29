@@ -26,13 +26,13 @@ public interface CreatorFundingMapper {
 	List<CommonCodeVO> selectCategoryDetail(String project_category);
 
 	// 창작자 정보 조회
-	String selectCreator(String id);
+	CreatorVO selectCreator(String id);
 
 	// 창작자 정보 등록
 	void insertCreator(String id);
 
 	// 프로젝트 등록
-	int insertProject(@Param("creator_idx") String creator_idx, 
+	int insertProject(@Param("creator_idx") int creator_idx, 
 					  @Param("project") ProjectVO project);
 	
 	// 프로젝트 번호 조회
@@ -61,6 +61,9 @@ public interface CreatorFundingMapper {
 
 	// 프로젝트 임시저장
 	int updateProject(ProjectVO project);
+
+	// 창작자정보 임시저장
+	int updateCreator(CreatorVO creator);
 
 
 

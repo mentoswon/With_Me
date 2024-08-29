@@ -37,7 +37,7 @@ public class CreatorFundingService {
     // 창작자 정보 등록 요청
     public void registCreator(String id) {
     	// 기존에 창작자 정보 있는지 조회(창작자 번호 조회)
-    	String selectCreator = mapper.selectCreator(id);
+    	CreatorVO selectCreator = mapper.selectCreator(id);
     	
     	if (selectCreator == null) {	// 조회된 결과 없을 경우
 			mapper.insertCreator(id);
@@ -47,7 +47,8 @@ public class CreatorFundingService {
     // 프로젝트 등록 요청
 	public int registProject(String id, ProjectVO project) {
 		// 창작자 번호 조회
-		String creator_idx = mapper.selectCreator(id);
+		CreatorVO creator = mapper.selectCreator(id);
+		int creator_idx = creator.getCreator_idx();
 		
 		return mapper.insertProject(creator_idx, project);
 	}
@@ -60,6 +61,11 @@ public class CreatorFundingService {
 	// 프로젝트 정보 조회 요청
 	public ProjectVO getProject(String project_idx) {
 		return mapper.selectProject(project_idx);
+	}
+	
+	// 창작자 정보 조회 요청
+	public CreatorVO getCreator(String id) {
+		return mapper.selectCreator(id);
 	}
 
 	// 아이템 등록 요청
@@ -95,6 +101,11 @@ public class CreatorFundingService {
 	// 프로젝트 임시저장 요청
 	public int modifyProject(ProjectVO project) {
 		return mapper.updateProject(project);
+	}
+
+	// 창작자정보 임시저장 요청
+	public int modifyCreator(CreatorVO creator) {
+		return mapper.updateCreator(creator);
 	}
 
 

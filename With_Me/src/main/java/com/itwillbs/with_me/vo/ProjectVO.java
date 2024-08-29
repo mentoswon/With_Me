@@ -44,7 +44,7 @@ public class ProjectVO {
 	private String project_introduce;
 	private String project_budget;
 	private String project_schedule;
-	private String project_team_interduce;
+	private String project_team_introduce;
 	private String project_sponsor;
 
 	private MultipartFile introduceImg;
@@ -56,6 +56,5 @@ public class ProjectVO {
 	
 	private String project_policy;
 	private Timestamp project_submit_date;
-	private String mail_auth_status;
 	
 }

@@ -39,8 +39,8 @@
 </select>
 
 <!-- 창작자 정보 조회 - SELECT -->
-<select id="selectCreator" resultType="String">
-	SELECT creator_idx
+<select id="selectCreator" resultType="creator">
+	SELECT *
 	FROM creator_info
 	WHERE creator_email = #{id}
 
@@ -87,7 +87,6 @@
 		, null		-- project_sponsor
 		, null		-- project_policy
 		, now()		-- project_submit_date
-		, 'N'		-- mail_auth_status
 	)
 </insert>
 
@@ -190,7 +189,6 @@
 		search_tag = #{search_tag},
 		target_price = #{target_price},
 		funding_commission = #{funding_commission},
---		funding_premium = #{funding_premium},
 		funding_start_date = #{funding_start_date},
 		funding_end_date = #{funding_end_date},
 		project_introduce = #{project_introduce},
@@ -199,6 +197,19 @@
 		project_team_introduce = #{project_team_introduce},
 		project_sponsor = #{project_sponsor},
 		project_policy = #{project_policy},
+		project_submit_date = now()
 	WHERE project_idx = #{project_idx};
+</update>
+
+<!-- 창작자정보 임시저장 - UPDATE -->
+<update id="updateCreator">
+	UPDATE creator_info
+	SET
+		creator_email = #{creator_email},
+		creator_name = #{creator_name},
+		creator_image = #{creator_image},
+		creator_introduce = #{creator_introduce}
+	WHERE creator_email = #{creator_email}
+		
 </update>
 </mapper>
