@@ -15,5 +15,7 @@
 		<typeAlias type="com.itwillbs.with_me.vo.StoreVO" alias="store"/>
 		<typeAlias type="com.itwillbs.with_me.vo.AddressVO" alias="address"/>
 		<typeAlias type="com.itwillbs.with_me.vo.BoardVO" alias="bo"/>
+		<typeAlias type="com.itwillbs.with_me.vo.CreatorVO" alias="creator"/>
+		<typeAlias type="com.itwillbs.with_me.vo.FollowVO" alias="follow"/>
 	</typeAliases>
  </configuration>
