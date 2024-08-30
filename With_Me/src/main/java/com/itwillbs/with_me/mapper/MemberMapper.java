@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.with_me.vo.CreatorVO;
+import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -45,16 +46,13 @@ public interface MemberMapper {
 	// 이메일로 창작자 조회
 	CreatorVO selectCreator(MemberVO member);
 
-//	// 프로젝트 정보 조회
-//	ProjectVO selectProject(MemberVO member);
-
-//	// 프로젝트 정보 조회
-//	List<ProjectVO> selectProjectList(MemberVO member);
-
 	// 프로젝트 리스트 개수 조회
 	int selectProjectListCount();
 
 	// 프로젝트 리스트
 	List<Map<String, Object>> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
+
+	// 팔로워 값 가져오기
+	FollowVO selectFollower(MemberVO member);
 
 }

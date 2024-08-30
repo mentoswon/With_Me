@@ -98,20 +98,6 @@
 		WHERE m.mem_email = #{mem_email}
 	</select>
 	
-	<!-- 프로젝트 정보 조회 -->
-<!-- 	<select id="selectProjectList" resultType="project"> -->
-<!-- 		SELECT p.project_idx, p.project_code, p.project_status, p.project_category, -->
-<!-- 			   p.project_category_detail, p.project_title, p.project_image, p.search_tag, -->
-<!-- 		       p.target_price, p.funding_start_date, p.funding_end_date, p.project_introduce, p.project_budget, -->
-<!-- 		       p.project_team_introduce, p.project_sponsor, p.project_policy, p.project_submit_date, -->
-<!-- 		       p.project_summary, c.creator_name, c.creator_email -->
-<!-- 		FROM member m JOIN creator_info c -->
-<!-- 		ON m.mem_email = c.creator_email -->
-<!-- 		JOIN project_info p -->
-<!-- 		ON c.creator_idx = p.creator_idx -->
-<!-- 		WHERE m.mem_email = #{mem_email} -->
-<!-- 	</select> -->
-	
 	<!-- 프로젝트 전체 리스트 개수 조회 -->
 	<select id="selectProjectListCount" resultType="int">
 		SELECT COUNT(*)
@@ -130,6 +116,14 @@
 		limit 
 			#{startRow}             -- Mapper 내의 메서드에서 @Param("startRow")
 			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
+	</select>
+	
+	<!-- 팔로워 값 가져오기(조회) -->
+	<select id="selectFollower" resultType="follow">
+		SELECT f.follow_idx, f.follow_mem_email, f.follow_creator
+		FROM follow f JOIN member m
+		ON m.mem_email = f.follow_mem_email
+		WHERE mem_email = #{mem_email}
 	</select>
 </mapper>
 

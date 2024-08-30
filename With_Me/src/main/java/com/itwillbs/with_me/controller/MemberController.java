@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.CreatorVO;
+import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
@@ -421,18 +422,17 @@ public class MemberController {
 		CreatorVO creatorInfo = service.getCreatorName(member);
 		// 창작자가 아닌 사람의 경우 멤버 테이블을 사용하기 위해서 member테이블값 가져오기
 		MemberVO memberInfo = service.getMember(member);
-	    // 창작자라면 올린 프로젝트, 후원한 프로젝트를 보여줘야하기에 project_info에서 값 가져오기
-//		List<ProjectVO> projectInfo = service.getProjectList(member);
-//		ProjectVO projectInfo = service.getProject(member);
+		// 팔로워 값 들고오기
+		FollowVO followInfo = service.getFollower(member);
 		
 		
 		System.out.println("creatorInfo : " + creatorInfo);
 	    System.out.println("memberInfo : " + memberInfo);
-//	    System.out.println("projectInfo : " + projectInfo);
+	    System.out.println("followInfo : " + followInfo);
 	    
 	    model.addAttribute("creatorInfo", creatorInfo);
 	    model.addAttribute("memberInfo", memberInfo);
-//	    model.addAttribute("projectInfo", projectInfo);
+	    model.addAttribute("followInfo", followInfo);
 	    
 		return "mypage/mypage";
 	}

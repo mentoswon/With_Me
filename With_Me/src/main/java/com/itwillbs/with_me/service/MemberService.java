@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.MemberMapper;
 import com.itwillbs.with_me.vo.CreatorVO;
+import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -90,16 +91,6 @@ public class MemberService {
 		return mapper.selectCreator(member);
 	}
 
-//	// 프로젝트 정보 조회
-//	public ProjectVO getProject(MemberVO member) {
-//		return mapper.selectProject(member);
-//	}
-
-//	// 프로젝트 정보 조회
-//	public List<ProjectVO> getProjectList(MemberVO member) {
-//		return mapper.selectProjectList(member);
-//	}
-
 	// 프로젝트 리스트 목록 개수 가져오기
 	public int getProjectListCount() {
 		return mapper.selectProjectListCount();
@@ -108,6 +99,11 @@ public class MemberService {
 	// 프로젝트 리스트 가져오기
 	public List<Map<String, Object>> getProjectList(int startRow, int listLimit) {
 		return mapper.selectProjectList(startRow, listLimit);
+	}
+
+	// 팔로워 값 가져오기
+	public FollowVO getFollower(MemberVO member) {
+		return mapper.selectFollower(member);
 	}
 	
 }
