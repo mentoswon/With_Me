@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.itwillbs.with_me.mapper.BoardMapper">
+
+	<!-- 공지사항 글 등록 -->
+	<insert id="insertBoard">
+		<selectKey keyProperty="bo_idx" resultType="int" order="BEFORE">
+				SELECT IFNULL(MAX(bo_idx), 0) -- board_num 최대값 조회(null 일 경우 기본값 0 사용)
+				FROM notice
+		</selectKey>
+		<!-- 새 글 번호와 참조글 번호는 <selectKey> 를 통회 조회한 #{board_num} 값 사용 -->
+		INSERT
+		INTO notice
+		VALUES (
+			#{bo_idx} + 1
+			, #{bo_subject}
+			, #{bo_re_ref} + 1  -- bo_re_ref(selectKey 를 통회 조회된 게시물 번호 + 1 값 사용)
+			, 0                 -- bo_re_lev
+			, 0                 -- bo_re_seq
+			, #{bo_content}
+			, #{bo_file}
+			, now()
+			, 0                 -- bo_readcount
+		)
+	</insert>
+
+	<select id="selectBoardList" resultType="bo">
+		SELECT *
+		FROM notice
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+			<choose>
+				<when test="searchType.equals('subject')">
+					bo_subject LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('content')">
+					bo_content LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('subject_content')">
+					bo_subject LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR bo_content LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					1 = 1  -- WHERE 절을 포함시키되 조건을 걸고 싶지 않을 경우 활용 가능한 조건식(무조건 true 가 나오는 식이면 OK)
+				</otherwise>
+			</choose>
+			
+		</if>
+		
+		ORDER BY
+			bo_re_ref DESC
+			, bo_re_seq ASC
+			, bo_idx DESC
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
+	
+	<!-- 전체 게시물 수 조회 - SELECT -->
+	<!-- 검색 기능 추가를 위해 검색어에 따른 결과 게시물 수 조회 -->
+	<select id="selectBoardListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM notice
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+			<choose>
+				<when test="searchType.equals('subject')">
+					bo_subject LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('content')">
+					bo_content LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('subject_content')">
+					bo_subject LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR bo_content LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					1 = 1  -- WHERE 절을 포함시키되 조건을 걸고 싶지 않을 경우 활용 가능한 조건식(무조건 true 가 나오는 식이면 OK)
+				</otherwise>
+			</choose>
+		</if>
+	</select>
+	
+	<!-- 공지사항 상세정보  -->
+   <select id="selectBoardDetail" resultType="bo">
+		SELECT * 
+		FROM notice
+		WHERE bo_idx = #{bo_idx}
+	</select>
+	
+	<!-- 공지사항 삭제  -->
+	<delete id="deleteBoard">
+		DELETE 
+		FROM notice
+		WHERE bo_idx = #{bo_idx}
+	</delete>
+
+	<!-- 공지사항 파일 삭제  -->
+	<update id="deleteBoardFile">
+		UPDATE notice
+		SET
+			bo_file = CASE WHEN bo_file = #{bo_file} THEN '' ELSE bo_file 
+		END
+		WHERE 
+			bo_idx = #{bo_idx}
+	</update>
+	
+	<!-- 공지사항 수정-->
+	<update id="updateBoard">
+		UPDATE notice
+		SET
+			bo_subject = #{bo_subject}
+			, bo_content = #{bo_content}
+			, bo_file = #{bo_file}
+		WHERE
+			bo_idx = #{bo_idx}	
+	</update>
+	
+	<!-- 조회수 처리 -->
+	<update id="updateReadcount">
+		<!-- <selectKey> 태그는 위치와 상관없이 order 속성값에 따라 실행 시점이 결정됨 -->
+		<selectKey keyProperty="bo_readcount" resultType="int" order="AFTER">
+			SELECT bo_readcount
+			FROM notice
+			WHERE bo_idx = #{bo_idx}
+		</selectKey>
+		UPDATE notice
+		SET bo_readcount = bo_readcount + 1
+		WHERE bo_idx = #{bo_idx}
+	</update>
+	<delete id="deleteBoFile">
+		UPDATE notice
+		SET bo_file = CASE WHEN bo_file = #{bo_file} THEN '' ELSE bo_file END
+		WHERE bo_idx = #{bo_idx}
+	</delete>
+
+
+
+</mapper>

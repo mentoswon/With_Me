@@ -69,12 +69,28 @@
 	
 	</select>
 	
+	<select id="selectStoreListAll" resultType="hashmap">
+		SELECT *
+		FROM product_info
+		WHERE product_category = '푸드'
+	
+	
+	</select>
+	
+	
+	
+	
+	
+	
+	
 	<!-- 상품 상세정보 가져오기 -->
 	<select id="selectProduct" resultType="hashmap">
 		SELECT *
 		
 		FROM product_info
 		WHERE product_code = #{product_code}
+		
+		
 	
 	</select>
 	

@@ -28,9 +28,15 @@ public class StoreService {
 	}
 
 	// 상품 상세정보 가져오기
-	public Map<String, Object> getProduct(String product_code) {
+	public Map<String, Object> getProduct(String product_detail) {
 		
-		return mapper.selectProduct(product_code);
+		return mapper.selectProduct(product_detail);
+	}
+	
+	// 리스트 가져오기2222 전부
+	public List<Map<String, Object>> getStoreListAll(String searchKeyword, String productCategory,
+			String productCategory_detail, int startRow, int listLimit) {
+		return mapper.selectStoreListAll(searchKeyword, productCategory, productCategory_detail, startRow, listLimit);
 	}
 
 }
