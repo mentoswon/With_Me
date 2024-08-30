@@ -67,4 +67,7 @@ public interface MemberMapper {
 	// 팔로우값 가져오기
 	FollowVO selectFollow();
 
+	// 프로필 사진 삭제
+	int deleteProfileDelete(Map<String, String> map);
+
 }

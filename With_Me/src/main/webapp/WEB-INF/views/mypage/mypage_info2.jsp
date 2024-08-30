@@ -448,7 +448,11 @@
 							<td>프로필 사진</td>
 						</tr>
 						<tr>
-							<td><input type="" name="mem_name" id="mem_name" value="${creatorInfo.creator_image}"></td>
+							<td>
+								<img
+									src="${pageContext.request.contextPath}/resources/upload/${creator.creator_image}"
+									id="img1" class="car_image" selected>
+							</td>
 						</tr>	
 						<tr>
 							<td>이름</td>

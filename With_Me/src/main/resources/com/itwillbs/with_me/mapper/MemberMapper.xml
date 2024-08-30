@@ -155,6 +155,15 @@
 <!-- 		FROM follow -->
 <!-- 	</select> -->
 	
+	<!-- 마이페이지에서 프로필 사진 삭제 -->
+	<update id="deleteProfileDelete">
+		UPDATE creator_info
+		SET
+			creator_image = CASE WHEN creator_image = #{creator_image} THEN '' ELSE creator_image END,
+		WHERE 
+			creator_idx = #{creator_idx}
+	</update>
+	
 </mapper>
 
 

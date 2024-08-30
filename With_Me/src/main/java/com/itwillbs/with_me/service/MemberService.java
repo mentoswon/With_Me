@@ -125,6 +125,11 @@ public class MemberService {
 	public FollowVO getFollow() {
 		return mapper.selectFollow();
 	}
+
+	// 프로필 사진 삭제
+	public int removeProfileDelete(Map<String, String> map) {
+		return mapper.deleteProfileDelete(map);
+	}
 	
 }
 

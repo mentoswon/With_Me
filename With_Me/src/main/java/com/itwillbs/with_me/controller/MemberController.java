@@ -1,5 +1,6 @@
 package com.itwillbs.with_me.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -484,7 +485,38 @@ public class MemberController {
 		CreatorVO creatorInfo = service.getCreatorName(member);
 		model.addAttribute("creatorInfo", creatorInfo);
 		
+		MemberVO memberInfo = service.getMember(member);
+//		System.out.println("memberInfo !!!!!!!!!!!! : " + memberInfo);
+		model.addAttribute("memberInfo", memberInfo);
+		
+		List<String> fileList = new ArrayList<String>();
+		fileList.add(creatorInfo.getCreator_image());
+		
+		// List 객체를 반복하면서 파일명에서 원본 파일명을 추출
+		List<String> originalFileList = new ArrayList<String>();
+		for(String file : fileList) {
+			if(!file.equals("")) {
+				// "_" 기호 다음(해당 인덱스값 + 1)부터 끝까지 추출하여 리스트에 추가
+				originalFileList.add(file.substring(file.indexOf("_") + 1));
+			} else {
+				 // 파일이 존재하지 않을 경우 널스트링 값 추가
+				originalFileList.add("");
+			}
+		}
+		
+		// Model 객체에 파일 목록 저장
+		model.addAttribute("fileList", fileList);
+		model.addAttribute("originalFileList", originalFileList);
+		
 		return "mypage/mypage_info2";
+	}
+	
+	@GetMapping("CreatorProfileDelete")
+	public String creatorProfileDelete(@RequestParam Map<String, String> map, HttpSession session) throws Exception {
+		
+		int deleteCount = service.removeProfileDelete(map);
+		
+		return "";
 	}
 	
 }
