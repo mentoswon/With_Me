@@ -270,4 +270,39 @@
 		SET project_cancel_status = '취소승인'
 		WHERE project_idx = #{project.project_idx}
 	</update>
+	
+	<!-- 공지사항 개수 조회 -->
+	<select id="selectNoticeListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM notice
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				bo_idx like concat('%',#{searchKeyword},'%')
+				or bo_subject like concat('%',#{searchKeyword},'%')
+				or bo_content like concat('%',#{searchKeyword},'%')
+				or bo_file like concat('%',#{searchKeyword},'%')
+				or bo_sysdate like concat('%',#{searchKeyword},'%')
+				or bo_readcount like concat('%',#{searchKeyword},'%')
+		</if>
+	</select>
+	
+	<!-- 공지사항 목록 조회 -->
+	<select id="selectNoticeList" resultType="bo">
+		SELECT * 
+		FROM notice
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				bo_idx like concat('%',#{searchKeyword},'%')
+				or bo_subject like concat('%',#{searchKeyword},'%')
+				or bo_content like concat('%',#{searchKeyword},'%')
+				or bo_file like concat('%',#{searchKeyword},'%')
+				or bo_sysdate like concat('%',#{searchKeyword},'%')
+				or bo_readcount like concat('%',#{searchKeyword},'%')
+		</if>
+		ORDER BY
+			bo_idx DESC
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
 </mapper>

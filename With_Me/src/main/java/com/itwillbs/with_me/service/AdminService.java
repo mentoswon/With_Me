@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.AdminMapper;
+import com.itwillbs.with_me.vo.BoardVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -74,6 +75,16 @@ public class AdminService {
 	// 프로젝트 취소 승인여부 변경
 	public int changeProjectCancelStatus(ProjectVO project) {
 		return mapper.updateProjectCancelStatus(project);
+	}
+	
+	// 공지사항 개수 조회
+	public int getNoticeListCount(String searchKeyword) {
+		return mapper.selectNoticeListCount(searchKeyword);
+	}
+	
+	// 공지사항 목록 조회
+	public List<BoardVO> getNoticeList(int startRow, int listLimit, String searchKeyword) {
+		return mapper.selectNoticeList(startRow, listLimit, searchKeyword);
 	}
 	
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.AdminService;
 import com.itwillbs.with_me.service.MemberService;
+import com.itwillbs.with_me.vo.BoardVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
@@ -246,9 +247,9 @@ public class AdminController {
 	// 관리자 - 프로젝트관리 - 등록신청관리, 진행중인 프로젝트, 종료된 프로젝트
 	@GetMapping("AdminProjectList")
 	public String adminProjectList(@RequestParam(defaultValue = "1") int pageNum,
-									@RequestParam(defaultValue ="") String searchKeyword,
-									@RequestParam(defaultValue = "5") int listLimit,
-									HttpSession session, Model model, String status) {
+								@RequestParam(defaultValue ="") String searchKeyword,
+								@RequestParam(defaultValue = "5") int listLimit,
+								HttpSession session, Model model, String status) {
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
 			model.addAttribute("msg", "관리자 권한이 없습니다.");
@@ -415,6 +416,63 @@ public class AdminController {
 			}
 			return "result/fail";
 		}
+	}
+	
+	// 관리자 - 게시판관리 - 공지사항
+	@GetMapping("AdminNotice")
+	public String adminNotice(@RequestParam(defaultValue = "1") int pageNum,
+							@RequestParam(defaultValue ="") String searchKeyword,
+							@RequestParam(defaultValue = "5") int listLimit,
+							HttpSession session, Model model) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		// 페이징 처리
+//		int listLimit = 5; // 페이지 당 목록 개수
+		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
+		
+		int listCount = adminService.getNoticeListCount(searchKeyword); // 총 목록 개수
+//		System.out.println("listCount : " + listCount);
+		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
+		int endPage = startPage + pageListLimit - 1;
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
+		if(maxPage == 0) {
+			maxPage = 1;
+		}
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
+		if(pageNum < 1 || pageNum > maxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "AdminProjectList?pageNum=1");
+			return "result/fail";
+		}
+		
+		// 공지사항 목록 조회
+		// 검색어는 기본적으로 "" 널스트링
+		List<BoardVO> noticeList = adminService.getNoticeList(startRow, listLimit, searchKeyword);
+//		System.out.println("noticeList : " + noticeList);
+		
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+//		System.out.println("pageInfo : " + pageInfo);
+		
+		// 프로젝트 목록, 페이징 정보 Model 객체에 저장 -> admin_notice.jsp 로 전달
+		model.addAttribute("noticeList", noticeList);
+		model.addAttribute("pageInfo", pageInfo);
+		
+		return "admin/admin_notice";
 	}
 }
 
