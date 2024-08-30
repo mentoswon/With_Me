@@ -176,11 +176,11 @@ label.selected {
 				<div id="updateProjectWrap">
 					<div id="projectContent">
 						<img alt="로고" src="${pageContext.request.contextPath}/resources/image/image.png">
-						<h3>${project.project_title}</h3>
+						<h3>${project[0].project_title}</h3>
 					</div>
 					<div>
 						<form action="ProjectCreate" method="post">
-							<input type="hidden" name="project_idx" value="${project.project_idx}">
+							<input type="hidden" name="project_idx" value="${project[0].project_idx}">
 							<input type="submit" id="create" value="이어서 작성">
 						</form>
 					</div>
