@@ -99,19 +99,38 @@
 	</select>
 	
 	<!-- 프로젝트 정보 조회 -->
-	<select id="selectProjectList" resultType="project">
-		SELECT p.project_idx, p.project_code, p.project_status, p.project_category,
-			   p.project_category_detail, p.project_title, p.project_image, p.search_tag,
-		       p.target_price, p.funding_start_date, p.funding_end_date, p.project_introduce, p.project_budget,
-		       p.project_team_introduce, p.project_sponsor, p.project_policy, p.project_submit_date,
-		       p.project_summary, c.creator_name, c.creator_email
-		FROM member m JOIN creator_info c
-		ON m.mem_email = c.creator_email
-		JOIN project_info p
-		ON c.creator_idx = p.creator_idx
-		WHERE m.mem_email = #{mem_email}
+<!-- 	<select id="selectProjectList" resultType="project"> -->
+<!-- 		SELECT p.project_idx, p.project_code, p.project_status, p.project_category, -->
+<!-- 			   p.project_category_detail, p.project_title, p.project_image, p.search_tag, -->
+<!-- 		       p.target_price, p.funding_start_date, p.funding_end_date, p.project_introduce, p.project_budget, -->
+<!-- 		       p.project_team_introduce, p.project_sponsor, p.project_policy, p.project_submit_date, -->
+<!-- 		       p.project_summary, c.creator_name, c.creator_email -->
+<!-- 		FROM member m JOIN creator_info c -->
+<!-- 		ON m.mem_email = c.creator_email -->
+<!-- 		JOIN project_info p -->
+<!-- 		ON c.creator_idx = p.creator_idx -->
+<!-- 		WHERE m.mem_email = #{mem_email} -->
+<!-- 	</select> -->
+	
+	<!-- 프로젝트 전체 리스트 개수 조회 -->
+	<select id="selectProjectListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM project_info
 	</select>
 	
+	<!-- 프로젝트 리스트 -->
+	<select id="selectProjectList" resultType="hashmap">
+		SELECT * 
+			, (SELECT IFNULL(SUM(funding_pay_amt),0) 
+				FROM funding_user 
+				WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p 
+		JOIN creator_info c
+		ON p.creator_idx = c.creator_idx
+		limit 
+			#{startRow}             -- Mapper 내의 메서드에서 @Param("startRow")
+			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
+	</select>
 </mapper>
 
 

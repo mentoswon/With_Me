@@ -128,7 +128,7 @@ article {	/* 가운데 정렬 */
 
 .MypageExplanationWrap {
 	margin: 10px 40px 10px 20px;
-	width: 400px;
+/* 	width: 100%; */
 	box-sizing: border-box;
 }
 

@@ -11,13 +11,90 @@
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <style type="text/css">
-.option {
-	background-color: #FFFFFF;
-	border: none;
-}
+	.option {
+		background-color: #FFFFFF;
+		border: none;
+	}
+	.sec02 .itemList {
+		height: 100%;
+	}
+	
+	.sec02 .itemList .itemWrapper {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 2rem;
+	}
+	
+	.sec02 .itemList .itemWrapper .item {
+		width: 100%;
+	}
+	
+	.sec02 .itemList .itemWrapper .item .item_image .like{
+		top: 90%;
+		bottom: 0;
+		left: 90%;
+		right: 0;
+		width: 20px;
+		height: 20px;
+	}
+	
+	.sec02 .itemList .itemWrapper .item .item_info h4 {
+		font-size: 13px;	
+		font-weight: normal;
+		color: #bbb;
+	}
+	.sec02 .itemList .itemWrapper .item .item_info h3 {
+		text-align: left;
+		font-size: 16px;
+	}
+	
+	.sec02 .itemList .itemWrapper .item .item_info a {
+		word-wrap: break-word;
+	}
+	
+	
+	.sec02 .itemList .itemWrapper .item .fund_info {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 15px;
+	} 
+	
+	.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap {
+		display: flex;
+		align-items: center;
+	} 
+	
+	.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_rate {
+		margin-right: 10px;
+		color: #ffab40;
+		font-weight: bold;
+	}	
+	
+	.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_amt {
+		color: #aaa;
+		font-size: 14px;
+	}
+		
+	.progress {
+		width: 100%;
+		appearance: none;
+		height: 7px;
+	}
+	
+	.progress::-webkit-progress-bar {
+		background-color: #eee;
+		border-radius: 3px;
+	}
+	
+	.progress::-webkit-progress-value {
+		background-color: #ffab40;
+		border-radius: 3px;
+	}
 </style>
 <script type="text/javascript">
 $(function() {
@@ -122,7 +199,7 @@ $(function() {
 						<div class="inner">
 							<section class="sec02">
 								<c:choose>
-									<c:when test="${not empty projectInfo}">
+									<c:when test="${not empty projectList}">
 										<div class="itemList">
 											<div class="itemWrapper">
 											
@@ -130,8 +207,8 @@ $(function() {
 											<c:set var="now" value="<%=new java.util.Date()%>" />
 											<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
 											<!-- 오늘 날짜 추출 end -->
-											
-											<c:forEach var="project" items="${projectInfo}">
+											<c:if test="${sessionScope.sId eq creatorInfo.creator_email}">
+											<c:forEach var="project" items="${projectList}">
 											
 												<c:if test="${project.funding_end_date > today}">
 													<div class="item">
@@ -192,6 +269,7 @@ $(function() {
 													</div>
 												</c:if>
 											</c:forEach>
+											</c:if>
 											</div>
 										</div>
 									</c:when>

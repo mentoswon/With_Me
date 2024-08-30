@@ -1,6 +1,7 @@
 package com.itwillbs.with_me.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,9 +95,19 @@ public class MemberService {
 //		return mapper.selectProject(member);
 //	}
 
-	// 프로젝트 정보 조회
-	public List<ProjectVO> getProjectList(MemberVO member) {
-		return mapper.selectProjectList(member);
+//	// 프로젝트 정보 조회
+//	public List<ProjectVO> getProjectList(MemberVO member) {
+//		return mapper.selectProjectList(member);
+//	}
+
+	// 프로젝트 리스트 목록 개수 가져오기
+	public int getProjectListCount() {
+		return mapper.selectProjectListCount();
+	}
+
+	// 프로젝트 리스트 가져오기
+	public List<Map<String, Object>> getProjectList(int startRow, int listLimit) {
+		return mapper.selectProjectList(startRow, listLimit);
 	}
 	
 }

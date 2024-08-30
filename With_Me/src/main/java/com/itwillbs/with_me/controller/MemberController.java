@@ -1,6 +1,7 @@
 package com.itwillbs.with_me.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +21,7 @@ import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Controller
@@ -348,6 +350,7 @@ public class MemberController {
 	public String memberInfo(MemberVO member, Model model, HttpSession session, ProjectVO project,
 							@RequestParam(defaultValue = "1") int pageNum) {
 		String id = (String)session.getAttribute("sId");
+//		System.out.println("id : !!!!!!!!" + id);
 		// 미로그인 시 로그인 페이지로 이동
 		if(id == null) {
 			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
@@ -365,41 +368,54 @@ public class MemberController {
 		
 		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
-//		int listCount = service.getBoardListCount();
-//		
-//		System.out.println("listCount : " + listCount);
-//		
-//		int pageListLimit = 3;
-//		
-//		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
-//		
-//		int startPage = (pageNum -1) / pageListLimit * pageListLimit + 1;
-//		
-//		int endPage = startPage + pageListLimit - 1;
-//		
-//		// 수정 !! 검색 결과가 없을 때 해당페이지는 존재하지 않습니다가 뜨는 경우를 위해 
-//		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0이면 1로 변경
-//		if(maxPage == 0) {
-//			maxPage = 1;
-//		}
-//		
-//		if(endPage > maxPage) {
-//			endPage = maxPage;
-//		}
-//		
-//		// 전달받은 페이지 번호가 1보다 작거나 최대 번호보다 클 경우
-//		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
-//		if(pageNum < 1 || pageNum > maxPage) {
-//			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-//			model.addAttribute("targetURL", "ProjectList");
-//			
-//			return "result/fail";
-//		}
+		int listCount = service.getProjectListCount();
 		
+		System.out.println("listCount : " + listCount);
+		
+		int pageListLimit = 3;
+		
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		
+		int startPage = (pageNum -1) / pageListLimit * pageListLimit + 1;
+		
+		int endPage = startPage + pageListLimit - 1;
+		
+		// 수정 !! 검색 결과가 없을 때 해당페이지는 존재하지 않습니다가 뜨는 경우를 위해 
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0이면 1로 변경
+		if(maxPage == 0) {
+			maxPage = 1;
+		}
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 전달받은 페이지 번호가 1보다 작거나 최대 번호보다 클 경우
+		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
+		if(pageNum < 1 || pageNum > maxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "ProjectList");
+			
+			return "result/fail";
+		}
 		
 		member.setMem_email(id);
 		member = service.getMember(member);
 		System.out.println("member : !!!!!!!!!!" + member);
+		
+		// --------------------------------------------------------------------
+		// 목록 표출하기
+		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
+		
+		System.out.println("projectList : " + projectList);
+		
+		// --------------------------------------------------------------------
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+		// --------------------------------------------------------------------
+		model.addAttribute("projectList", projectList);
+		model.addAttribute("pageInfo", pageInfo);
+		
+		
 		
 		// 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자 이름 가져오기
 		CreatorVO creatorInfo = service.getCreatorName(member);

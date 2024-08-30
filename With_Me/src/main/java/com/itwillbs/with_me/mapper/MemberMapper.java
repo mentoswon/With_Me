@@ -1,8 +1,11 @@
 package com.itwillbs.with_me.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
@@ -45,7 +48,13 @@ public interface MemberMapper {
 //	// 프로젝트 정보 조회
 //	ProjectVO selectProject(MemberVO member);
 
-	// 프로젝트 정보 조회
-	List<ProjectVO> selectProjectList(MemberVO member);
+//	// 프로젝트 정보 조회
+//	List<ProjectVO> selectProjectList(MemberVO member);
+
+	// 프로젝트 리스트 개수 조회
+	int selectProjectListCount();
+
+	// 프로젝트 리스트
+	List<Map<String, Object>> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
 
 }
