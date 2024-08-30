@@ -104,6 +104,7 @@ h4 {
 	background-color: #eee;
 	border-radius: 5px;
 }
+
 /*  con03  */
 
 .inner .con03 .moreFundAmt .infoWrapper > div {
@@ -122,6 +123,44 @@ h4 {
 	border: 1px solid #ccc;
     height: 30px;
     margin-right: 10px;
+}
+
+/*  con04  */
+.inner .con04 .rewardInfo .infoWrapper div {
+	margin-bottom: 10px;
+}
+
+.inner .con04 .rewardInfo .infoWrapper .title {
+	font-size: 18px;
+	font-weight: bold;
+	color: #ffab40;
+	margin-bottom: 20px;
+}
+
+
+.inner .con04 .rewardInfo .infoWrapper div .option_name {
+	
+}
+
+.inner .con04 .rewardInfo .infoWrapper div .multile_option {
+	color: #555;
+}
+
+.inner .con04 .rewardInfo .infoWrapper #amtWrapper {
+	display: flex;
+	align-items: center;
+	margin-top: 30px;
+	
+}
+
+.inner .con04 .rewardInfo .infoWrapper #amtWrapper div {
+	margin: 0;
+}
+
+.inner .con04 .rewardInfo .infoWrapper #amtWrapper div:first-child {
+	margin-right: 30px;
+	font-weight: bold;
+	font-size: 18px;
 }
 
 /* 모달 팝업 */

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -250,6 +251,7 @@ public class UserFundingController {
 //		return "project/fund_in_progress";
 //	}
 	
+	
 	@PostMapping("FundInProgress")
 	public String fundInProgress(@RequestParam Map<String, Object> map, HttpSession session, MemberVO member, Model model) {
 		System.out.println("map : " + map);	
@@ -259,7 +261,7 @@ public class UserFundingController {
 		if(id == null) {
 			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
 			model.addAttribute("targetURL", "MemberLogin");
-			session.setAttribute("prevURL", "FundInProgress");
+//			session.setAttribute("prevURL", "");
 			return "result/fail";
 		}
 		
@@ -275,13 +277,13 @@ public class UserFundingController {
 		
 		// =========================================================================
 		// 선택한 후원 정보 정리
-//		String selected_option = map.get("funding_item_option").toString();
-//		String selected_option_title = map.get("reward_option_title").toString();
+		String selected_option = map.get("funding_item_option").toString();
+		String selected_option_title = map.get("reward_option_title").toString();
 		
 //		System.out.println(selected_option);
 		
-//		String[] optionArr = selected_option.split("\\|");
-//		String[] optionTitleArr = selected_option_title.split("\\|");
+		String[] optionArr = selected_option.split("\\|");
+		String[] optionTitleArr = selected_option_title.split("\\|");
 //		System.out.println("optionArr : " + Arrays.toString(optionArr));		
 //		System.out.println("optionTitleArr : " + Arrays.toString(optionTitleArr));
 //		
@@ -289,10 +291,18 @@ public class UserFundingController {
 //		map.put("selectedOption", optionTitleArr);
 //		
 //		System.out.println("map: " + map);
+		Map<String, Object> optionMap = new HashMap<String, Object>();
+		for(int i = 0 ; i < optionArr.length ; i++) {
+			optionMap.put(optionTitleArr[i], optionArr[i]);
+		}
+		
+		System.out.println("optionMap : " +optionMap);
+		
 		// =========================================================================
 		model.addAttribute("member", member);
 		model.addAttribute("userAddress", userAddress);
 		model.addAttribute("selectedReward", map);
+		model.addAttribute("optionMap", optionMap);
 		
 		
 		return "project/fund_in_progress";

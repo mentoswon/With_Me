@@ -107,15 +107,18 @@
 				<div class="rewardInfo">
 					<h4>결제 정보</h4>
 					<div class="infoWrapper">
-						<div>${selectedReward.reward_title}</div>
+						<div class="title">${selectedReward.reward_title}</div>
 						<div>
-							<%-- foreach --%>
-							<div>${selectedReward.reward_option_title}</div>
-							<div>&nbsp;&nbsp;&nbsp; 옵션 : ${selectedReward.funding_item_option}</div>
-							
+							<c:forEach var="optionMap" items="${optionMap}">
+								<div class="option_name">${optionMap.key}</div>
+								<div class="multile_option">&nbsp;&nbsp;- 옵션 : ${optionMap.value}</div>
+							</c:forEach>
 						</div>
-						<div>${selectedReward.reward_price}원 </div>
-						<div class="">추가 후원금 : </div>
+						
+						<div id="amtWrapper">
+							<div>${selectedReward.reward_price}원 </div>
+							<div class="">추가 후원금 : </div>
+						</div>
 					</div>
 				</div>
 			</section>
