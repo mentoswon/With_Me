@@ -124,6 +124,7 @@
 			SELECT 5) AS numbers
 	   	INNER JOIN reward_info r
 		ON CHAR_LENGTH(reward_item_idx) - CHAR_LENGTH(REPLACE(reward_item_idx, "|", "")) >= numbers.n - 1
+		WHERE r.reward_idx = #{reward_idx}
 		ORDER BY reward_item_idx;
 	</select>
 	
@@ -138,7 +139,7 @@
 			SELECT 5) AS numbers
 	    INNER JOIN item_info
 	    ON CHAR_LENGTH(multiple_option) - CHAR_LENGTH(REPLACE(multiple_option, "|", "")) >= numbers.n - 1
-		WHERE item_idx = 1;
+		WHERE item_idx = #{item_idx}
 	</select>
 	
 	<!-- 사용자 배송지 가져오기 -->
@@ -207,4 +208,5 @@
 		DELETE FROM user_address
 		WHERE address_idx = #{address_idx}
 	</delete>
+	
 </mapper>

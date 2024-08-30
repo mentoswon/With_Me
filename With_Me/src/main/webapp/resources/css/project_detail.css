@@ -16,6 +16,10 @@ section {
     width: 100%;
 }
 
+.optionResult > div:first-child {
+	margin-bottom: 5px;
+}
+
 .optionResult > div .removeTag {
 	display: block;
     width: 15px;

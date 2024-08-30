@@ -180,16 +180,16 @@
 									
 									<form action="FundInProgress" method="post">
 										<div class="reward_item_wrap">
-											<c:forEach var="rewardItemList" items="${rewardItemList}">
-												<c:if test="${rewardList.reward_idx eq rewardItemList.reward_idx}">
+											<c:forEach var="allRewardItems" items="${allRewardItems}">
+												<c:if test="${allRewardItems.reward_idx eq rewardList.reward_idx}">
 													<div class="reward_item">
-														<div class="reward_item_name">- ${rewardItemList.item_name}</div>
+														<div class="reward_item_name">${allRewardItems.item_name}</div>
 														
 														<!-- 옵션이 있으면 셀렉박스 표출됨 -->
 														<div class="reward_item_option">
 															<c:choose>
-																<c:when test="${rewardItemList.item_condition eq '객관식'}">
-																	<select class="reward_item_option_select option">
+																<c:when test="${allRewardItems.item_condition eq '객관식'}">
+																	<select class="reward_item_option_select">
 																		<option>옵션을 선택해주세요.</option>
 																		<c:forEach var="itemOptions" items="${itemOptions}">
 																			<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
@@ -197,7 +197,7 @@
 																	</select>
 																</c:when>
 																<c:otherwise>
-																	<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write option" >
+																	<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write" >
 																</c:otherwise>
 															</c:choose>
 														</div>
@@ -208,9 +208,10 @@
 										
 										<input type="hidden" value="${rewardList.reward_title}" name="reward_title">
 										<input type="hidden" value="${rewardList.reward_price}" name="reward_price">
-										<input type="hidden" value="${project_detail.project_idx}" name="funding_project_idx" id="funding_project_idx">
+										<input type="hidden" value="${project_detail.project_idx}" name="funding_project_idx" class="funding_project_idx">
 										<input type="hidden" value="${rewardList.reward_idx}" name="funding_reward_idx" id="funding_reward_idx">
-										<input type="hidden" value="" name="funding_item_option" id="funding_item_option"> <%-- | 로 구분해서 넣을거임 --%>
+										<input type="hidden" value="" name="reward_option_title" class="reward_option_title">
+										<input type="hidden" value="" name="funding_item_option" class="funding_item_option"> <%-- | 로 구분해서 넣을거임 --%>
 										<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
 									</form>
 									<div class="optionResult"></div>
@@ -301,12 +302,26 @@
 			// 후원 선택 (옵션 띄우기)
 			let reward = document.querySelectorAll(".reward");
 			let reward_item = document.querySelectorAll(".reward_item");
+			let reward_item_option = document.querySelectorAll(".reward_item_option");
 			let reward_item_option_select = document.querySelectorAll(".reward_item_option_select");
 			let reward_item_option_write = document.querySelectorAll(".reward_item_option_write");
 			let rewardSubmitBtn = document.querySelectorAll(".rewardSubmitBtn");
 			let optionResult = document.querySelectorAll(".optionResult");
 			
 			$(reward).on('click', function() { 
+				
+				// 이미 on 클래스가 있는 리워드라면 (즉, 이미 선택된 상태라면) 아무것도 하지 않음
+			    if ($(this).hasClass("on")) {
+			        return; // 현재 선택된 리워드는 변경을 막지 않음
+			    }
+			    
+			    // 자식 태그가 있는지 확인
+			    if ($(".reward.on").find($(optionResult)).children().length > 0) {
+			        alert("리워드를 변경하시면 옵션이 모두 삭제됩니다");
+			        
+			        $(optionResult).children().remove();
+			    }
+				
 // 				console.log("reward clicked!"); // 확인 완료
 				
 				// 클릭한 리워드에 있는 아이템에 있는 옵션에 클래스 on 붙이기
@@ -320,61 +335,97 @@
 					$(this).css('border','2px solid #ffab40');
 				}
 				
-				
 			});
 			// ==========================================================================
 			// 리워드 옵션 유효성 검사
-			$(rewardSubmitBtn).on('click', function() { 
-				if($(reward_item_option_write).val() == ""){
-					alert("옵션을 입력해주세요.");
-					$(reward_item_option_write).focus();
+			
+			$(rewardSubmitBtn).on('click', function(e) { 
+// 				e.preventDefault(); // submit 막는거
+				updateHiddenTagValue();
+				
+				if($(".reward.on").find($(reward_item_option_select)).val() == "") {
 					
-					return false;
+// 					if($(reward_item_option_select).val() === ""){
+						alert("옵션을 선택해주세요.");
+						$(reward_item_option_select).focus();
+						
+						return false;
+// 					}
 				}
 				
-				if($(reward_item_option_select).val() == ""){
-					alert("옵션을 선택해주세요.");
-					$(reward_item_option_select).focus();
+				if($(".reward.on").find($(reward_item_option_write)).val() == "") {
 					
-					return false;
+// 					if($(reward_item_option_write).val() === ""){
+						alert("옵션을 입력해주세요.");
+						$(reward_item_option_write).focus();
+						
+						return false;
+// 					}
 				}
+				
 			});
 				
 			// ------------------------------------------------------------------------
-			// 리워드 옵션 업데이트 (객관식)
-			$(".reward_item_option_select.option").on('change', function() {
-				let option_title = $(this).closest($(".reward_item")).find($(".reward_item_name")).text();
+			$(reward_item_option).children().on('change', function() {
+				let option_title = $(this).parent().siblings($(".reward_item_name")).text();
 				
-				if($(".reward_item_option_select_value").length >= 1){
-					alert("옵션은 1개만 선택가능합니다.");
+				if($(this).is(reward_item_option_select)){
+					if($(".reward_item_option_select_value").length >= 1){
+						alert("옵션은 1개만 선택가능합니다.");
+						
+						return ;
+					}
+					$(".reward.on").find($(optionResult)).append("<div class='reward_item_option_select_value'>" + option_title + " : " + $(this).val().trim() + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></div>");
+				} 
+				
+				if ($(this).is(reward_item_option_write)){
+					if($(".reward_item_option_write_value").length >= 1){
+						alert("옵션은 1개만 입력가능합니다.");
+						
+						return;
+					}
 					
-					return ;
+					$(".reward.on").find($(optionResult)).append("<div class='reward_item_option_write_value'>" + option_title + " : " + $(this).val().trim() + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></div>");
+					
 				}
 				
-				$(".reward.on").find($(".optionResult")).append("<div class='reward_item_option_select_value'>" + option_title + " : " + $(this).val().trim() + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></div>");
+				updateHiddenTagValue()
 			});
 			
-			// 리워드 옵션 업데이트 (주관식)
-			$(".reward_item_option_write.option").on('change', function() {
-				let option_title = $(this).closest($(".reward_item")).find($(".reward_item_name")).text();
+			
+			// ------------------------------------------------------------------------
+			// ------------------------------------------------------------------------
+			// hidden input 업데이트 함수
+		    function updateHiddenTagValue() {
+				let optionTitles = [];
+				let options = [];
+// 				console.log($(".optionResult").children().text());
+				
+				$(".optionResult").children().each(function() {
+					optionTitles.push($(this).text().split(" : ")[0]);
+				});
+				
+				$(".reward.on").find(".reward_option_title").val(optionTitles.join("|"));  //옵션명을 태그를 구분자 | 로 연결하여 hidden input에 설정
 				
 				
-				if($(".reward_item_option_write_value").length >= 1){
-					alert("옵션은 1개만 선택가능합니다.");
-					
-					return;
-				}
+				$(".optionResult").children().each(function() {
+					options.push($(this).text().split(" : ")[1]);
+					console.log(options);
+				});
 				
-				$(".reward.on").find($(".optionResult")).append("<div class='reward_item_option_write_value'>" + option_title + " : " + $(this).val().trim() + "<span class='removeTag'><img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'></span></div>");
-// 				let options = [];
-				
-// 				options.push($(this).val().trim());
-				
-// 				console.log(options.join("|"));
-
-				// input hidden 에 value 값 넣어주기
-// 				$("#funding_item_option").val(options.join("|"));
+				$(".reward.on").find(".funding_item_option").val(options.join("|"));  // 옵션을 구분자 | 로 연결하여 hidden input에 설정
+				console.log($(".reward.on").find(".funding_item_option").val());
+			}
+			
+			
+			// ------------------------------------------------------------------------
+			// 옵션 제거
+			$(document).on('click', '.removeTag', function () {
+				$(this).parent().remove();
 			});
+		
+	     	// 폼 로드 시 함수실행
+		    updateHiddenTagValue();
 				
 				
 			// ==========================================================================
@@ -394,7 +445,6 @@
 			// 신고 폼
 			function reportType(type){
 				console.log(type); // 오케이 .. 뜬다..
-				
 				
 			}
 			

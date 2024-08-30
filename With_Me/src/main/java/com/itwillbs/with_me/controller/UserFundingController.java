@@ -3,6 +3,7 @@ package com.itwillbs.with_me.controller;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -162,35 +163,55 @@ public class UserFundingController {
         
         // 리워드별 아이템 가져오기
         List<Map<String, Object>> rewardItemList = new ArrayList<Map<String,Object>>();
-        
-        for(int i = 0 ; i < rewardList.size() ; i++) {
-        	int reward_idx = rewardList.get(i).getReward_idx();
-        	
-        	rewardItemList = service.getRewardItemList(reward_idx);
-        }
-        
-        // 확인
-//        System.out.println("rewardItemList : " + rewardItemList);
-        
-        // 객관식일 경우 아이템별 옵션도 가져와야함 
+        List<Map<String, Object>> allRewardItems = new ArrayList<Map<String,Object>>();  // 모든 아이템을 저장할 리스트
+
         List<Map<String, Object>> itemOptions = new ArrayList<Map<String,Object>>();
-        
-        for(int i = 0; i < rewardItemList.size() ; i++) {
-        	String item_idx = (String) rewardItemList.get(i).get("splited_item_idx");
-        	
-        	if(rewardItemList.get(i).get("item_condition").equals("객관식")) {
-        		itemOptions = service.getItemOpionList(item_idx);
-        	}
+        Map<String, Object> allItemOptionsMap = new HashMap<String, Object>(); // 아이템별 옵션을 저장할 맵
+
+        int reward_idx = 0;
+
+        for(int i = 0 ; i < rewardList.size() ; i++) {
+            reward_idx = rewardList.get(i).getReward_idx();
+            
+            System.out.println("reward_idx : " + reward_idx);
+            rewardItemList = service.getRewardItemList(reward_idx);
+            
+            // 가져온 아이템 리스트를 전체 리스트에 추가
+            allRewardItems.addAll(rewardItemList);
         }
+
+        // 객관식일 경우 아이템별 옵션도 가져와야함
+        for(int j = 0; j < allRewardItems.size() ; j++) {
+            String item_idx = (String) allRewardItems.get(j).get("splited_item_idx");
+            System.out.println("item_idx : " + item_idx);
+            
+            if(allRewardItems.get(j).get("item_condition").equals("객관식")) {
+                itemOptions = service.getItemOpionList(item_idx);
+                
+                // 옵션 리스트를 맵에 추가, 키는 item_idx로 설정
+                allItemOptionsMap.put(item_idx, itemOptions);
+            }
+        }
+
+        // 이제 allRewardItems 리스트에 모든 아이템들이 저장되어 있고,
+        // allItemOptionsMap 맵에는 객관식 옵션이 있는 아이템들의 옵션 리스트가 저장되어 있음.
+        // => 변수에 덮어써져서 마지막거만 표출되고 나머지는 표출되지 않았음 .. 해결 0830
+        
+        
         // 확인
+        System.out.println("allItemOptionsMap : " + allItemOptionsMap);
+        System.out.println("allRewardItems : " + allRewardItems);
+        System.out.println("rewardItemList : " + rewardItemList);
+        
         System.out.println("itemOptions : " + itemOptions);
+        // 확인
         
         // 후원 정보 가져오기 end --------
         
         // =========================================================
 		model.addAttribute("project_detail", project_detail);
 		model.addAttribute("rewardList", rewardList);
-		model.addAttribute("rewardItemList", rewardItemList);
+		model.addAttribute("allRewardItems", allRewardItems);
 		model.addAttribute("itemOptions", itemOptions);
 		
 		return "project/project_detail";
@@ -253,13 +274,26 @@ public class UserFundingController {
 //		System.out.println("userAddress : " + userAddress);
 		
 		// =========================================================================
-		// 선택한 후원 정보 띄우기
+		// 선택한 후원 정보 정리
+//		String selected_option = map.get("funding_item_option").toString();
+//		String selected_option_title = map.get("reward_option_title").toString();
 		
+//		System.out.println(selected_option);
 		
+//		String[] optionArr = selected_option.split("\\|");
+//		String[] optionTitleArr = selected_option_title.split("\\|");
+//		System.out.println("optionArr : " + Arrays.toString(optionArr));		
+//		System.out.println("optionTitleArr : " + Arrays.toString(optionTitleArr));
+//		
+//		map.put("selectedOption", optionArr);
+//		map.put("selectedOption", optionTitleArr);
+//		
+//		System.out.println("map: " + map);
 		// =========================================================================
 		model.addAttribute("member", member);
 		model.addAttribute("userAddress", userAddress);
 		model.addAttribute("selectedReward", map);
+		
 		
 		return "project/fund_in_progress";
 	}

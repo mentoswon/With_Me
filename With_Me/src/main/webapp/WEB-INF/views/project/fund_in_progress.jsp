@@ -110,8 +110,8 @@
 						<div>${selectedReward.reward_title}</div>
 						<div>
 							<%-- foreach --%>
-							<div>제품 구성</div>
-							<div>&nbsp;&nbsp;&nbsp; 옵션 : </div>
+							<div>${selectedReward.reward_option_title}</div>
+							<div>&nbsp;&nbsp;&nbsp; 옵션 : ${selectedReward.funding_item_option}</div>
 							
 						</div>
 						<div>${selectedReward.reward_price}원 </div>
