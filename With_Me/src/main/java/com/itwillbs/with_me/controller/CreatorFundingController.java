@@ -64,7 +64,8 @@ public class CreatorFundingController {
 		}
 		
 		// 작성중인 프로젝트 목록 조회
-		ProjectVO project = service.getWritingProjectList(id);
+		String status = "작성중";
+		List<ProjectVO> project = service.getProjectList(id, status);
 		System.out.println("project : " + project);
 		model.addAttribute("project", project);
 		
@@ -444,9 +445,24 @@ public class CreatorFundingController {
 		String id = (String)session.getAttribute("sId");
 		
 		// 프로젝트 목록 조회
-		List<ProjectVO> projectList = service.getProjectList(id);
+		String status = "";
+		List<ProjectVO> projectList = service.getProjectList(id, status);
 		
 		model.addAttribute("projectList", projectList);
+		
+//		// 작성중인 프로젝트 목록 조회(작성중)
+//		String status = "작성중";
+//		List<ProjectVO> projectList1 = service.getProjectList(id, status);
+//		// 심사중인 프로젝트 목록 조회(심사중)
+//		status = "심사중";
+//		List<ProjectVO> projectList2 = service.getProjectList(id, status);
+//		// 승인된 프로젝트 목록 조회(승인)
+//		status = "승인";
+//		List<ProjectVO> projectList3 = service.getProjectList(id, status);
+//		
+//		model.addAttribute("projectList1", projectList1);
+//		model.addAttribute("projectList2", projectList2);
+//		model.addAttribute("projectList3", projectList3);
 		
 		return "mypage/my_project";
 	}

@@ -8,16 +8,22 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.itwillbs.with_me.service.MemberService;
+import com.itwillbs.with_me.vo.MemberVO;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
 public class HomeController {
+	@Autowired
+	private MemberService memberService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -35,12 +41,22 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		// 세션 아이디가 없을 경우(=로그인 하지 않은 경우) 관리자 권한이 없도록 설정
-		if(session.getAttribute("sId") == null) {
-			session.setAttribute("sIsAdmin", "N");
-			// 세션 타이머 1시간으로 변경
-			session.setMaxInactiveInterval(60 * 60); // 60초 * 60분 = 3600
+		// 로그인 여부 및 관리자 여부에 따라 관리자 권한 설정
+		String sId = (String)session.getAttribute("sId");
+		MemberVO member = new MemberVO();
+		if(sId == null) { // 세션 아이디가 없을 경우(=로그인 하지 않았을 경우)
+			session.setAttribute("sIsAdmin", "N"); // 관리자 권한 없음
+		} else { // 세션 아이디가 있을 경우(=로그인 했을 경우)
+			member.setMem_email(sId);
+			member = memberService.getMember(member);
+			if(member.getMem_isAdmin() == 0) { // 관리자가 아닐 경우
+				session.setAttribute("sIsAdmin", "N"); // 관리자 권한 없음
+			} else if(member.getMem_isAdmin() == 1) { // 관리자일 경우
+				session.setAttribute("sIsAdmin", "Y"); // 관리자 권한 있음
+			}
 		}
+		// 세션 타이머 1시간으로 변경
+		session.setMaxInactiveInterval(60 * 60); // 60초 * 60분 = 3600
 		
 		return "index";
 	}

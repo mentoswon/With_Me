@@ -20,40 +20,29 @@
 		<div class="inner">
 			<section class="con01">
 				<div class="itemWrapper">
+				<c:set var="product_detail" value="${product_detail}"/>
 					<div id="imgArea">
 						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
 					</div>
 					<div id="infoArea">
-						<span class="category">${project_detail.project_category} > ${project_detail.project_category_detail}</span>
+						<span class="category">${product_detail.product_category} > ${product_detail.product_category_detail}</span>
 						<button>공유</button>
-						<h4>${project_detail.project_title}</h4>
+						<h4>${product_detail.product_name}</h4>
 						<div class="fundInfo1">
 							<div>
 								<span>가격</span>
 								<ul>
-									<li><h4><fmt:formatNumber pattern="#,###">${project_detail.funding_amt}</fmt:formatNumber></h4></li>
+									<li><h4><fmt:formatNumber pattern="#,###">${product_detail.product_price}</fmt:formatNumber></h4></li>
 									<li>원</li>
-								</ul>
-							</div>
-							<div>
-								<span>후원자</span>
-								<ul>
-									<li><h4>${project_detail.funding_people}</h4></li>
-									<li>명</li>
 								</ul>
 							</div>
 						</div>
 						<div class="fundInfo2">
-							<dl>
-								<dt>가격</dt>
-								<dd><fmt:formatNumber pattern="#,###">${project_detail.target_price}</fmt:formatNumber> 원</dd>
-							</dl>
 							<dl> 
 								<dt>배송</dt>
 								<dd><b>평일 16시 전 주문하면 오늘 출발  </b>(무료배송)</dd> <!-- 마감일 다음날 결제 예정일 -->
 							</dl>
 						</div>
-						
 						<div class="fundInfo3">
 							<button class="like Btn">
 								<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
@@ -77,7 +66,7 @@
 							<div>
 								<div class="creator">
 									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
-									<span><a href="MemberInfoTest?mem_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
+									<span><a href="MemberInfoTest?mem_email=${project_detail.creator_email}">창작자명</a></span>
 								</div>
 								<div>
 									<ul>
@@ -86,7 +75,7 @@
 									</ul>
 									<ul>
 										<li>팔로워</li>
-										<li>${project_detail.followerCount} 명</li>
+										<li>2 명</li>
 									</ul>
 								</div>
 							</div>

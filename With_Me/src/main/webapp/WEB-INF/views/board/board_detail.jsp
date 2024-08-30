@@ -98,14 +98,15 @@ th {
 				
 				<table>
 					<tr>
-						<th width="70">제 목${bo.bo_subject}</th>
-						<td colspan="3"></td>
+						<th width="70">제 목</th>
+						<td colspan="4">${bo.bo_subject}</td>
 					</tr>
 					<tr>
 						<!-- 작성일시 출력 형식은 ex) 2024-06-04 12:30 -->
 						<th width="70">작성일시</th>
 						<td><fmt:formatDate value="${bo.bo_sysdate}"
 								pattern="yyyy-MM-dd" /></td>
+						<td width="100">조회수 ${bo.bo_readcount}</td>
 					</tr>
 				</table>
 			</section>
@@ -114,7 +115,7 @@ th {
 				<img
 					src="${pageContext.request.contextPath}/resources/upload/${bo.bo_file}"
 					id="img1" class="bo_image" selected> 
-					<br>
+					
 					${bo.bo_content}
 			</section>
 			<section id="commandCell">

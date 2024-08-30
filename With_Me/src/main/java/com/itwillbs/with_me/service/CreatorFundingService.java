@@ -19,9 +19,9 @@ public class CreatorFundingService {
 	@Autowired
 	private CreatorFundingMapper mapper;
 
-	// 작성중인 프로젝트 목록 조회 요청
-	public ProjectVO getWritingProjectList(String id) {
-		return mapper.selectWritingProjectList(id);
+	// 프로젝트 목록 조회 요청
+	public List<ProjectVO> getProjectList(String id, String status) {
+		return mapper.selectProjectList(id, status);
 	}
 
 	// 상위공통코드 FUND 인 컬럼(카테고리) 조회 요청
@@ -108,10 +108,16 @@ public class CreatorFundingService {
 		return mapper.updateCreator(creator);
 	}
 
-	// 프로젝트 목록 조회
-	public List<ProjectVO> getProjectList(String id) {
-		return mapper.selectProjectList(id);
-	}
+	// 심사중인 프로젝트 목록 조회 요청
+//	public List<ProjectVO> getReviewProjectList(String id) {
+//		return mapper.selectReviewProjectList(id);
+//	}
+
+	// 승인된 프로젝트 목록 조회 요청
+//	public List<ProjectVO> getApproveProjectList(String id) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 
 

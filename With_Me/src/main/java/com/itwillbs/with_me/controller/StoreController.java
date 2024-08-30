@@ -75,6 +75,12 @@ public class StoreController {
 		List<Map<String, Object>> StoreList = service.getStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit);
 		System.out.println("StoreList : " + StoreList);
 		// --------------------------------------------------------------------
+		
+		// 목록 표출222
+		List<Map<String, Object>> StoreListAll = service.getStoreListAll(searchKeyword, productCategory, productCategory_detail, startRow, listLimit);
+		System.out.println("StoreListAll : " + StoreListAll);
+		// 2222--------------------------------------------------------------------
+		
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
 		// --------------------------------------------------------------------
 		model.addAttribute("StoreList", StoreList);
@@ -91,7 +97,7 @@ public class StoreController {
 		
 		// 상품 가져오기 
 		Map<String,Object> product_detail = service.getProduct(product_code);
-		System.out.println("가져온 상품 : " + product_detail);
+		System.out.println("가져온 상품123 : " + product_detail);
 		
 		return "store/store_detail";
 	}

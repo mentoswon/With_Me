@@ -474,6 +474,7 @@ $(function() {
 	    	event.preventDefault(); // 기본 폼 제출 동작 방지
         	alert("옵션 조건을 선택해주세요!");
 		} else {
+	    	event.preventDefault(); // 기본 폼 제출 동작 방지
 	        $.ajax({
 	            type: "POST",
 	            url: "RegistItem",
@@ -493,7 +494,7 @@ $(function() {
 	                // 받은 응답 데이터로 리스트를 업데이트
 	                updateItemList(response);
 	                // 폼 리셋
-	                $("#registItemForm")[0].reset();
+// 	                $("#registItemForm")[0].reset();
 	            },
 	            error: function() {
 	                alert("아이템 등록에 실패하였습니다.");
@@ -510,30 +511,39 @@ $(function() {
 
         // 서버로부터 받은 아이템 리스트를 사용하여 새로운 리스트 생성
         itemList.forEach(function(item) {
+        	console.log("item.item_name : " + item.item_name);
 			let listItem =  
-            	`<div class="itemListWrap">
-	            	<div class="itemList">
-						<h4>${item.item_name}</h4>
-						<p>
-							<b>옵션조건(${item.item_condition})</b><br>
-							${item.multiple_option}
-						</p>
-						<br>
-					</div>
-					<div class="trashImg" data-item-idx="${item.item_idx}">
-						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
-					</div>
-				</div>`;
+            	'<div class="itemListWrap">'
+	            	+ '<div class="itemList">'
+		            +	 '<h4>' + item.item_name + '</h4>'
+		            +	 '<p>'
+			        +    	 '	<b>옵션조건(' + item.item_condition + ')</b><br>'
+			        +    	 item.multiple_option
+		            +	 '</p>'
+	            	+	 '<br>'
+		            + '</div>'
+		            + '<div class="trashImg" data-item-idx="' + item.item_idx + '">'
+		            +	 '<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">'
+		            + '</div>'
+	            + '</div>';
 				
 			let listItem2 =  
-            	`<div class="chooseItem">
-					<input type="checkbox" name="reward_item_idx" id="item${item.item_idx}" value="${item.item_idx}">
-					<label for="item${item.item_idx}">${item.item_name}</label><br>
-				</div>`;
-			
+            	'<div class="chooseItem">'
+				+	'<input type="checkbox" name="reward_item_idx" id="item' + item.item_idx + '" value="' + item.item_idx +'">'
+				+	'<label for="item' + item.item_idx + '">' + item.item_name + '</label><br>'
+				+ '</div>';
 			$("#itemListContainer").append(listItem);
 			$("#chooseItemContainer").append(listItem2);
         });
+		
+		// 모든 라디오 버튼의 선택 취소
+        $("input[name='item_condition']").prop('selected', false);
+
+        // 텍스트박스 비우기
+        $("#item_name").val('');
+
+        // 스크롤을 맨 아래로 이동
+        $("#itemListContainer").scrollTop($("#itemListContainer")[0].scrollHeight);
     }
     
 	// 아이템 삭제 이벤트
@@ -1327,7 +1337,7 @@ function linkAccount() {
 								<hr class="dividingLine2">
 								<div style="display: flex; justify-content: space-between;">
 									<input type="reset" id="reset" value="초기화">
-									<input type="submit" id="itemRegist" value="등록">
+									<input type="button" id="itemRegist" value="등록">
 								</div>
 							</form>
 						</div>
