@@ -101,9 +101,29 @@ public class MemberService {
 		return mapper.selectProjectList(startRow, listLimit);
 	}
 
-	// 팔로워 값 가져오기
-	public FollowVO getFollower(MemberVO member) {
-		return mapper.selectFollower(member);
+//	// 팔로워 값 가져오기
+//	public List<FollowVO> getFollower(MemberVO member) {
+//		return mapper.selectFollower(member);
+//	}
+
+	// 팔로우 리스트 개수 가져오기
+	public int getFollowListCount() {
+		return mapper.selectFollowListCount();
+	}
+
+	// 팔로우 리스트 가져오기
+	public List<Map<String, Object>> getFollowtList(int startRow, int listLimit) {
+		return mapper.selectFollowList(startRow, listLimit);
+	}
+
+	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
+	public List<FollowVO> getFollowerCount(List<FollowVO> followerCount) {
+		return mapper.selectFollowerCount(followerCount);
+	}
+
+	// 팔로우 값 가져오기
+	public FollowVO getFollow() {
+		return mapper.selectFollow();
 	}
 	
 }

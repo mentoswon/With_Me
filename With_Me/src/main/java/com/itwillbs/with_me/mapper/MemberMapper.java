@@ -52,7 +52,19 @@ public interface MemberMapper {
 	// 프로젝트 리스트
 	List<Map<String, Object>> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
 
-	// 팔로워 값 가져오기
-	FollowVO selectFollower(MemberVO member);
+//	// 팔로워 값 가져오기
+//	List<FollowVO> selectFollower(MemberVO member);
+
+	// 팔로우 리스트 개수 조회
+	int selectFollowListCount();
+
+	// 팔로우 리스트 조회
+	List<Map<String, Object>> selectFollowList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
+
+	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
+	List<FollowVO> selectFollowerCount(List<FollowVO> followerCount);
+
+	// 팔로우값 가져오기
+	FollowVO selectFollow();
 
 }

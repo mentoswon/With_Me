@@ -445,6 +445,12 @@
 				<section class="joinForm1">
 					<table id="tb01">
 						<tr>
+							<td>프로필 사진</td>
+						</tr>
+						<tr>
+							<td><input type="" name="mem_name" id="mem_name" value="${creatorInfo.creator_image}"></td>
+						</tr>	
+						<tr>
 							<td>이름</td>
 						</tr>
 						<tr>

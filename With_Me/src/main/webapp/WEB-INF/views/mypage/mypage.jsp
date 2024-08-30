@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>위드미 | 프로젝트 등록</title>
+<title>위드미 | 마이페이지</title>
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
@@ -313,9 +313,66 @@ $(function() {
 			<div id="writeContainer5" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<p>
-							팔로워가 없습니다.
-						</p>
+						<section id="articleForm">
+							<div align="center">
+								<section id="listForm">
+									<table border="1">
+										<tr id="tr_top">
+											<td>프로필</td>
+											<td>창작자 이름</td>
+											<td>해당창작자 정보</td>
+										</tr>
+				
+										<c:set var="pageNum" value="1" />
+										<c:if test="${not empty param.pageNum}">
+											<c:set var="pageNum" value="${param.pageNum}" />
+										</c:if>
+										<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
+										<c:forEach var="follow" items="${followList}">
+											<tr>
+												<td>
+													<img
+													src="${pageContext.request.contextPath}/resources/upload/${follow.creator_image}"
+													id="img1" selected>
+												</td>
+												<td>
+													<input type="button" value="${follow.creator_name}" onclick="location.href='MemberInfo?creator_name='${follow.creator_name}">
+												</td>
+												<td>
+												<input type="button" value="답변"
+													onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+													</td>
+											</tr>
+										</c:forEach>
+									</table>
+								</section>
+								<br>
+								<%-- ========================== 페이징 처리 영역 ========================== --%>
+								<section id="pageList">
+									<input type="button" value="이전"
+										onclick="location.href='qna_ask?pageNum=${pageNum - 1}'"
+										<c:if test="${pageNum <= 1}">disabled</c:if>>
+				
+									<c:forEach var="i" begin="${pageInfo.startPage}"
+										end="${pageInfo.endPage}">
+										<c:choose>
+											<c:when test="${i eq pageNum}">
+												<b>${i}</b>
+												<%-- 현재 페이지 번호 --%>
+											</c:when>
+											<c:otherwise>
+												<a href="qna_ask?pageNum=${i}">${i}</a>
+												<%-- 다른 페이지 번호 --%>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+				
+									<input type="button" value="다음"
+										onclick="location.href='qna_ask?pageNum=${pageNum + 1}'"
+										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+								</section>
+							</div>
+						</section>
 					</div>
 				</div>
 			</div>

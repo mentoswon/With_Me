@@ -370,12 +370,15 @@ public class MemberController {
 		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
 		int listCount = service.getProjectListCount();
+		int followListCount = service.getFollowListCount();
 		
 		System.out.println("listCount : " + listCount);
+		System.out.println("followListCount : " + followListCount);
 		
 		int pageListLimit = 3;
 		
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int followListMaxPage = followListCount / listLimit + (followListCount % listLimit > 0 ? 1 : 0);
 		
 		int startPage = (pageNum -1) / pageListLimit * pageListLimit + 1;
 		
@@ -391,6 +394,16 @@ public class MemberController {
 			endPage = maxPage;
 		}
 		
+		// ------------------------------------
+		if(followListMaxPage == 0) {
+			followListMaxPage = 1;
+		}
+		
+		if(endPage > followListMaxPage) {
+			endPage = followListMaxPage;
+		}
+		
+		
 		// 전달받은 페이지 번호가 1보다 작거나 최대 번호보다 클 경우
 		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
 		if(pageNum < 1 || pageNum > maxPage) {
@@ -399,22 +412,44 @@ public class MemberController {
 			
 			return "result/fail";
 		}
+		// ---------------------------------------------------------
+		if(pageNum < 1 || pageNum > followListMaxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "ProjectList");
+			
+			return "result/fail";
+		}
 		
 		member.setMem_email(id);
 		member = service.getMember(member);
-		System.out.println("member : !!!!!!!!!!" + member);
+//		System.out.println("member : !!!!!!!!!!" + member);
+		
+//		FollowVO follow = service.getFollow();
+//		System.out.println("follow : !!!!!!!!!!" + follow);
+		
 		
 		// --------------------------------------------------------------------
-		// 목록 표출하기
+		// 프로젝트 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
+		// 팔로우 목록 나타내기
+		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit);
+		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
+//		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
 		
-		System.out.println("projectList : " + projectList);
+//		System.out.println("projectList : " + projectList);
+		System.out.println("followList : " + followList);
+//		System.out.println("followerCount : " + followerCount);
 		
 		// --------------------------------------------------------------------
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+		PageInfo followPageInfo = new PageInfo(listCount, pageListLimit, followListMaxPage, startPage, endPage);
 		// --------------------------------------------------------------------
-		model.addAttribute("projectList", projectList);
 		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("projectList", projectList);
+		
+		model.addAttribute("followList", followList);
+		model.addAttribute("followPageInfo", followPageInfo);
+//		model.addAttribute("followerCount", followerCount);
 		
 		
 		
@@ -422,17 +457,15 @@ public class MemberController {
 		CreatorVO creatorInfo = service.getCreatorName(member);
 		// 창작자가 아닌 사람의 경우 멤버 테이블을 사용하기 위해서 member테이블값 가져오기
 		MemberVO memberInfo = service.getMember(member);
-		// 팔로워 값 들고오기
-		FollowVO followInfo = service.getFollower(member);
+//		// 팔로워 값 들고오기
+//		List<FollowVO> followInfo = service.getFollower(member);
 		
 		
-		System.out.println("creatorInfo : " + creatorInfo);
-	    System.out.println("memberInfo : " + memberInfo);
-	    System.out.println("followInfo : " + followInfo);
+//		System.out.println("creatorInfo : " + creatorInfo);
+//	    System.out.println("memberInfo : " + memberInfo);
 	    
 	    model.addAttribute("creatorInfo", creatorInfo);
 	    model.addAttribute("memberInfo", memberInfo);
-	    model.addAttribute("followInfo", followInfo);
 	    
 		return "mypage/mypage";
 	}
@@ -447,6 +480,9 @@ public class MemberController {
 		member = service.getMember(member);
 //		System.out.println("member !!!!!!!!!!!! : " + member);
 		model.addAttribute("member", member);
+		
+		CreatorVO creatorInfo = service.getCreatorName(member);
+		model.addAttribute("creatorInfo", creatorInfo);
 		
 		return "mypage/mypage_info2";
 	}

@@ -119,12 +119,42 @@
 	</select>
 	
 	<!-- 팔로워 값 가져오기(조회) -->
-	<select id="selectFollower" resultType="follow">
-		SELECT f.follow_idx, f.follow_mem_email, f.follow_creator
-		FROM follow f JOIN member m
-		ON m.mem_email = f.follow_mem_email
-		WHERE mem_email = #{mem_email}
+<!-- 	<select id="selectFollower" resultType="hashmap"> -->
+<!-- 		SELECT f.follow_idx, f.follow_mem_email, f.follow_creator -->
+<!-- 		FROM follow f JOIN member m -->
+<!-- 		ON m.mem_email = f.follow_mem_email -->
+<!-- 		WHERE mem_email = #{mem_email} -->
+<!-- 	</select> -->
+	
+	<!-- 팔로우 전체 리스트 개수 조회 -->
+	<select id="selectFollowListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM follow
 	</select>
+	
+	<!-- 팔로우 리스트 조회 -->
+	<select id="selectFollowList" resultType="hashmap">
+		SELECT *
+		FROM follow f join creator_info c
+		ON f.follow_creator = c.creator_email
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
+	
+<!-- 	<select id="selectFollowerCount" resultType="hashmap"> -->
+<!-- 		SELECT COUNT(f.follow_creator) -->
+<!-- 		FROM follow f JOIN creator_info c -->
+<!-- 		ON f.follow_creator = c.creator_email -->
+<!-- 		WHERE f.follow_mem_email = #{follow_mem_email} -->
+<!-- 	</select> -->
+	
+		<!--  -->
+<!-- 	<select id="selectFollow" resultType="follow"> -->
+<!-- 		SELECT * -->
+<!-- 		FROM follow -->
+<!-- 	</select> -->
+	
 </mapper>
 
 
