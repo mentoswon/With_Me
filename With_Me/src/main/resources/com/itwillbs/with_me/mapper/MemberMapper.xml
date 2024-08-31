@@ -161,8 +161,16 @@
 		SET
 			creator_image = CASE WHEN creator_image = #{creator_image} THEN '' ELSE creator_image END,
 		WHERE 
-			creator_idx = #{creator_idx}
+			mem_idx = #{mem_idx}
 	</update>
+	
+	<!-- =========================================================== -->
+	<!-- 회원 아이디 조회(채팅) -->
+	<select id="selectMemberId" resultType="String">
+		SELECT id
+		FROM member
+		WHERE id = #{receiver_id}
+	</select>
 	
 </mapper>
 

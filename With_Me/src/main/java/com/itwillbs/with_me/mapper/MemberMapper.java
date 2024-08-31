@@ -70,4 +70,7 @@ public interface MemberMapper {
 	// 프로필 사진 삭제
 	int deleteProfileDelete(Map<String, String> map);
 
+	// 회원 아이디 조회(채팅용)
+	String selectMemberId(String receiver_id);
+
 }

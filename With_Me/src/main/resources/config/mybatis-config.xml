@@ -17,5 +17,7 @@
 		<typeAlias type="com.itwillbs.with_me.vo.BoardVO" alias="bo"/>
 		<typeAlias type="com.itwillbs.with_me.vo.CreatorVO" alias="creator"/>
 		<typeAlias type="com.itwillbs.with_me.vo.FollowVO" alias="follow"/>
+		<typeAlias type="com.itwillbs.with_me.vo.ChatRoom" alias="chatRoom"/>
+  		<typeAlias type="com.itwillbs.with_me.vo.ChatMessage2" alias="chatMessage"/>
 	</typeAliases>
  </configuration>

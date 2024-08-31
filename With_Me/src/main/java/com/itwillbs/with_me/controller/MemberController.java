@@ -1,5 +1,8 @@
 package com.itwillbs.with_me.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,8 @@ public class MemberController {
 	private MemberService service;
 	@Autowired
 	private MailService MailService;
+	// 가상의 경로명 저장(이클립스 프로젝트 상의 경로)
+	private String uploadPath = "/resources/upload"; 
 	
 	// 회원가입폼 페이지
 	@GetMapping("MemberJoin")
@@ -347,7 +352,7 @@ public class MemberController {
 //		return "member/member_pw_reset";
 //	}
 	
-	// 마이페이지
+	// 마이페이지(창작자 정보)
 	@GetMapping("MemberInfo")
 	public String memberInfo(MemberVO member, Model model, HttpSession session, ProjectVO project,
 							@RequestParam(defaultValue = "1") int pageNum) {
@@ -480,7 +485,7 @@ public class MemberController {
 		member.setMem_email(id);
 		member = service.getMember(member);
 //		System.out.println("member !!!!!!!!!!!! : " + member);
-		model.addAttribute("member", member);
+//		model.addAttribute("member", member);
 		
 		CreatorVO creatorInfo = service.getCreatorName(member);
 		model.addAttribute("creatorInfo", creatorInfo);
@@ -498,9 +503,6 @@ public class MemberController {
 			if(!file.equals("")) {
 				// "_" 기호 다음(해당 인덱스값 + 1)부터 끝까지 추출하여 리스트에 추가
 				originalFileList.add(file.substring(file.indexOf("_") + 1));
-			} else {
-				 // 파일이 존재하지 않을 경우 널스트링 값 추가
-				originalFileList.add("");
 			}
 		}
 		
@@ -511,11 +513,36 @@ public class MemberController {
 		return "mypage/mypage_info2";
 	}
 	
+	// 프로필 사진 삭제
 	@GetMapping("CreatorProfileDelete")
 	public String creatorProfileDelete(@RequestParam Map<String, String> map, HttpSession session) throws Exception {
 		
+		System.out.println("map : " + map);
+		
 		int deleteCount = service.removeProfileDelete(map);
 		
+		if(deleteCount > 0) {
+			// 실제 업로드 경로 알아내기
+			String realPath = session.getServletContext().getRealPath(uploadPath);
+			
+			// 전송된 파일명이 널스트링("") 아닐 경우 파일 삭제 처리
+			if(!map.get("creator_image").equals("")) {
+				// 업로드 경로와 파일명(서브디렉토리 경로 포함) 결합해서 Path 객체 생성
+				Path path = Paths.get(realPath, map.get("creator_image"));
+				// 파일 삭제
+				Files.deleteIfExists(path);
+			}
+			
+		}
+		
+		return "redirect:/MypageInfo?member_idx=" + map.get("mem_idx") + "&pageNum=" + map.get("pageNum");
+	}
+	
+	// 마이페이지(개인정보) 수정
+	@GetMapping("MyPageInfoModify")
+	public String myPageInfoModify(
+			MemberVO member, @RequestParam(defaultValue = "1") String pageNum,
+			HttpSession session, Model model) throws Exception {
 		return "";
 	}
 	

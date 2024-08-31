@@ -130,6 +130,12 @@ public class MemberService {
 	public int removeProfileDelete(Map<String, String> map) {
 		return mapper.deleteProfileDelete(map);
 	}
+
+	// ========================================
+	// 회원 아이디 조회(채팅용)
+	public String getMemberId(String receiver_id) {
+		return mapper.selectMemberId(receiver_id);
+	}
 	
 }
 
