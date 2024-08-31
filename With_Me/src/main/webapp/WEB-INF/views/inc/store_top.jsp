@@ -53,7 +53,7 @@
 					<%-- 아이디 클릭 시 회원 상세정보 조회를 위한 "MemberInfo.me" 서블릿 요청 --%>
 					<a href="MemberInfo" class="loged">${sessionScope.sName}님</a>
 					<a href="javascript:confirmLogout()" class="loged">로그아웃 </a>
-					<button class="btn" onclick="location.href='StoreList'">스토어</button>
+<!-- 					<button class="btn" onclick="location.href='StoreList'">스토어</button> -->
 					<button onclick="StoreList('푸드', '')" class="btn" id="storeButton"> 스토어 </button>
 					<%-- 하이퍼링크 상에서 자바스크립트 함수 호출 시
 					"javascript:함수명()" 형태로 호출 --%>
