@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
 public interface UserFundingMapper {
@@ -58,6 +59,23 @@ public interface UserFundingMapper {
 
 	// 배송지 삭제
 	int deleteAddress(AddressVO address);
+
+	// 선택된 배송지 있는지 확인
+	int selectAddressIsSelected(String id);
+	
+	// 원래 선택된 배송지였던 걸 N으로 변경
+	int updateSelectedAddressToN(String id);
+	
+	// 배송지 변경
+	int updateSelectedAddressToY(int address_idx);
+
+	// 신고 접수
+	int insertReport(Map<String, Object> map);
+
+
+
+
+
 
 
 	

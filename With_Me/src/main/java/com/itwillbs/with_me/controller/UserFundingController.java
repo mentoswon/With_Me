@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -218,40 +219,7 @@ public class UserFundingController {
 		return "project/project_detail";
 	}
 	
-	
-	// 후원 진행
-//	@GetMapping("FundInProgress")
-//	public String fundInProgress(@RequestParam(defaultValue = "0") int reward_amt, 
-//								 @RequestParam(defaultValue = "") String reward_title,
-//								 HttpSession session, MemberVO member, Model model) {
-////		System.out.println("reward_amt, reward_title : " + reward_amt + ", " + reward_title);		
-//		String id = (String) session.getAttribute("sId");
-//		
-//		if(id == null) {
-//			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
-//			model.addAttribute("targetURL", "MemberLogin");
-//			session.setAttribute("prevURL", "FundInProgress");
-//			return "result/fail";
-//		}
-//		
-//		member.setMem_email(id);
-//		
-//		// 아이디로 회원 정보 가져오기
-//		member = memberService.getMember(member);
-////		System.out.println("member : " + member);
-//		
-//		// 아이디로 주소 정보 가져오기
-//		List<AddressVO> userAddress = service.getUserAddress(member);
-////		System.out.println("userAddress : " + userAddress);
-//		
-//		// =========================================================================
-//		model.addAttribute("member", member);
-//		model.addAttribute("userAddress", userAddress);
-//		
-//		return "project/fund_in_progress";
-//	}
-	
-	
+	// 사용자 후원 진행
 	@PostMapping("FundInProgress")
 	public String fundInProgress(@RequestParam Map<String, Object> map, HttpSession session, MemberVO member, Model model) {
 		System.out.println("map : " + map);	
@@ -277,26 +245,31 @@ public class UserFundingController {
 		
 		// =========================================================================
 		// 선택한 후원 정보 정리
-		String selected_option = map.get("funding_item_option").toString();
-		String selected_option_title = map.get("reward_option_title").toString();
 		
+		Map<String, Object> optionMap = new HashMap<String, Object>(); // option 만 따로 담을 map
+		
+		if(map.get("funding_item_option") != null) {
+			
+			String selected_option = map.get("funding_item_option").toString();
+			String selected_option_title = map.get("reward_option_title").toString();
+			
 //		System.out.println(selected_option);
-		
-		String[] optionArr = selected_option.split("\\|");
-		String[] optionTitleArr = selected_option_title.split("\\|");
-//		System.out.println("optionArr : " + Arrays.toString(optionArr));		
-//		System.out.println("optionTitleArr : " + Arrays.toString(optionTitleArr));
-//		
-//		map.put("selectedOption", optionArr);
-//		map.put("selectedOption", optionTitleArr);
-//		
-//		System.out.println("map: " + map);
-		Map<String, Object> optionMap = new HashMap<String, Object>();
-		for(int i = 0 ; i < optionArr.length ; i++) {
-			optionMap.put(optionTitleArr[i], optionArr[i]);
+			
+			String[] optionArr = selected_option.split("\\|");
+			String[] optionTitleArr = selected_option_title.split("\\|");
+			System.out.println("optionArr : " + Arrays.toString(optionArr));		
+			System.out.println("optionTitleArr : " + Arrays.toString(optionTitleArr));
+			
+			map.put("selectedOption", optionArr);
+			map.put("selectedOption", optionTitleArr);
+			
+			System.out.println("map: " + map);
+			for(int i = 0 ; i < optionArr.length ; i++) {
+				optionMap.put(optionTitleArr[i], optionArr[i]);
+			}
+			
+			System.out.println("optionMap : " +optionMap);
 		}
-		
-		System.out.println("optionMap : " +optionMap);
 		
 		// =========================================================================
 		model.addAttribute("member", member);
@@ -330,7 +303,7 @@ public class UserFundingController {
 				service.registNewAddress(new_address);
 			} else if(new_address.getAddress_is_default().equals("on")) { // 새 주소 등록하면서 기본 배송지 설정 !
 					
-			// 기본배송지가 있으면 그걸 N으로 바꿔야함 -> update
+				// 기본배송지가 있으면 그걸 N으로 바꿔야함 -> update
 				int updateCount = service.modifyDefaultAddress(id);
 				
 				// 바꾸고 새로운 기본배송지 insert
@@ -376,15 +349,115 @@ public class UserFundingController {
 		
 	}
 	
-	// 기본 배송지 변경
-	@PostMapping("ChangeDefaultAddress")
-	public String changeDefaultAddress(AddressVO address) {
-		System.out.println("address : " + address);
+	// 배송지 변경
+	@ResponseBody
+	@PostMapping("ChangeAddress")
+	public String changeAddress(@RequestParam(defaultValue = "0")int address_idx, HttpSession session) {
+		System.out.println("address_idx: " + address_idx);
 		
-		return "";
+		// 선택된 배송지 있는지 판별
+		String id = (String) session.getAttribute("sId");
+		int isSelectedCount = service.getAddressIsSelected(id);
+		
+		// 주소 변경 요청
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		if(isSelectedCount == 1) { // 선택된 배송지 있는 경우
+			
+			// 해당 배송지를 N으로 바꿔야함
+			int changeCount = service.modifySelectedAddressToN(id);
+			
+			if(changeCount > 0) { // 원래 address_selected 가 Y 인걸 N 으로 바꾸는걸 성공하고 update 해야함
+				int updateCount = service.modifySelectedAddressToY(address_idx);
+				
+				if(updateCount > 0) {
+					resultMap.put("result", true); // 변경 성공
+				} else { 
+					resultMap.put("result", false);// 변경 실패
+				}
+			} 
+		} else { //선택배송지 원래 없는 경우
+			int updateCount = service.modifySelectedAddressToY(address_idx);
+			
+			if(updateCount > 0) {
+				resultMap.put("result", true);// 변경 성공
+			} else {
+				resultMap.put("result", false);// 변경 실패
+			}
+		} 
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
 	}
 	
+	// ------------------------------------------------------------------------------------
+	// 신고하기 1
+	@ResponseBody
+	@GetMapping("ReportForm")
+	public String reportForm(@RequestParam(defaultValue = "") String type, @RequestParam(defaultValue = "")String project_title, @RequestParam(defaultValue = "")String project_code) {
+//		System.out.println("type : " + type);
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("result", true);
+		resultMap.put("type", type);
+		resultMap.put("project_title", project_title);
+		resultMap.put("project_code", project_code);
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+	}
 	
+	// 신고하기 작성 폼
+	@GetMapping("ReportWriteForm")
+	public String reportWriteForm(@RequestParam(defaultValue = "") String type, @RequestParam(defaultValue = "")String project_title,@RequestParam(defaultValue = "")String project_code ,Model model, HttpSession session, MemberVO member) {
+		System.out.println("type2222 : " + type);
+		
+		String id = (String) session.getAttribute("sId");
+		
+		if(id == null) {
+			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberLogin");
+//			session.setAttribute("prevURL", "");
+			return "result/fail";
+		}
+		
+		member.setMem_email(id);
+		
+		// 아이디로 회원 정보 가져오기
+		member = memberService.getMember(member);
+		
+		model.addAttribute("type", type);
+		model.addAttribute("project_title", project_title);
+		model.addAttribute("member", member);
+		model.addAttribute("project_code", project_code);
+		
+		return "project/fund_in_progress_report_form";
+	}
+	
+	// 신고 접수
+	@PostMapping("ReportSubmit")
+	public String reportSubmit(@RequestParam Map<String, Object> map, Model model) {
+//		System.out.println("map : " + map);
+		int insertCount = service.registReport(map);
+		
+		if(insertCount > 0) {
+			model.addAttribute("msg", "신고가 접수되었습니다.");
+			
+			return "result/success";
+		} else {
+			model.addAttribute("msg", "신고 접수 중 오류가 발생하였습니다. \n 다시 시도해주세요.");
+			
+			return "result/fail";
+		}
+	}
 	
 }
 

@@ -179,6 +179,7 @@
 			,#{address_sub}
 			,#{address_receiver_tel}
 			,'Y'
+			, default
 		)
 	</insert>
 	
@@ -200,13 +201,57 @@
 				<otherwise>
 				, 'Y'
 				</otherwise>
-			</choose>			
+			</choose>
+			, default		
 		)
 	</insert>
 	
+	<!-- 배송지 삭제 -->
 	<delete id="deleteAddress">
 		DELETE FROM user_address
 		WHERE address_idx = #{address_idx}
 	</delete>
 	
+	
+	<!-- 선택 배송지 여부 확인 -->
+	<select id="selectAddressIsSelected" resultType="int">
+		SELECT COUNT(*)
+		FROM user_address
+		WHERE address_mem_email = #{id}
+		AND address_selected = 'Y';
+	</select>
+	
+	<!-- 원래 선택배송지였던 걸 N으로 변경 -->
+	<update id="updateSelectedAddressToN">
+		UPDATE user_address
+		SET address_selected = 'N'
+		WHERE address_mem_email = #{id}
+		AND address_selected = 'Y';
+	</update>
+	
+	<!-- 선택 배송지로 변경 -->
+	<update id="updateSelectedAddressToY">
+		UPDATE user_address
+		SET address_selected = 'Y'
+		WHERE address_idx = #{address_idx}
+	</update>
+	
+	<!-- 신고 접수 -->
+	<insert id="insertReport">
+		INSERT INTO report
+		VALUES (
+			null
+			, #{report_mem_email}
+			, #{report_project_code}
+			, null
+			, #{report_category}
+			, #{report_reason}
+			, #{report_file1}
+			, #{report_file2}
+			, #{report_file3}
+			, #{report_ref_url1}
+			, #{report_ref_url2}
+			, #{report_ref_url3}
+		)
+	</insert>
 </mapper>

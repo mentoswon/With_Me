@@ -63,6 +63,32 @@
 				</div>
 			</section>
 			
+			<%-- 위치 고민 중 --%>
+			<section class="con04"> 
+				<div class="rewardInfo">
+					<h4>결제 정보</h4>
+					<div id='moreAmtInfo'> * 추가 후원금은 결제 시 포함하여 결제됩니다. </div>
+					<div class="infoWrapper">
+						<div class="title">${selectedReward.reward_title}</div>
+						<div>
+							<c:if test="${optionMap ne null}">
+								<c:forEach var="optionMap" items="${optionMap}">
+									<div class="option_name">${optionMap.key}</div>
+									<div class="multiple_option">&nbsp;&nbsp;- 옵션 : ${optionMap.value}</div>
+								</c:forEach>
+							</c:if>
+						</div>
+						
+						<div id="amtWrapper">
+							<div><fmt:formatNumber pattern="#,###"> ${selectedReward.reward_price}</fmt:formatNumber>&nbsp;원</div>
+							<div class="moreAmt">
+								<span id="moreAmt"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			
 			<section class="con02">
 				<div class="addressInfo">
 					<h4>배송지</h4>
@@ -74,11 +100,13 @@
 					<%-- address 테이블에서 가져와서 반복 --%>
 					<div class="infoWrapper">
 						<c:forEach var="userAddress" items="${userAddress}">
-							<c:if test="${userAddress.address_is_default eq 'Y'}">
+							<c:if test="${userAddress.address_selected eq 'Y'}">
 								<div class="addressWrapper">
 									<div class="left">
 										<div>${userAddress.address_receiver_name}
-											<span class="default_simbol">기본 배송지</span>
+											<c:if test="${userAddress.address_is_default eq 'Y'}">
+												<span class="default_simbol">기본 배송지</span>
+											</c:if>	
 										</div>											
 										<div>[${userAddress.address_post_code}] ${userAddress.address_main}</div>											
 										<div>${userAddress.address_sub}</div>
@@ -97,27 +125,7 @@
 					<div class="infoWrapper">
 						<div>
 							<div>후원금</div>
-							<input type="text" name="" class="moreFundAmt"> 원
-						</div>
-					</div>
-				</div>
-			</section>
-			
-			<section class="con04">
-				<div class="rewardInfo">
-					<h4>결제 정보</h4>
-					<div class="infoWrapper">
-						<div class="title">${selectedReward.reward_title}</div>
-						<div>
-							<c:forEach var="optionMap" items="${optionMap}">
-								<div class="option_name">${optionMap.key}</div>
-								<div class="multile_option">&nbsp;&nbsp;- 옵션 : ${optionMap.value}</div>
-							</c:forEach>
-						</div>
-						
-						<div id="amtWrapper">
-							<div>${selectedReward.reward_price}원 </div>
-							<div class="">추가 후원금 : </div>
+							<input type="number" name="" id="inputMoreAmt">&nbsp; 원
 						</div>
 					</div>
 				</div>
@@ -139,7 +147,7 @@
 		    <div class="modal_popup">
 		        <h3>배송지 추가</h3>
 		        <div class="content add">
-		        	<form action="RegistAddress" method="post" class="addressForm">
+		        	<form action="RegistAddress" class="addressForm" method="POST">
 			        	<div>
 			        		<span>받는 사람</span>
 			        		<input type="text" placeholder="&nbsp;&nbsp;받는 분 성함을 입력해주세요." name="address_receiver_name" required>
@@ -181,11 +189,18 @@
 		    <div class="modal_popup">
 		        <h3>배송지 변경</h3>
 		        <div class="content change">
-		        	<form action="ChangeDefaultAddress" method="post">
+		        	<form action="ChangeAddress" method="POST">
 			        	<c:forEach var="userAddress" items="${userAddress}">
 			        		<div class="infoWrapper">
 				        		<label>
-				        			<input type="radio" name="address" value="${userAddress.address_idx}">
+				        			<c:choose>
+				        				<c:when test="${userAddress.address_selected eq 'Y'}">
+				        					<input type="radio" name="address_idx" value="${userAddress.address_idx}" checked>
+				        				</c:when>
+				        				<c:otherwise>
+				        					<input type="radio" name="address_idx" value="${userAddress.address_idx}">
+				        				</c:otherwise>
+				        			</c:choose>
 									<div class="addressWrapper">
 										<div>${userAddress.address_receiver_name}
 											<c:if test="${userAddress.address_is_default eq 'Y'}">
@@ -200,8 +215,7 @@
 							</div>
 						</c:forEach>
 						
-						<input type="hidden" value="$('input[name=address]:checked').val()">
-						<input type="submit" value="선택 완료" id="changeBtn">
+						<input type="submit" value="배송지 변경" id="changeBtn">
 					</form>
 				</div>
    				<img alt="닫기" src="${pageContext.request.contextPath}/resources/image/close.png" class="close_btn">
@@ -222,10 +236,12 @@
 			// 팝업 오픈
 			$(AddAddressBtn).on('click', function() { 
 				$($(modal)[0]).addClass("on");
+				return;
 			});
 			
 			$(changeAddressBtn).on('click', function() { 
 				$($(modal)[1]).addClass("on");
+				return;
 			});
 			// -------------------------------------------------------------------------
 			// 배송지 삭제
@@ -249,7 +265,7 @@
 							if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
 								alert("잘못된 접근입니다!");
 							} else if(!response.result) { // 삭제 실패일 경우
-			                    alert("아이템 삭제에 실패하였습니다.");
+			                    alert("배송지 삭제에 실패하였습니다.");
 							} else if(response.result) { // 삭제 성공일 경우
 			                    // 삭제된 아이템 요소 제거
 			                    $(infoWrapper).remove(); 
@@ -262,9 +278,48 @@
 				}
 			});
 			
-			$(document).on('click', 'input:radio[name=address]', function(){
-			    console.log($("input:radio[name='address']:checked").val());
+			// 배송지 변경 (마 니 왜 안돼노)
+			$(document).on('click', '#changeBtn', function(){
+				let address_idx = $("input:radio[name='address_idx']:checked").val();
 				
+				$.ajax({
+					url: "ChangeAddress",
+					type : "post",
+					async: false, // 이 한줄만 추가해주시면 됩니다.
+					data:{
+						"address_idx": address_idx
+					},
+					dataType: "json",
+					success: function (response) {
+						
+						console.log(JSON.stringify(response));
+						
+						if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+							alert("잘못된 접근입니다!");
+						} else if(!response.result) { // 변경 실패일 경우
+		                    alert("배송지 변경에 실패하였습니다.");
+						} else if(response.result) { // 변경 성공일 경우
+							
+							// 페이지 리로드
+			                location.reload();
+		                }
+					
+					}, error : function (response) {
+						alert("실패! ");
+					}
+				});
+				
+			});
+			
+			// -------------------------------------------------------------------------
+			// 추가 후원금이 있을 경우
+			$("#inputMoreAmt").focusout(function (){
+				let moreMoneyAmt = $("#inputMoreAmt").val();
+				
+				// 1000단위 마다 , 찍기
+				moreMoneyAmt = moreMoneyAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+				
+				$("#moreAmt").text("추가 후원금 : " + moreMoneyAmt + " 원");
 			});
 			
 			// -------------------------------------------------------------------------

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.itwillbs.with_me.mapper.UserFundingMapper;
 import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
 @Service
@@ -88,6 +89,28 @@ public class UserFundingService {
 		
 		return mapper.deleteAddress(address);
 	}
+
+	// 선택된 배송지 있는지 확인
+	public int getAddressIsSelected(String id) {
+		return mapper.selectAddressIsSelected(id);
+	}
+	
+	// 원래 선택된 배송지였던 걸 N으로 변경
+	public int modifySelectedAddressToN(String id) {
+		return mapper.updateSelectedAddressToN(id);
+	}
+	
+	// 배송지 변경
+	public int modifySelectedAddressToY(int address_idx) {
+		return mapper.updateSelectedAddressToY(address_idx);
+	}
+
+	// 신고 접수
+	public int registReport(Map<String, Object> map) {
+		return mapper.insertReport(map);
+	}
+
+
 
 
 

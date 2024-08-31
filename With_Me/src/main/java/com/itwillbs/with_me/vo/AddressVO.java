@@ -17,6 +17,7 @@ public class AddressVO {
 	private String address_sub;
 	private String address_receiver_tel;
 	private String address_is_default;
+	private String address_selected;
 }
 
 
