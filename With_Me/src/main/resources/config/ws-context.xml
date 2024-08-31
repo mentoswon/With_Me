@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 웹소켓 요청에 사용될 요청 주소에 대한 핸들러 클래스 매핑 -<websocket:handlers> 태그 활용 -->
+	<!-- 주의! spring-websocket 라이브러리 추가 및 xml 파일 namespace의 websocket 항목 추가 필수 -->
+	<!-- 자바스크립트를 통해 Websocket 객체 생성 수행 시점에 지정한 요청 주소를 path 속성에 지정 -->
+<!-- 	<websocket:handlers> -->
+<!-- 		<websocket:mapping handler="wsHandler" path="/echo"/> -->
+		<!-- 웹소켓 최초 연결 시 HTTP 통신 과정에서 HttpSession 객체를 가로채서 -->
+		<!-- WebSocketSession 객체에 저장해주는 인터셉터 정보 설정 -->
+		<!-- => 웹소켓 핸들러 클래스에서 HttpSession 객체의 값을 활용하기 위함 -->
+<!-- 		<websocket:handshake-interceptors> -->
+<!-- 			<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor" /> -->
+<!-- 		</websocket:handshake-interceptors> -->
+<!-- 	</websocket:handlers> -->
+	
+<!-- 	<bean id="wsHandler" class="com.itwillbs.with_me.handler.MyWebSocketHandler" /> -->
+	
+	<!-- 1:1 채팅방 웹소켓 요청 매핑 -->
+	<websocket:handlers>
+		<websocket:mapping handler="wsHandler2" path="/echo2"/>
+		<!-- 웹소켓 최초 연결 시 HTTP 통신 과정에서 HttpSession 객체를 가로채서 -->
+		<!-- WebSocketSession 객체에 저장해주는 인터셉터 정보 설정 -->
+		<!-- => 웹소켓 핸들러 클래스에서 HttpSession 객체의 값을 활용하기 위함 -->
+		<websocket:handshake-interceptors>
+			<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor" />
+		</websocket:handshake-interceptors>
+	</websocket:handlers>
+	
+	<bean id="wsHandler2" class="com.itwillbs.with_me.handler.MyWebSocketHandler2" />
+</beans>
