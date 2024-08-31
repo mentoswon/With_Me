@@ -493,8 +493,6 @@ $(function() {
 	            success: function(response) {
 	                // 받은 응답 데이터로 리스트를 업데이트
 	                updateItemList(response);
-	                // 폼 리셋
-// 	                $("#registItemForm")[0].reset();
 	            },
 	            error: function() {
 	                alert("아이템 등록에 실패하였습니다.");
@@ -503,7 +501,7 @@ $(function() {
 		}
 	});
 	
-	// 아이템 리스트 출력
+	// 아이템 리스트 출력 및 아이템 만들기 영역 초기화
     function updateItemList(itemList) {
 		// 기존 리스트 초기화
         $("#itemListContainer").empty();
@@ -537,8 +535,11 @@ $(function() {
         });
 		
 		// 모든 라디오 버튼의 선택 취소
-        $("input[name='item_condition']").prop('selected', false);
-
+        $("input[name='item_condition']").prop('checked', false);
+		// 옵션조건 관련 레이블 제거
+        $("label[for='none'], label[for='subjective'], label[for='objective']").removeClass("selected");
+        $('#subjectiveWrap').hide();
+        $('#objectiveWrap').hide();
         // 텍스트박스 비우기
         $("#item_name").val('');
 
@@ -681,22 +682,16 @@ $(function() {
 	// 등록 버튼 클릭 시 AJAX 요청 전송(후원 등록 및 리스트 조회)
     $("#rewardRegist").on("click", function(event) {
         if (!$("input[name='reward_item_idx']:checked").val()) {
-	    	event.preventDefault(); // 기본 폼 제출 동작 방지
         	alert("아이템을 선택해주세요!");
         } else if ($("#reward_title").val().trim() === "") {
-	    	event.preventDefault(); // 기본 폼 제출 동작 방지
         	alert("후원 이름을 입력해주세요!");
         } else if (!$("input[name='amount_limit']:checked").val()) {
-        	event.preventDefault(); // 기본 폼 제출 동작 방지
 	        alert("수량 제한을 선택해주세요!");
         } else if ($("#amountLimit_Y").is(":checked") && $("#item_amount").val() == "") {
-        	event.preventDefault(); // 기본 폼 제출 동작 방지
 	        	alert("아이템 개수를 입력해주세요!");
 		} else if (!$("input[name='delivery_status']:checked").val()) {
-	    	event.preventDefault(); // 기본 폼 제출 동작 방지
         	alert("배송 여부를 선택해주세요!");
         } else if ($("#reward_price").val().trim() === "" || $("#reward_price").val() < 1000) {
-	    	event.preventDefault(); // 기본 폼 제출 동작 방지
         	alert("후원 금액을 입력해주세요!");
 		} else {
 	        $.ajax({
@@ -720,8 +715,6 @@ $(function() {
 	            success: function(response) {
 	                // 받은 응답 데이터로 리스트를 업데이트
 	                updateRewardList(response);
-	                // 폼 리셋
-	                $("#registRewardForm")[0].reset();
 	            },
 	            error: function() {
 	                alert("후원 구성 등록에 실패하였습니다.");
@@ -734,34 +727,48 @@ $(function() {
     function updateRewardList(rewardList) {
 		// 기존 리스트 초기화
         $("#rewardListContainer").empty();
-        $("#chooseRewardContainer").empty();
 
         // 서버로부터 받은 후원 구성 리스트를 사용하여 새로운 리스트 생성
         rewardList.forEach(function(reward) {
 			let listReward =  
-            	`<div class="rewardListWrap">
-					<div class="rewardList">
-						<h2>${reward.reward_price}원+</h2>
-						<h4>${reward.reward_title}</h4>
-						<p>
-							${reward.item_details}<br>
-							<c:if test="${reward.amount_limit == 'Y'}">
-								수량 : ${reward.item_amount}개
-							</c:if>
-						</p>
-						<br>
-					</div>
-					<div class="trashImg2" data-reward-idx="${reward.reward_idx}">
-						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
-					</div>
-				</div>`;
+            	'<div class="rewardListWrap">'
+				+	'<div class="rewardList">'
+				+ 		'<h2>' + reward.reward_price + '원+</h2>'
+				+ 		'<h4>' + reward.reward_title + '</h4>'
+				+ 		'<p>'
+				+ 			'${reward.item_details}<br>'
+				+ 			'<c:if test="' + reward.amount_limit + ' == 'Y'">'
+				+ 				'수량 : ' + reward.item_amount + '개'
+				+ 			'</c:if>'
+				+ 		'</p>'
+				+ 		'<br>'
+				+ 	'</div>'
+				+ 	'<div class="trashImg2" data-reward-idx="' + reward.reward_idx + '">'
+				+ 		'<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">'
+				+ 	'</div>'
+				+ '</div>';
+				
+			$("#rewardListContainer").append(listReward);
 			
-			$("#itemListContainer").append(listItem);
-			$("#chooseItemContainer").append('<input type="checkbox" name="reward_item_idx" value="${item.item_name}">');
+
+	        // 후원구성 영역 초기화
+	        $("input[name='reward_item_idx']").prop('checked', false);
+	        $("#reward_title").val('');
+	        $("input[name='amount_limit']").prop('checked', false);
+			$("label[for='amountLimit_Y'], label[for='amountLimit_N']").removeClass("selected");
+			$("#itemAmountWrap").hide();	// 아이템 개수 입력란 숨김
+	        $("#item_amount").val('');
+	        $("input[name='delivery_status']").prop('checked', false);
+			$("label[for='deliveryStatus_Y'], label[for='deliveryStatus_N']").removeClass("selected");
+	        $("#reward_price").val('');
+
+	        
+
+	        // 스크롤을 맨 아래로 이동
+	        $("#rewardListContainer").scrollTop($("#rewardListContainer")[0].scrollHeight);
         });
     }
     
-
 	// 후원 구성 삭제 이벤트
 	$(document).on("click", ".trashImg2", function() {
 	    let reward_idx = $(this).data("reward-idx");  // 클릭된 아이콘의 reward_idx 추출
@@ -916,6 +923,64 @@ $(function() {
     // 본인인증(cool sms)
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // =====================================================================================
+    // [ 심사요청 ]
+    // 필수 항목들에 대한 변화 감지
+	$('#project_category, #project_category_detail, #project_title, #project_summary, #projectImg').on('input change', function() {
+		checkFormValidity();
+	});
+	
+	function checkFormValidity() {
+		// 각 필수 필드가 입력되었는지 확인
+		
+		// 1) 기본정보(카테고리, 세부카테고리, 제목, 요약, 대표이미지)
+		let isCategorySelected = $('#project_category').val() !== null;
+		let isCategoryDetailSelected = $('#project_category_detail').val() !== null;
+		let isTitleFilled = $('#project_title').val().trim() !== '';
+		let isSummaryFilled = $('#project_summary').val().trim() !== '';
+		let isImageUploaded = $('#projectImg').val() !== '' || $('#project_image').val();
+		
+		// 2) 펀딩계획(목표금액, 펀딩일정(시작일, 종료일))
+		// ---- 요금제 선택은 나중에
+		let isPriceFilled = $('#target_price').val() !== '' || $("#target_price").val().trim().replace(/,/g, '') < 500000;
+		
+		
+		
+		// 3) 프로젝트계획(소개, 예산)
+		
+		
+		
+		// 4) 창작자정보(창작자이름, 프로필이미지, 창작자소개, 본인인증, 입금계좌)
+		
+		
+		
+		
+		// 모든 필수 항목이 입력되었거나 선택되었는지 확인
+		if (isCategorySelected && isCategoryDetailSelected && isTitleFilled && isSummaryFilled && isImageUploaded
+				&& isPriceFilled) {
+			$('#request').prop('disabled', false); // 버튼 활성화
+		} else {
+			$('#request').prop('disabled', true); // 버튼 비활성화
+		}
+	}
+    
+    
+    
+    
 });	// ready 이벤트 끝
 
 // 입금 계좌 등록
@@ -938,7 +1003,7 @@ function linkAccount() {
 </head>
 <body>
 	<%-- ---------- 프로젝트 등록 페이지 헤더 ---------- --%>
-<!-- 	<form id="projectForm" action="SubmitProject" method="post" enctype="multipart/form-data"> -->
+	<form id="projectForm" action="SubmitProject" method="post" enctype="multipart/form-data">
 		<header>
 			<div id="topWrap">
 				<a href="MyProject">← 내가 만든 프로젝트</a>
@@ -1295,7 +1360,8 @@ function linkAccount() {
 								아이템은 후원에 포함되는 구성 품목을 말합니다.<br>
 								특별한 물건부터 의미있는 경험까지 후원을 구성할 아이템을 만들어 보세요.
 							</p>
-							<form id="registItemForm">
+							<%-- 아이템 등록 영역 --%>
+							<div id="registItemForm">
 								<input type="hidden" name="project_idx" value="${project.project_idx}">
 								<b>아이템 이름</b>
 								<input type="text" name="item_name" id="item_name" maxlength="50" style="width: 100%;">
@@ -1339,7 +1405,7 @@ function linkAccount() {
 									<input type="reset" id="reset" value="초기화">
 									<input type="button" id="itemRegist" value="등록">
 								</div>
-							</form>
+							</div>
 						</div>
 						<br><br>
 					</div>
@@ -1383,7 +1449,8 @@ function linkAccount() {
 								다양한 금액대로 여러 개의 리워드를 만들어주세요.<br>
 								펀딩 성공률이 높아지고, 더 많은 후원 금액을 모금할 수 있어요.
 							</p>
-							<form id="registRewardForm">
+							<%-- 후원구성 영역 --%>
+							<div id="registRewardForm">
 								<input type="hidden" name="project_idx" value="${project.project_idx}">
 								<b>아이템 선택</b>
 								<div id="chooseItemContainer">
@@ -1452,9 +1519,9 @@ function linkAccount() {
 								<hr class="dividingLine2">
 								<div style="display: flex; justify-content: space-between;">
 									<input type="reset" id="reset" value="초기화">
-									<input type="submit" id="rewardRegist" value="등록">
+									<input type="button" id="rewardRegist" value="등록">
 								</div>
-							</form>
+							</div>
 						</div>
 						<br><br>
 					</div>
@@ -1776,7 +1843,7 @@ function linkAccount() {
 				</div>
 			</div>
 		</article>
-<!-- 	</form> -->
+	</form>
 	
 	<%-- ---------- 프로젝트 심사 기준 확인 팝업창 ---------- --%>
 	<div id="popupWrap">

@@ -56,6 +56,12 @@ article {	/* 가운데 정렬 */
 	text-align: left;
 }
 
+.importanceImg img {
+	width: 22px;
+	height: 22px;
+	vertical-align: text-bottom;	/* 글자와 정렬 맞추기 */
+}
+
 /* ----- 프로젝트 카테고리 ----------*/
 input[type="radio"] {
 	display: none;
@@ -172,7 +178,12 @@ label.selected {
 			<%-- ------------------------------------------------------ --%>
 			<%-- 작성중인 프로젝트 있는지 확인(있다면 이어서 작성 표시) --%>
 			<c:if test="${not empty project}">
-				<a style="color: red;">작성중인 프로젝트가 있습니다!</a>
+				<a style="color: red;">
+					<span class="importanceImg">
+						<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
+					</span>
+					작성중인 프로젝트가 있습니다!
+				</a>
 				<div id="updateProjectWrap">
 					<div id="projectContent">
 						<img alt="로고" src="${pageContext.request.contextPath}/resources/image/image.png">
