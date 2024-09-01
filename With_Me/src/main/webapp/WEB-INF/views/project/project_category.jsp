@@ -210,7 +210,7 @@ label.selected {
 					</div>
 					<div>
 						<c:forEach var="category" items="${category}">
-							<input type="radio" name="project_category" id="${category.common_code}" value="${category.common_code_name}">
+							<input type="radio" name="project_category" id="${category.common_code}" value="${category.common_code}">
 							<label for="${category.common_code}">${category.common_code_name}</label>
 						</c:forEach>
 						

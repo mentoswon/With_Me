@@ -157,121 +157,170 @@ $(function() {
 		
 		<%-- ---------- 프로젝트 리스트 표시할 영역 ---------- --%>
 		<div id="projectListContainer">
-		    <c:choose>
-		        <c:when test="${not empty projectList}">
-					<%-- 각 project_status에 대한 플래그 변수 초기화 --%>
-					<c:set var="isWritingDisplayed" value="false" />
-					<c:set var="isSubmittedDisplayed" value="false" />
-					<c:set var="isApprovedDisplayed" value="false" />
-					
-					<c:forEach var="project" items="${projectList}">
-						<%-- '작성중' 상태의 프로젝트 목록 --%>
-						<c:if test="${project.project_status eq '작성중'}">
-							<c:if test="${not isWritingDisplayed}">
-							<h2>작성중</h2><br>
-							<c:set var="isWritingDisplayed" value="true" />
-						</c:if>
-					
-						<div class="projectWrap">
-						    <div class="projectImage">
-						        <c:choose>
-									<c:when test="${empty project.project_image}">
-										<img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
-									</c:when>
-									<c:otherwise>
-										<img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
-									</c:otherwise>
-								</c:choose>
-							</div>
-							<div class="projectContent">
-							    <h2>${project.project_title}</h2>
-								<p>${project.project_summary}</p>
-							</div>
-							<div class="btnWrap">
-							    <form action="ProjectCreate" method="post">
-							        <input type="hidden" name="project_idx" value="${project.project_idx}">
-							            <input type="button" class="management" value="관리"><br>
-							            <input type="button" class="delete" value="삭제">
-							        </form>
-							    </div>
-							</div>
-							<br><br>
-						</c:if>
-					
-					<%-- '제출됨' 상태의 프로젝트 목록 --%>
-					<c:if test="${project.project_status eq '제출됨'}">
-					<c:if test="${not isSubmittedDisplayed}">
-					<h2>제출됨</h2><br>
-					<c:set var="isSubmittedDisplayed" value="true" />
-					</c:if>
-					
-					<div class="projectWrap">
-					    <div class="projectImage">
-					        <c:choose>
-					<c:when test="${empty project.project_image}">
-					<img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
-					</c:when>
-					<c:otherwise>
-					<img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
-					</c:otherwise>
-					</c:choose>
-					</div>
-					<div class="projectContent">
-					    <h2>${project.project_title}</h2>
-					<p>${project.project_summary}</p>
-					</div>
-					<div class="btnWrap">
-					    <form action="ProjectCreate" method="post">
-					        <input type="hidden" name="project_idx" value="${project.project_idx}">
-					            <input type="button" class="management" value="관리"><br>
-					            <input type="button" class="delete" value="삭제">
-					        </form>
-					    </div>
-					</div>
-					<br><br>
-					</c:if>
-					
-					<%-- '승인됨' 상태의 프로젝트 목록 --%>
-					<c:if test="${project.project_status eq '승인됨'}">
-					<c:if test="${not isApprovedDisplayed}">
-					<h2>승인됨</h2><br>
-					<c:set var="isApprovedDisplayed" value="true" />
-					</c:if>
-					
-					<div class="projectWrap">
-					    <div class="projectImage">
-					        <c:choose>
-					<c:when test="${empty project.project_image}">
-					<img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
-					</c:when>
-					<c:otherwise>
-					<img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
-					</c:otherwise>
-					</c:choose>
-					</div>
-					<div class="projectContent">
-					    <h2>${project.project_title}</h2>
-					<p>${project.project_summary}</p>
-					</div>
-					<div class="btnWrap">
-					    <form action="ProjectCreate" method="post">
-					        <input type="hidden" name="project_idx" value="${project.project_idx}">
-					            <input type="button" class="management" value="관리"><br>
-					            <input type="button" class="delete" value="삭제">
-					        </form>
-					    </div>
-					</div>
-					<br><br>
-					</c:if>
-					</c:forEach>
-					</c:when>
-					<c:otherwise>
-					<p>프로젝트가 없습니다.</p>
-					</c:otherwise>
-		    </c:choose>
-		</div>
+        <c:choose>
+            <c:when test="${not empty projectList}">
+                <%-- '작성중' 상태의 프로젝트 목록 --%>
+                <c:forEach var="project" items="${projectList}">
+                    <c:if test="${project.project_status eq '작성중'}">
+                        <c:if test="${not isWritingDisplayed}">
+                            <h2>작성중</h2><br>
+                            <c:set var="isWritingDisplayed" value="true" />
+                        </c:if>
+                        <div class="projectWrap">
+                            <div class="projectImage">
+                                <c:choose>
+                                    <c:when test="${empty project.project_image}">
+                                        <img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="projectContent">
+                                <h2>${project.project_title}</h2>
+                                <p>${project.project_summary}</p>
+                            </div>
+                            <div class="btnWrap">
+                                <form action="ProjectCreate" method="post">
+                                    <input type="hidden" name="project_idx" value="${project.project_idx}">
+                                    <input type="button" class="management" value="관리"><br>
+                                    <input type="button" class="delete" value="삭제">
+                                </form>
+                            </div>
+                        </div>
+                        <br><br>
+                    </c:if>
+                </c:forEach>
 
-	</article>
+                <%-- '심사중' 상태의 프로젝트 목록 --%>
+                <c:forEach var="project" items="${projectList}">
+                    <c:if test="${project.project_status eq '심사중'}">
+                        <c:if test="${not isSubmittedDisplayed}">
+                            <h2>심사중</h2><br>
+                            <c:set var="isSubmittedDisplayed" value="true" />
+                        </c:if>
+                        <div class="projectWrap">
+                            <div class="projectImage">
+                                <c:choose>
+                                    <c:when test="${empty project.project_image}">
+                                        <img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="projectContent">
+                                <h2>${project.project_title}</h2>
+                                <p>${project.project_summary}</p>
+                            </div>
+                            <div class="btnWrap">
+                                <form action="ProjectCreate" method="post">
+                                    <input type="hidden" name="project_idx" value="${project.project_idx}">
+                                    <input type="button" class="management" value="관리"><br>
+                                    <input type="button" class="delete" value="삭제 요청">
+                                </form>
+                            </div>
+                        </div>
+                        <br><br>
+                    </c:if>
+                </c:forEach>
+
+                <%-- '승인됨' 상태의 프로젝트 목록 --%>
+                <c:forEach var="project" items="${projectList}">
+                    <c:if test="${project.project_status eq '승인'}">
+                        <c:if test="${not isApprovedDisplayed}">
+                            <h2>승인됨</h2><br>
+                            <c:set var="isApprovedDisplayed" value="true" />
+                        </c:if>
+						                        
+                        <div class="projectWrap">
+                            <div class="projectImage">
+                                <c:choose>
+                                    <c:when test="${empty project.project_image}">
+                                        <img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+	                        <%-- 현재 날짜를 설정 --%>
+							<%
+							    // 서버 측에서 현재 날짜와 시간을 가져옵니다.
+							    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							    String currentDate = sdf.format(new java.util.Date());
+							    // 현재 날짜를 request 속성에 설정하여 EL에서 사용할 수 있도록 합니다.
+							    request.setAttribute("currentDate", currentDate);
+							%>
+                            <div class="projectContent">
+                            	<span style="padding: 7px; background-color: #f1f3f5; border-radius: 3px; line-height: 250%;">	<!-- 프로젝트 시작일, 종료일에 따라 공개예정, 진행중, 종료됨 구분 -->
+                            		<c:choose>
+								        <c:when test="${project.funding_start_date > currentDate}">공개예정</c:when>
+								        <c:when test="${project.funding_start_date <= currentDate && project.funding_end_date >= currentDate}">진행중</c:when>
+								        <c:when test="${project.funding_end_date < currentDate}">종료됨</c:when>
+								    </c:choose>
+                            	</span>
+                                <h2>${project.project_title}</h2>
+                                <p>${project.project_summary}</p>
+                            </div>
+                            <div class="btnWrap">
+                                <form action="ProjectCreate" method="post">
+                                    <input type="hidden" name="project_idx" value="${project.project_idx}">
+                                    <input type="button" class="management" value="관리"><br>
+                                    <!-- 아직 진행중이지 않은 프로젝트만 삭제요청 가능 -->
+                                    <c:if test="${project.funding_start_date > currentDate}">
+	                                    <input type="button" class="delete" value="삭제 요청">
+                                    </c:if>
+                                </form>
+                            </div>
+                        </div>
+                        <br><br>
+                    </c:if>
+                </c:forEach>
+
+                <%-- '반려됨' 상태의 프로젝트 목록 --%>
+                <c:forEach var="project" items="${projectList}">
+                    <c:if test="${project.project_status eq '반려'}">
+                        <c:if test="${not isRefusedDisplayed}">
+                            <h2>반려됨</h2><br>
+                            <c:set var="isRefusedDisplayed" value="true" />
+                        </c:if>
+                        <div class="projectWrap">
+                            <div class="projectImage">
+                                <c:choose>
+                                    <c:when test="${empty project.project_image}">
+                                        <img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="projectContent">
+                                <h2>${project.project_title}</h2>
+                                <p>${project.project_summary}</p>
+                            </div>
+                            <div class="btnWrap">
+                                <form action="ProjectCreate" method="post">
+                                    <input type="hidden" name="project_idx" value="${project.project_idx}">
+                                    <input type="button" class="management" value="관리"><br>
+                                </form>
+                            </div>
+                        </div>
+                        <br><br>
+                    </c:if>
+                </c:forEach>
+
+                
+            </c:when>
+            <c:otherwise>
+                <p>프로젝트가 없습니다.</p>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</article>
 	
 	
 	<footer>

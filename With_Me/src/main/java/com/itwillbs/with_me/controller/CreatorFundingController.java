@@ -425,7 +425,7 @@ public class CreatorFundingController {
 			}
 		}
 		
-		System.out.println("updateCount : " + updateCount + "updateCount2 : " + updateCount2);
+		System.out.println("updateCount : " + updateCount + ", updateCount2 : " + updateCount2);
 		
 		resultMap.put("result", true);
 		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
@@ -436,7 +436,168 @@ public class CreatorFundingController {
 		return jo.toString();
 	}
 	
-	
+	@PostMapping("SubmitProject")
+	public String submitProject(HttpSession session, ProjectVO project, CreatorVO creator, Model model) throws Exception {
+		// 로그인된 아이디를 creator_email에 삽입
+		String id = (String)session.getAttribute("sId");
+		creator.setCreator_email(id);
+
+		System.out.println("project : " + project);
+		System.out.println("creator : " + creator);
+
+		String realPath = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
+		String realPath2 = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
+		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
+		String subDir2 = ""; // 하위 디렉토리명을 저장할 변수 선언
+		
+		// 이미지 등록 - 프로젝트 번호 별 서브디렉토리 생성
+		subDir = "FUND" + "/" + project.getProject_idx();
+		// creator_image 등록 - 크리에이터 메일명 별 서브디렉토리 생성
+		subDir2 = "CREATOR" + "/" + creator.getCreator_email();
+		// 기존 실제 업로드 경로에 서브 디렉토리(모델명 경로) 결합
+		realPath += "/" + subDir;
+		realPath2 += "/" + subDir2;
+		
+		try {
+			// 해당 디렉토리를 실제 경로에 생성(단, 존재하지 않을 경우에만 자동 생성)
+			Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
+			Files.createDirectories(path);	// 실제 경로 생성
+			Path path2 = Paths.get(realPath2); // 파라미터로 실제 업로드 경로 전달
+			Files.createDirectories(path2);	// 실제 경로 생성
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// ----------------------------------
+		// 실제 업로드 되는 파일 처리
+		MultipartFile mProjectImg = project.getProjectImg();
+		MultipartFile mIntroduceImg = project.getIntroduceImg();
+		MultipartFile mBudgetImg = project.getBudgetImg();
+		MultipartFile mScheduleImg = project.getScheduleImg();
+		MultipartFile mInteteamInterducerduceImg = project.getInteteamInterducerduceImg();
+		MultipartFile mSponsorImg = project.getSponsorImg();
+		
+		MultipartFile mCreatorImg = creator.getCreatorImg();
+		
+	    if (mProjectImg != null && !mProjectImg.getOriginalFilename().isEmpty()) {
+	        project.setProject_image(subDir + "/" + mProjectImg.getOriginalFilename());
+	    } else if (project.getProject_image() != null && !project.getProject_image().isEmpty()) {
+	        // 파일이 업로드되지 않은 경우: 기존 경로 유지
+	        project.setProject_image(project.getProject_image());
+	    } else {	// 파일 경로가 전혀 없는 경우
+	        project.setProject_image("");
+	    }
+	    if (mIntroduceImg != null && !mIntroduceImg.getOriginalFilename().isEmpty()) {
+	        project.setProject_introduce(subDir + "/" + mIntroduceImg.getOriginalFilename());
+	    } else if (project.getProject_introduce() != null && !project.getProject_introduce().isEmpty()) {
+	    	// 파일이 업로드되지 않은 경우: 기존 경로 유지
+	    	project.setProject_introduce(project.getProject_introduce());
+	    } else {
+	        project.setProject_introduce("");
+	    }
+	    if (mBudgetImg != null && !mBudgetImg.getOriginalFilename().isEmpty()) {
+	        project.setProject_budget(subDir + "/" + mBudgetImg.getOriginalFilename());
+	    } else if (project.getProject_budget() != null && !project.getProject_budget().isEmpty()) {
+	    	// 파일이 업로드되지 않은 경우: 기존 경로 유지
+	    	project.setProject_budget(project.getProject_budget());
+	    } else {
+	        project.setProject_budget("");
+	    }
+	    if (mScheduleImg != null && !mScheduleImg.getOriginalFilename().isEmpty()) {
+	        project.setProject_schedule(subDir + "/" + mScheduleImg.getOriginalFilename());
+	    } else if (project.getProject_schedule() != null && !project.getProject_schedule().isEmpty()) {
+	    	// 파일이 업로드되지 않은 경우: 기존 경로 유지
+	    	project.setProject_schedule(project.getProject_schedule());
+	    } else {
+	        project.setProject_schedule("");
+	    }
+	    if (mInteteamInterducerduceImg != null && !mInteteamInterducerduceImg.getOriginalFilename().isEmpty()) {
+	        project.setProject_team_introduce(subDir + "/" + mInteteamInterducerduceImg.getOriginalFilename());
+	    } else if (project.getProject_team_introduce() != null && !project.getProject_team_introduce().isEmpty()) {
+	    	// 파일이 업로드되지 않은 경우: 기존 경로 유지
+	    	project.setProject_team_introduce(project.getProject_team_introduce());
+	    } else {
+	        project.setProject_team_introduce("");
+	    }
+	    if (mSponsorImg != null && !mSponsorImg.getOriginalFilename().isEmpty()) {
+	        project.setProject_sponsor(subDir + "/" + mSponsorImg.getOriginalFilename());
+	    } else if (project.getProject_sponsor() != null && !project.getProject_sponsor().isEmpty()) {
+	    	// 파일이 업로드되지 않은 경우: 기존 경로 유지
+	    	project.setProject_sponsor(project.getProject_sponsor());
+	    } else {
+	        project.setProject_sponsor("");
+	    }
+		
+	    if (mCreatorImg != null && !mCreatorImg.getOriginalFilename().isEmpty()) {
+	    	creator.setCreator_image(subDir2 + "/" + mCreatorImg.getOriginalFilename());
+	    } else if (creator.getCreator_image() != null && !creator.getCreator_image().isEmpty()) {
+	    	// 파일이 업로드되지 않은 경우: 기존 경로 유지
+	    	creator.setCreator_image(creator.getCreator_image());
+	    } else {
+	    	creator.setCreator_image("");
+	    }
+	    
+	    project.setProject_status("심사중");
+		// 프로젝트 심사요청(update) - modifyProject 재활용
+		int updateCount = service.modifyProject(project);
+		
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		if(updateCount > 0) {
+			try {
+				// 업로드 파일들은 MultipartFile 객체에 의해 임시 저장공간에 저장되어 있으며
+				// 글쓰기 작업 성공 시 임시 저장공간 -> 실제 디렉토리로 이동 작업 필요
+				// => MultipartFile 객체의 transferTo() 메서드 호출하여 실제 위치로 이동 처리
+				//    (파라미터 : java.io.File 타입 객체 전달)
+				// => 단, 업로드 파일이 선택되지 않은 항목은 이동 대상에서 제외
+				if(mProjectImg != null && !mProjectImg.getOriginalFilename().isEmpty()) {
+					// File 객체 생성 시 생성자에 업로드 경로명과 파일명 전달
+					mProjectImg.transferTo(new File(realPath, mProjectImg.getOriginalFilename()));
+				}
+				if(mIntroduceImg != null && !mIntroduceImg.getOriginalFilename().isEmpty()) {
+					mIntroduceImg.transferTo(new File(realPath, mIntroduceImg.getOriginalFilename()));
+				}
+				if(mBudgetImg != null && !mBudgetImg.getOriginalFilename().isEmpty()) {
+					mBudgetImg.transferTo(new File(realPath, mBudgetImg.getOriginalFilename()));
+				}
+				if(mScheduleImg != null && !mScheduleImg.getOriginalFilename().isEmpty()) {
+					mScheduleImg.transferTo(new File(realPath, mScheduleImg.getOriginalFilename()));
+				}
+				if(mInteteamInterducerduceImg != null && !mInteteamInterducerduceImg.getOriginalFilename().isEmpty()) {
+					mInteteamInterducerduceImg.transferTo(new File(realPath, mInteteamInterducerduceImg.getOriginalFilename()));
+				}
+				if(mSponsorImg != null && !mSponsorImg.getOriginalFilename().isEmpty()) {
+					mSponsorImg.transferTo(new File(realPath, mSponsorImg.getOriginalFilename()));
+				}
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// 창작자 정보 저장(update) - modifyCreator 재활용
+		int updateCount2 = service.modifyCreator(creator);
+		
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		if(updateCount2 > 0) {
+			try {
+				if(mCreatorImg != null && !mCreatorImg.getOriginalFilename().isEmpty()) {
+					mCreatorImg.transferTo(new File(realPath2, mCreatorImg.getOriginalFilename()));
+				}
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("updateCount : " + updateCount + ", updateCount2 : " + updateCount2);
+		
+		// 변경된 내용 저장 및 심사중으로 변경(update) 후 내가만든 프로젝트로 이동
+		return "redirect:/MyProject";
+	}
 	
 	// ===============================================================================
 	// 내가만든 프로젝트

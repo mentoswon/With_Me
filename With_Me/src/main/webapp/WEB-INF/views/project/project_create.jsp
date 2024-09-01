@@ -21,6 +21,7 @@ $(function() {
 		
 		// [ 기본정보 ]
 		formData.append("project_idx", $("input[name='project_idx']").val());
+		formData.append("project_code", $("input[name='project_code']").val());
 		formData.append("project_category", $("#project_category").val());
 		formData.append("project_category_detail", $("#project_category_detail").val());
 		formData.append("project_title", $("#project_title").val());
@@ -45,15 +46,20 @@ $(function() {
 		let fundingCommission = $("#funding_commission").val().trim().replace(/,/g, '');
 	    formData.append("funding_commission", fundingCommission ? fundingCommission : 0); // 빈 문자열을 0으로 전환
 	    
-	    // 날짜 형식 체크 및 변환
-	    let fundingStartDate = $("#funding_start_date").val();
-	    formData.append("funding_start_date", fundingStartDate ? fundingStartDate : ""); 
-	    let fundingEndDate = $("#funding_end_date").val();
-	    formData.append("funding_end_date", fundingEndDate ? fundingEndDate : ""); 
+		// 날짜 형식 체크 및 변환
+	    let fundingStartDate = $("#start_date").val().trim();
+	    let fundingEndDate = $("#end_date").val().trim();
+
+	    if (fundingStartDate) {	// 값이 있을 경우에만 append
+		    formData.append("funding_start_date", fundingStartDate);
+		}
+	    if (fundingEndDate) {	// 값이 있을 경우에만 append
+		    formData.append("funding_end_date", fundingEndDate); 
+		}
 		
-	    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	    // 요금제 선택 시 append 나중에~~
-	    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// 요금제 선택 시 append 나중에~~
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		// ---------------------------------------------------
 		// [ 프로젝트 계획 ]
@@ -127,9 +133,8 @@ $(function() {
 				} else if(!response.result) {
                     alert("프로젝트 저장에 실패하였습니다.");
 				} else if(response.result) {
-				alert('프로젝트가 저장되었습니다.');
-				// 추가적인 성공 처리 (예: UI 업데이트)
-                    
+					alert('프로젝트가 저장되었습니다.');
+					location.reload(); // 현재 페이지 갱신(새로고침)
                 }
 			},
 			dataType : "json",
@@ -150,8 +155,10 @@ $(function() {
 	let checkTagResult = false;	// 입력값 검증 결과를 저장할 변수(true : 적합, false : 부적합)
     
     // 프로젝트 심사 기준 팝업창 버튼 클릭 시 닫힘
+    $("#overlay").show();
     $("#agree").click(function() {
         $("#popupWrap").hide();
+        $("#overlay").hide();
     });
 
     // 메뉴 항목 클릭 시 활성화 처리
@@ -187,7 +194,7 @@ $(function() {
 					$("#project_category_detail").append("<option disabled selected hidden>세부 카테고리를 선택하세요.</option>");
 		            
 		            $.each(response, function(index, item) {
-		            	$("#project_category_detail").append("<option value='" + item.common_code_name + "'>" + item.common_code_name + "</option>");
+		            	$("#project_category_detail").append("<option value='" + item.common_code + "'>" + item.common_code_name + "</option>");
 		            });
 		        },
 		        error: function() {
@@ -199,6 +206,38 @@ $(function() {
 		}
 	});
     
+	// URL에서 특정 파라미터 값을 추출하는 함수
+	function getParameterByName(name) {
+	    let urlParams = new URLSearchParams(window.location.search);
+	    return urlParams.get(name);
+	}
+	
+	// project_code를 업데이트하는 함수
+	function updateProjectCode() {
+	    let category = $("#project_category").val();
+	    let categoryDetail = $("#project_category_detail").val();
+	    let project_idx = getParameterByName("project_idx"); // URL에서 project_idx 값 추출
+	    
+	    // 기본 카테고리와 세부 카테고리의 값이 모두 선택되었을 때만 project_code를 업데이트
+	    if (category && categoryDetail) {
+	        $("#project_code").val("FUND" + category + categoryDetail + project_idx.toString().padStart(3, '0')); // ex) FUNDFOFEE001
+	    } else {
+	        $("#project_code").val("FUND"); // 기본값으로 설정
+	    }
+	}
+	
+	// 카테고리 선택 시 project_code 업데이트
+	$("#project_category").on("change", function() {
+	    updateProjectCode();
+	});
+	
+	// 세부 카테고리 선택 시 project_code 업데이트
+	$("#project_category_detail").on("change", function() {
+	    updateProjectCode();
+	});
+	
+	
+	
     // 제목 길이 체크
     function checkTitleLength() {
         let titleLength = $("#project_title").val().length;
@@ -326,8 +365,12 @@ $(function() {
 	// 페이지 로드 시 목표금액 초기값 처리
     let initialValue = $("#target_price").val().replace(/[^0-9]/g, ""); // 기존 값에서 숫자만 추출
     initialValue = parseInt(initialValue, 10) || 0;
-    $("#target_price").val(initialValue.toLocaleString("ko-KR")); // 포맷팅된 값으로 입력 필드 업데이트
-
+    if (initialValue !== 0) { // 초기값이 0이 아닌 경우에만 실행
+        $("#target_price").val(initialValue.toLocaleString("ko-KR")); // 포맷팅된 값으로 입력 필드 업데이트
+    } else if (initialValue == 0) {
+    	$("#target_price").val("");
+	}
+    
     // 초기값으로 수수료 및 예상 수령액 계산
     calculateEstimateAmounts(initialValue);
     
@@ -426,8 +469,8 @@ $(function() {
     
 	// 옵션조건 선택 이벤트
 	// 처음에는 두 영역 모두 숨김
-    $('#subjectiveWrap').hide();
-    $('#objectiveWrap').hide();
+    $("#subjectiveWrap").hide();
+    $("#objectiveWrap").hide();
 	$("input[name='item_condition']").on("change", function() {
         // 옵션조건 관련 레이블 제거
         $("label").removeClass("selected");
@@ -437,9 +480,9 @@ $(function() {
         // 선택된 라디오 버튼의 값을 가져옴
         let selectedValue = $(this).val();
 		// input 초기화
-        $('#subjectiveWrap input').val('');
-        $('#objectiveWrap input[type="text"]').val('');
-        $('#objectiveWrap input[type="text"]').slice(2).remove(); // 처음 2개 외의 input 제거
+        $("#subjectiveWrap input").val("");
+        $("#objectiveWrap input[type='text']").val("");
+        $("#objectiveWrap input[type='text']").slice(2).remove(); // 처음 2개 외의 input 제거
 
         if (selectedValue == "주관식") {	// 주관식 선택 시
             $("#subjectiveWrap").show();
@@ -538,8 +581,8 @@ $(function() {
         $("input[name='item_condition']").prop('checked', false);
 		// 옵션조건 관련 레이블 제거
         $("label[for='none'], label[for='subjective'], label[for='objective']").removeClass("selected");
-        $('#subjectiveWrap').hide();
-        $('#objectiveWrap').hide();
+        $("#subjectiveWrap").hide();
+        $("#objectiveWrap").hide();
         // 텍스트박스 비우기
         $("#item_name").val('');
 
@@ -939,47 +982,84 @@ $(function() {
     
     // =====================================================================================
     // [ 심사요청 ]
+    // -- 필수항목 모두 조건에 맞게 입력 시 심사요청 버튼 활성화됨
+    // 페이지 로드 시 유효성 검사 수행
+	checkFormValidity();
+    
     // 필수 항목들에 대한 변화 감지
-	$('#project_category, #project_category_detail, #project_title, #project_summary, #projectImg').on('input change', function() {
+	$("#project_category, #project_category_detail, #project_title, #project_summary, #project_image"
+			+ ", #target_price, #start_date, #end_date"
+			+ ", #project_introduce, #project_budget"
+			+ ", #creator_name, #creator_image, #creator_introduce").on("input change", function() {
 		checkFormValidity();
 	});
 	
 	function checkFormValidity() {
 		// 각 필수 필드가 입력되었는지 확인
-		
 		// 1) 기본정보(카테고리, 세부카테고리, 제목, 요약, 대표이미지)
-		let isCategorySelected = $('#project_category').val() !== null;
-		let isCategoryDetailSelected = $('#project_category_detail').val() !== null;
-		let isTitleFilled = $('#project_title').val().trim() !== '';
-		let isSummaryFilled = $('#project_summary').val().trim() !== '';
-		let isImageUploaded = $('#projectImg').val() !== '' || $('#project_image').val();
+		let isCategorySelected = $("#project_category").val() !== null;
+		let isCategoryDetailSelected = $("#project_category_detail").val() !== null;
+		let isTitleFilled = $("#project_title").val().trim() !== '' && $("#project_title").val().length >= 10;
+		let isSummaryFilled = $("#project_summary").val().trim() !== '' && $("#project_summary").val().length >= 10;
+		let isImageUploaded = $("#projectImg").val() !== '' || $("#project_image").val() !== '';
 		
 		// 2) 펀딩계획(목표금액, 펀딩일정(시작일, 종료일))
-		// ---- 요금제 선택은 나중에
-		let isPriceFilled = $('#target_price').val() !== '' || $("#target_price").val().trim().replace(/,/g, '') < 500000;
-		
-		
+		let targetPriceValue = $("#target_price").val().trim().replace(/,/g, '');
+        let isPriceFilled = targetPriceValue !== '' && parseInt(targetPriceValue, 10) >= 500000 && parseInt(targetPriceValue, 10) <= 9999999999;
+
+		let isStartDateFilled = $("#start_date").val() !== '';
+		let isEndDateFilled = $("#end_date").val() !== '';
+		// ---- 요금제는 기본 Basic으로 선택되어 있음 -----
 		
 		// 3) 프로젝트계획(소개, 예산)
-		
-		
+		let isIntroduceUploaded = $("#introduceImg").val() !== '' || $("#project_introduce").val() !== '';
+		let isBudgetUploaded = $("#budgetImg").val() !== '' || $("#project_budget").val() !== '';
 		
 		// 4) 창작자정보(창작자이름, 프로필이미지, 창작자소개, 본인인증, 입금계좌)
-		
-		
+		let isCreatorNameFilled = $("#creator_name").val() !== '';
+		let isCreatorUploaded = $("#creatorImg").val() !== '' || $("#creator_image").val() !== '';
+		let isCreatorIntroduceFilled = $("#creator_introduce").val() !== '';
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// ---- 본인인증, 입금계좌는 나중에 -----
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		
 		// 모든 필수 항목이 입력되었거나 선택되었는지 확인
-		if (isCategorySelected && isCategoryDetailSelected && isTitleFilled && isSummaryFilled && isImageUploaded
-				&& isPriceFilled) {
-			$('#request').prop('disabled', false); // 버튼 활성화
+		if (isCategorySelected && isCategoryDetailSelected && isTitleFilled && isSummaryFilled && isImageUploaded 
+				&& isPriceFilled && isStartDateFilled && isEndDateFilled
+				&& isIntroduceUploaded && isBudgetUploaded
+				&& isCreatorNameFilled && isCreatorUploaded && isCreatorIntroduceFilled) {
+			$("#request").prop("disabled", false); // 버튼 활성화
 		} else {
-			$('#request').prop('disabled', true); // 버튼 비활성화
+			$("#request").prop("disabled", true); // 버튼 비활성화
 		}
-	}
+	}	// checkFormValidity() 함수 끝
     
-    
-    
+	// -- 심사요청 버튼 클릭 이벤트
+	$("#request").click(function() {
+		$("#confirmRequestPopup").show();
+        $("#overlay").show();
+	});
+	
+	// 취소 버튼 클릭 시 팝업 닫기
+    $('#cancelRequest').click(function() {
+        $('#confirmRequestPopup').hide();
+        $('#overlay').hide();
+    });
+
+    // 심사요청하기 버튼 클릭 시 폼 제출
+    $('#confirmRequest').click(function() {
+        $('#confirmRequestPopup').hide();
+        $('#overlay').hide();
+        // 폼 제출
+        $('#projectForm').submit();
+    });
+	
+	// 폼 제출 시 목표금액 콤마 제거
+    $("#projectForm").on("submit", function() {
+        let targetPrice = $("#target_price").val().replace(/,/g, ""); // 콤마 제거
+        $("#target_price").val(targetPrice); // 원래 값으로 복원
+    });
     
 });	// ready 이벤트 끝
 
@@ -1012,7 +1092,8 @@ function linkAccount() {
 				</a>
 				<div>
 					<input type="button" id="save" value="저장하기">
-					<input type="submit" id="request" value="심사요청" disabled>
+					<input type="button" id="request" value="심사요청" disabled>
+					<input type="hidden" name="project_code" id="project_code" value="FUND">
 				</div>
 			</div>
 		</header>
@@ -1074,14 +1155,14 @@ function linkAccount() {
 					<div class="projectContentWrap">
 						<select id="project_category" class="select" name="project_category">
 							<c:forEach var="category" items="${category}">
-								<option value="${category.common_code_name}" <c:if test="${project.project_category eq category.common_code_name}">selected</c:if>>${category.common_code_name}</option>
+								<option value="${category.common_code}" <c:if test="${project.project_category eq category.common_code_name}">selected</c:if>>${category.common_code_name}</option>
 							</c:forEach>
 						</select>
 						<br><br>
 						<select id="project_category_detail" class="select" name="project_category_detail">
 							<option disabled selected hidden>세부 카테고리를 선택하세요.</option>
 							<c:forEach var="categoryDetail" items="${category_detail}">
-								<option value="${categoryDetail.common_code_name}" <c:if test="${project.project_category_detail eq categoryDetail.common_code_name}">selected</c:if>>${categoryDetail.common_code_name}</option>
+								<option value="${categoryDetail.common_code}" <c:if test="${project.project_category_detail eq categoryDetail.common_code_name}">selected</c:if>>${categoryDetail.common_code_name}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -1845,6 +1926,23 @@ function linkAccount() {
 		</article>
 	</form>
 	
+	<%-- ---------- 심사 최종 확인 팝업창 ---------- --%>
+	<div id="confirmRequestPopup">
+	    <h3>프로젝트 심사 요청</h3>
+	    <p>
+	    	위드미 담당자에게 프로젝트 심사를 요청합니다.<br>
+	    	심사 결과는 2일 이내 아래 휴대번호로 안내해드릴 예정입니다.<br>
+	    	<span class="smallFont">
+		    	※ 프로젝트 심사 요청 이후에는 창작자님이 삭제하실 수 없습니다.<br>
+		    	&nbsp;&nbsp;&nbsp;(내가 만든 프로젝트에서 삭제 요청폼을 작성해주세요.)
+		    </span>
+		</p>
+	    <div style="text-align: center;">
+	        <button id="confirmRequest">심사요청하기</button><br>
+	        <button id="cancelRequest">취소</button>
+	    </div>
+	</div>
+	
 	<%-- ---------- 프로젝트 심사 기준 확인 팝업창 ---------- --%>
 	<div id="popupWrap">
 		<div id="popupTop">
@@ -1876,6 +1974,9 @@ function linkAccount() {
 			<input type="button" id="agree" value="확인했어요.">
 		</div>
 	</div>
+
+	<%-- 팝업 배경 (click 시 팝업 닫기) --%>
+	<div id="overlay" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998;"></div>
 	
 </body>
 </html>

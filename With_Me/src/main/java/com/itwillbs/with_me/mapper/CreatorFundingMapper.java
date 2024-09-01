@@ -31,6 +31,9 @@ public interface CreatorFundingMapper {
 	// 창작자 정보 등록
 	void insertCreator(String id);
 
+	// 카테고리 코드 조회
+	String selectProjectCategory(String project_category);
+	
 	// 프로젝트 등록
 	int insertProject(@Param("creator_idx") int creator_idx, 
 					  @Param("project") ProjectVO project);
@@ -64,6 +67,7 @@ public interface CreatorFundingMapper {
 
 	// 창작자정보 임시저장
 	int updateCreator(CreatorVO creator);
+
 
 
 
