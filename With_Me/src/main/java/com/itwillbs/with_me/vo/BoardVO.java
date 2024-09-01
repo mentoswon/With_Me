@@ -39,6 +39,20 @@ public class BoardVO {
 	private int bo_readcount;
 	private MultipartFile file;
 	
+	
+// 1:1 게시글 
+	private int faq_idx;
+	private String faq_subject;
+	private int faq_re_ref;
+	private int faq_re_lev;
+	private int faq_re_seq;
+	private String faq_content;
+	private String faq_file;
+	private Timestamp faq_date;
+	private String mem_name;
+	
+	
+	
 }
 
 

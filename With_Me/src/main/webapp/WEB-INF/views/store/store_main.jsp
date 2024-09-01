@@ -257,8 +257,8 @@
 												</a>
 											</div>
 											<div class="product_info">
-												<h4><a href="ProductDetail?product_name=${product.product_name}&product_code=${product.product_code}">${product.product_price}</a></h4>
-												<span><a href="ProductDetail?product_name=${product.product_name}&product_code=${product.product_code}">${product.product_name}</a></span>
+												<h4><a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}"><fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원</a></h4>
+												<span><a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">${product.product_name}</a></span>
 											</div>
 										</div>	
 										<div class="productBox01">

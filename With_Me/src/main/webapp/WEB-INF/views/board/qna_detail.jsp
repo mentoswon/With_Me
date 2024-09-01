@@ -108,18 +108,18 @@
 			<h2>1:1 문의글 상세내용 보기</h2>
 			<section id="basicInfoArea">
 				<table border="1">
-				<tr><th width="70">제 목</th><td colspan="3">${qna.qna_inquery}</td></tr>
+				<tr><th width="70">제 목</th><td colspan="3">${qnabo.faq_subject}</td></tr>
 				<tr>
-					<th width="70">작성자</th><td>${qna.mem_id}</td>
+					<th width="70">작성자</th><td>${qnabo.mem_id}</td>
 					<%-- 작성일시 출력 형식은 ex) 2024-06-04 12:30 --%>
 					<th width="70">작성일시</th>
-					<td><fmt:formatDate value="${qna.qna_date}" pattern="yyyy-MM-dd"/></td>
+					<td><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd"/></td>
 				</tr>
 				<tr>
 					<th colspan="4">문의내용</th>
 				</tr>
 				<tr>
-					<td colspan="4" style="height: 100px;">${qna.qna_content}</td>
+					<td colspan="4" style="height: 100px;">${qnabo.faq_content}</td>
 				</tr>
 				</table>
 				<!-- 답변 영역 -->
@@ -128,14 +128,14 @@
 				<c:if test="${not empty qna.qna_reply}">
 					<div id="articleReplyArea">
 						<b>답변</b>
-						<textarea rows="10" cols="67" name="qna_reply">${qna.qna_reply}</textarea>
+						<textarea rows="10" cols="67" name="qna_reply">${qnabo.faq_reply}</textarea>
 					</div>
 				</c:if>
 			</section>
 			<section id="commandCell">
 				<%-- 답글, 수정, 삭제 버튼은 로그인 한 사용자에게만 표시 --%>
 				<%-- 단, 수정, 삭제 버튼은 세션 아이디와 작성자 아이디가 일치할 경우에만 표시 --%>
-				<c:if test="${sessionScope.sId eq qna.mem_id}">
+				<c:if test="${sessionScope.sId eq qnabo.mem_id}">
 					<%-- 임시) 삭제 버튼 클릭 시 BoardDeleteForm.bo 서블릿 요청(삭제 폼 페이지 포워딩) --%>
 					<%-- 파라미터 : 글번호(board_num) --%>
 <%-- 					<input type="button" value="삭제" onclick="location.href='BoardDeleteForm.bo?board_num=${board.board_num}'"> --%>
