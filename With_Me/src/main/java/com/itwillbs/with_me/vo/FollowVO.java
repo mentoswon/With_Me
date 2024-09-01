@@ -10,6 +10,6 @@ public class FollowVO {
 	// 3. toString() 메서드 오버라이딩
 	// ----------------------------------------------
 	private int follow_idx;
-	private String fowllow_mem_email;
-	private String fowllow_creator;
+	private String follow_mem_email;
+	private String follow_creator;
 }
