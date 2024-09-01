@@ -167,9 +167,9 @@
 	<!-- =========================================================== -->
 	<!-- 회원 아이디 조회(채팅) -->
 	<select id="selectMemberId" resultType="String">
-		SELECT id
+		SELECT mem_email
 		FROM member
-		WHERE id = #{receiver_id}
+		WHERE mem_email = #{receiver_id}
 	</select>
 	
 </mapper>
