@@ -12,4 +12,5 @@ public class FollowVO {
 	private int follow_idx;
 	private String follow_mem_email;
 	private String follow_creator;
+	private String follow_status; // Y: 팔로우상태  N: 언팔로우 상태
 }
