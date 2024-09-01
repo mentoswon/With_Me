@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.UserFundingMapper;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
@@ -37,6 +38,11 @@ public class UserFundingService {
 	// 팔로워 수 계산
 	public int countFollower(String creator_email) {
 		return mapper.countFollower(creator_email);
+	}
+	
+	// 팔로워 리스트
+	public List<FollowVO> getFollowerList(String creator_email) {
+		return mapper.selectFollowerList(creator_email);
 	}
 
 	// 후원 리워드 리스트
@@ -74,14 +80,10 @@ public class UserFundingService {
 		return mapper.updateDefaultAddress(id);
 	}
 
-	// 1. 기본 배송지 변경하고 새로운 기본배송지 설정
-	public void registNewDefaultAddress(AddressVO new_address) {
-		mapper.insertNewDefaultAddress(new_address);
-	}
 
-	// 2. 나머지 배송지 등록
-	public void registNewAddress(AddressVO new_address) {
-		mapper.insertNewAddress(new_address);
+	// 배송지 등록
+	public int registNewAddress(AddressVO new_address) {
+		return mapper.insertNewAddress(new_address);
 	}
 
 	// 배송지 삭제
@@ -109,6 +111,25 @@ public class UserFundingService {
 	public int registReport(Map<String, Object> map) {
 		return mapper.insertReport(map);
 	}
+
+	
+	// ===========================================================================================
+	// 팔로우 등록
+	public int registFollow(String id, String follow_creator) {
+		return mapper.insertFollow(id, follow_creator);
+	}
+
+	// 언팔로우
+	public int unFollow(String follow_mem_email, String follow_creator) {
+		return mapper.unFollow(follow_mem_email, follow_creator);
+	}
+
+	// ===========================================================================================
+	// 좋아요 등록
+	public int registLike(String like_project_code, String like_mem_email) {
+		return mapper.insertLike(like_project_code, like_mem_email);
+	}
+
 
 
 

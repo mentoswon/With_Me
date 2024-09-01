@@ -18,12 +18,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
@@ -139,7 +141,7 @@ public class UserFundingController {
 		
         // --------------------------------------------------------------
         
-        // 팔로워 계산 -------------------
+        // 팔로워 수 계산 -------------------
         // 창작자 email 가져오기
         String creator_email = (String) project_detail.get("creator_email");
         
@@ -150,8 +152,14 @@ public class UserFundingController {
         // Map 객체 (project_detail) 에 집어넣기
         project_detail.put("followerCount", followerCount);
          
-        // 팔로워 계산 end ---------------
+        // 팔로워 수 계산 end ---------------
         
+        // 팔로워 리스트 --------------------
+        List<FollowVO> followerList = service.getFollowerList(creator_email);
+        
+        project_detail.put("followerList", followerList);
+        System.out.println("팔로우 ~ : " + followerList);
+        // 팔로워 리스트  end ---------------
         // ===================================================================
         
         // 프로젝트별 후원 정보 가져오기 ------------
@@ -219,17 +227,22 @@ public class UserFundingController {
 		return "project/project_detail";
 	}
 	
+//	@GetMapping("FundInProgress")
+//	public String fundInProgress() {
+//		return "project/fund_in_progress";
+//	}
+	
 	// 사용자 후원 진행
-	@PostMapping("FundInProgress")
+	@GetMapping("FundInProgress")
 	public String fundInProgress(@RequestParam Map<String, Object> map, HttpSession session, MemberVO member, Model model) {
-		System.out.println("map : " + map);	
+		System.out.println("map 후원 진행 : " + map);	
 		
 		String id = (String) session.getAttribute("sId");
 		
 		if(id == null) {
 			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
 			model.addAttribute("targetURL", "MemberLogin");
-//			session.setAttribute("prevURL", "");
+//			session.setAttribute("prevURL", "ProjectDetail?project_title=" + (String)map.get("project_title") + "&project_code=" + (String)map.get("project_code"));
 			return "result/fail";
 		}
 		
@@ -279,28 +292,37 @@ public class UserFundingController {
 		
 		
 		return "project/fund_in_progress";
+//		return "redirect:/FundInProgress";
 	}
 	
 	
 	// 배송지 등록
+	@ResponseBody
 	@PostMapping("RegistAddress")
-	public String registAddress(AddressVO new_address, HttpSession session) {
+	public List<AddressVO> registAddress(AddressVO new_address, HttpSession session, MemberVO member) throws Exception {
 		System.out.println("new_address : " + new_address);
 		
 		String id = (String) session.getAttribute("sId");
 		
-		// insert를 할건데 
-		// 1. 기본 배송지 설정이 이미 돼있으면 (on / null)
-		// address_is_default = Y 인걸 찾아서 N으로 바꾸고 새로 등록하는걸 Y로 바꿔야함.
-		// 2. 기본 배송지 설정된거 없으면 그냥 등록
-		// 3. 기본 배송지 설정된거 있는데 안바꿔도 그냥 등록
+		member.setMem_email(id);
 		
+		// 아이디로 회원 정보 가져오기
+		member = memberService.getMember(member);
+
 		// 일단 기본배송지 등록된거 있는지 확인 먼저 필요
 		int isDefaultCount = service.getAddressIsDefault(id);
+		List<AddressVO> addressList = null;
 		
-		if(isDefaultCount == 1) {
+		if(isDefaultCount > 0) {
 			if(new_address.getAddress_is_default() == null) { // 기본 배송지 있는데 안 바꾸면 그냥 등록 !
-				service.registNewAddress(new_address);
+				int insertCount = service.registNewAddress(new_address);
+				
+				if(insertCount > 0) {
+					addressList = service.getUserAddress(member);
+				} 
+				
+				System.out.println("기본배송지 있는데 변경 안 하는 경우 : " + insertCount);
+				
 			} else if(new_address.getAddress_is_default().equals("on")) { // 새 주소 등록하면서 기본 배송지 설정 !
 					
 				// 기본배송지가 있으면 그걸 N으로 바꿔야함 -> update
@@ -308,16 +330,29 @@ public class UserFundingController {
 				
 				// 바꾸고 새로운 기본배송지 insert
 				if(updateCount > 0) {
-					service.registNewDefaultAddress(new_address);
-				}
+					int insertCount = service.registNewAddress(new_address);
+					
+					if(insertCount > 0) {
+						addressList = service.getUserAddress(member);
+					} 
+				} 
+				System.out.println("기본배송지 있는데 기본배송지 변경하는 경우 : " + updateCount);
+				
 			}
-		} else {
-			// 기본 배송지도 없고, 기본 배송지 설정 안 하고 그냥 등록 ! (기본이든 기본 아니든)
-			service.registNewAddress(new_address);
+		} else if (isDefaultCount == 0) {
+			// 기본 배송지 없음 ! 그냥 등록 ! null, on 에 따라 다르게 들어가게 mapper.xml 에 해놨음
+			int insertCount = service.registNewAddress(new_address);
 			
+			if(insertCount > 0) {
+				addressList = service.getUserAddress(member);
+			} 
+			
+			System.out.println("기본배송지 없는 경우 : " + insertCount);
 		}
 		
-		return "redirect:/FundInProgress";
+		return addressList;
+		
+		// 자꾸 insert 가 2번 된다 ... 
 	}
 	
 	
@@ -439,13 +474,13 @@ public class UserFundingController {
 		model.addAttribute("member", member);
 		model.addAttribute("project_code", project_code);
 		
-		return "project/fund_in_progress_report_form";
+		return "project/report_form";
 	}
 	
 	// 신고 접수
 	@PostMapping("ReportSubmit")
 	public String reportSubmit(@RequestParam Map<String, Object> map, Model model) {
-//		System.out.println("map : " + map);
+		System.out.println("map : " + map);
 		int insertCount = service.registReport(map);
 		
 		if(insertCount > 0) {
@@ -458,6 +493,115 @@ public class UserFundingController {
 			return "result/fail";
 		}
 	}
+	
+	// ------------------------------------------------------------------------------------
+	
+	// 팔로우
+	// ProjectDetail 할 때 해당 창작자를 팔로우 하는 사람들 리스트 가져간 상태
+	@ResponseBody
+	@PostMapping("CommitFollow")
+	public String commitFollow(@RequestParam(defaultValue = "") String follow_creator, HttpSession session, Model model) {
+//		System.out.println("follow_creator : " + follow_creator);
+		String id = (String) session.getAttribute("sId");
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		if(id == null) {
+			resultMap.put("result", false);
+			
+		} else {
+			int insertCount = service.registFollow(id, follow_creator);
+			
+			if(insertCount > 0) {
+				resultMap.put("result", true);
+			} else {
+				resultMap.put("result", false);
+			}
+		}
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+			
+		return jo.toString();
+	}
+	
+	// 언팔로우
+	@ResponseBody
+	@PostMapping("UnFollow")
+	public String unFollow(@RequestParam(defaultValue = "") String follow_mem_email, @RequestParam(defaultValue = "") String follow_creator) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int updateCount = service.unFollow(follow_mem_email, follow_creator);
+		
+		if(updateCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	
+	// 좋아요 등록
+	@ResponseBody
+	@PostMapping("RegistLike")
+	public String registLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int insertCount = service.registLike(like_project_code, like_mem_email);
+		
+		if(insertCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	// 좋아요 취소
+	// like_mem_email 이랑 project_code 가 똑같은게 status 가 0으로 돼있으면
+	// 1로 업데이트 하고
+	// 취소하면 0으로 변경하고 .. 그러면 될 것 같노
+	
+//	@ResponseBody
+//	@PostMapping("CancleLike")
+//	public String cancleLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
+//		
+//		// 결과 담을 Map
+//		Map<String, Object> resultMap = new HashMap<String, Object>();
+//		
+//		int insertCount = service.registLike(like_project_code, like_mem_email);
+//		
+//		if(insertCount > 0) {
+//			resultMap.put("result", true);
+//		} else {
+//			resultMap.put("result", false);
+//		}
+//		
+//		JSONObject jo = new JSONObject(resultMap);
+////		System.out.println("응답 데이터 : " + jo.toString());
+//		
+//		return jo.toString();
+//	}
+	
+	
+	
+	
+	
+	
+	
 	
 }
 

@@ -22,7 +22,7 @@
 			<section class="con01">
 				<div class="itemWrapper">
 					<div id="imgArea">
-						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
+						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_image}">
 					</div>
 					<div id="infoArea">
 						<span class="category">${project_detail.project_category} > ${project_detail.project_category_detail}</span>
@@ -97,8 +97,11 @@
 						</div>
 						
 						<div class="fundInfo3">
-							<button class="like Btn">
+							<button class="like Btn" type="button" onclick="registLike('${project_detail.project_code}', '${sId}')">
+								
 								<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+								<!-- like_mem_email 이랑 like_project_code 동일하면 채워진 하트로 변경 -->
+<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 							</button>
 							<button type="button" class="goFund Btn" id="goFund" onclick="goToScroll()">이 프로젝트 후원하기</button>
 						</div>
@@ -109,7 +112,7 @@
 			<section class="con02">
 				<div class="left">
 					<%-- 임시로 넣어둠 --%>
-					<img alt="상세 이미지" src="http://c3d2306t1.itwillbs.com/soneson/resources/upload/2023/12/17/bal_img_content.png" class="detailImg">
+					<img alt="상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_introduce}" class="detailImg">
 				</div>
 				
 				<div class="right">
@@ -118,7 +121,7 @@
 						<div class="wrap">
 							<div>
 								<div class="creator">
-									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
+									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_image}">
 									<span><a href="MemberInfoTest?mem_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
 								</div>
 								<div>
@@ -133,7 +136,23 @@
 								</div>
 							</div>
 							<div class="btns">
-								<button type="button" class="follow" onclick="confirmFollow('${project_detail.creator_name}')">팔로우</button>
+							
+								<%-- 팔로우 여부 판단 --%>
+								<c:set var="isFollowing" value="false" />
+								<c:forEach var="follower" items="${project_detail.followerList}">
+								    <c:if test="${follower.follow_mem_email eq sId and follower.follow_status eq 'Y'}">
+								        <c:set var="isFollowing" value="true" />
+								    </c:if>
+								</c:forEach>
+								
+								<c:choose>
+								    <c:when test="${isFollowing}"> <%-- 팔로우 중일 경우 --%>
+								        <button type="button" class="unFollow" onclick="unfollow('${sId}','${project_detail.creator_email}')">팔로우 취소</button>
+								    </c:when>
+								    <c:otherwise>
+								        <button type="button" class="follow" onclick="confirmFollow('${project_detail.creator_name}', '${project_detail.creator_email}')">팔로우</button>
+								    </c:otherwise>
+								</c:choose>
 								<button type="button"  class="ask" onclick="chat()">문의</button>
 							</div>
 						</div>
@@ -157,7 +176,10 @@
 									<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
 								</div>
 								<div class="reward_title">일반 후원하기</div>
-								<form action="FundInProgress" method="POST">
+								<form action="FundInProgress" method="get">
+<%-- 									<input type="hidden" value="${project_detail.project_title}" name="project_title"> --%>
+<%-- 									<input type="hidden" value="${project_detail.project_code}" name="project_code"> --%>
+									<input type="hidden" value="${project_detail.pay_date}" name="project_payDate">
 									<input type="hidden" value="1000" name="reward_price">
 									<input type="hidden" value="일반 후원하기" name="reward_title">
 									<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
@@ -171,7 +193,7 @@
 									</div> 
 									<div class="reward_title">${rewardList.reward_title}</div>
 									
-									<form action="FundInProgress" method="POST">
+									<form action="FundInProgress" method="get">
 										<div class="reward_item_wrap">
 											<c:forEach var="allRewardItems" items="${allRewardItems}">
 												<c:if test="${allRewardItems.reward_idx eq rewardList.reward_idx}">
@@ -199,6 +221,9 @@
 											</c:forEach>
 										</div>
 										
+<%-- 										<input type="hidden" value="${project_detail.project_title}" name="project_title"> --%>
+<%-- 										<input type="hidden" value="${project_detail.project_code}" name="project_code"> --%>
+										<input type="hidden" value="${project_detail.pay_date}" name="project_payDate">
 										<input type="hidden" value="${rewardList.reward_title}" name="reward_title">
 										<input type="hidden" value="${rewardList.reward_price}" name="reward_price">
 										<input type="hidden" value="${project_detail.project_idx}" name="funding_project_idx" class="funding_project_idx">
@@ -284,11 +309,11 @@
 		<script type="text/javascript">
 			let modal = document.querySelectorAll('.modal');
 			let report = document.querySelector('#report');
-			let closeBtn = document.querySelector('.close_btn');
+			let closeBtn = document.querySelectorAll('.close_btn');
 			// ==========================================================================
 			// 이 프로젝트 후원하기 클릭 시 스크롤 이동
 			function goToScroll() {
-			    let location = document.querySelector(".reward").offsetTop;
+			    let location = document.querySelector("#reward_default").offsetTop;
 			    window.scrollTo({top: location, behavior: 'smooth'});
 			}
 			// ==========================================================================
@@ -418,7 +443,88 @@
 	     	// 폼 로드 시 함수실행
 		    updateHiddenTagValue();
 				
+			// ==========================================================================
+			// 좋아요
+			function registLike(project_code, sId) {
+// 				console.log("project_code : " + project_code + ", sId : " + sId);
+				$.ajax({
+					url: "RegistLike",
+					type : "POST",
+					async:false, // 이 한줄만 추가해주시면 됩니다.
+					data:{
+						"like_project_code": project_code,
+						"like_mem_email": sId
+					},
+					dataType: "json",
+					success: function (response) {
+						if(response.result){
+							alert("좋아한 프로젝트에 추가되었습니다.");
+							location.reload();
+						} else if(!response.result) {
+							alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+							location.href="MemberLogin";
+						}
+					}
+				});
+			}
+	     	
+			// ==========================================================================
+			// 팔로우 - AJAX
+			function confirmFollow(creatorName, creatorEmail){
 				
+				if(confirm(creatorName + "님을 팔로우 하시겠습니까?")){
+					
+					$.ajax({
+						url: "CommitFollow",
+						type : "POST",
+						async: false, // 이 한줄만 추가해주시면 됩니다.
+						data: {
+							"follow_creator": creatorEmail
+						},
+						dataType: "json",
+						success: function (response) {
+							console.log("성공 : " + JSON.stringify(response))
+							if(response.result) {
+								alert("성공적으로 팔로우했습니다.");
+								location.reload();
+							} else if(!response.result) {
+								alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+								location.href="MemberLogin";
+							}
+						}, error : function () {
+							alert("실패! ");
+						}
+					});
+				}
+			}
+			
+			// ---------------------------------------------------------------
+			// 언팔로우 - AJAX
+			function unfollow(sId, creatorEmail){
+				
+				if(confirm("팔로우를 취소하시면 더 이상 프로젝트 공개 알림을 받으실 수 없습니다. \n 팔로우를 취소하시겠습니까?")){
+					
+					$.ajax({
+						url: "UnFollow",
+						type : "POST",
+						async: false, // 이 한줄만 추가해주시면 됩니다.
+						data: {
+							"follow_mem_email": sId,
+							"follow_creator": creatorEmail,
+						},
+						dataType: "json",
+						success: function (response) {
+							if(response.result) {
+								alert("팔로우가 취소되었습니다.");
+								location.reload();
+							} 
+						}, error : function () {
+							alert("실패! ");
+						}
+					});
+				}
+			}
+	     	
 			// ==========================================================================
 			// 신고하기
 			// 팝업 오픈
@@ -438,12 +544,10 @@
 // 				console.log(type); // 오케이 .. 뜬다..
 				$.ajax({
 					url: "ReportForm",
-					type : "get",
+					type : "POST",
 					async:false, // 이 한줄만 추가해주시면 됩니다.
 					data:{
-						"type": type,
-						"project_title": title,
-						"project_code": project_code
+						"type": type
 					},
 					dataType: "json",
 					success: function (response) {
@@ -477,14 +581,6 @@
 			}
 			
 			// 신고하기 end
-			// ==========================================================================
-			// 팔로우 - AJAX
-			function confirmFollow(creatorName){
-				if(confirm(creatorName + "님을 팔로우 하시겠습니까?")){
-					
-				}
-				
-			}
 			
 			document.addEventListener('keydown', function(event) {
 			  if (event.keyCode === 13) {

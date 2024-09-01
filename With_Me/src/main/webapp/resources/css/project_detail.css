@@ -148,7 +148,7 @@ section {
 
 .itemWrapper #infoArea .fundInfo3 .Btn img {
 	object-fit: cover;
-	width: 80%;
+	width: 60%;
 }
 
 .itemWrapper #infoArea .fundInfo3 .like {
@@ -176,7 +176,12 @@ section {
 }
 
 .con02 .left {
-	width: 70%;
+	width: 60%;
+}
+
+.con02 .left img {
+	width: 100%;
+	object-fit: cover;
 }
 
 .con02 .right {
@@ -208,6 +213,7 @@ section {
 .con02 .right #creatorInfo .wrap .creator img {
 	border-radius: 50%;
 	width: 40px;
+	height: 40px;
 	object-fit: cover;
 	margin-right: 10px;
 }
@@ -238,6 +244,12 @@ color: #fff;
 
 
 /* ------------- 후원 목록 --------------*/
+
+.con02 .right #fundingOptions {
+	height: 75vh;
+    overflow: scroll;
+    position: sticky;
+}
 
 .con02 .right #fundingOptions .wrap .reward {
 	margin-bottom: 15px;

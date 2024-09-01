@@ -94,9 +94,18 @@
 	<select id="countFollower" resultType="int">
 		SELECT IfNULL(COUNT(*),0)
 		FROM follow
-		WHERE follow_creator = #{creator_email}
+		WHERE 
+			follow_creator = #{creator_email}
+			AND follow_status = 'Y'
 	</select>
 	
+	
+	<!-- 팔로워 리스트 -->
+	<select id="selectFollowerList" resultType="follow">
+		SELECT * 
+		FROM follow
+		WHERE follow_creator = #{creator_email}
+	</select>
 	
 	<!-- 후원 리워드 리스트 -->
 	<select id="selectRewardList" resultType="reward">
@@ -167,23 +176,8 @@
 		AND address_is_default = 'Y';
 	</update>
 	
-	<!-- 1. 기본 배송지 변경하고 새로운 기본배송지 설정 -->
-	<insert id="insertNewDefaultAddress">
-		INSERT INTO user_address 
-		VALUES (
-			null
-			,#{address_mem_email}
-			,#{address_receiver_name}
-			,#{address_post_code}
-			,#{address_main}
-			,#{address_sub}
-			,#{address_receiver_tel}
-			,'Y'
-			, default
-		)
-	</insert>
 	
-	<!-- 2. 나머지 배송지 등록 -->
+	<!-- 배송지 등록 -->
 	<insert id="insertNewAddress">
 		INSERT INTO user_address 
 		VALUES (
@@ -195,11 +189,11 @@
 			,#{address_sub}
 			,#{address_receiver_tel}
 			<choose>
-				<when test="#{address_is_default == null}">
-				,'N'
+				<when test="#{address_is_default == 'on'}">
+				,'Y'
 				</when>
 				<otherwise>
-				, 'Y'
+				, 'N'
 				</otherwise>
 			</choose>
 			, default		
@@ -252,6 +246,39 @@
 			, #{report_ref_url1}
 			, #{report_ref_url2}
 			, #{report_ref_url3}
+		)
+	</insert>
+	
+	<!-- 팔로우 등록 -->
+	<insert id="insertFollow">
+		INSERT INTO follow
+		VALUES (
+			null
+			, #{id}
+			, #{follow_creator}
+			, 'Y'
+		)
+	</insert>
+	
+	<!--  언팔로우 - status 변경 -->
+	<update id="unFollow">
+		UPDATE follow
+		SET follow_status = 'N'
+		WHERE 
+			follow_mem_email = #{follow_mem_email}
+			AND follow_creator = #{follow_creator}
+			AND follow_status = 'Y'
+	</update>
+	
+	
+	<!-- 좋아요 등록 -->
+	<insert id="insertLike">
+		INSERT INTO like_
+		VALUES (
+			null
+			, #{like_mem_email}
+			, #{like_project_code}
+			, null
 		)
 	</insert>
 </mapper>

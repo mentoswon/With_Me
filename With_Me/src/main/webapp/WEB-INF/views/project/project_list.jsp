@@ -25,9 +25,13 @@
 			.sec02 .itemList .itemWrapper .item {
 				width: 100%;
 			}
+			.sec02 .itemList .itemWrapper .item .item_image {
+				position: relative;
+			}
 			
 			.sec02 .itemList .itemWrapper .item .item_image .like{
-				top: 90%;
+				position: absolute;
+				top: 88%;
 				bottom: 0;
 				left: 90%;
 				right: 0;
@@ -144,7 +148,7 @@
 									<div class="item">
 										<div class="item_image">
 											<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
-												<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+												<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 											</a>
 											<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
 											

@@ -35,7 +35,7 @@ p {
 
 #repCon03 .moreUrl button {
 	width: auto;
-	padding: 10px;
+	padding: 9px;
 	font-size: 13px;
 	background-color: #eee;
 }
@@ -65,6 +65,7 @@ p {
 	border-radius: 5px;
 	text-align: center;
 	border: none;
+	cursor: pointer;
 }
 
 #submitReport {
@@ -76,5 +77,6 @@ p {
 	background-color: #ffab40;
 	color: #fff;
 	font-weight: bold;
+	cursor: pointer;
 }
 

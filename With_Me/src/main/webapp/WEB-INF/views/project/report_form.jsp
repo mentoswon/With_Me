@@ -7,7 +7,7 @@
 	<div>${type}</div>
 </div>
 
-<form action="ReportSubmit" method="POST" id="reportForm">
+<form action="ReportSubmit" id="reportForm" method="POST">
 	<input type="hidden" name="report_category" value="${type}">
 	<input type="hidden" name="report_project_code" value="${project_code}">
 	<div id="repCon01">
@@ -28,8 +28,8 @@
 		<h4>참고 URL (선택)</h4>
 		<p>신고 내용을 확인할 수 있는 URL을 입력하세요 (최대 3개)</p>
 		<div class="moreUrl">
-			<input type="url" placeholder="https://" size="70">
-			<button value="추가">추가</button>
+			<input type="text" placeholder="https://" size="70" name="report_ref_url1">
+			<button type="button" value="추가" class="moreUrlBtn">추가</button>
 		</div>
 	</div>
 	
@@ -58,7 +58,7 @@
     </div>
     
 	<input type="button" id="cancleBtn" onclick="cancleConfirm()" value="취소하기">
-    <input type="submit" value="접수하기" id="submitReport" onclick="submitConfirm()">
+    <input type="submit" value="접수하기" id="submitReport">
 </form> 
 
 <script>
@@ -70,11 +70,32 @@
 		}
 	}
 	
-	function submitConfirm(){
-		if(confirm("신고를 접수하시겠습니까?")){
-			location.href="ReportSubmit";
-		}
-	}
+// 	function submitConfirm(){
+// 		if(confirm("신고를 접수하시겠습니까?")){
+// 			location.href="ReportSubmit";
+// 		}
+// 	}
+	
+	$(document).on('click','.moreUrlBtn', function (){
+		// 현재 .moreUrl 요소의 개수 확인
+	    let urlCount = $(".moreUrl").length;
+	    
+	    if (urlCount >= 3) {
+	        alert("URL은 최대 3개까지 작성 가능합니다.");
+	        return false; // 최대 개수를 초과하면 추가하지 않음
+	    }
+
+	    // 추가할 URL의 번호를 URL 개수에 1을 더해 설정
+	    let newUrlNumber = urlCount + 1;
+	    
+	    let addUrl = 
+	        '<div class="moreUrl">'
+	            + '<input type="text" placeholder="https://" size="70" name="report_ref_url' + newUrlNumber + '">'
+	            + '<button type="button" value="추가" class="moreUrlBtn">추가</button>'
+	        + '</div>';
+		
+		$("#repCon03").append(addUrl);
+	});
 </script>
 
 
