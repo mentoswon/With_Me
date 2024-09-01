@@ -107,6 +107,17 @@
 		WHERE follow_creator = #{creator_email}
 	</select>
 	
+	<!-- 좋아요 한 건지 판단 후 가져가기 -->
+	<select id="selectIsLike" resultType="like">
+		SELECT *
+		FROM like_
+		WHERE 
+			like_mem_email = #{like_mem_email}
+			AND like_project_code = #{like_project_code}
+			AND like_status = 'Y'
+	</select>
+	
+	
 	<!-- 후원 리워드 리스트 -->
 	<select id="selectRewardList" resultType="reward">
 		SELECT *
@@ -249,6 +260,25 @@
 		)
 	</insert>
 	
+	<!-- 팔로우 한 적 있는지 확인부터 -->
+	<select id="selectFollowCount" resultType="int">
+		SELECT COUNT(*)
+		FROM follow
+		WHERE 
+			follow_mem_email = #{id}
+			AND follow_creator = #{follow_creator}
+	</select>
+	
+	<!--  팔로우 기록 있는데 N 이니까 Y로 status 변경 -->
+	<update id="updateFollow">
+		UPDATE follow
+		SET follow_status = 'Y'
+		WHERE 
+			follow_mem_email = #{id}
+			AND follow_creator = #{follow_creator}
+			AND follow_status = 'N'
+	</update>
+	
 	<!-- 팔로우 등록 -->
 	<insert id="insertFollow">
 		INSERT INTO follow
@@ -270,6 +300,24 @@
 			AND follow_status = 'Y'
 	</update>
 	
+	<!-- 좋아요 한 적 있는지 확인부터 -->
+	<select id="selectLikeCount" resultType="int">
+		SELECT COUNT(*)
+		FROM like_
+		WHERE 
+			like_project_code = #{like_project_code}
+			AND like_mem_email = #{like_mem_email}
+	</select>
+	
+	<!--  좋아요 기록 있는데 N 이니까 Y로 status 변경 -->
+	<update id="updateLike">
+		UPDATE like_
+		SET like_status = 'Y'
+		WHERE 
+			like_project_code = #{like_project_code}
+			AND like_mem_email = #{like_mem_email}
+			AND like_status = 'N'
+	</update>
 	
 	<!-- 좋아요 등록 -->
 	<insert id="insertLike">
@@ -279,6 +327,17 @@
 			, #{like_mem_email}
 			, #{like_project_code}
 			, null
+			, 'Y'
 		)
 	</insert>
+	
+	<!--  좋아요 취소 -->
+	<update id="cancleLike">
+		UPDATE like_
+		SET like_status = 'N'
+		WHERE 
+			like_project_code = #{like_project_code}
+			AND like_mem_email = #{like_mem_email}
+			AND like_status = 'Y'
+	</update>
 </mapper>

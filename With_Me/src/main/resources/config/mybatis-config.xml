@@ -12,6 +12,7 @@
 		<typeAlias type="com.itwillbs.with_me.vo.MailAuthInfo" alias="mailAuth"/>
 		<typeAlias type="com.itwillbs.with_me.vo.RewardVO" alias="reward"/>
 		<typeAlias type="com.itwillbs.with_me.vo.ItemVO" alias="item"/>
+		<typeAlias type="com.itwillbs.with_me.vo.LikeVO" alias="like"/>
 		<typeAlias type="com.itwillbs.with_me.vo.StoreVO" alias="store"/>
 		<typeAlias type="com.itwillbs.with_me.vo.AddressVO" alias="address"/>
 		<typeAlias type="com.itwillbs.with_me.vo.BoardVO" alias="bo"/>

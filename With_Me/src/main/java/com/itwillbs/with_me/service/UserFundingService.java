@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.itwillbs.with_me.mapper.UserFundingMapper;
 import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.FollowVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
@@ -43,6 +44,11 @@ public class UserFundingService {
 	// 팔로워 리스트
 	public List<FollowVO> getFollowerList(String creator_email) {
 		return mapper.selectFollowerList(creator_email);
+	}
+	
+	// 좋아요 한거면 그 정보 가져가기
+	public LikeVO getIsLike(String like_project_code, String like_mem_email) {
+		return mapper.selectIsLike(like_project_code, like_mem_email);
 	}
 
 	// 후원 리워드 리스트
@@ -114,7 +120,17 @@ public class UserFundingService {
 
 	
 	// ===========================================================================================
-	// 팔로우 등록
+	// 팔로우 한 적 있는지 확인 부터
+	public int getFollowCount(String id, String follow_creator) {
+		return mapper.selectFollowCount(id, follow_creator);
+	}
+	
+	// 팔로우 한 적 있는데 N으로 돼있으면 Y로 수정
+	public int modifyFollow(String id, String follow_creator) {
+		return mapper.updateFollow(id, follow_creator);
+	}
+	
+	// 팔로우 한 적 없으면 (아예 기록 없음) 팔로우 등록
 	public int registFollow(String id, String follow_creator) {
 		return mapper.insertFollow(id, follow_creator);
 	}
@@ -125,10 +141,31 @@ public class UserFundingService {
 	}
 
 	// ===========================================================================================
-	// 좋아요 등록
+	// 좋아요 한 적 있는지 확인
+	public int getLikeCount(String like_project_code, String like_mem_email) {
+		return mapper.selectLikeCount(like_project_code, like_mem_email);
+	}
+	
+	// 좋아요 한 적 있으니까 update
+	public int modifyLike(String like_project_code, String like_mem_email) {
+		return mapper.updateLike(like_project_code, like_mem_email);
+	}
+	
+	// 좋아요 등록 (좋아요 한 적 없음)
 	public int registLike(String like_project_code, String like_mem_email) {
 		return mapper.insertLike(like_project_code, like_mem_email);
 	}
+
+	// 좋아요 취소
+	public int cancleLike(String like_project_code, String like_mem_email) {
+		return mapper.cancleLike(like_project_code, like_mem_email);
+	}
+
+	
+
+
+
+
 
 
 

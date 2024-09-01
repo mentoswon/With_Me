@@ -27,6 +27,7 @@ import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.ItemVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -111,7 +112,7 @@ public class UserFundingController {
 	
 	
 	@GetMapping("ProjectDetail")
-	public String projectDetail(ProjectVO project, Model model) {
+	public String projectDetail(ProjectVO project, Model model, HttpSession session) {
 		System.out.println("ProjectDetail : " + project);
 		String project_code = project.getProject_code();
 		
@@ -160,6 +161,15 @@ public class UserFundingController {
         project_detail.put("followerList", followerList);
         System.out.println("팔로우 ~ : " + followerList);
         // 팔로워 리스트  end ---------------
+        
+        // 내가 좋아요 한건지 판단 후 가져가기 -----------------------------
+        String id = (String) session.getAttribute("sId");
+        
+        LikeVO isLike = service.getIsLike(project_code, id);
+        project_detail.put("isLike", isLike);
+        
+        
+        
         // ===================================================================
         
         // 프로젝트별 후원 정보 가져오기 ------------
@@ -511,9 +521,19 @@ public class UserFundingController {
 			resultMap.put("result", false);
 			
 		} else {
-			int insertCount = service.registFollow(id, follow_creator);
 			
-			if(insertCount > 0) {
+			int followCount = service.getFollowCount(id, follow_creator); // 내가 이 창작자를 팔로우한 적이 있는지 (언팔도 status 남으니까 그냥 있으면 무조건 넘어옴)
+			
+			int insertCount = 0;
+			int updateCount = 0;
+			
+			if(followCount > 0) { // 팔로우 한 적 있음
+				updateCount = service.modifyFollow(id, follow_creator);
+			} else { // 팔로우 한 적 없음
+				insertCount = service.registFollow(id, follow_creator);
+			}
+			
+			if(insertCount > 0 || updateCount > 0) {
 				resultMap.put("result", true);
 			} else {
 				resultMap.put("result", false);
@@ -551,14 +571,51 @@ public class UserFundingController {
 	// 좋아요 등록
 	@ResponseBody
 	@PostMapping("RegistLike")
-	public String registLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
+	public String registLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email, HttpSession session) {
+		System.out.println("좋아요 : " + like_project_code + ", " + like_mem_email);
+		String id = (String) session.getAttribute("sId");
 		
 		// 결과 담을 Map
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
-		int insertCount = service.registLike(like_project_code, like_mem_email);
+		if(id == null) {
+			resultMap.put("result", false);
+			
+		} else {
+			// 내가 이 프로젝트를 좋아요 한 적 있는지 먼저 확인
+			int likeCount = service.getLikeCount(like_project_code, like_mem_email);
+			int updateCount = 0;
+			int insertCount = 0;
+			
+			if(likeCount > 0) { // 좋아요 한 흔적이 있음
+				updateCount = service.modifyLike(like_project_code, like_mem_email); // 좋아요 한 흔적은 있는데 N이니까 Y로 변경
+			} else { // 좋아요 한 흔적 없음
+				insertCount = service.registLike(like_project_code, like_mem_email);
+			}
+			
+			if(insertCount > 0 || updateCount > 0) {
+				resultMap.put("result", true);
+			} else {
+				resultMap.put("result", false);
+			}
+		}
 		
-		if(insertCount > 0) {
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	@ResponseBody
+	@PostMapping("CancleLike")
+	public String cancleLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int updateCount = service.cancleLike(like_project_code, like_mem_email);
+		
+		if(updateCount > 0) {
 			resultMap.put("result", true);
 		} else {
 			resultMap.put("result", false);
@@ -569,32 +626,6 @@ public class UserFundingController {
 		
 		return jo.toString();
 	}
-	
-	// 좋아요 취소
-	// like_mem_email 이랑 project_code 가 똑같은게 status 가 0으로 돼있으면
-	// 1로 업데이트 하고
-	// 취소하면 0으로 변경하고 .. 그러면 될 것 같노
-	
-//	@ResponseBody
-//	@PostMapping("CancleLike")
-//	public String cancleLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
-//		
-//		// 결과 담을 Map
-//		Map<String, Object> resultMap = new HashMap<String, Object>();
-//		
-//		int insertCount = service.registLike(like_project_code, like_mem_email);
-//		
-//		if(insertCount > 0) {
-//			resultMap.put("result", true);
-//		} else {
-//			resultMap.put("result", false);
-//		}
-//		
-//		JSONObject jo = new JSONObject(resultMap);
-////		System.out.println("응답 데이터 : " + jo.toString());
-//		
-//		return jo.toString();
-//	}
 	
 	
 	

@@ -97,12 +97,18 @@
 						</div>
 						
 						<div class="fundInfo3">
-							<button class="like Btn" type="button" onclick="registLike('${project_detail.project_code}', '${sId}')">
-								
-								<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-								<!-- like_mem_email 이랑 like_project_code 동일하면 채워진 하트로 변경 -->
-<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
-							</button>
+							<c:choose>
+								<c:when test="${project_detail.isLike.like_mem_email eq sId and project_detail.isLike.like_status eq 'Y'}">
+									<button class="like Btn" type="button" onclick="cancleLike('${project_detail.project_code}', '${sId}')">
+										<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
+									</button>
+								</c:when>
+								<c:otherwise>
+									<button class="like Btn" type="button" onclick="registLike('${project_detail.project_code}', '${sId}')">
+										<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+									</button>
+								</c:otherwise>
+							</c:choose>
 							<button type="button" class="goFund Btn" id="goFund" onclick="goToScroll()">이 프로젝트 후원하기</button>
 						</div>
 					</div>
@@ -313,7 +319,7 @@
 			// ==========================================================================
 			// 이 프로젝트 후원하기 클릭 시 스크롤 이동
 			function goToScroll() {
-			    let location = document.querySelector("#reward_default").offsetTop;
+			    let location = document.querySelector("#fundingOptions").offsetTop;
 			    window.scrollTo({top: location, behavior: 'smooth'});
 			}
 			// ==========================================================================
@@ -444,11 +450,37 @@
 		    updateHiddenTagValue();
 				
 			// ==========================================================================
-			// 좋아요
+			// 프로젝트 좋아요
 			function registLike(project_code, sId) {
 // 				console.log("project_code : " + project_code + ", sId : " + sId);
+				if(confirm("프로젝트를 좋아요 하시겠습니까?")){
+					$.ajax({
+						url: "RegistLike",
+						type : "POST",
+						async:false, // 이 한줄만 추가해주시면 됩니다.
+						data:{
+							"like_project_code": project_code,
+							"like_mem_email": sId
+						},
+						dataType: "json",
+						success: function (response) {
+							if(response.result){
+								alert("좋아한 프로젝트에 추가되었습니다.");
+								location.reload();
+							} else if(!response.result) {
+								alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+								location.href="MemberLogin";
+							}
+						}
+					});
+				}
+			}
+			
+			// 프로젝트 좋아요 취소
+			function cancleLike(project_code, sId) {
+// 				console.log("project_code : " + project_code + ", sId : " + sId);
 				$.ajax({
-					url: "RegistLike",
+					url: "CancleLike",
 					type : "POST",
 					async:false, // 이 한줄만 추가해주시면 됩니다.
 					data:{
@@ -458,7 +490,7 @@
 					dataType: "json",
 					success: function (response) {
 						if(response.result){
-							alert("좋아한 프로젝트에 추가되었습니다.");
+							alert("좋아요가 취소되었습니다.");
 							location.reload();
 						} else if(!response.result) {
 							alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
