@@ -23,7 +23,11 @@ $(function() {
 		formData.append("project_idx", $("input[name='project_idx']").val());
 		formData.append("project_code", $("input[name='project_code']").val());
 		formData.append("project_category", $("#project_category").val());
-		formData.append("project_category_detail", $("#project_category_detail").val());
+		if ($("#project_category_detail").val()) {	// 값이 있을 경우에만 append
+		    formData.append("project_category_detail", $("#project_category_detail").val());
+		} else {
+		    formData.append("project_category_detail", "");
+		}
 		formData.append("project_title", $("#project_title").val());
 		formData.append("project_summary", $("#project_summary").val());
 		
@@ -134,7 +138,9 @@ $(function() {
                     alert("프로젝트 저장에 실패하였습니다.");
 				} else if(response.result) {
 					alert('프로젝트가 저장되었습니다.');
-					location.reload(); // 현재 페이지 갱신(새로고침)
+// 					location.reload(); // 현재 페이지 갱신(새로고침)
+// 					$("#popupWrap").hide();
+// 			        $("#overlay").hide();
                 }
 			},
 			dataType : "json",
@@ -167,16 +173,19 @@ $(function() {
         $("#projectMenuList li").removeClass("active");
         $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
         let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
-        $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
+        let targetContainer = $("#writeContainer" + index);  // 해당 인덱스에 해당하는 콘텐츠 영역 선택
+
+        targetContainer.show();  // 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
+
+        // 해당 콘텐츠 영역으로 스크롤 이동
+        $('html, body').animate({
+        	scrollTop: 0  // 스크롤을 맨 위로 이동
+        }, 500);  // 500ms(0.5초) 동안 부드럽게 스크롤
     });
 	
 	// 초기 상태로 첫 번째 메뉴와 콘텐츠가 보이도록 설정
     $("#projectMenuList li:eq(0)").click();
 	// -------------------------------------------------------------------------------
-	// 임시) 초기 상태로 세 번째 메뉴와 콘텐츠가 보이도록 설정
-//     $("#projectMenuList li:eq(2)").click();
-	// -------------------------------------------------------------------------------
-    
     // 카테고리 변경 시 AJAX 요청 전송(세부카테고리 불러오기)
 	$("#project_category").change(function() {
 		let project_category = $("#project_category").val();
@@ -206,12 +215,13 @@ $(function() {
 		}
 	});
     
+	// ------------------------------
+	// project_code 업데이트
 	// URL에서 특정 파라미터 값을 추출하는 함수
 	function getParameterByName(name) {
 	    let urlParams = new URLSearchParams(window.location.search);
 	    return urlParams.get(name);
 	}
-	
 	// project_code를 업데이트하는 함수
 	function updateProjectCode() {
 	    let category = $("#project_category").val();
@@ -236,8 +246,7 @@ $(function() {
 	    updateProjectCode();
 	});
 	
-	
-	
+	// ---------------------
     // 제목 길이 체크
     function checkTitleLength() {
         let titleLength = $("#project_title").val().length;

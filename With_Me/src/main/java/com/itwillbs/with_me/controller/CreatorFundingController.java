@@ -371,6 +371,7 @@ public class CreatorFundingController {
 	    }
 	    
 		// 프로젝트 임시저장(update)
+	    project.setProject_status("");
 		int updateCount = service.modifyProject(project);
 		
 		// 삭제 요청 처리 결과 판별

@@ -136,6 +136,14 @@ public class MemberService {
 	public String getMemberId(String receiver_id) {
 		return mapper.selectMemberId(receiver_id);
 	}
+
+	
+	// ================================================
+	// 회원 가입 시 배송지 등록
+	public void registTransAddress(String address_mem_email, String address_receiver_name, String address_post_code,
+			String address_main, String address_sub, String address_receiver_tel) {
+		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
+	}
 	
 }
 
