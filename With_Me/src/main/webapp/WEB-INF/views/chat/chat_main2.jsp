@@ -82,7 +82,9 @@
 	}
 	
 	.message.message_align_right .chat_text {
-		background-color: yellow;
+		background-color: #f1f3f5;
+		border-radius: 4px;
+		padding: 4px;
 	}
 	
 	.message.message_align_left .chat_text {

@@ -376,7 +376,7 @@
 		// ======================================================================
 		// 채팅방 1개 대화 종료
 		function quitRoom(elem) {
-			if(confirm("해당 대화방을 종료하시겠습니까?")) {
+			if(confirm("채팅방을 나가시겠어요?")) {
 				let parent = $(elem).parent(); // 닫기 버튼의 부모(commandArea) 탐색
 	// 			let chatRoom = $(parent).parent(); // commandArea 의 부모(chatRoom) 탐색
 	// 			$(chatRoom).remove(); // chatRoom(해당 채팅방) 제거
@@ -459,7 +459,7 @@
 // 			console.log(date);
 			
 			// 기본적으로 시각(시:분)은 표시되므로 먼저 전송 시각 저장
-			send_time = date.getHours() + ":" + date.getMinutes();
+			send_time = date.getHours() + ":" + String(date.getMinutes()).padStart(2, '0');
 			
 			let now = new Date(); // 시스템 날짜를 기준으로 Date 객체 생성
 			// date 변수에 저장된 메세지 전송 날짜가 오늘이 아닐 경우 전송 날짜를 추가
