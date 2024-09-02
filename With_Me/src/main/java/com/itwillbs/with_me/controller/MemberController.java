@@ -113,7 +113,7 @@ public class MemberController {
 		String address_post_code = member.getMem_post_code(); 
 		String address_main = member.getMem_add1(); 
 		String address_sub = member.getMem_add2(); 
-		String address_receiver_tel = member.getMem_tel();
+		String address_receiver_tel = member.getMem_tel();  
 		
 		service.registTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 		
