@@ -44,7 +44,8 @@ public class UserFundingController {
 	@GetMapping("ProjectList")
 	public String projectList(ProjectVO project, Model model, 
 			@RequestParam(defaultValue = "1") int pageNum,
-			@RequestParam(defaultValue = "") String searchKeyword) {
+			@RequestParam(defaultValue = "") String searchKeyword,
+			HttpSession session) {
 		System.out.println("searchKeyword : " + searchKeyword);
 		
 		// 메뉴에서 선택한 카테고리대로 목록이 표출되게 해야함
@@ -94,6 +95,19 @@ public class UserFundingController {
 			
 			return "result/fail";
 		}
+		
+		// ===================================================================
+        
+        // 내가 좋아요 한건지 판단 후 가져가기 -----------------------------
+//        String id = (String) session.getAttribute("sId");
+//        String project_code = project.getProject_code();
+//        
+//        LikeVO isLike = service.getIsLike(project_code, id);
+//        System.out.println("isLike : " + isLike);
+        
+        // ===================================================================
+		
+		
 		// --------------------------------------------------------------------
 		// 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(category, category_detail, searchKeyword, startRow, listLimit);
@@ -105,7 +119,7 @@ public class UserFundingController {
 		// --------------------------------------------------------------------
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("pageInfo", pageInfo);
-		
+//		model.addAttribute("isLike", isLike);
 		
 		return "project/project_list";
 	}
@@ -120,6 +134,11 @@ public class UserFundingController {
 		Map<String, Object> project_detail = service.getProject(project_code);
 		
 		System.out.println("가져온 프로젝트 ~ : " + project_detail);
+		
+		// 창작자의 누적 펀딩액 가져오기
+		int totalFundAmt = service.getTotalFundAmtOfCreator((String)project_detail.get("creator_email"));
+		
+		project_detail.put("totalFundAmt", totalFundAmt);
 		
 		// 결제일 계산 ------------------
 		Date project_end_date = (Date) project_detail.get("funding_end_date");
@@ -162,17 +181,17 @@ public class UserFundingController {
         System.out.println("팔로우 ~ : " + followerList);
         // 팔로워 리스트  end ---------------
         
+        // ===================================================================
+        
         // 내가 좋아요 한건지 판단 후 가져가기 -----------------------------
         String id = (String) session.getAttribute("sId");
         
         LikeVO isLike = service.getIsLike(project_code, id);
         project_detail.put("isLike", isLike);
         
-        
-        
         // ===================================================================
         
-        // 프로젝트별 후원 정보 가져오기 ------------
+        // 프로젝트별 리워드 정보 가져오기 ------------
         int project_idx = (int) project_detail.get("project_idx");
 //        System.out.println("project_idx : " + project_idx);
         List<RewardVO> rewardList = service.getReward(project_idx);
@@ -266,6 +285,7 @@ public class UserFundingController {
 		List<AddressVO> userAddress = service.getUserAddress(member);
 //		System.out.println("userAddress : " + userAddress);
 		
+		
 		// =========================================================================
 		// 선택한 후원 정보 정리
 		
@@ -313,56 +333,76 @@ public class UserFundingController {
 		System.out.println("new_address : " + new_address);
 		
 		String id = (String) session.getAttribute("sId");
-		
+
 		member.setMem_email(id);
 		
 		// 아이디로 회원 정보 가져오기
 		member = memberService.getMember(member);
-
-		// 일단 기본배송지 등록된거 있는지 확인 먼저 필요
-		int isDefaultCount = service.getAddressIsDefault(id);
+		
+		// 배송지를 등록하면 해당 배송지를 선택된 배송지로 만들것임
+		// 원래 선택된 배송지 있으면 그건 .. N으로 바꾸기
+		
+		// 선택된 배송지 있는지 판별
+		int isSelectedCount = service.getAddressIsSelected(id);
 		List<AddressVO> addressList = null;
 		
-		if(isDefaultCount > 0) {
-			if(new_address.getAddress_is_default() == null) { // 기본 배송지 있는데 안 바꾸면 그냥 등록 !
-				int insertCount = service.registNewAddress(new_address);
-				
-				if(insertCount > 0) {
-					addressList = service.getUserAddress(member);
-				} 
-				
-				System.out.println("기본배송지 있는데 변경 안 하는 경우 : " + insertCount);
-				
-			} else if(new_address.getAddress_is_default().equals("on")) { // 새 주소 등록하면서 기본 배송지 설정 !
+		if(isSelectedCount == 1) { // 선택된 배송지 있는 경우
 					
-				// 기본배송지가 있으면 그걸 N으로 바꿔야함 -> update
-				int updateCount = service.modifyDefaultAddress(id);
+			// 해당 배송지를 N으로 바꿔야함
+			int changeCount = service.modifySelectedAddressToN(id);
+			
+			if(changeCount > 0) { // 이 아이디에 있던 선택된 배송지를 N으로 바꿈
 				
-				// 바꾸고 새로운 기본배송지 insert
-				if(updateCount > 0) {
+				// 일단 기본배송지 등록된거 있는지 확인 먼저 필요
+				int isDefaultCount = service.getAddressIsDefault(id);
+				
+				if(isDefaultCount > 0) { // 기본배송지 있음
+					if(new_address.getAddress_is_default().equals("off")) { // 기본 배송지 있는데 안 바꾸면 그냥 등록 !
+						int insertCount = service.registNewAddress(new_address);
+						
+						if(insertCount > 0) {
+							addressList = service.getUserAddress(member);
+						} 
+						
+						System.out.println("기본배송지 있는데 변경 안 하는 경우 : " + insertCount);
+						
+					} else if(new_address.getAddress_is_default().equals("on")) { // 새 주소 등록하면서 기본 배송지 설정 !
+						
+						// 기본배송지가 있으면 그걸 N으로 바꿔야함 -> update
+						int updateCount = service.modifyDefaultAddressToN(id);
+						
+						// 바꾸고 새로운 기본배송지 insert
+						if(updateCount > 0) {
+							int insertCount = service.registNewAddress(new_address);
+							
+							if(insertCount > 0) {
+								addressList = service.getUserAddress(member);
+							} 
+						} 
+						System.out.println("기본배송지 있는데 기본배송지 변경하는 경우 : " + updateCount);
+						
+					}
+				} else if (isDefaultCount == 0) { // 기본 배송지 없음 ! 그냥 등록 ! null, on 에 따라 다르게 들어가게 mapper.xml 에 해놨음
+					
 					int insertCount = service.registNewAddress(new_address);
 					
 					if(insertCount > 0) {
 						addressList = service.getUserAddress(member);
 					} 
-				} 
-				System.out.println("기본배송지 있는데 기본배송지 변경하는 경우 : " + updateCount);
+					
+					System.out.println("기본배송지 없는 경우 : " + insertCount);
+				}
 				
-			}
-		} else if (isDefaultCount == 0) {
-			// 기본 배송지 없음 ! 그냥 등록 ! null, on 에 따라 다르게 들어가게 mapper.xml 에 해놨음
+			} 
+		} else { //선택배송지 원래 없는 경우
 			int insertCount = service.registNewAddress(new_address);
 			
 			if(insertCount > 0) {
 				addressList = service.getUserAddress(member);
 			} 
-			
-			System.out.println("기본배송지 없는 경우 : " + insertCount);
-		}
+		} 
 		
 		return addressList;
-		
-		// 자꾸 insert 가 2번 된다 ... 
 	}
 	
 	
@@ -438,6 +478,70 @@ public class UserFundingController {
 		JSONObject jo = new JSONObject(resultMap);
 		System.out.println("응답 JSON 데이터 " + jo.toString());
 		
+		return jo.toString();
+	}
+	
+	// 기본 배송지 변경 - 설정
+	@ResponseBody
+	@PostMapping("RegistDefaultAddress")
+	public String registDefaultAddress(@RequestParam(defaultValue = "0")int address_idx, HttpSession session) {
+		System.out.println("address_idx: " + address_idx);
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		// 일단 기본배송지 등록된거 있는지 확인 먼저 필요
+		String id = (String) session.getAttribute("sId");
+		int isDefaultCount = service.getAddressIsDefault(id);
+		
+		if(isDefaultCount > 0) { // 기본배송지 있음
+			// 원래 기본 배송지를 N으로 바꾸고
+			int updateCount = service.modifyDefaultAddressToN(id);
+			
+			if(updateCount > 0) {
+				int updateCount2 = service.modifyDefaultAddressToY(address_idx);
+				
+				if(updateCount2 > 0) {
+					resultMap.put("result", true);// 변경 성공
+				} else {
+					resultMap.put("result", false);// 변경 실패
+				}
+			}
+			
+		} else { // 기본 배송지 없음
+			
+			// 변경 요청 처리 결과 판별
+			// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+			int updateCount = service.modifyDefaultAddressToY(address_idx);
+			
+			if(updateCount > 0) {
+				resultMap.put("result", true);// 변경 성공
+			} else {
+				resultMap.put("result", false);// 변경 실패
+			}
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+		return jo.toString();
+	}
+	
+	// 기본 배송지 변경 - 해제
+	@ResponseBody
+	@PostMapping("CancleDefaultAddress")
+	public String cancleDefaultAddress(@RequestParam(defaultValue = "")String address_mem_email, HttpSession session) {
+		
+		// 변경 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		int updateCount = service.modifyDefaultAddressToN(address_mem_email);
+		
+		if(updateCount > 0) {
+			resultMap.put("result", true);// 변경 성공
+		} else {
+			resultMap.put("result", false);// 변경 실패
+		}
+		
+		
+		JSONObject jo = new JSONObject(resultMap);
 		return jo.toString();
 	}
 	
@@ -628,11 +732,23 @@ public class UserFundingController {
 	}
 	
 	
+	// =========================================================================
 	
+	// 펀딩 등록
+	@GetMapping ("UserFundingPro")
+	public String userFundingSuccess (){
+		
+		return "project/fund_success";
+	}
 	
-	
-	
-	
+	@PostMapping ("UserFundingPro")
+	public String userFundingComplete(@RequestParam Map<String, Object> map) {
+//		System.out.println("후원할 내용 : " + map);
+		
+		int insertCount = service.registUserFunding(map);
+		
+		return "redirect:/UserFundingPro";
+	}
 	
 }
 

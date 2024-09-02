@@ -156,7 +156,7 @@
 								<div>
 									<ul>
 										<li>누적펀딩액</li>
-										<li> 원</li>
+										<li><fmt:formatNumber pattern="#,###">${project_detail.totalFundAmt}</fmt:formatNumber> 원</li>
 									</ul>
 									<ul>
 										<li>팔로워</li>
@@ -390,22 +390,23 @@
 // 				e.preventDefault(); // submit 막는거
 				updateHiddenTagValue();
 				
-				let selectedOption = $(".reward.on").find(reward_item_option_select).val();
+				let this_reward = $(this).parents(".reward.on");
+// 				console.log(this_reward.html());
 				
-				console.log("확인 : " + selectedOption);
-				
-				if($(".reward.on").find(reward_item_option_select).val() == null) {
-					alert("옵션을 선택해주세요.");
-					$(reward_item_option_select).focus();
-					
-					return false;
+				let rewardOptionSelect = $(this_reward).find($(reward_item_option)).find($(reward_item_option_select));
+				if (rewardOptionSelect.length && rewardOptionSelect.val() == null) {
+				    alert("옵션을 선택해주세요.");
+				    rewardOptionSelect.focus();
+				    
+				    return false;
 				}
-				
-				if($(".reward.on").find($(reward_item_option_write)).val() == "") {
-					alert("옵션을 입력해주세요.");
-					$(reward_item_option_write).focus();
-					
-					return false;
+
+				let rewardOptionWrite = $(this_reward).find($(reward_item_option)).find($(reward_item_option_write));
+				if (rewardOptionWrite.length && rewardOptionWrite.val() == "") {
+				    alert("옵션을 입력해주세요.");
+				    rewardOptionWrite.focus();
+				    
+				    return false;
 				}
 				
 			});
@@ -459,7 +460,7 @@
 				});
 				
 				$(".reward.on").find(".funding_item_option").val(options.join("|"));  // 옵션을 구분자 | 로 연결하여 hidden input에 설정
-				console.log($(".reward.on").find(".funding_item_option").val());
+// 				console.log($(".reward.on").find(".funding_item_option").val());
 			}
 			
 			
