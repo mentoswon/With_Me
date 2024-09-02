@@ -1,8 +1,16 @@
 package com.itwillbs.with_me.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,8 +22,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.with_me.service.AdminService;
+import com.itwillbs.with_me.service.BoardService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.BoardVO;
 import com.itwillbs.with_me.vo.MemberVO;
@@ -29,6 +39,11 @@ public class AdminController {
 	private AdminService adminService;
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private BoardService boardService;
+	
+	// 가상의 경로명 저장(이클립스 프로젝트 상의 경로)
+	private String uploadPath = "/resources/upload";
 	
 	// 관리자 메인
 	@GetMapping("AdminMain")
@@ -473,6 +488,129 @@ public class AdminController {
 		model.addAttribute("pageInfo", pageInfo);
 		
 		return "admin/admin_notice";
+	}
+	
+	// 공지사항 등록
+	@PostMapping("AdminNoticeRegist")
+	public String adminNoticeRegist(HttpSession session, Model model, BoardVO notice) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+//		System.out.println(notice);
+		String realPath = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
+		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
+		LocalDate today = LocalDate.now();
+		String datePattern = "yyyy/MM/dd"; // 형식 변경에 사용할 패턴 문자열 지정
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern);
+		subDir = today.format(dtf); // LocalDate - DateTimeFormatter
+		realPath += "/" + subDir;
+		try {
+			Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
+			Files.createDirectories(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// --------------------------------------------------------------------------------------
+		// [ 업로드 되는 실제 파일 처리 ]
+		MultipartFile mFile1 = notice.getFile();
+		// MultipartFile 객체의 getOriginalFile() 메서드 호출 시 업로드 한 원본 파일명 리턴
+		System.out.println("원본파일명1 : " + mFile1.getOriginalFilename());
+		// [ 파일명 중복 방지 대책 ]
+		String fileName1 = UUID.randomUUID().toString().substring(0, 8) + "_" + mFile1.getOriginalFilename();
+		notice.setBo_file("");
+		if(!mFile1.getOriginalFilename().equals("")) {
+			notice.setBo_file(subDir + "/" + fileName1);
+		}
+		// adminService - registNotice() 메서드 호출하여 공지사항 등록 작업 요청
+		// => 파라미터 : BoardVO 객체   리턴타입 : int(insertCount)
+		int insertCount = adminService.registNotice(notice);
+		
+		// 공지사항 등록 작업 요청 결과 판별
+		if(insertCount > 0 ) { // 성공
+			try {
+				if(!mFile1.getOriginalFilename().equals("")) {
+					mFile1.transferTo(new File(realPath, fileName1));
+				}
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			// "공지사항 등록에 실패했습니다." 메세지 출력 및 "AdminNotice" 서블릿 주소 전달
+			model.addAttribute("msg", "공지사항 등록에 성공했습니다.");
+			model.addAttribute("targetURL", "AdminNotice?pageNum=1");
+			
+			return "result/success";
+		} else { // 실패
+			// "공지사항 등록에 실패했습니다." 메세지 출력 및 이전 페이지 돌아가기 처리
+			model.addAttribute("msg", "공지사항 등록에 실패했습니다.");
+			
+			return "result/fail";
+		}
+	}
+	
+	// 공지사항 삭제
+	@GetMapping("AdminNoticeRemove")
+	public String adminNoticeRemove(int bo_idx, @RequestParam(defaultValue = "1") int pageNum,
+									HttpSession session, Model model) throws Exception {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+//		System.out.println("bo_idx : " + bo_idx);
+//		System.out.println("pageNum : " + pageNum);
+		// ----------------------------------------------------------------------
+		// 게시물 삭제 시 실제 업로드 된 파일도 삭제해야하므로 
+		// DB 에서 게시물 정보 삭제 전 파일명을 미리 조회하기 위해
+		// BoardService - getBoardDetail() 메서드 재사용하여 게시물 상세정보 조회 요청
+		// => 주의! 조회수 증가되지 않도록 두번째 파라미터값 false 값 전달
+		BoardVO notice = boardService.getBoardDetail(bo_idx, false);
+//		System.out.println("notice : " + notice);
+		
+		// 게시물이 존재하지 않을 경우
+		// "잘못된 접근입니다!" 출력 및 이전 페이지 돌아가기 처리
+		if(notice == null) {
+			model.addAttribute("msg", "잘못된 접근입니다!");
+			return "result/fail";
+		}
+		// --------------------------------------------------------------------
+		// AdminService - removeNotice() 메서드 호출하여 공지사항 삭제 작업 요청
+		// => 파라미터 : 글번호   리턴타입 : int(deleteCount)
+		int deleteCount = adminService.removeNotice(bo_idx);
+		
+		// 삭제 결과 판별하여 처리
+		if(deleteCount > 0) {
+			// --------------------------------------------------------------------
+			// DB에서 게시물 정보 삭제 완료 시 실제 업로드 된 파일 삭제 처리 추가
+			// 실제 업로드 경로 알아내기
+			String realPath = session.getServletContext().getRealPath(uploadPath);
+			// 파일 삭제에 사용될 파일명을 변수에 저장
+			String fileName = notice.getBo_file();
+//			System.out.println("삭제할 파일 : " + fileName);
+			
+			// 파일명이 널스트링("")이 아닐 경우 판별하여 파일 삭제
+			if(!fileName.equals("")) {
+				// 업로드 경로와 파일명(서브디렉토리 경로 포함) 결합하여 Path 객체 생성
+				Path path = Paths.get(realPath, fileName);
+//				System.out.println("실제 삭제 대상 : " + path.toString());
+				
+				// Files 클래스의 deleteIfExists() 메서드 호출하여 파일 존재할 경우 삭제 처리
+				Files.deleteIfExists(path);
+			}
+			// --------------------------------------------------------------------
+			model.addAttribute("msg", "삭제 성공!");
+			model.addAttribute("targetURL", "AdminNotice?pageNum=" + pageNum);
+			return "result/success";
+		} else {
+			model.addAttribute("msg", "삭제 실패!");
+			return "result/fail";
+		}
 	}
 }
 

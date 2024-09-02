@@ -60,5 +60,10 @@ public interface AdminMapper {
 	// 공지사항 목록 조회
 	List<BoardVO> selectNoticeList(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
 								@Param("searchKeyword") String searchKeyword);
+	// 공지사항 등록
+	int insertNotice(BoardVO notice);
+	
+	// 공지사항 삭제
+	int deleteNotice(int bo_idx);
 	
 }

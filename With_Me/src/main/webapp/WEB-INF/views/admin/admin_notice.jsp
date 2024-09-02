@@ -50,85 +50,52 @@
 	}
 	
 	/* 모달 팝업 */
-/* 	h2{ */
-/* 	    text-align: center; */
-/* 	} */
-/* 	.modal_btn { */
-/* 	    display: block; */
-/* 	    margin: 40px auto; */
-/* 	    padding: 10px 20px; */
-/* 	    background-color: royalblue; */
-/* 	    border: none; */
-/* 	    border-radius: 5px; */
-/* 	    color: #fff; */
-/* 	    cursor: pointer; */
-/* 	    transition: box-shadow 0.2s; */
-/* 	} */
-/* 	.modal_btn:hover { */
-/* 	    box-shadow: 3px 4px 11px 0px #00000040; */
-/* 	} */
-	
 	/*모달 팝업 영역 스타일링*/
-/* 	.modal { */
-	/*팝업 배경*/
-/* 		display: none; /*평소에는 보이지 않도록*/ */
-/* 	    position: absolute; */
-/* 	    top:0; */
-/* 	    left: 0; */
-/* 	    width: 100%; */
-/* 	    height: 140vh; */
-/* 	    overflow: hidden; */
-/* 	    background: rgba(0,0,0,0.5); */
-/* 	} */
-/* 	.modal .modal_popup { */
-	/*팝업*/
-/* 	    position: absolute; */
-/* 	    width: 500px; */
-/* 	    top: 35%; */
-/* 	    left: 50%; */
-/* 	    transform: translate(-50%, -50%); */
-/* 	    padding: 20px; */
-/* 	    background: #ffffff; */
-/* 	    border-radius: 20px; */
-/* 	} */
+	.notice {
+		/*팝업 배경*/
+		display: none; /*평소에는 보이지 않도록*/
+	    position: absolute;
+	    top:0;
+	    left: 0;
+	    width: 100%;
+	    height: 140vh;
+	    overflow: hidden;
+	    background: rgba(0,0,0,0.5);
+	    z-index: 9;
+	}
+	.notice .notice_popup {
+		/*팝업*/
+	    position: absolute;
+	    width: 500px;
+	    top: 30%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    padding: 20px;
+	    background: #ffffff;
+	    border: 1px solid black;
+	    border-radius: 20px;
+	}
 	
-/* 	.modal .modal_popup .content { */
-/* 		width: 100%; */
-/* 	} */
+	.notice .notice_popup .content {
+		width: 100%;
+	}
 	
-/* 	.modal .modal_popup .close_btn, .modal .modal_popup .regist_btn, .modal .modal_popup .reset_btn { */
-/* 	    padding: 10px 20px; */
-/* 	    background-color: rgb(116, 0, 0); */
-/* 	    border: none; */
-/* 	    border-radius: 5px; */
-/* 	    color: #fff; */
-/* 	    cursor: pointer; */
-/* 	    transition: box-shadow 0.2s; */
-/* 	} */
+	.notice .notice_popup .close_btn, .notice .notice_popup .regist_btn, .notice .notice_popup .reset_btn {
+	    padding: 10px 20px;
+	    background-color: rgb(116, 0, 0);
+	    border: none;
+	    border-radius: 5px;
+	    color: #fff;
+	    cursor: pointer;
+	    transition: box-shadow 0.2s;
+	}
 	
-/* 	.modal.on { */
-/* 	    display: block; */
-	    
-/* 	} */
-/* 	.btnArea { */
-/* 		margin-top: 30px; */
-/* 	} */
+	.notice.on {display: block;}
+	.btnArea {margin-top: 30px;}
 	
 </style>
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
-<script>
-	// 게시글 수 
-	function showListLimit(limit){
-		location.href="AdminNotice?listLimit=" + limit;
-	}
-	
-// 	function confirmDelete(notice_num){
-// 		if(confirm("공지사항을 삭제하시겠습니까?")){
-// 			location.href="AdminNoticeDelete?notice_num=" + notice_num;
-// 		}
-// 	}
-</script>
 </head>
 <body>
 	<header>
@@ -159,7 +126,7 @@
 					</form>
 					<!-- 우측 상단 버튼 들어가는 자리 -->			
 					<div>
-						<button type="button" id="registBtn" disabled>등록</button>
+						<input type="button" id="registBtn" value="등록">
 					</div>
 				</div>
 				<div class="content">
@@ -185,8 +152,8 @@
 								<td>${notice.bo_sysdate}</td>
 								<td>${notice.bo_readcount}</td>
 								<td>
-									<button value="${notice.bo_idx}" class="modifyBtn" disabled>수정</button>
-									<input type="button" class="delete" value="삭제" onclick="confirmDelete('${notice.bo_idx}')" disabled>
+									<button value="${notice.bo_idx}" class="modifyBtn">수정</button>
+									<input type="button" class="delete" value="삭제" onclick="removeNotice('${notice.bo_idx}')">
 								</td>
 							</tr>
 						</c:forEach>
@@ -227,93 +194,97 @@
 			</article>
 		</section>
 	</div>
-	
-<!-- 	<div class="modal"> 등록 -->
-<!-- 	    <div class="modal_popup"> -->
-<!-- 	        <h3>공지사항 등록</h3> -->
-<!-- 	        <div class="content"> -->
-<!-- 	        	<form action="AdminNoticeRegist" method="post" name="registForm"> -->
-<!-- 			        <div> -->
-<!-- 			        	<span>제목</span> <br> -->
-<!-- 			        	<input type="text" name="notice_subject"> -->
-<!-- 			        </div> -->
-			        
-<!-- 			        <div> -->
-<!-- 			        	<span>공지내용</span> <br> -->
-<!-- 			        	<textarea rows="10" cols="40" name="notice_content"></textarea> -->
-<!-- 			        </div> -->
-			        
-<!-- 					<div class="btnArea" style="text-align : center"> -->
-<!-- 			        	<input type="submit" class="regist_btn" value="등록"> -->
-<!-- 			        	<input type="reset" class="reset_btn" value="초기화"> -->
-<!-- 			        	<input type="button" class="close_btn" value="취소"> -->
-<!-- 			        </div> -->
-<!-- 		        </form> -->
-<!-- 			</div> -->
-<!-- 	    </div> -->
-<!-- 	</div> -->
-<!-- 	<div class="modal"> 수정 -->
-<!-- 	    <div class="modal_popup"> -->
-<!-- 	        <h3>공지사항 수정</h3> -->
-<!-- 	        <div class="content"> -->
-<!-- 	        	<form action="AdminNoticeModify" method="post" name="modifyForm"> -->
-<!-- 	        		<div id="resultArea"></div>  수정 팝업 내용 들어갈 자리 -->
-<!-- 					<div class="btnArea" style="text-align : center"> -->
-<!-- 			        	<input type="submit" class="regist_btn" value="등록"> -->
-<!-- 			        	<input type="button" class="close_btn" value="취소"> -->
-<!-- 			        </div> -->
-<!-- 		        </form> -->
-<!-- 			</div> -->
-<!-- 	    </div> -->
-<!-- 	</div> -->
-	
+	<%-- 공지사항 등록 팝업 --%>
+	<div class="notice">
+		<div class="notice_popup">
+			<h3>공지사항 등록</h3>
+			<div class="content">
+				<form action="AdminNoticeRegist" method="post" name="registForm" enctype="multipart/form-data">
+					<div>
+						<span>제목</span> <br>
+						<input type="text" name="bo_subject">
+					</div>
+					<div>
+						<span>공지내용</span> <br>
+						<textarea rows="10" cols="40" name="bo_content"></textarea>
+					</div>
+					<div>
+						<span>첨부파일</span> <br>
+						<input type="file" name="file">
+					</div>
+					<div class="btnArea" style="text-align : center">
+						<input type="submit" class="regist_btn" value="등록">
+						<input type="reset" class="reset_btn" value="초기화">
+						<input type="button" class="close_btn" value="취소">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<%-- 공지사항 수정 팝업 --%>
+	<div class="notice">
+		<div class="notice_popup">
+			<h3>공지사항 수정</h3>
+			<div class="content">
+				<form action="AdminNoticeModify" method="post" name="modifyForm">
+					<div id="resultArea"></div> <%-- 수정 팝업 내용 들어갈 자리 --%>
+					<div class="btnArea" style="text-align : center">
+						<input type="submit" class="regist_btn" value="등록">
+						<input type="button" class="close_btn" value="취소">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 	<script>
-// 			let modal = document.querySelectorAll('.modal');
-// 			let registBtn = document.querySelector('#registBtn');
-// 			let modifyBtn = document.querySelectorAll('.modifyBtn'); // 반복문으로 버튼이 여러 개 뜨니까 버튼도 여러개임을 인지하고, 팝업 뜨는 것도 반복문 작성필요
-// 			let closeBtn = document.querySelectorAll('.close_btn');
-			
-			// -------------------------------------------------------------------------
-			
-			// 등록 팝업 띄우기
-// 			registBtn.onclick = function(){
-// 				modal[0].classList.add('on');
-// 			}
-			
-			// -------------------------------------------------------------------------
-			
-			// 수정 팝업 띄우기
-// 			for(let i = 0; i < modifyBtn.length ; i++) {
-// 				modifyBtn[i].onclick = function(){
-// 					console.log("modal")
-// 					modal[1].classList.add('on');
-// 				}
-// 			}
-			
-			// 상세 내용 가져오는 AJAX - resources 에 js 있어야함 (script 태그에 주소 연결도 해야함)
-// 			$(function() {
-// 				$(modifyBtn).click(function() {
-// 					$.ajax({
-// 						url:"AdminNoticeModify",
-// 	    				data:{
-// 	    					"notice_num": $(this).val()
-// 	    					},
-// 	    				method:"get",
-// 	    				success: function (response) {
-// 	    					$("#resultArea").html(response);
-// 	    				}
-// 					});
+		// 페이지당 목록 개수 변경
+		function showListLimit(limit){
+			location.href="AdminNotice?listLimit=" + limit;
+		}
+		
+		let notice = document.querySelectorAll('.notice');
+		let modifyBtn = document.querySelectorAll('.modifyBtn'); // 반복문으로 버튼이 여러 개 뜨니까 버튼도 여러개임을 인지하고, 팝업 뜨는 것도 반복문 작성필요
+		
+		// 공지사항 등록 팝업 띄우기
+		$("#registBtn").click(function() {
+			notice[0].classList.add('on');
+		});
+		
+		// 공지사항 수정 팝업 띄우기
+		for(let i = 0; i < modifyBtn.length ; i++) {
+			modifyBtn[i].onclick = function(){
+				notice[1].classList.add('on');
+			}
+		}
+		
+		// 상세 내용 가져오는 AJAX - resources 에 js 있어야함 (script 태그에 주소 연결도 해야함)
+// 		$(function() {
+// 			$(modifyBtn).click(function() {
+// 				$.ajax({
+// 					url:"AdminNoticeModify",
+//     				data:{
+//     					"notice_num": $(this).val()
+//     					},
+//     				method:"get",
+//     				success: function (response) {
+//     					$("#resultArea").html(response);
+//     				}
 // 				});
 // 			});
-			
-			// -------------------------------------------------------------------------
-			
-			// 취소 버튼 성공
-// 			for(let i = 0; i < closeBtn.length ; i++) {
-// 				closeBtn[i].onclick = function(){
-// 					modal[i].classList.remove('on');
-// 				}
-// 			}
+// 		});
+		
+		// 공지사항 등록/수정 취소 버튼
+		for(let i = 0; i < notice.length; i++) {
+			$(".close_btn").click(function() {
+				notice[i].classList.remove('on');
+			});
+		}
+		// 공지사항 삭제 버튼
+		function removeNotice(bo_idx){
+			if(confirm("공지사항을 삭제하시겠습니까?")) {
+				location.href="AdminNoticeRemove?bo_idx=" + bo_idx;
+			}
+		}
 	</script>
 	<footer>
 		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>

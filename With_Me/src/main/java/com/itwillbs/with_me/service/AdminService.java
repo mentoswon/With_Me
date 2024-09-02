@@ -87,4 +87,14 @@ public class AdminService {
 		return mapper.selectNoticeList(startRow, listLimit, searchKeyword);
 	}
 	
+	// 공지사항 등록
+	public int registNotice(BoardVO notice) {
+		return mapper.insertNotice(notice);
+	}
+	
+	// 공지사항 삭제
+	public int removeNotice(int bo_idx) {
+		return mapper.deleteNotice(bo_idx);
+	}
+	
 }

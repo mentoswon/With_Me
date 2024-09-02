@@ -305,4 +305,32 @@
 			#{startRow}
 			, #{listLimit}
 	</select>
+	
+	<!-- 공지사항 등록 -->
+	<insert id="insertNotice">
+		<selectKey keyProperty="bo_idx" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(bo_idx), 0) -- bo_idx 최대값 조회(null 일 경우 기본값 0 사용)
+			FROM notice
+		</selectKey>
+		<!-- 새 글 번호와 참조글 번호는 <selectKey> 를 통회 조회한 #{bo_idx} 값 사용 -->
+		INSERT
+		INTO notice
+		VALUES (
+			#{bo_idx} + 1
+			, #{bo_subject}
+			, #{bo_idx} + 1  -- bo_re_ref(selectKey 를 통회 조회된 게시물 번호 + 1 값 사용)
+			, 0                 -- bo_re_lev
+			, 0                 -- bo_re_seq
+			, #{bo_content}
+			, #{bo_file}
+			, now()
+			, 0                 -- bo_readcount
+		)
+	</insert>
+	
+	<!-- 공지사항 삭제 -->
+	<delete id="deleteNotice">
+		DELETE FROM notice
+		WHERE bo_idx = #{bo_idx}
+	</delete>
 </mapper>
