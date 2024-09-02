@@ -110,7 +110,7 @@
 				<table border="1">
 				<tr><th width="70">제 목</th><td colspan="3">${qnabo.faq_subject}</td></tr>
 				<tr>
-					<th width="70">작성자</th><td>${qnabo.mem_id}</td>
+					<th width="70">작성자</th><td>${qnabo.mem_name}</td>
 					<%-- 작성일시 출력 형식은 ex) 2024-06-04 12:30 --%>
 					<th width="70">작성일시</th>
 					<td><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd"/></td>

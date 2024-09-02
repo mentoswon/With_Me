@@ -95,7 +95,7 @@
                             </tr>
                             <tr>
                             	<td>
-                                	<input type="text" name="mem_id" value="${sessionScope.sId}" required="required" size="15" readonly="readonly">
+                                	<input type="hidden" name="mem_id" value="${sessionScope.sId}" required="required" size="15" readonly="readonly">
                                 	<input type="text" name="mem_name" value="${sessionScope.sName}" required="required" size="15" readonly="readonly">
                                 </td>
                             </tr>

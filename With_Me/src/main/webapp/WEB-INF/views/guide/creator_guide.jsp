@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>헬프센터 기본질문</title>
+<title>Insert title here</title>
 </head>
 <body>
 
