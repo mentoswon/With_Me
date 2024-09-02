@@ -9,6 +9,7 @@
 		<meta charset="UTF-8">
 		<title>index</title>
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
+		<link href="${pageContext.request.contextPath}/resources/css/report_form.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/project_detail.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 	</head>
@@ -21,7 +22,7 @@
 			<section class="con01">
 				<div class="itemWrapper">
 					<div id="imgArea">
-						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
+						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_image}">
 					</div>
 					<div id="infoArea">
 						<span class="category">${project_detail.project_category} > ${project_detail.project_category_detail}</span>
@@ -96,10 +97,19 @@
 						</div>
 						
 						<div class="fundInfo3">
-							<button class="like Btn">
-								<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-							</button>
-							<button class="goFund Btn" id="goFund" onclick="goToScroll()">이 프로젝트 후원하기</button>
+							<c:choose>
+								<c:when test="${project_detail.isLike.like_mem_email eq sId and project_detail.isLike.like_status eq 'Y'}">
+									<button class="like Btn" type="button" onclick="cancleLike('${project_detail.project_code}', '${sId}')">
+										<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
+									</button>
+								</c:when>
+								<c:otherwise>
+									<button class="like Btn" type="button" onclick="registLike('${project_detail.project_code}', '${sId}')">
+										<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+									</button>
+								</c:otherwise>
+							</c:choose>
+							<button type="button" class="goFund Btn" id="goFund" onclick="goToScroll()">이 프로젝트 후원하기</button>
 						</div>
 					</div>
 				</div>
@@ -107,7 +117,8 @@
 			
 			<section class="con02">
 				<div class="left">
-					<img alt="상세 이미지" src="http://c3d2306t1.itwillbs.com/soneson/resources/upload/2023/12/17/bal_img_content.png" class="detailImg">
+					<%-- 임시로 넣어둠 --%>
+					<img alt="상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_introduce}" class="detailImg">
 				</div>
 				
 				<div class="right">
@@ -116,7 +127,7 @@
 						<div class="wrap">
 							<div>
 								<div class="creator">
-									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
+									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_image}">
 									<span><a href="MemberInfoTest?mem_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
 								</div>
 								<div>
@@ -131,8 +142,24 @@
 								</div>
 							</div>
 							<div class="btns">
-								<button class="follow" onclick="confirmFollow('${project_detail.creator_name}')">팔로우</button>
-								<button class="ask" onclick="chat()">문의</button>
+							
+								<%-- 팔로우 여부 판단 --%>
+								<c:set var="isFollowing" value="false" />
+								<c:forEach var="follower" items="${project_detail.followerList}">
+								    <c:if test="${follower.follow_mem_email eq sId and follower.follow_status eq 'Y'}">
+								        <c:set var="isFollowing" value="true" />
+								    </c:if>
+								</c:forEach>
+								
+								<c:choose>
+								    <c:when test="${isFollowing}"> <%-- 팔로우 중일 경우 --%>
+								        <button type="button" class="unFollow" onclick="unfollow('${sId}','${project_detail.creator_email}')">팔로우 취소</button>
+								    </c:when>
+								    <c:otherwise>
+								        <button type="button" class="follow" onclick="confirmFollow('${project_detail.creator_name}', '${project_detail.creator_email}')">팔로우</button>
+								    </c:otherwise>
+								</c:choose>
+								<button type="button"  class="ask" onclick="chat()">문의</button>
 							</div>
 						</div>
 					</div>
@@ -142,15 +169,6 @@
 						<img alt="이동" src="${pageContext.request.contextPath}/resources/image/right-arrow.png">
 					</div>
 					
-					<!-- 후원자가 고른 후원 아이템 -->
-					<!-- display: none 해두고 추가되면 뜨게 할 것 -->
-					<%-- AJAX 사용 필요 --%>
-					<div id="choosenFunding">
-						<h4>후원 선택</h4>
-						<div class="wrap">
-						
-						</div>
-					</div>
 					
 					<div id="fundingOptions">
 						<h4>후원 선택</h4>
@@ -164,7 +182,10 @@
 									<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
 								</div>
 								<div class="reward_title">일반 후원하기</div>
-								<form action="FundInProgress" method="post">
+								<form action="FundInProgress" method="get">
+<%-- 									<input type="hidden" value="${project_detail.project_title}" name="project_title"> --%>
+<%-- 									<input type="hidden" value="${project_detail.project_code}" name="project_code"> --%>
+									<input type="hidden" value="${project_detail.pay_date}" name="project_payDate">
 									<input type="hidden" value="1000" name="reward_price">
 									<input type="hidden" value="일반 후원하기" name="reward_title">
 									<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
@@ -178,7 +199,7 @@
 									</div> 
 									<div class="reward_title">${rewardList.reward_title}</div>
 									
-									<form action="FundInProgress" method="post">
+									<form action="FundInProgress" method="get">
 										<div class="reward_item_wrap">
 											<c:forEach var="allRewardItems" items="${allRewardItems}">
 												<c:if test="${allRewardItems.reward_idx eq rewardList.reward_idx}">
@@ -190,7 +211,7 @@
 															<c:choose>
 																<c:when test="${allRewardItems.item_condition eq '객관식'}">
 																	<select class="reward_item_option_select">
-																		<option>옵션을 선택해주세요.</option>
+																		<option disabled hidden selected value="">옵션을 선택해주세요.</option>
 																		<c:forEach var="itemOptions" items="${itemOptions}">
 																			<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
 																		</c:forEach>
@@ -206,13 +227,16 @@
 											</c:forEach>
 										</div>
 										
+<%-- 										<input type="hidden" value="${project_detail.project_title}" name="project_title"> --%>
+<%-- 										<input type="hidden" value="${project_detail.project_code}" name="project_code"> --%>
+										<input type="hidden" value="${project_detail.pay_date}" name="project_payDate">
 										<input type="hidden" value="${rewardList.reward_title}" name="reward_title">
 										<input type="hidden" value="${rewardList.reward_price}" name="reward_price">
 										<input type="hidden" value="${project_detail.project_idx}" name="funding_project_idx" class="funding_project_idx">
 										<input type="hidden" value="${rewardList.reward_idx}" name="funding_reward_idx" id="funding_reward_idx">
 										<input type="hidden" value="" name="reward_option_title" class="reward_option_title">
 										<input type="hidden" value="" name="funding_item_option" class="funding_item_option"> <%-- | 로 구분해서 넣을거임 --%>
-										<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
+										<input type="submit" value="결정했어요!" class="rewardSubmitBtn validate">
 									</form>
 									<div class="optionResult"></div>
 								</div>
@@ -228,7 +252,7 @@
 		        <h3>신고하기</h3>
 	        	<span>어떤 문제가 있나요?</span><br>
 		        <div class="content">
-		        	<button value="지식재산권 침해" onclick="reportType(this.value)">
+		        	<button value="지식재산권 침해" onclick="reportType(this.value, '${project_detail.project_title}', '${project_detail.project_code}')">
 		        		<span class="repTitle">지식재산권 침해</span>
 		        		<span class="repContent">
 		        			타인의 지식재산권을 허락없이 사용했어요. <br>
@@ -236,14 +260,14 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="상세설명 내 허위사실" onclick="reportType(this.value)">
+		        	<button value="상세설명 내 허위사실" onclick="reportType(this.value, '${project_detail.project_title}', '${project_detail.project_code}')">
 		        		<span class="repTitle">상세설명 내 허위사실</span>
 		        		<span class="repContent">
 		        			상품을 받아보니 상세설명과 다른 부분이 있어요.
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="동일 제품의 타 채널 유통" onclick="reportType(this.value)">
+		        	<button value="동일 제품의 타 채널 유통" onclick="reportType(this.value, '${project_detail.project_title}', '${project_detail.project_code}')">
 		        		<span class="repTitle">동일 제품의 타 채널 유통</span>
 		        		<span class="repContent">
 		        			프로젝트 진행 전에 이미 판매한 적이 있는 제품이에요. <br>
@@ -251,7 +275,7 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="부적절한 콘텐츠" onclick="reportType(this.value)">
+		        	<button value="부적절한 콘텐츠" onclick="reportType(this.value, '${project_detail.project_title}', '${project_detail.project_code}')">
 		        		<span class="repTitle">부적절한 콘텐츠</span>
 		        		<span class="repContent">
 		        			- 타인을 모욕, 명예훼손하는 콘텐츠 <br>
@@ -261,7 +285,7 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="기타" onclick="reportType(this.value)">
+		        	<button value="기타" onclick="reportType(this.value, '${project_detail.project_title}', '${project_detail.project_code}')">
 		        		<span class="repTitle">기타</span>
 		        		<span class="repContent">
 		        			- 리워드가 불량이라 교환/수리 신청하고 싶어요. <br>
@@ -291,11 +315,11 @@
 		<script type="text/javascript">
 			let modal = document.querySelectorAll('.modal');
 			let report = document.querySelector('#report');
-			let closeBtn = document.querySelector('.close_btn');
+			let closeBtn = document.querySelectorAll('.close_btn');
 			// ==========================================================================
 			// 이 프로젝트 후원하기 클릭 시 스크롤 이동
 			function goToScroll() {
-			    let location = document.querySelector(".reward").offsetTop;
+			    let location = document.querySelector("#fundingOptions").offsetTop;
 			    window.scrollTo({top: location, behavior: 'smooth'});
 			}
 			// ==========================================================================
@@ -305,7 +329,7 @@
 			let reward_item_option = document.querySelectorAll(".reward_item_option");
 			let reward_item_option_select = document.querySelectorAll(".reward_item_option_select");
 			let reward_item_option_write = document.querySelectorAll(".reward_item_option_write");
-			let rewardSubmitBtn = document.querySelectorAll(".rewardSubmitBtn");
+			let rewardSubmitBtn = document.querySelectorAll(".rewardSubmitBtn.validate");
 			let optionResult = document.querySelectorAll(".optionResult");
 			
 			$(reward).on('click', function() { 
@@ -343,24 +367,22 @@
 // 				e.preventDefault(); // submit 막는거
 				updateHiddenTagValue();
 				
-				if($(".reward.on").find($(reward_item_option_select)).val() == "") {
+				let selectedOption = $(".reward.on").find(reward_item_option_select).val();
+				
+				console.log("확인 : " + selectedOption);
+				
+				if($(".reward.on").find(reward_item_option_select).val() == null) {
+					alert("옵션을 선택해주세요.");
+					$(reward_item_option_select).focus();
 					
-// 					if($(reward_item_option_select).val() === ""){
-						alert("옵션을 선택해주세요.");
-						$(reward_item_option_select).focus();
-						
-						return false;
-// 					}
+					return false;
 				}
 				
 				if($(".reward.on").find($(reward_item_option_write)).val() == "") {
+					alert("옵션을 입력해주세요.");
+					$(reward_item_option_write).focus();
 					
-// 					if($(reward_item_option_write).val() === ""){
-						alert("옵션을 입력해주세요.");
-						$(reward_item_option_write).focus();
-						
-						return false;
-// 					}
+					return false;
 				}
 				
 			});
@@ -427,7 +449,114 @@
 	     	// 폼 로드 시 함수실행
 		    updateHiddenTagValue();
 				
+			// ==========================================================================
+			// 프로젝트 좋아요
+			function registLike(project_code, sId) {
+// 				console.log("project_code : " + project_code + ", sId : " + sId);
+				if(confirm("프로젝트를 좋아요 하시겠습니까?")){
+					$.ajax({
+						url: "RegistLike",
+						type : "POST",
+						async:false, // 이 한줄만 추가해주시면 됩니다.
+						data:{
+							"like_project_code": project_code,
+							"like_mem_email": sId
+						},
+						dataType: "json",
+						success: function (response) {
+							if(response.result){
+								alert("좋아한 프로젝트에 추가되었습니다.");
+								location.reload();
+							} else if(!response.result) {
+								alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+								location.href="MemberLogin";
+							}
+						}
+					});
+				}
+			}
+			
+			// 프로젝트 좋아요 취소
+			function cancleLike(project_code, sId) {
+// 				console.log("project_code : " + project_code + ", sId : " + sId);
+				$.ajax({
+					url: "CancleLike",
+					type : "POST",
+					async:false, // 이 한줄만 추가해주시면 됩니다.
+					data:{
+						"like_project_code": project_code,
+						"like_mem_email": sId
+					},
+					dataType: "json",
+					success: function (response) {
+						if(response.result){
+							alert("좋아요가 취소되었습니다.");
+							location.reload();
+						} else if(!response.result) {
+							alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+							location.href="MemberLogin";
+						}
+					}
+				});
+			}
+	     	
+			// ==========================================================================
+			// 팔로우 - AJAX
+			function confirmFollow(creatorName, creatorEmail){
 				
+				if(confirm(creatorName + "님을 팔로우 하시겠습니까?")){
+					
+					$.ajax({
+						url: "CommitFollow",
+						type : "POST",
+						async: false, // 이 한줄만 추가해주시면 됩니다.
+						data: {
+							"follow_creator": creatorEmail
+						},
+						dataType: "json",
+						success: function (response) {
+							console.log("성공 : " + JSON.stringify(response))
+							if(response.result) {
+								alert("성공적으로 팔로우했습니다.");
+								location.reload();
+							} else if(!response.result) {
+								alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+								location.href="MemberLogin";
+							}
+						}, error : function () {
+							alert("실패! ");
+						}
+					});
+				}
+			}
+			
+			// ---------------------------------------------------------------
+			// 언팔로우 - AJAX
+			function unfollow(sId, creatorEmail){
+				
+				if(confirm("팔로우를 취소하시면 더 이상 프로젝트 공개 알림을 받으실 수 없습니다. \n 팔로우를 취소하시겠습니까?")){
+					
+					$.ajax({
+						url: "UnFollow",
+						type : "POST",
+						async: false, // 이 한줄만 추가해주시면 됩니다.
+						data: {
+							"follow_mem_email": sId,
+							"follow_creator": creatorEmail,
+						},
+						dataType: "json",
+						success: function (response) {
+							if(response.result) {
+								alert("팔로우가 취소되었습니다.");
+								location.reload();
+							} 
+						}, error : function () {
+							alert("실패! ");
+						}
+					});
+				}
+			}
+	     	
 			// ==========================================================================
 			// 신고하기
 			// 팝업 오픈
@@ -443,20 +572,47 @@
 			});
 			// -------------------------------------------------------------------------
 			// 신고 폼
-			function reportType(type){
-				console.log(type); // 오케이 .. 뜬다..
+			function reportType(type, title, project_code){
+// 				console.log(type); // 오케이 .. 뜬다..
+				$.ajax({
+					url: "ReportForm",
+					type : "POST",
+					async:false, // 이 한줄만 추가해주시면 됩니다.
+					data:{
+						"type": type
+					},
+					dataType: "json",
+					success: function (response) {
+						let content = $(".modal.on").find($(".modal_popup")).find($(".content"));
+						content.html("<div id='resultArea'></div>");
+						
+						writeReportForm(response.type, response.project_title, response.project_code);
+					}, error : function (response) {
+						alert("실패! ");
+					}
+				});
 				
 			}
 			
-			// 신고하기 end
-			// ==========================================================================
-			// 팔로우 - AJAX
-			function confirmFollow(creatorName){
-				if(confirm(creatorName + "님을 팔로우 하시겠습니까?")){
-					
-				}
-				
+			function writeReportForm(type, title, project_code){
+				$.ajax({
+					url: "ReportWriteForm",
+					type : "get",
+					async:false, // 이 한줄만 추가해주시면 됩니다.
+					data:{
+						"type": type,
+						"project_title": title,
+						"project_code": project_code
+					},
+					success: function (response) {
+						$("#resultArea").html(response);
+					}, error : function (response) {
+						alert("실패! ");
+					}
+				});
 			}
+			
+			// 신고하기 end
 			
 			document.addEventListener('keydown', function(event) {
 			  if (event.keyCode === 13) {

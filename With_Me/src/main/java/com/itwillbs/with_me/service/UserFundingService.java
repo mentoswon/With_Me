@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.UserFundingMapper;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.FollowVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
 @Service
@@ -36,6 +39,16 @@ public class UserFundingService {
 	// 팔로워 수 계산
 	public int countFollower(String creator_email) {
 		return mapper.countFollower(creator_email);
+	}
+	
+	// 팔로워 리스트
+	public List<FollowVO> getFollowerList(String creator_email) {
+		return mapper.selectFollowerList(creator_email);
+	}
+	
+	// 좋아요 한거면 그 정보 가져가기
+	public LikeVO getIsLike(String like_project_code, String like_mem_email) {
+		return mapper.selectIsLike(like_project_code, like_mem_email);
 	}
 
 	// 후원 리워드 리스트
@@ -73,14 +86,10 @@ public class UserFundingService {
 		return mapper.updateDefaultAddress(id);
 	}
 
-	// 1. 기본 배송지 변경하고 새로운 기본배송지 설정
-	public void registNewDefaultAddress(AddressVO new_address) {
-		mapper.insertNewDefaultAddress(new_address);
-	}
 
-	// 2. 나머지 배송지 등록
-	public void registNewAddress(AddressVO new_address) {
-		mapper.insertNewAddress(new_address);
+	// 배송지 등록
+	public int registNewAddress(AddressVO new_address) {
+		return mapper.insertNewAddress(new_address);
 	}
 
 	// 배송지 삭제
@@ -88,6 +97,78 @@ public class UserFundingService {
 		
 		return mapper.deleteAddress(address);
 	}
+
+	// 선택된 배송지 있는지 확인
+	public int getAddressIsSelected(String id) {
+		return mapper.selectAddressIsSelected(id);
+	}
+	
+	// 원래 선택된 배송지였던 걸 N으로 변경
+	public int modifySelectedAddressToN(String id) {
+		return mapper.updateSelectedAddressToN(id);
+	}
+	
+	// 배송지 변경
+	public int modifySelectedAddressToY(int address_idx) {
+		return mapper.updateSelectedAddressToY(address_idx);
+	}
+
+	// 신고 접수
+	public int registReport(Map<String, Object> map) {
+		return mapper.insertReport(map);
+	}
+
+	
+	// ===========================================================================================
+	// 팔로우 한 적 있는지 확인 부터
+	public int getFollowCount(String id, String follow_creator) {
+		return mapper.selectFollowCount(id, follow_creator);
+	}
+	
+	// 팔로우 한 적 있는데 N으로 돼있으면 Y로 수정
+	public int modifyFollow(String id, String follow_creator) {
+		return mapper.updateFollow(id, follow_creator);
+	}
+	
+	// 팔로우 한 적 없으면 (아예 기록 없음) 팔로우 등록
+	public int registFollow(String id, String follow_creator) {
+		return mapper.insertFollow(id, follow_creator);
+	}
+
+	// 언팔로우
+	public int unFollow(String follow_mem_email, String follow_creator) {
+		return mapper.unFollow(follow_mem_email, follow_creator);
+	}
+
+	// ===========================================================================================
+	// 좋아요 한 적 있는지 확인
+	public int getLikeCount(String like_project_code, String like_mem_email) {
+		return mapper.selectLikeCount(like_project_code, like_mem_email);
+	}
+	
+	// 좋아요 한 적 있으니까 update
+	public int modifyLike(String like_project_code, String like_mem_email) {
+		return mapper.updateLike(like_project_code, like_mem_email);
+	}
+	
+	// 좋아요 등록 (좋아요 한 적 없음)
+	public int registLike(String like_project_code, String like_mem_email) {
+		return mapper.insertLike(like_project_code, like_mem_email);
+	}
+
+	// 좋아요 취소
+	public int cancleLike(String like_project_code, String like_mem_email) {
+		return mapper.cancleLike(like_project_code, like_mem_email);
+	}
+
+	
+
+
+
+
+
+
+
 
 
 

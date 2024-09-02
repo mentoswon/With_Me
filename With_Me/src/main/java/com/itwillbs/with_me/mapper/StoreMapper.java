@@ -6,6 +6,9 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.MemberVO;
+
 @Mapper
 public interface StoreMapper {
 	// 리스트 목록 개수 가져오기
@@ -29,6 +32,24 @@ public interface StoreMapper {
 	// 리스트 가져오기2222
 	List<Map<String, Object>> selectStoreListAll(String searchKeyword, String productCategory,
 			String productCategory_detail, int startRow, int listLimit);
+
+	// 사용자 배송지 가져오기
+	List<AddressVO> selectUserAddress(MemberVO member);
+
+	// 기본 배송지 여부 확인
+	int selectAddressIsDefault(String id);
+
+	// 기본 배송지 변경
+	int updateDefaultAddress(String id);
+
+	// 1. 기본 배송지 변경후 새로운 기본 배송지 설정
+	void insertNewDefaultAddress(AddressVO new_address);
+
+	// 2. 나머지 배송지 등록
+	void insertNewAddress(AddressVO new_address);
+
+	// 배송지 삭제
+	int deleteAddres(AddressVO address);
 	
 
 }

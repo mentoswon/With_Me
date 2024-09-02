@@ -1,98 +1,76 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%-- 날짜 등의 출력 형식 변경을 위한 JSTL - format(fmt) 라이브러리 등록 --%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
-<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
+<title>나의 1:1 문의내역</title>
+<!-- 외부 CSS 파일(css/default.css) 연결하기 -->
+<link
+	href="${pageContext.request.contextPath}/resources/css/default.css"
+	rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath}/resources/css/qna_list.css" rel="stylesheet" type="text/css">
 <style type="text/css">
+/* #listForm { */
+/* 	width: 1024px; */
+/* 	max-height: 610px; */
+/* 	margin: auto; */
+/* } */
 
-.mainWrapper {
-    display: flex;
-    justify-content: center; /* 수평 가운데 정렬 */
-    align-items: center; /* 수직 가운데 정렬 */
-    margin-top: 5em;
-}
+/* h2 { */
+/* 	text-align: center; */
+/* } */
 
-.main {
-    width: 80%; /* 화면의 80% 너비를 사용 */
-    max-width: 1200px; /* 최대 너비를 1200px로 제한 */
-    text-align: center; /* 내부 콘텐츠 가운데 정렬 */
-}
+/* table { */
+/* 	margin: auto; */
+/* 	width: 1024px; */
+/* } */
 
+/* #tr_top { */
+/* 	background: orange; */
+/* 	text-align: center; */
+/* } */
 
-.listWrapper {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
+/* table td { */
+/* 	text-align: center; */
+/* } */
 
-.list {
-    padding: 0;
-    margin: 0;
-}
+/* #pageList { */
+/* 	margin: auto; */
+/* 	width: 1024px; */
+/* 	text-align: center; */
+/* } */
 
-.subject {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #e6e6e6;
-}
+/* #emptyArea { */
+/* 	margin: auto; */
+/* 	width: 1024px; */
+/* 	text-align: center; */
+/* } */
 
-.subject a {
-    text-decoration: none;
-    color: #333;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
+/* #myListForm { */
+/* 	margin: auto; */
+/* 	width: 1024px; */
+/* 	text-align: right; */
+/* } */
 
-.titleBox {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
+/* /* 하이퍼링크 밑줄 제거 */ 
+/* a { */
+/* 	text-decoration: none; */
+/* } */
 
-.group {
-    background-color: #f9f9f9;
-    padding: 5px 10px;
-    margin-right: 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    color: #333;
-}
-
-.subject {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.subject + span {
-    font-size: 14px;
-    color: #888;
-    margin-left: auto;
-}
-
-.subject img {
-    margin-left: 20px;
-}
-.view {
-	font-size: 14px;
-    color: #888;
-    margin-left: 1em;
-}
+/* /* 제목 열 좌측 정렬 및 여백 설정 */ 
+/* #subject { */
+/* 	text-align: left; */
+/* 	padding-left: 20px; */
+/* } */
 </style>
 </head>
 <body>
 	<header>
+		<%-- inc/top.jsp 페이지 삽입(jsp:include 액션태그 사용 시 / 경로는 webapp 가리킴) --%>
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
 		<div class="mainWrapper">
@@ -100,14 +78,14 @@
 			<section class="boardTitle" id="board_title">
 				<div align="left">
 				<!-- 게시판 리스트 -->
-				<h2>공지사항</h2>
+				<h2>1:1문의</h2>
 				</div>
 			
 				<div align="right">
 					<%-- ============================================================================ --%>
 					<%-- ======================= [ 게시물 검색 기능 추가 ] ========================== --%>
 					<%-- 검색 기능을 위한 폼 생성 --%>
-					<form action="BoardList">
+					<form action="QnaBoardList">
 						<%-- 검색타입 목록(셀렉트박스), 검색어(텍스트박스) 추가(파라미터 있으면 해당 내용 표시) --%>
 						<select name="searchType">
 							<option value="subject"
@@ -121,6 +99,7 @@
 							value="검색">
 					</form>
 					<%-- ============================================================================ --%>
+					<input type="button" value="글쓰기" onclick="location.href='QnaBoardWrite'">
 				</div>
 			</section>
 			<section id="listForm">
@@ -136,23 +115,24 @@
 							<c:set var="pageNum" value="${param.pageNum}" />
 						</c:if>
 						<%-- ================================================ --%>
-						<c:forEach var="bo" items="${boardList}">
+						<c:forEach var="qnabo" items="${QnaBoardList}">
 							<%-- boardList 에서 꺼낸 BoardBean 객체(board)에 저장된 멤버변수값(데이터) 출력 --%>
 							
 							<li class="subject">
-								<a href="BoardDetail?bo_idx=${bo.bo_idx}&pageNum=${pageNum}"> 
+								<a href="QnaBoardDetail?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}"> 
 									<span class="titleBox"> 
-										<span class="group">공지사항</span> 
-										<span class="subject">${bo.bo_subject}</span> 
-										<span><fmt:formatDate value="${bo.bo_sysdate}" pattern="yyyy-MM-dd" /></span>
-										<span class="view">조회수 ${bo.bo_readcount}</span>
+										<span class="group">문의</span> 
+										<span class="subject">${qnabo.mem_name}</span> 
+										<span class="subject">${qnabo.faq_subject}</span> 
+										<span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>
+<%-- 										<span class="view">조회수 ${qnabo.faq_readcount}</span> --%>
 									</span>
 								</a>
 							</li>
 							
 						</c:forEach>
 					</ul>
-					<c:if test="${empty boardList}">
+					<c:if test="${empty QnaBoardList}">
 						<ul>
 							<li class="subject">
 								<span class="titleBox" id="noList">
@@ -234,7 +214,21 @@
 			</div>
 			</div>
 	<footer>
+		<%-- 회사 소개 영역(inc/bottom.jsp) 페이지 삽입 --%>
 		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 	</footer>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,15 +1,25 @@
 package com.itwillbs.with_me.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.JsonObject;
+import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.StoreService;
+import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.StoreVO;
 
@@ -18,6 +28,8 @@ public class StoreController {
 	@Autowired
 	private StoreService service;
 	
+	@Autowired
+	private MemberService memberService;
 	
 	
 	// 스토어 메인 페이지 이동
@@ -98,7 +110,119 @@ public class StoreController {
 		// 상품 가져오기 
 		Map<String,Object> product_detail = service.getProduct(product_code);
 		System.out.println("가져온 상품123 : " + product_detail);
-		
+		model.addAttribute("product_detail", product_detail);
 		return "store/store_detail";
 	}
+	
+	@PostMapping("StoreInProgress")
+	public String storeInProgress(@RequestParam Map<String,Object> map, HttpSession session, MemberVO member, Model model) {
+		System.out.println("map : " + map);
+		
+		String id = (String)session.getAttribute("sId");
+//		System.out.println("id : " + id);
+		if(id == null) {
+			model.addAttribute("msg", "로그인 후 사용가능합니다.\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberLogin");
+			session.setAttribute("prevURL", "StoreInProgress");
+			return "result/fail";
+			
+		}
+		
+		member.setMem_email(id);
+		
+		// 아이디로 회원 정보 가져오기 
+		member = memberService.getMember(member);
+		System.out.println("memeber : " + member);
+		
+		// 아이디로 주소 정보 가져오기 
+		List<AddressVO> userAddress = service.getUserAddress(member);
+		System.out.println("userAddress : " + userAddress);
+		
+		// =========================================================================
+		
+		model.addAttribute("member", member);
+		model.addAttribute("userAddress", userAddress);
+		
+		
+		
+		return "store/store_in_progress";
+	}
+	
+	// 배송지 등록 
+	@PostMapping("StoreRegistAddress")
+	public String storeRegistAddress(AddressVO new_address, HttpSession session) {
+		System.out.println("new_address : " + new_address);
+		
+		String id = (String) session.getAttribute("sId");
+		
+		// insert를 할건데 
+		// 1. 기본 배송지 설정이 이미 돼있으면 (on / null)
+		// address_is_default = Y 인걸 찾아서 N으로 바꾸고 새로 등록하는걸 Y로 바꿔야함.
+		// 2. 기본 배송지 설정된거 없으면 그냥 등록
+		// 3. 기본 배송지 설정된거 있는데 안바꿔도 그냥 등록		
+		
+		// 일단 기본 배송지 등록 된거 있는지 확인 필요
+		int isDefaultCount = service.getAddressIsDefault(id);
+		
+		if(isDefaultCount == 1) {
+			if(new_address.getAddress_is_default() == null) { // 기본 배송지 있는데 안 바꾸면 그냥 등록!
+				service.registNewAddress(new_address);
+			} else if(new_address.getAddress_is_default().equals("on")) { // 새 주소 등록하면서 기본 배송지 설정!
+				
+				// 기본 배송지가 있으면 N으로 변경  -> update
+				int updateCount = service.modifyDefaultAddress(id);
+				
+				// 바꾸고 새로운 기본배송지 insert
+				if(updateCount > 0) {
+					service.registNewDefaultAddress(new_address);
+				}
+			}
+		} else {
+			// 기본 배송지도 없고, 기본 배송지 설정 안하고 그냥 등록만!
+			service.registNewAddress(new_address);
+			
+		}
+		
+		return "redirect:/StoreInProgress";
+	}
+	
+	// 배송지 삭제
+	@ResponseBody
+	@GetMapping("StoreDeleteAddress")
+	public String storeDeleteAddress(AddressVO address, HttpSession session, MemberVO member) {
+		System.out.println("address : " + address);
+		
+		Map <String, Object> resultMap = new HashMap<String, Object>();
+		
+		int deleteCount = service.removeAddress(address);
+		
+		// 주소 삭제 요청 
+		// 삭제 요청 처리 결과 판별
+		// 성공 시 resultMap  객체의 "result" 속성값을 true, 실패 시 false로 저장 
+		if(deleteCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		
+		
+		return jo.toString();
+	}
+	
+	// 기본 배송지 변경
+		@PostMapping("StoreChangeDefaultAddress")
+		public String storechangeDefaultAddress(AddressVO address) {
+			System.out.println("address : " + address);
+			
+			return "";
+		}
+	
+	
+	
 }

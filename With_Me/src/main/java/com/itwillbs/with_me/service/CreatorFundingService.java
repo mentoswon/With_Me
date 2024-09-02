@@ -46,9 +46,12 @@ public class CreatorFundingService {
 
     // 프로젝트 등록 요청
 	public int registProject(String id, ProjectVO project) {
-		// 창작자 번호 조회
+		// 창작자 번호 조회 요청
 		CreatorVO creator = mapper.selectCreator(id);
 		int creator_idx = creator.getCreator_idx();
+		
+		// 카테고리 코드 조회 요청(프로젝트 코드 조합 위함)
+//		String project_category = mapper.selectProjectCategory(project.getProject_category());
 		
 		return mapper.insertProject(creator_idx, project);
 	}

@@ -1,6 +1,7 @@
 @charset "UTF-8";
 section {
-	margin: 60px 120px;
+	margin: 60px auto;
+	width: 60%;
 }
 
 .inner h2 {
@@ -15,10 +16,9 @@ h4 {
 }
 	
 .infoWrapper {
-	border: 1px solid #eee;
+	border: 1px solid #777;
 	border-radius: 10px;
 	padding: 20px;
-	margin-bottom: 5px;
 }
 
 /*  con01  */
@@ -54,7 +54,6 @@ h4 {
     text-align: center;
     width: 100%;
     height: 40px;
-    font-size: 18px;
     margin-bottom: 20px;
     background-color: #eee;
     border-radius: 10px;
@@ -111,7 +110,6 @@ h4 {
 	display: flex;
 	align-items:center;
 	font-size: 18px;
-	margin-bottom: 20px;
 }
 
 .inner .con03 .moreFundAmt .infoWrapper div > div:first-child {
@@ -126,6 +124,7 @@ h4 {
 }
 
 /*  con04  */
+
 .inner .con04 .rewardInfo .infoWrapper div {
 	margin-bottom: 10px;
 }
@@ -142,8 +141,9 @@ h4 {
 	
 }
 
-.inner .con04 .rewardInfo .infoWrapper div .multile_option {
+.inner .con04 .rewardInfo .infoWrapper div .multiple_option {
 	color: #555;
+	font-size: 13px;
 }
 
 .inner .con04 .rewardInfo .infoWrapper #amtWrapper {
@@ -162,6 +162,97 @@ h4 {
 	font-weight: bold;
 	font-size: 18px;
 }
+
+#moreAmtInfo {
+	font-size: 13px;
+    color: #555;
+    margin: 20px 0;
+}
+
+/*  con05  */
+
+.inner .con05 .payInfo h3 {
+	margin-bottom: 15px;
+	color: #ffab40;
+	font-size: 20px;
+}
+
+.inner .con05 .payInfo .infoWrapper{
+	padding-top: 50px;
+}
+
+.inner .con05 .payInfo .warnInfo {
+	margin-bottom: 11px;
+}
+
+/* 동의체크박스 */
+.inner .con05 .payInfo .agreementInfo{
+	margin-bottom: 15px;
+	padding-left: 40px; /* 체크박스의 왼쪽 여백 */
+	position: relative;
+	padding-top: 11px;
+}
+
+.inner .con05 .payInfo .agreementInfo input[type="checkbox"] {
+	opacity: 0; /* 기본 체크박스 숨기기 */
+	position: absolute;
+	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+}
+
+.inner .con05 .payInfo .agreementInfo label span {
+	font-size: 13px;
+}
+
+.inner .con05 .payInfo .agreementInfo input[type="checkbox"] + label::before {
+	content: '';
+	width: 20px;
+	height: 20px;
+	border: 2px solid #ccc;
+	background-color: #fff;
+	margin-left: 10px;
+	vertical-align: middle;
+	border-radius: 4px;
+	position: absolute; /* 체크박스 위치 조정 */
+	left: 0; /* 체크박스의 왼쪽 위치 조정 */
+	top: 8px;
+	transform: translateY(0); /* 수직 중앙 정렬 */	
+}
+
+.inner .con05 .payInfo .agreementInfo input[type="checkbox"]:checked + label::before {
+	background-color: #FFAB40;
+	border-color: #FFAB40;	
+}
+
+.inner .con05 .payInfo .agreementInfo input[type="checkbox"]:checked + label::after {
+	content: '✓';
+	position: absolute;
+	top: 17px;
+	left: 3%;
+	transform: translate(-50%, -50%);
+	color: #fff;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.inner .con05 .payInfo .agreementInfo > div {
+	padding: 15px 0;
+}
+
+.inner .con05 .payInfo .agreementInfo > div h5 {
+	margin-bottom: 10px;
+}
+
+.inner .con05 .payInfo .agreementInfo > div p {
+	font-size: 13px;
+	color: #555;
+}
+
+/* con06 */
+.inner .con06 .payMethod .infoWrapper {
+	display: flex;
+	justify-content: space-around;
+}
+
 
 /* 모달 팝업 */
 .modal_btn {
@@ -204,6 +295,7 @@ h4 {
     background: #ffffff;
     border-radius: 20px;
     z-index: 999;
+    overflow-y:scroll;
 }
 
 .modal .modal_popup h3 {
@@ -242,7 +334,7 @@ h4 {
 }
 
 /* 기본배송지 체크박스 */
-#isDefault {
+#address_is_default {
 	width: 20px;
 	height: 20px;
 	margin-top: 0px;
@@ -264,6 +356,7 @@ h4 {
 /* 배송지 변경 */
 .modal .modal_popup .content.change .infoWrapper {
 	position: relative;
+	margin-bottom: 10px;
 }
 
 .modal .modal_popup .content.change .infoWrapper .deleteAddress{

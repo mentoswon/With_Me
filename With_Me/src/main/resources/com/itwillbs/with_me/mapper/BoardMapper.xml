@@ -136,7 +136,127 @@
 		SET bo_file = CASE WHEN bo_file = #{bo_file} THEN '' ELSE bo_file END
 		WHERE bo_idx = #{bo_idx}
 	</delete>
+	
+<!-- ===========================  1:1문의  ==============================  -->
 
+	<!-- 1:1게시 글 등록 -->
+	<insert id="insertQnaBoard">
+		<selectKey keyProperty="faq_idx" resultType="int" order="BEFORE">
+				SELECT IFNULL(MAX(faq_idx), 0) -- board_num 최대값 조회(null 일 경우 기본값 0 사용)
+				FROM faq
+		</selectKey>
+		<!-- 새 글 번호와 참조글 번호는 <selectKey> 를 통회 조회한 #{board_num} 값 사용 -->
+		INSERT
+		INTO faq
+		VALUES (
+			#{faq_idx} + 1
+			, #{faq_subject}
+			, #{faq_re_ref} + 1  -- faq_re_ref(selectKey 를 통회 조회된 게시물 번호 + 1 값 사용)
+			, 0                 -- faq_re_lev
+			, 0                 -- faq_re_seq
+			, #{faq_content}
+			, #{faq_file}
+			, now()
+			, #{sId}                 -- sId
+		)
+	</insert>
+	
+	<select id="selectQnaBoardList" resultType="qnabo">
+		SELECT *
+		FROM faq f JOIN member m
+		ON f.mem_email = m.mem_email
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+			<choose>
+				<when test="searchType.equals('subject')">
+					faq_subject LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('content')">
+					faq_content LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('subject_content')">
+					faq_subject LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR faq_content LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					1 = 1  -- WHERE 절을 포함시키되 조건을 걸고 싶지 않을 경우 활용 가능한 조건식(무조건 true 가 나오는 식이면 OK)
+				</otherwise>
+			</choose>
+			
+		</if>
+		
+		ORDER BY
+			faq_re_ref DESC
+			, faq_re_seq ASC
+			, faq_idx DESC
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
+	
+	<!-- 전체 게시물 수 조회 - SELECT -->
+	<!-- 검색 기능 추가를 위해 검색어에 따른 결과 게시물 수 조회 -->
+	<select id="selectQnaBoardListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM faq
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+			<choose>
+				<when test="searchType.equals('subject')">
+					faq_subject LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('content')">
+					faq_content LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('subject_content')">
+					faq_subject LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR faq_content LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					1 = 1  -- WHERE 절을 포함시키되 조건을 걸고 싶지 않을 경우 활용 가능한 조건식(무조건 true 가 나오는 식이면 OK)
+				</otherwise>
+			</choose>
+		</if>
+	</select>
+	
+	<!-- 1:1문의 상세글 조회  -->
+   <select id="selectQnaBoardDetail" resultType="qnabo">
+		SELECT * 
+		FROM faq
+		WHERE faq_idx = #{faq_idx}
+	</select>
+	
+	<!-- 1:1문의 삭제  -->
+	<delete id="qnaDeleteBoard">
+		DELETE 
+		FROM faq
+		WHERE faq_idx = #{faq_idx}
+	</delete>
+
+	<!-- 1:1문의 파일 삭제  -->
+	<update id="deleteQnaBoFile">
+		UPDATE faq
+		SET
+			faq_file = CASE WHEN faq_file = #{faq_file} THEN '' ELSE faq_file 
+		END
+		WHERE 
+			faq_idx = #{faq_idx}
+	</update>
+	
+	<!-- 1:1문의 수정-->
+	<update id="qnaUpdateBoard">
+		UPDATE faq
+		SET
+			faq_subject = #{faq_subject}
+			, faq_content = #{faq_content}
+			, faq_file = #{faq_file}
+		WHERE
+			faq_idx = #{faq_idx}	
+	</update>
+	
+	
+	
+	
 
 
 </mapper>

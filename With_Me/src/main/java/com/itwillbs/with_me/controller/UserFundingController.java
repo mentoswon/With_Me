@@ -15,15 +15,19 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.ItemVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -108,7 +112,7 @@ public class UserFundingController {
 	
 	
 	@GetMapping("ProjectDetail")
-	public String projectDetail(ProjectVO project, Model model) {
+	public String projectDetail(ProjectVO project, Model model, HttpSession session) {
 		System.out.println("ProjectDetail : " + project);
 		String project_code = project.getProject_code();
 		
@@ -138,7 +142,7 @@ public class UserFundingController {
 		
         // --------------------------------------------------------------
         
-        // 팔로워 계산 -------------------
+        // 팔로워 수 계산 -------------------
         // 창작자 email 가져오기
         String creator_email = (String) project_detail.get("creator_email");
         
@@ -149,7 +153,22 @@ public class UserFundingController {
         // Map 객체 (project_detail) 에 집어넣기
         project_detail.put("followerCount", followerCount);
          
-        // 팔로워 계산 end ---------------
+        // 팔로워 수 계산 end ---------------
+        
+        // 팔로워 리스트 --------------------
+        List<FollowVO> followerList = service.getFollowerList(creator_email);
+        
+        project_detail.put("followerList", followerList);
+        System.out.println("팔로우 ~ : " + followerList);
+        // 팔로워 리스트  end ---------------
+        
+        // 내가 좋아요 한건지 판단 후 가져가기 -----------------------------
+        String id = (String) session.getAttribute("sId");
+        
+        LikeVO isLike = service.getIsLike(project_code, id);
+        project_detail.put("isLike", isLike);
+        
+        
         
         // ===================================================================
         
@@ -218,50 +237,22 @@ public class UserFundingController {
 		return "project/project_detail";
 	}
 	
-	
-	// 후원 진행
 //	@GetMapping("FundInProgress")
-//	public String fundInProgress(@RequestParam(defaultValue = "0") int reward_amt, 
-//								 @RequestParam(defaultValue = "") String reward_title,
-//								 HttpSession session, MemberVO member, Model model) {
-////		System.out.println("reward_amt, reward_title : " + reward_amt + ", " + reward_title);		
-//		String id = (String) session.getAttribute("sId");
-//		
-//		if(id == null) {
-//			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
-//			model.addAttribute("targetURL", "MemberLogin");
-//			session.setAttribute("prevURL", "FundInProgress");
-//			return "result/fail";
-//		}
-//		
-//		member.setMem_email(id);
-//		
-//		// 아이디로 회원 정보 가져오기
-//		member = memberService.getMember(member);
-////		System.out.println("member : " + member);
-//		
-//		// 아이디로 주소 정보 가져오기
-//		List<AddressVO> userAddress = service.getUserAddress(member);
-////		System.out.println("userAddress : " + userAddress);
-//		
-//		// =========================================================================
-//		model.addAttribute("member", member);
-//		model.addAttribute("userAddress", userAddress);
-//		
+//	public String fundInProgress() {
 //		return "project/fund_in_progress";
 //	}
 	
-	
-	@PostMapping("FundInProgress")
+	// 사용자 후원 진행
+	@GetMapping("FundInProgress")
 	public String fundInProgress(@RequestParam Map<String, Object> map, HttpSession session, MemberVO member, Model model) {
-		System.out.println("map : " + map);	
+		System.out.println("map 후원 진행 : " + map);	
 		
 		String id = (String) session.getAttribute("sId");
 		
 		if(id == null) {
 			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
 			model.addAttribute("targetURL", "MemberLogin");
-//			session.setAttribute("prevURL", "");
+//			session.setAttribute("prevURL", "ProjectDetail?project_title=" + (String)map.get("project_title") + "&project_code=" + (String)map.get("project_code"));
 			return "result/fail";
 		}
 		
@@ -277,26 +268,31 @@ public class UserFundingController {
 		
 		// =========================================================================
 		// 선택한 후원 정보 정리
-		String selected_option = map.get("funding_item_option").toString();
-		String selected_option_title = map.get("reward_option_title").toString();
 		
+		Map<String, Object> optionMap = new HashMap<String, Object>(); // option 만 따로 담을 map
+		
+		if(map.get("funding_item_option") != null) {
+			
+			String selected_option = map.get("funding_item_option").toString();
+			String selected_option_title = map.get("reward_option_title").toString();
+			
 //		System.out.println(selected_option);
-		
-		String[] optionArr = selected_option.split("\\|");
-		String[] optionTitleArr = selected_option_title.split("\\|");
-//		System.out.println("optionArr : " + Arrays.toString(optionArr));		
-//		System.out.println("optionTitleArr : " + Arrays.toString(optionTitleArr));
-//		
-//		map.put("selectedOption", optionArr);
-//		map.put("selectedOption", optionTitleArr);
-//		
-//		System.out.println("map: " + map);
-		Map<String, Object> optionMap = new HashMap<String, Object>();
-		for(int i = 0 ; i < optionArr.length ; i++) {
-			optionMap.put(optionTitleArr[i], optionArr[i]);
+			
+			String[] optionArr = selected_option.split("\\|");
+			String[] optionTitleArr = selected_option_title.split("\\|");
+			System.out.println("optionArr : " + Arrays.toString(optionArr));		
+			System.out.println("optionTitleArr : " + Arrays.toString(optionTitleArr));
+			
+			map.put("selectedOption", optionArr);
+			map.put("selectedOption", optionTitleArr);
+			
+			System.out.println("map: " + map);
+			for(int i = 0 ; i < optionArr.length ; i++) {
+				optionMap.put(optionTitleArr[i], optionArr[i]);
+			}
+			
+			System.out.println("optionMap : " +optionMap);
 		}
-		
-		System.out.println("optionMap : " +optionMap);
 		
 		// =========================================================================
 		model.addAttribute("member", member);
@@ -306,45 +302,67 @@ public class UserFundingController {
 		
 		
 		return "project/fund_in_progress";
+//		return "redirect:/FundInProgress";
 	}
 	
 	
 	// 배송지 등록
+	@ResponseBody
 	@PostMapping("RegistAddress")
-	public String registAddress(AddressVO new_address, HttpSession session) {
+	public List<AddressVO> registAddress(AddressVO new_address, HttpSession session, MemberVO member) throws Exception {
 		System.out.println("new_address : " + new_address);
 		
 		String id = (String) session.getAttribute("sId");
 		
-		// insert를 할건데 
-		// 1. 기본 배송지 설정이 이미 돼있으면 (on / null)
-		// address_is_default = Y 인걸 찾아서 N으로 바꾸고 새로 등록하는걸 Y로 바꿔야함.
-		// 2. 기본 배송지 설정된거 없으면 그냥 등록
-		// 3. 기본 배송지 설정된거 있는데 안바꿔도 그냥 등록
+		member.setMem_email(id);
 		
+		// 아이디로 회원 정보 가져오기
+		member = memberService.getMember(member);
+
 		// 일단 기본배송지 등록된거 있는지 확인 먼저 필요
 		int isDefaultCount = service.getAddressIsDefault(id);
+		List<AddressVO> addressList = null;
 		
-		if(isDefaultCount == 1) {
+		if(isDefaultCount > 0) {
 			if(new_address.getAddress_is_default() == null) { // 기본 배송지 있는데 안 바꾸면 그냥 등록 !
-				service.registNewAddress(new_address);
+				int insertCount = service.registNewAddress(new_address);
+				
+				if(insertCount > 0) {
+					addressList = service.getUserAddress(member);
+				} 
+				
+				System.out.println("기본배송지 있는데 변경 안 하는 경우 : " + insertCount);
+				
 			} else if(new_address.getAddress_is_default().equals("on")) { // 새 주소 등록하면서 기본 배송지 설정 !
 					
-			// 기본배송지가 있으면 그걸 N으로 바꿔야함 -> update
+				// 기본배송지가 있으면 그걸 N으로 바꿔야함 -> update
 				int updateCount = service.modifyDefaultAddress(id);
 				
 				// 바꾸고 새로운 기본배송지 insert
 				if(updateCount > 0) {
-					service.registNewDefaultAddress(new_address);
-				}
+					int insertCount = service.registNewAddress(new_address);
+					
+					if(insertCount > 0) {
+						addressList = service.getUserAddress(member);
+					} 
+				} 
+				System.out.println("기본배송지 있는데 기본배송지 변경하는 경우 : " + updateCount);
+				
 			}
-		} else {
-			// 기본 배송지도 없고, 기본 배송지 설정 안 하고 그냥 등록 ! (기본이든 기본 아니든)
-			service.registNewAddress(new_address);
+		} else if (isDefaultCount == 0) {
+			// 기본 배송지 없음 ! 그냥 등록 ! null, on 에 따라 다르게 들어가게 mapper.xml 에 해놨음
+			int insertCount = service.registNewAddress(new_address);
 			
+			if(insertCount > 0) {
+				addressList = service.getUserAddress(member);
+			} 
+			
+			System.out.println("기본배송지 없는 경우 : " + insertCount);
 		}
 		
-		return "redirect:/FundInProgress";
+		return addressList;
+		
+		// 자꾸 insert 가 2번 된다 ... 
 	}
 	
 	
@@ -376,13 +394,243 @@ public class UserFundingController {
 		
 	}
 	
-	// 기본 배송지 변경
-	@PostMapping("ChangeDefaultAddress")
-	public String changeDefaultAddress(AddressVO address) {
-		System.out.println("address : " + address);
+	// 배송지 변경
+	@ResponseBody
+	@PostMapping("ChangeAddress")
+	public String changeAddress(@RequestParam(defaultValue = "0")int address_idx, HttpSession session) {
+		System.out.println("address_idx: " + address_idx);
 		
-		return "";
+		// 선택된 배송지 있는지 판별
+		String id = (String) session.getAttribute("sId");
+		int isSelectedCount = service.getAddressIsSelected(id);
+		
+		// 주소 변경 요청
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		if(isSelectedCount == 1) { // 선택된 배송지 있는 경우
+			
+			// 해당 배송지를 N으로 바꿔야함
+			int changeCount = service.modifySelectedAddressToN(id);
+			
+			if(changeCount > 0) { // 원래 address_selected 가 Y 인걸 N 으로 바꾸는걸 성공하고 update 해야함
+				int updateCount = service.modifySelectedAddressToY(address_idx);
+				
+				if(updateCount > 0) {
+					resultMap.put("result", true); // 변경 성공
+				} else { 
+					resultMap.put("result", false);// 변경 실패
+				}
+			} 
+		} else { //선택배송지 원래 없는 경우
+			int updateCount = service.modifySelectedAddressToY(address_idx);
+			
+			if(updateCount > 0) {
+				resultMap.put("result", true);// 변경 성공
+			} else {
+				resultMap.put("result", false);// 변경 실패
+			}
+		} 
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
 	}
+	
+	// ------------------------------------------------------------------------------------
+	// 신고하기 1
+	@ResponseBody
+	@GetMapping("ReportForm")
+	public String reportForm(@RequestParam(defaultValue = "") String type, @RequestParam(defaultValue = "")String project_title, @RequestParam(defaultValue = "")String project_code) {
+//		System.out.println("type : " + type);
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("result", true);
+		resultMap.put("type", type);
+		resultMap.put("project_title", project_title);
+		resultMap.put("project_code", project_code);
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	// 신고하기 작성 폼
+	@GetMapping("ReportWriteForm")
+	public String reportWriteForm(@RequestParam(defaultValue = "") String type, @RequestParam(defaultValue = "")String project_title,@RequestParam(defaultValue = "")String project_code ,Model model, HttpSession session, MemberVO member) {
+		System.out.println("type2222 : " + type);
+		
+		String id = (String) session.getAttribute("sId");
+		
+		if(id == null) {
+			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberLogin");
+//			session.setAttribute("prevURL", "");
+			return "result/fail";
+		}
+		
+		member.setMem_email(id);
+		
+		// 아이디로 회원 정보 가져오기
+		member = memberService.getMember(member);
+		
+		model.addAttribute("type", type);
+		model.addAttribute("project_title", project_title);
+		model.addAttribute("member", member);
+		model.addAttribute("project_code", project_code);
+		
+		return "project/report_form";
+	}
+	
+	// 신고 접수
+	@PostMapping("ReportSubmit")
+	public String reportSubmit(@RequestParam Map<String, Object> map, Model model) {
+		System.out.println("map : " + map);
+		int insertCount = service.registReport(map);
+		
+		if(insertCount > 0) {
+			model.addAttribute("msg", "신고가 접수되었습니다.");
+			
+			return "result/success";
+		} else {
+			model.addAttribute("msg", "신고 접수 중 오류가 발생하였습니다. \n 다시 시도해주세요.");
+			
+			return "result/fail";
+		}
+	}
+	
+	// ------------------------------------------------------------------------------------
+	
+	// 팔로우
+	// ProjectDetail 할 때 해당 창작자를 팔로우 하는 사람들 리스트 가져간 상태
+	@ResponseBody
+	@PostMapping("CommitFollow")
+	public String commitFollow(@RequestParam(defaultValue = "") String follow_creator, HttpSession session, Model model) {
+//		System.out.println("follow_creator : " + follow_creator);
+		String id = (String) session.getAttribute("sId");
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		if(id == null) {
+			resultMap.put("result", false);
+			
+		} else {
+			
+			int followCount = service.getFollowCount(id, follow_creator); // 내가 이 창작자를 팔로우한 적이 있는지 (언팔도 status 남으니까 그냥 있으면 무조건 넘어옴)
+			
+			int insertCount = 0;
+			int updateCount = 0;
+			
+			if(followCount > 0) { // 팔로우 한 적 있음
+				updateCount = service.modifyFollow(id, follow_creator);
+			} else { // 팔로우 한 적 없음
+				insertCount = service.registFollow(id, follow_creator);
+			}
+			
+			if(insertCount > 0 || updateCount > 0) {
+				resultMap.put("result", true);
+			} else {
+				resultMap.put("result", false);
+			}
+		}
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+			
+		return jo.toString();
+	}
+	
+	// 언팔로우
+	@ResponseBody
+	@PostMapping("UnFollow")
+	public String unFollow(@RequestParam(defaultValue = "") String follow_mem_email, @RequestParam(defaultValue = "") String follow_creator) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int updateCount = service.unFollow(follow_mem_email, follow_creator);
+		
+		if(updateCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	
+	// 좋아요 등록
+	@ResponseBody
+	@PostMapping("RegistLike")
+	public String registLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email, HttpSession session) {
+		System.out.println("좋아요 : " + like_project_code + ", " + like_mem_email);
+		String id = (String) session.getAttribute("sId");
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		if(id == null) {
+			resultMap.put("result", false);
+			
+		} else {
+			// 내가 이 프로젝트를 좋아요 한 적 있는지 먼저 확인
+			int likeCount = service.getLikeCount(like_project_code, like_mem_email);
+			int updateCount = 0;
+			int insertCount = 0;
+			
+			if(likeCount > 0) { // 좋아요 한 흔적이 있음
+				updateCount = service.modifyLike(like_project_code, like_mem_email); // 좋아요 한 흔적은 있는데 N이니까 Y로 변경
+			} else { // 좋아요 한 흔적 없음
+				insertCount = service.registLike(like_project_code, like_mem_email);
+			}
+			
+			if(insertCount > 0 || updateCount > 0) {
+				resultMap.put("result", true);
+			} else {
+				resultMap.put("result", false);
+			}
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	@ResponseBody
+	@PostMapping("CancleLike")
+	public String cancleLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int updateCount = service.cancleLike(like_project_code, like_mem_email);
+		
+		if(updateCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	
+	
+	
+	
 	
 	
 	

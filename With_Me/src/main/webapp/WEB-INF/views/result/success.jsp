@@ -32,9 +32,11 @@
 		// => EL 을 통해 targetURL 속성값을 가져와서 자바스크립트 if 문으로 판별
 		//    (전달받은 속성값이 없을 경우 널스트링 값이 출력되므로 자바스크립트 "" 값과 비교)
 		// => 자바 문자열 데이터를 자바스크립트로 판별 시 EL 문장을 "" 따옴표로 둘러싸야한다!
-		if("${targetURL}" != "") {
+		if("${targetURL}" == "") {
+			history.back();
+		} else {
 			location.href = "${targetURL}";
-		} 
+		}
 	</script>
 </body>
 </html>

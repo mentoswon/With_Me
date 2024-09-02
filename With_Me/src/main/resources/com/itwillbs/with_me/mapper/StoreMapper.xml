@@ -94,8 +94,72 @@
 	
 	</select>
 	
+	<!-- 사용자 배송지 가져오기 -->
+	<select id="selectUserAddress" resultType="address">
+		SELECT *
+		FROM user_address
+		WHERE address_mem_email = #{mem_email}
+		ORDER BY address_is_default DESC 
+				, address_receiver_name
+	</select>
 
-
+	<!-- 기본 배송지 여부 확인 -->
+	<select id="selectAddressIsDefault" resultType="int">
+		SELECT COUNT(*)
+		FROM user_address
+		WHERE address_mem_email = #{id}
+		AND address_is_default = 'Y';
+	</select>
+	
+	<!-- 기본 배송지 변경 (원래 기본 배송지였던거를 N으로) -->
+	<update id="updateDefaultAddress">
+		UPDATE user_address
+		SET address_is_default = 'N'
+		WHERE address_mem_email = #{id}
+		AND address_is_default = 'Y';
+	</update>
+	
+	<!-- 1. 기본 배송지 변경하고 새로운 기본배송지 설정 -->
+	<insert id="insertNewDefaultAddress">
+		INSERT INTO user_address 
+		VALUES (
+			null
+			,#{address_mem_email}
+			,#{address_receiver_name}
+			,#{address_post_code}
+			,#{address_main}
+			,#{address_sub}
+			,#{address_receiver_tel}
+			,'Y'
+		)
+	</insert>
+	
+	<!-- 2. 나머지 배송지 등록 -->
+	<insert id="insertNewAddress">
+		INSERT INTO user_address 
+		VALUES (
+			null
+			,#{address_mem_email}
+			,#{address_receiver_name}
+			,#{address_post_code}
+			,#{address_main}
+			,#{address_sub}
+			,#{address_receiver_tel}
+			<choose>
+				<when test="#{address_is_default == null}">
+				,'N'
+				</when>
+				<otherwise>
+				, 'Y'
+				</otherwise>
+			</choose>			
+		)
+	</insert>
+	
+	<delete id="deleteAddress">
+		DELETE FROM user_address
+		WHERE address_idx = #{address_idx}
+	</delete>
 
 
 

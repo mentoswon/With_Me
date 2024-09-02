@@ -31,12 +31,7 @@
 <select id="selectCategoryDetail" resultType='commonCode'>
 	SELECT *
 	FROM common_code
-	WHERE common_code_top = (
-		SELECT common_code
-		FROM common_code
-		WHERE common_code_name = #{project_category}
-		AND common_code_top = 'FUND'
-	)
+	WHERE common_code_top = #{project_category}
 </select>
 
 <!-- 창작자 정보 조회 - SELECT -->
@@ -67,10 +62,13 @@
 	INSERT INTO project_info
 	VALUES (
 		null										-- project_idx
-		, CONCAT('project_', #{project_idx} + 1)	-- project_code
+		, CONCAT('FUND', #{project.project_category}, '___', #{project_idx} + 1)	-- project_code
 		, '작성중'									-- project_status
 		, #{creator_idx}							-- creator_idx
-		, #{project.project_category}				-- project_category
+		, (SELECT common_code_name
+		   FROM common_code
+		   WHERE common_code = #{project.project_category}
+		   AND common_code_top = 'FUND')				-- project_category
 		, ''										-- project_category_detail
 		, #{project.project_title}					-- project_title
 		, ''		-- project_summary
@@ -182,16 +180,29 @@
 <update id="updateProject">
 	UPDATE project_info
 	SET 
-		project_category = #{project_category},
-		project_category_detail = #{project_category_detail},
+		<if test="project_status.equals('심사중')">
+			project_code = #{project_code},	-- 심사요청 시에만 프로젝트 코드 변경
+		</if>
+		project_status = #{project_status},
+		project_category = (SELECT common_code_name
+							FROM common_code
+							WHERE common_code = #{project_category}
+							AND common_code_top = 'FUND'),
+		project_category_detail = (SELECT common_code_name
+							FROM common_code
+							WHERE common_code = #{project_category_detail}),
 		project_title = #{project_title},
 		project_summary = #{project_summary},
 		project_image = #{project_image},
 		search_tag = #{search_tag},
 		target_price = #{target_price},
 		funding_commission = #{funding_commission},
-		funding_start_date = #{funding_start_date},
-		funding_end_date = #{funding_end_date},
+		funding_start_date = CASE 
+            WHEN #{funding_start_date} != '' THEN #{funding_start_date} 	-- 시작일 선택시에만 값 넣기
+            ELSE null END,
+		funding_end_date = CASE 
+            WHEN #{funding_end_date} != '' THEN #{funding_end_date} 
+            ELSE null END,
 		project_introduce = #{project_introduce},
 		project_budget = #{project_budget},
 		project_schedule = #{project_schedule},
