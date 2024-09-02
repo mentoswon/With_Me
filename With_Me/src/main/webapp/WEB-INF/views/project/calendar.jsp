@@ -124,7 +124,22 @@ $(document).ready(function() {
         yearSuffix: '년'
     };
     $.datepicker.setDefaults($.datepicker.regional['ko']);
+	
+    // 시작일 필드 클릭 시 동작
+    $("#start_date").on("click", function(event) {
+        event.preventDefault(); // 기본 동작 방지
+        event.stopImmediatePropagation(); // 이벤트 전파 중지
+        $(this).datepicker("show"); // 날짜 선택기 표시
+    });
 
+    // 종료일 필드 클릭 시 동작
+    $("#end_date").on("click", function(event) {
+        event.preventDefault(); // 기본 동작 방지
+        event.stopImmediatePropagation(); // 이벤트 전파 중지
+        $(this).datepicker("show"); // 날짜 선택기 표시
+    });
+    
+    
     let today = new Date();
     let tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
@@ -151,8 +166,9 @@ $(document).ready(function() {
             $('#end_date').datepicker('option', 'maxDate', endDateMax);
             $('#end_date').prop('disabled', false);
 
+			updateStartDate();
             updateCalculations();
-            checkFormValidity();	// 유효성 검사
+//             checkFormValidity();	// 유효성 검사
         }
     });
 
@@ -167,7 +183,7 @@ $(document).ready(function() {
             $(this).datepicker('hide'); // 날짜 선택 후 캘린더 숨기기
             
             updateCalculations();
-            checkFormValidity();	// 유효성검사
+//             checkFormValidity();	// 유효성검사
             
 			// 요금제 선택 영역을 보이도록 설정
             $("#selectChargeWrap").show();
@@ -181,6 +197,20 @@ $(document).ready(function() {
 
     function setDatepickerZIndex() {
         $('.ui-datepicker').css('z-index', 9999);
+    }
+	
+    function updateStartDate() {
+        let date = $("#start_date").val();
+        if (date) {
+            $("#funding_start_date").val(date);
+        }
+    }
+
+    function updateEndDate() {
+        let date = $("#end_date").val();
+        if (date) {
+            $("#funding_end_date").val(date);
+        }
     }
 
     function updateCalculations() {
@@ -214,7 +244,7 @@ $(document).ready(function() {
 
 	<b>시작일</b><br>
 	<div class="date-input">
-		<input type="text" id="start_date" name="funding_start_date" readonly="readonly" placeholder="시작 날짜를 선택해주세요." value="${project.funding_start_date}">
+		<input type="text" id="start_date" name="funding_start_date" placeholder="시작 날짜를 선택해주세요." value="${project.funding_start_date}" readonly>
 		<span class="calendar-icon">
 			<img alt="캘린더아이콘" src="${pageContext.request.contextPath}/resources/image/calendar.png">
 		</span>
@@ -223,7 +253,7 @@ $(document).ready(function() {
 
 	<b>종료일</b><br>
 	<div class="date-input">
-		<input type="text" id="end_date" name="funding_end_date" readonly="readonly" placeholder="종료 날짜를 선택해주세요." value="${project.funding_end_date}">
+		<input type="text" id="end_date" name="funding_end_date" placeholder="종료 날짜를 선택해주세요." value="${project.funding_end_date}" readonly>
 		<span class="calendar-icon">
 			<img alt="캘린더아이콘" src="${pageContext.request.contextPath}/resources/image/calendar.png">
 		</span>
@@ -239,3 +269,8 @@ $(document).ready(function() {
 
 	<b>정산일</b><br>
 	<span id="settlementDate">결제종료 다음날부터 7일</span><br><br>
+
+	
+<%-- 시작일, 종료일 전달 --%>
+<input type="hidden" id="funding_start_date" name="funding_start_date" value="${project.funding_start_date}" readonly>
+<input type="hidden" id="funding_end_date" name="funding_end_date" value="${project.funding_end_date}" readonly>
