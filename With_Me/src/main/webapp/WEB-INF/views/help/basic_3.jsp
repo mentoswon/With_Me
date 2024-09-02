@@ -20,7 +20,7 @@
  	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
 	border-radius: 10px;
 	background-color: #fff;
-}
+}     
 
 h2 {
 	text-align: left;
