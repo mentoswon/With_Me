@@ -609,24 +609,67 @@ public class CreatorFundingController {
 		// 프로젝트 목록 조회
 		String status = "";
 		List<ProjectVO> projectList = service.getProjectList(id, status);
-		
 		model.addAttribute("projectList", projectList);
 		
-//		// 작성중인 프로젝트 목록 조회(작성중)
-//		String status = "작성중";
-//		List<ProjectVO> projectList1 = service.getProjectList(id, status);
-//		// 심사중인 프로젝트 목록 조회(심사중)
-//		status = "심사중";
-//		List<ProjectVO> projectList2 = service.getProjectList(id, status);
-//		// 승인된 프로젝트 목록 조회(승인)
-//		status = "승인";
-//		List<ProjectVO> projectList3 = service.getProjectList(id, status);
-//		
-//		model.addAttribute("projectList1", projectList1);
-//		model.addAttribute("projectList2", projectList2);
-//		model.addAttribute("projectList3", projectList3);
+		// 프로젝트 취소 요청한 프로젝트 조회
+		List<Map<String, String>> cancelList = service.getDeleteRequestList(id);
+		model.addAttribute("cancelList", cancelList);
+		
+		
 		
 		return "mypage/my_project";
+	}
+	
+	// 프로젝트 삭제
+	@ResponseBody
+	@PostMapping("DeleteProject")
+	public String deleteProject(@RequestParam("project_idx") String project_idx) throws Exception {
+		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		// 프로젝트 삭제 요청
+		int deleteCount = service.deleteProject(project_idx);
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		if(deleteCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	// 프로젝트 취소 요청
+	@ResponseBody
+	@PostMapping("RequestDeleteProject")
+	public String requestDeleteProject(@RequestParam("project_idx") String project_idx, @RequestParam("project_cancel_reason") String project_cancel_reason) throws Exception {
+		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		System.out.println("project_idx : " + project_idx + ", project_cancel_reason : " + project_cancel_reason);
+		
+		// 프로젝트 삭제 요청 폼 제출
+		int insertCount = service.requestDeleteProject(project_idx, project_cancel_reason);
+		// 삭제 요청 처리 결과 판별
+		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+		if(insertCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
 	}
 	
 }

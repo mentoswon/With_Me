@@ -166,7 +166,6 @@ $(document).ready(function() {
             $('#end_date').datepicker('option', 'maxDate', endDateMax);
             $('#end_date').prop('disabled', false);
 
-			updateStartDate();
             updateCalculations();
 //             checkFormValidity();	// 유효성 검사
         }
@@ -199,20 +198,6 @@ $(document).ready(function() {
         $('.ui-datepicker').css('z-index', 9999);
     }
 	
-    function updateStartDate() {
-        let date = $("#start_date").val();
-        if (date) {
-            $("#funding_start_date").val(date);
-        }
-    }
-
-    function updateEndDate() {
-        let date = $("#end_date").val();
-        if (date) {
-            $("#funding_end_date").val(date);
-        }
-    }
-
     function updateCalculations() {
         let startDateStr = $("#start_date").val();
         let endDateStr = $("#end_date").val();
@@ -269,8 +254,3 @@ $(document).ready(function() {
 
 	<b>정산일</b><br>
 	<span id="settlementDate">결제종료 다음날부터 7일</span><br><br>
-
-	
-<%-- 시작일, 종료일 전달 --%>
-<input type="hidden" id="funding_start_date" name="funding_start_date" value="${project.funding_start_date}" readonly>
-<input type="hidden" id="funding_end_date" name="funding_end_date" value="${project.funding_end_date}" readonly>
