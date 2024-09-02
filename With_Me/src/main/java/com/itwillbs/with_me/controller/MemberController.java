@@ -494,7 +494,7 @@ public class MemberController {
 	
 	// 마이페이지(개인정보)
 	@GetMapping("MypageInfo")
-	public String mypageInfo(MemberVO member, Model model, HttpSession session) {
+	public String mypageInfo(@RequestParam Map<String, String> map, MemberVO member, Model model, HttpSession session, BCryptPasswordEncoder passwordEncoder) {
 		
 		String id = (String)session.getAttribute("sId");
 		
@@ -503,6 +503,22 @@ public class MemberController {
 //		System.out.println("member !!!!!!!!!!!! : " + member);
 //		model.addAttribute("member", member);
 		
+		if(!passwordEncoder.matches(map.get("oldPasswd"), member.getMem_passwd())) { // 패스워드 불일치시
+			model.addAttribute("msg", "비밀번호가 올바르지 않습니다.");
+			return "result/fail";
+		}
+		
+		// 기존 비밀번호 일치 시 회원 정보 수정 요청 전에
+		// 새 비밀번호 입력 여부를 확인하여 새 비밀번호 입력됐을 경우 암호화 수행 필요
+		if(!map.get("passwd").equals("")) { // 널스트링이 아니면 새 비밀번호 암호화 수행
+			map.put("passwd", passwordEncoder.encode(map.get("passwd")));
+		}
+		
+		
+		
+		
+		
+		
 		CreatorVO creatorInfo = service.getCreatorName(member);
 		model.addAttribute("creatorInfo", creatorInfo);
 		
@@ -510,6 +526,7 @@ public class MemberController {
 //		System.out.println("memberInfo !!!!!!!!!!!! : " + memberInfo);
 		model.addAttribute("memberInfo", memberInfo);
 		
+		// 뷰페이지에서 파일 목록의 효율적 처리를 위해 파일명만 별도로 List 객체에 저장
 		List<String> fileList = new ArrayList<String>();
 		fileList.add(creatorInfo.getCreator_image());
 		
