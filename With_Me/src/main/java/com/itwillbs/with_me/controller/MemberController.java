@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
+import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
@@ -35,6 +36,7 @@ public class MemberController {
 	private MemberService service;
 	@Autowired
 	private MailService MailService;
+	
 	// 가상의 경로명 저장(이클립스 프로젝트 상의 경로)
 	private String uploadPath = "/resources/upload"; 
 	
@@ -104,6 +106,20 @@ public class MemberController {
 		
 		int insertCount = service.registMember(member);
 		
+		// --------------------------------------------------------------
+		// 회원가입 시 작성한 주소지를 기본 배송지로 집어넣기
+		String address_mem_email = member.getMem_email(); 
+		String address_receiver_name = member.getMem_name(); 
+		String address_post_code = member.getMem_post_code(); 
+		String address_main = member.getMem_add1(); 
+		String address_sub = member.getMem_add2(); 
+		String address_receiver_tel = member.getMem_tel();
+		
+		service.registTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
+		
+		
+		
+		// --------------------------------------------------------------
 		// 회원가입 성공/실패에 따른 페이징 처리
 		// 성공 시 : "MemberJoinSuccess" 서블릿 주소 리다이렉트
 		// 실패 시 : "result_process/fail.jsp" 페이지 포워딩("msg" 속성값 : "회원가입 실패!")

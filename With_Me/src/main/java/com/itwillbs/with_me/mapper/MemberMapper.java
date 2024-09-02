@@ -73,4 +73,14 @@ public interface MemberMapper {
 	// 회원 아이디 조회(채팅용)
 	String selectMemberId(String receiver_id);
 
+	
+	// ===============================================
+	// 회원 가입 시 기본 배송지 등록
+	void insertTransAddress(@Param("address_mem_email")String address_mem_email, 
+							@Param("address_receiver_name")	String address_receiver_name, 
+							@Param("address_post_code") String address_post_code,
+							@Param("address_main") String address_main, 
+							@Param("address_sub") String address_sub, 
+							@Param("address_receiver_tel")String address_receiver_tel);
+
 }

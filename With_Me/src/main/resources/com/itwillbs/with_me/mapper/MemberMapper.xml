@@ -172,6 +172,23 @@
 		WHERE mem_email = #{receiver_id}
 	</select>
 	
+	
+	<!-- ==================================================== -->
+	<!-- 회원가입 시 배송지 등록 -->
+	<insert id="insertTransAddress">
+		INSERT INTO user_address 
+		VALUES (
+			null
+			, #{address_mem_email}
+			, #{address_receiver_name}
+			, #{address_post_code}
+			, #{address_main}
+			, #{address_sub}
+			, #{address_receiver_tel}
+			,'Y'
+			, default		
+		)
+	</insert>
 </mapper>
 
 
