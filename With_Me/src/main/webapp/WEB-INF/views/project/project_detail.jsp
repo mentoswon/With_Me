@@ -12,6 +12,29 @@
 		<link href="${pageContext.request.contextPath}/resources/css/report_form.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/project_detail.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
+		<script type="text/javascript">
+		
+			function chat(creatorId) {
+				console.log("채팅창 열기: " + creatorId);
+				
+				var chatUrl = "/with_me/Chating?receiver_id=" + encodeURIComponent(creatorId); 
+// 				var chatUrl = "/Chating?receiver_id=" + creatorId; 
+				// encodeURIComponent 이거는 JavaScript의 내장 함수로, 
+				// 문자열을 안전하게 URL에 포함할 수 있도록 특수 문자를 이스케이프(escape) 처리하여 변환해줌
+				
+				var popupOptions = "width=450, height=600, scrollbars=yes, resizable=no";
+				
+				var chatWindow = window.open(chatUrl, "ChatWindow", popupOptions);
+				
+			    if (chatWindow) {
+			        chatWindow.focus();
+			    } else {
+			        alert("팝업 창이 차단되었습니다. 팝업 차단을 해제해주세요.");
+			    }
+				
+				
+			}
+		</script>
 	</head>
 	<body>
 		<header>
@@ -128,7 +151,7 @@
 							<div>
 								<div class="creator">
 									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_image}">
-									<span><a href="MemberInfoTest?mem_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
+									<span><a href="MemberInfo?mem_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
 								</div>
 								<div>
 									<ul>
@@ -159,7 +182,7 @@
 								        <button type="button" class="follow" onclick="confirmFollow('${project_detail.creator_name}', '${project_detail.creator_email}')">팔로우</button>
 								    </c:otherwise>
 								</c:choose>
-								<button type="button"  class="ask" onclick="chat()">문의</button>
+								<button type="button"  class="ask" onclick="chat('${project_detail.creator_email}')">문의</button>
 							</div>
 						</div>
 					</div>

@@ -31,8 +31,8 @@
 	
 	/* 채팅방 표시 영역 */
 	#chatRoomArea {
-		width: 80%;
-		min-width: 600px;
+		width: 350px;
+		min-width: 350px;
 		height: 100%;
 		min-height: 300px;
 		border: 1px solid black;
