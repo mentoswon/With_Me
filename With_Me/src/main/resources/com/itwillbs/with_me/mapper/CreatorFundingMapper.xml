@@ -32,6 +32,10 @@
 	SELECT *
 	FROM common_code
 	WHERE common_code_top = #{project_category}
+	OR common_code_top = (SELECT common_code
+						  FROM common_code
+						  WHERE common_code_name = #{project_category}
+						  AND common_code_top = 'FUND')
 </select>
 
 <!-- 창작자 정보 조회 - SELECT -->
@@ -178,40 +182,50 @@
 
 <!-- 프로젝트 임시저장 - UPDATE -->
 <update id="updateProject">
-	UPDATE project_info
-	SET 
-		<if test="project_status.equals('심사중')">
-			project_code = #{project_code},	-- 심사요청 시에만 프로젝트 코드 변경
-		</if>
-		project_status = #{project_status},
-		project_category = (SELECT common_code_name
-							FROM common_code
-							WHERE common_code = #{project_category}
-							AND common_code_top = 'FUND'),
-		project_category_detail = (SELECT common_code_name
-							FROM common_code
-							WHERE common_code = #{project_category_detail}),
-		project_title = #{project_title},
-		project_summary = #{project_summary},
-		project_image = #{project_image},
-		search_tag = #{search_tag},
-		target_price = #{target_price},
-		funding_commission = #{funding_commission},
-		funding_start_date = CASE 
-            WHEN #{funding_start_date} != '' THEN #{funding_start_date} 	-- 시작일 선택시에만 값 넣기
-            ELSE null END,
-		funding_end_date = CASE 
+    UPDATE project_info
+    SET 
+    	<if test="!project_code.equals('FUND')">
+	        project_code = #{project_code},
+    	</if>
+        <if test="!project_status.equals('')">
+            project_status = #{project_status},
+        </if>
+        project_category = (SELECT common_code_name
+                            FROM common_code
+                            WHERE common_code = #{project_category}
+                            AND common_code_top = 'FUND'),
+        <if test="!project_category_detail.equals('')">
+            project_category_detail = (SELECT common_code_name
+                                       FROM common_code
+                                       WHERE common_code = #{project_category_detail}),
+        </if>
+        <if test="project_category_detail.equals('')">
+            project_category_detail = '',
+        </if>
+        project_title = #{project_title},
+        project_summary = #{project_summary},
+        project_image = #{project_image},
+        search_tag = #{search_tag},
+        target_price = #{target_price},
+        funding_commission = #{funding_commission},
+        funding_start_date = CASE 
+            WHEN #{funding_start_date} != '' THEN #{funding_start_date}  -- 시작일 선택시에만 값 넣기
+            ELSE null 
+        END,
+        funding_end_date = CASE 
             WHEN #{funding_end_date} != '' THEN #{funding_end_date} 
-            ELSE null END,
-		project_introduce = #{project_introduce},
-		project_budget = #{project_budget},
-		project_schedule = #{project_schedule},
-		project_team_introduce = #{project_team_introduce},
-		project_sponsor = #{project_sponsor},
-		project_policy = #{project_policy},
-		project_submit_date = now()
-	WHERE project_idx = #{project_idx};
+            ELSE null 
+        END,
+        project_introduce = #{project_introduce},
+        project_budget = #{project_budget},
+        project_schedule = #{project_schedule},
+        project_team_introduce = #{project_team_introduce},
+        project_sponsor = #{project_sponsor},
+        project_policy = #{project_policy},
+        project_submit_date = now()
+    WHERE project_idx = #{project_idx};
 </update>
+
 
 <!-- 창작자정보 임시저장 - UPDATE -->
 <update id="updateCreator">
