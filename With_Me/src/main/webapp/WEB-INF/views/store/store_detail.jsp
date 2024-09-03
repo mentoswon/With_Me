@@ -75,9 +75,18 @@
 								</c:choose>
 							</div>
 							<div class="productInfo4">
-								<button class="like Btn">
-									<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-								</button>
+							<c:choose>
+								<c:when test="${product_detail.isLike.like_mem_email eq sId and product_detail.isLike.like_status eq 'Y'}">
+									<button class="like Btn" type="button" onclick="cancleLike'${product_detail.product_code}', '${sId}')">
+										<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
+									</button>
+								</c:when>
+								<c:otherwise>
+									<button class="like Btn" type="button" onclick="registLike'${product_detail.product_code}', '${sId}')">
+										<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+									</button>
+								</c:otherwise>
+							</c:choose>
 <!-- 								<button class="goStore Btn">상품문의하기</button> -->
 								<input type="submit" class="goStore Btn" value="구매하기">
 							</div>
@@ -301,6 +310,57 @@
 			// 닫기 버튼
 			closeBtn2.onclick = function(){
 				policy[0].classList.remove('on');
+			}
+			
+			// ===========================================
+			// 상품 좋아요
+			function registLike(product_code, sId) {
+				console.log("product_code : " + product_code + ", sId : " + sId);
+				if(confirm("해당 상품을 좋아요 하시겠습니까?")){
+					$.ajax({
+						url : "RegistLikeProduct",
+						type : "POST",
+						async: false,
+						data:{
+							"like_product_code": product_code,
+							"like_mem_email": sId
+						},
+						dataType: "json",
+						success: function (response) {
+							if(response.result) {
+								alert("해당 상품이 좋아요 리스트에 추가 되었습니다");
+								location.reload();
+								
+							} else if(!response.result) {
+								alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+								location.href="MemberLogin";
+							}
+						}
+					});
+				}
+			}
+				
+			// 상품 좋아요 취소 
+			function cancleLike(product_code, sId) {
+				$.ajax({
+					url : "CancleLikeProduct",
+					type : "POST"
+					async:false,
+					data :{
+						"like_product_code" : product_code,
+						"like_mem_email" : sId
+					}, 
+					dataType: "json",
+					success: function(response) {
+						if(response.result) {
+							alert("좋아요가 취소되었습니다.");
+							location.reload();
+						} else if(!response.result) {
+							alert("로그인 후 이용 가능합니다. \n로그인 페이지로 이동합니다.");
+							location.href="MemberLogin";
+						}
+					} 
+				});
 			}
 			
 		</script>

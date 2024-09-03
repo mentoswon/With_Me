@@ -155,9 +155,9 @@
 			, 0                 -- faq_re_lev
 			, 0                 -- faq_re_seq
 			, #{faq_content}
-<!-- 			, #{faq_file} -->
+			, #{faq_file}
 			, now()
-			, #{sId}                 -- sId
+			, #{mem_email}                 -- sId
 		)
 	</insert>
 	
@@ -299,7 +299,7 @@
 			, #{faq_re_seq} + 1  -- faq_re_seq(전달받은 원본글의 값 + 1 사용)  => 새 글 작성과 다름
 			, #{faq_content}
 			, now()
-			, #{mem_name}
+			, #{mem_email}
 		)
 	</insert>
 	

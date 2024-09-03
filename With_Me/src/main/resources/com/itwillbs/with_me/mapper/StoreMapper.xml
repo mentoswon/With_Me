@@ -90,9 +90,65 @@
 		FROM product_info
 		WHERE product_code = #{product_code}
 		
-		
-	
 	</select>
+	
+	
+<!-- ============================================================ -->	
+	<!-- 좋아요 했는지 판단 후 가져가기 -->
+	<select id="selectIsLike" resultType="like">
+		SELECT *
+		FROM like_
+		WHERE
+			like_mem_email = #{like_mem_email}
+			AND like_product_code = #{like_product_code}
+			AND like_status = 'Y'
+		
+	</select>
+	
+		<!-- 좋아요 한 적 있는지 확인부터 -->
+	<select id="selectLikeCount" resultType="int">
+		SELECT COUNT(*)
+		FROM like_
+		WHERE 
+			like_product_code = #{like_product_code}
+			AND like_mem_email = #{like_mem_email}
+	</select>
+	
+	<!--  좋아요 기록 있는데 N 이니까 Y로 status 변경 -->
+	<update id="updateLike">
+		UPDATE like_
+		SET like_status = 'Y'
+		WHERE 
+			like_product_code = #{like_product_code}
+			AND like_mem_email = #{like_mem_email}
+			AND like_status = 'N'
+	</update>
+	
+	<!-- 좋아요 등록 -->
+	<insert id="insertLike">
+		INSERT INTO like_
+		VALUES (
+			null
+			, #{like_mem_email}
+			, #{like_product_code}
+			, null
+			, 'Y'
+		)
+	</insert>
+	
+	<!--  좋아요 취소 -->
+	<update id="cancleLike">
+		UPDATE like_
+		SET like_status = 'N'
+		WHERE 
+			like_product_code = #{like_product_code}
+			AND like_mem_email = #{like_mem_email}
+			AND like_status = 'Y'
+	</update>
+	
+<!-- ===================================================== -->
+	
+	
 	
 	<!-- 사용자 배송지 가져오기 -->
 	<select id="selectUserAddress" resultType="address">

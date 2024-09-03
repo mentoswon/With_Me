@@ -102,7 +102,8 @@
                             </tr>
                             <tr>
                             	<td>
-                                	<input type="hidden" name="mem_id" value="${sessionScope.sId}" required="required" size="15" readonly="readonly">
+                            		<input type="hidden" name="faq_idx" value="${qnabo.faq_idx}" required="required" size="15" readonly="readonly">
+                                	<input type="hidden" name="mem_email" value="${sessionScope.sId}" required="required" size="15" readonly="readonly">
                                 	<input type="text" name="mem_name" value="${sessionScope.sName}" required="required" size="15" readonly="readonly">
                                 </td>
                             </tr>
