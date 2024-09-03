@@ -123,6 +123,11 @@
 									<span class="titleBox"> 
 										<span class="group">문의</span> 
 										<span class="subject">${qnabo.mem_name}</span> 
+										<c:if test="${qnabo.faq_re_lev > 0}">
+											<c:forEach begin="1" end="${qnabo.faq_re_lev}">
+												&nbsp;&nbsp;
+											</c:forEach>
+										</c:if>
 										<span class="subject">${qnabo.faq_subject}</span> 
 										<span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>
 <%-- 										<span class="view">조회수 ${qnabo.faq_readcount}</span> --%>

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 
 @Mapper
@@ -50,6 +51,24 @@ public interface StoreMapper {
 
 	// 배송지 삭제
 	int deleteAddres(AddressVO address);
+
+	// 좋아요 했는지 판단 후에 가져가기 
+	LikeVO selectIsLike(
+			@Param("like_product_code")String like_product_code, 
+			@Param("like_mem_email")String like_mem_email);
+	
+	// 좋아요 한 적 있는지 확인
+	int selectLikeCount(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
+	
+	// 좋아요 한 적 있으니까 update
+	int updateLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
+	
+	// 좋아요 등록
+	int insertLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
+
+	// 좋아요 취소
+	int cancleLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
+	
 	
 
 }

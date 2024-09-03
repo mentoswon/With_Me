@@ -92,7 +92,7 @@
 		// 다이얼로그의 확인 버튼 클릭 시 "BoardDelete.bo" 서블릿 요청
 		// => 파라미터 : 글번호, 페이지번호
 		if(confirm("삭제하시겠습니까?")) {
-			location.href = "MyQuestionDelete?qna_number=${qna.qna_number}&pageNum=${param.pageNum}";
+			location.href = "QnaBoardDelete?faq_idx=${qnabo.faq_idx}&pageNum=${param.pageNum}";
 		}
 	}
 </script>

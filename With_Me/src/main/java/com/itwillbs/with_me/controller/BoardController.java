@@ -362,6 +362,10 @@ public class BoardController {
 			if(request.getQueryString() != null) {
 				prevURL += "?" + request.getQueryString();
 			}
+			
+//			System.out.println("prevURL : " + prevURL);
+			
+			// 세션 객체에 targetURL값 저장
 			session.setAttribute("prevURL", prevURL);
 			return "result/fail";
 		}
@@ -386,7 +390,8 @@ public class BoardController {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-		
+		// 작성자 IP 주소 가져와서 BoardVO 객체에 저장
+//		qnabo.setBoard_writer_ip(request.getRemoteAddr());
 		// --------------------------------------------------------------------------------------
 //		//[ 업로드 되는 실제 파일 처리 ]
 //		MultipartFile mFile1 = qnabo.getFile();
@@ -399,7 +404,7 @@ public class BoardController {
 //			qnabo.setBo_file(subDir + "/" + fileName1);
 //		}
 		
-		// BoardService - registBoard() 메서드 호출하여 게시물 등록 작업 요청
+		// BoardService - applyQnaBoard() 메서드 호출하여 게시물 등록 작업 요청
 		// => 파라미터 : BoardVO 객체   리턴타입 : int(insertCount)
 		int insertCount = service.applyQnaBoard(qnabo);
 		
@@ -416,7 +421,7 @@ public class BoardController {
 //				e.printStackTrace();
 //			}
 //			
-			// 글목록(BoardList) 서블릿 주소 리다이렉트
+			// 글목록(QnaBoardList) 서블릿 주소 리다이렉트
 			return "redirect:/QnaBoardList";
 		} else { 
 			// "글쓰기 실패!" 메세지 출력 및 이전 페이지 돌아가기 처리
@@ -499,7 +504,7 @@ public class BoardController {
 	// 1:1문의 게시글 리스트 삭제
 	@GetMapping("QnaBoardDelete")
 	public String qnaBoardDelete(
-			int bo_idx, @RequestParam(defaultValue = "1") int pageNum,
+			int faq_idx, @RequestParam(defaultValue = "1") int pageNum,
 			HttpSession session, Model model) throws Exception {
 //				System.out.println("board_num : " + board_num);
 //				System.out.println("pageNum : " + pageNum);
@@ -516,7 +521,7 @@ public class BoardController {
 		// DB 에서 게시물 정보 삭제 전 파일명을 미리 조회하기 위해
 		// BoardService - getBoard() 메서드 재사용하여 게시물 상세정보 조회 요청
 		// => 주의! 조회수 증가되지 않도록 두번째 파라미터값 false 값 전달
-		BoardVO qnabo = service.getQnaBoardDetail(bo_idx, false);
+		BoardVO qnabo = service.getQnaBoardDetail(faq_idx, false);
 //				System.out.println(board);
 		
 		// 게시물이 존재하지 않거나, 조회된 게시물의 작성자가 자신이 아닐 경우
@@ -529,7 +534,7 @@ public class BoardController {
 		// --------------------------------------------------------------------
 		// BoardService - removeBoard() 메서드 호출하여 글 삭제 작업 요청
 		// => 파라미터 : 글번호   리턴타입 : int(deleteCount)
-		int deleteCount = service.qnaDeleteBoard(bo_idx);
+		int deleteCount = service.qnaDeleteBoard(faq_idx);
 		
 		// 삭제 결과 판별하여 처리
 		if(deleteCount > 0) {

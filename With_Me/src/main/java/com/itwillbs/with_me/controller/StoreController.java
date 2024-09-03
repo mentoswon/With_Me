@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.StoreService;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.StoreVO;
@@ -103,7 +104,7 @@ public class StoreController {
 	
 	// 스토어 상품 상세 페이지 이동 
 	@GetMapping("StoreDetail")
-	public String storeDetail(StoreVO store, Model model) {
+	public String storeDetail(StoreVO store, Model model, HttpSession session) {
 		System.out.println("StoreDetail : " + store);
 		String product_code = store.getProduct_code();
 		
@@ -111,8 +112,82 @@ public class StoreController {
 		Map<String,Object> product_detail = service.getProduct(product_code);
 		System.out.println("가져온 상품123 : " + product_detail);
 		model.addAttribute("product_detail", product_detail);
+		
+		// =================================================================
+		
+		//  좋아요 -----------------
+		String id = (String)session.getAttribute("sId");
+		LikeVO isLike = service.getIsLike(product_code, id);
+		product_detail.put("isLike", isLike);
+		System.out.println("product_detail : " + product_detail);
+		
 		return "store/store_detail";
 	}
+	
+// --------------------------------------------------------------------------------------------------------------
+	
+	// 좋아요 등록
+	@ResponseBody
+	@PostMapping("RegistLikeProduct")
+	public String registLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email, HttpSession session) {
+		System.out.println("좋아요 : " + like_project_code + ", " + like_mem_email);
+		String id = (String) session.getAttribute("sId");
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		if(id == null) {
+			resultMap.put("result", false);
+			
+		} else {
+			// 내가 이 프로젝트를 좋아요 한 적 있는지 먼저 확인
+			int likeCount = service.getLikeCount(like_project_code, like_mem_email);
+			int updateCount = 0;
+			int insertCount = 0;
+			
+			if(likeCount > 0) { // 좋아요 한 흔적이 있음
+				updateCount = service.modifyLike(like_project_code, like_mem_email); // 좋아요 한 흔적은 있는데 N이니까 Y로 변경
+			} else { // 좋아요 한 흔적 없음
+				insertCount = service.registLike(like_project_code, like_mem_email);
+			}
+			
+			if(insertCount > 0 || updateCount > 0) {
+				resultMap.put("result", true);
+			} else {
+				resultMap.put("result", false);
+			}
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	// ========================================================================================================
+	@ResponseBody
+	@PostMapping("CancleLikeProduct")
+	public String cancleLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int updateCount = service.cancleLike(like_project_code, like_mem_email);
+		
+		if(updateCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	
+// ------------------------------------------------------------------------------------------------------------------	
+	
 	
 	@PostMapping("StoreInProgress")
 	public String storeInProgress(@RequestParam Map<String,Object> map, HttpSession session, MemberVO member, Model model) {

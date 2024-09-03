@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.StoreMapper;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 
 @Service
@@ -76,6 +77,31 @@ public class StoreService {
 		return mapper.deleteAddres(address);
 	}
 	
+	// 좋아요 했다면 정보 가져가기
+	public LikeVO getIsLike(String like_product_code, String like_mem_email) {
+		// TODO Auto-generated method stub
+		return mapper.selectIsLike(like_product_code, like_mem_email);
+	}
+	// ===========================================================================================
+	// 좋아요 한 적 있는지 확인
+	public int getLikeCount(String like_product_code, String like_mem_email) {
+		return mapper.selectLikeCount(like_product_code, like_mem_email);
+	}
+	
+	// 좋아요 한 적 있으니까 update
+	public int modifyLike(String like_product_code, String like_mem_email) {
+		return mapper.updateLike(like_product_code, like_mem_email);
+	}
+	
+	// 좋아요 등록 (좋아요 한 적 없음)
+	public int registLike(String like_product_code, String like_mem_email) {
+		return mapper.insertLike(like_product_code, like_mem_email);
+	}
+
+	// 좋아요 취소
+	public int cancleLike(String like_product_code, String like_mem_email) {
+		return mapper.cancleLike(like_product_code, like_mem_email);
+	}
 
 	
 
