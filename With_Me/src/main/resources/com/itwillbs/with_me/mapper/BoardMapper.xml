@@ -222,7 +222,8 @@
 	<!-- 1:1문의 상세글 조회  -->
    <select id="selectQnaBoardDetail" resultType="qnabo">
 		SELECT * 
-		FROM faq
+		FROM faq f JOIN member m 
+		ON f.mem_email = m.mem_email
 		WHERE faq_idx = #{faq_idx}
 	</select>
 	
@@ -249,7 +250,7 @@
 		SET
 			faq_subject = #{faq_subject}
 			, faq_content = #{faq_content}
-			, faq_file = #{faq_file}
+<!-- 			, faq_file = #{faq_file} -->
 		WHERE
 			faq_idx = #{faq_idx}	
 	</update>

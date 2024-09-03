@@ -232,7 +232,7 @@
 										<h2>${param.product_category}</h2>
 									</c:when>
 									<c:otherwise>
-										<h2>${param.product_category} > ${product_category_detail}</h2> 
+										<h2>${param.product_category} > ${param.product_category_detail}</h2> 
 									</c:otherwise>
 								</c:choose>
 								
