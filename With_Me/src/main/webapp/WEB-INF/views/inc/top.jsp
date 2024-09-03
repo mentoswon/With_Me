@@ -69,11 +69,10 @@
 		}
 	}
 	
-// 	function projectListDetail(cateDetail) {
-// 		location.href="ProjectListDetail?project_category_detail=" + cateDetail;
-// 	}
-	document.getElementById('storeButton').addEventListener('click', function() {
-   		StoreList('푸드', '');
+	$(function (){
+		$(". storeBtn").on('click', function StoreList() {
+	   		StoreList('푸드', '');
+		});
 	});
 	
 </script>
@@ -90,7 +89,7 @@
 				<c:when test="${empty sessionScope.sId}"> <%-- 로그인 상태가 아닐 경우 --%>
 					<button class="btn" onclick="location.href='MemberLogin'">로그인</button>
 <!-- 					<button class="btn" onclick="location.href='MemberJoin'">회원가입</button> -->
-					<button class="btn" onclick="StoreList('푸드', '')">스토어</button>
+					<button class="btn storeBtn" onclick="StoreList('푸드', '')">스토어</button>
 					<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
 				</c:when>
 				<c:otherwise>
@@ -107,7 +106,7 @@
 						</c:otherwise>
 					</c:choose>
 					<a href="javascript:confirmLogout()" class="loged">로그아웃 </a>
-					<button class="btn" onclick="StoreList('푸드', '')">스토어</button>
+					<button class="btn storeBtn" onclick="StoreList('푸드', '')">스토어</button>
 					<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
 				</c:otherwise>
 			</c:choose>

@@ -21,15 +21,11 @@
 		}
 	}
 	
-// 	function projectListDetail(cateDetail) {
-// 		location.href="ProjectListDetail?project_category_detail=" + cateDetail;
-// 	}
-	
-	
-	document.getElementById('storeButton').addEventListener('click', function() {
-    StoreList('푸드', '');
-	});
-	
+	$(function (){
+		$(".storeBtn").on('click', function StoreList() {
+	   		StoreList('푸드', '');
+		});
+	});	
 	
 </script>
 
@@ -44,7 +40,7 @@
 			<c:choose>
 				<c:when test="${empty sessionScope.sId}"> <%-- 로그인 상태가 아닐 경우 --%>
 <!-- 					<button class="btn" onclick="location.href='StoreList'">스토어</button> -->
-					<button onclick="StoreList('푸드', '')" class="btn" id="storeButton"> 스토어 </button>
+					<button onclick="StoreList('푸드', '')" class="btn storeBtn" id="storeButton"> 스토어 </button>
 					<button class="btn" onclick="location.href='MemberLogin'">로그인</button>
 <!-- 					<button class="btn" onclick="location.href='MemberJoin'">회원가입</button> -->
 					<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
@@ -54,7 +50,7 @@
 					<a href="MemberInfo" class="loged">${sessionScope.sName}님</a>
 					<a href="javascript:confirmLogout()" class="loged">로그아웃 </a>
 <!-- 					<button class="btn" onclick="location.href='StoreList'">스토어</button> -->
-					<button onclick="StoreList('푸드', '')" class="btn" id="storeButton"> 스토어 </button>
+					<button onclick="StoreList('푸드', '')" class="btn storeBtn" id="storeButton"> 스토어 </button>
 					<%-- 하이퍼링크 상에서 자바스크립트 함수 호출 시
 					"javascript:함수명()" 형태로 호출 --%>
 					<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
