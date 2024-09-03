@@ -49,6 +49,12 @@ h4 {
 
 /*  con02  */
 
+#addWarn {
+	font-weight: normal;
+	font-size: 12px;
+	color: #777;
+}
+
 .inner .con02 .addressInfo .AddAddressBtn {
     position: relative;
     text-align: center;
@@ -257,13 +263,31 @@ h4 {
 }
 
 /* con06 */
-.inner .con06 .payMethod .infoWrapper {
+.inner .con06 .pay .infoWrapper {
 	display: flex;
 	justify-content: space-around;
 }
 
+.inner .con06 .pay .payMethod {
+	display: none;
+}
+
+.inner .con06 .pay .payMethod.on {
+	display: block;
+}
+
+.inner .con06 .pay .payWrap {
+	display: flex;
+	align-items: center;
+	margin-bottom : 20px; 
+}
+
+.inner .con06 .pay .payWrap h4{
+	margin: 0;
+	margin-right: 15px;
+}
 /* con07_pay */
-#UserFundingPayment {
+#user_funding_payment {
 	margin-top: 60px;
 	width: 100%;
 	padding: 15px 0;

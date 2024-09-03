@@ -175,17 +175,20 @@
 														<div class="fund_rate">0%</div>
 													</c:when>
 													<c:otherwise>
-														<div class="fund_rate">${fund_rate}%</div>
+														<div class="fund_rate"><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>%</div>
 													</c:otherwise>
 												</c:choose>
 												<%-- 펀딩률 end --%>
 												
 												<div class="fund_amt"><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
 											</div>
-											<div class="fund_etc">
+											<div class="fund_etc" style="<c:if test="${leftDay eq 0 || project.funding_start_date > today}">color:#ffab40;font-weight: bold;</c:if>">
 												<c:choose>
 													<c:when test="${leftDay eq 0}">
 														오늘 마감
+													</c:when>
+													<c:when test="${project.funding_start_date > today}">
+														<fmt:formatDate value="${project.funding_start_date}" pattern="MM/dd"/>  오픈
 													</c:when>
 													<c:otherwise>
 													

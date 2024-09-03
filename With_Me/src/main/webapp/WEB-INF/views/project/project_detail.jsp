@@ -7,7 +7,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>index</title>
+		<title>With_Me</title>
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/report_form.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/project_detail.css" rel="stylesheet" type="text/css">
@@ -68,7 +68,7 @@
 											<li class="fund_rate">&nbsp;&nbsp; 0%</li>
 										</c:when>
 										<c:otherwise>
-											<li class="fund_rate">&nbsp;&nbsp; ${fund_rate}%</li>
+											<li class="fund_rate">&nbsp;&nbsp; <fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>%</li>
 										</c:otherwise>
 									</c:choose>
 									<%-- 펀딩률 end --%>
@@ -132,7 +132,16 @@
 									</button>
 								</c:otherwise>
 							</c:choose>
-							<button type="button" class="goFund Btn" id="goFund" onclick="goToScroll()">이 프로젝트 후원하기</button>
+							<c:choose>
+								<c:when test="${project_detail.funding_start_date > today}">
+									<button type="button" class="goFund Btn" id="goFund" disabled
+										 style="<c:if test="${project_detail.funding_start_date > today}">background-color: #f5f5f5; color: #555;</c:if>"
+									>아직 오픈하지 않은 프로젝트예요!</button>
+								</c:when>
+								<c:otherwise>
+									<button type="button" class="goFund Btn" id="goFund" onclick="goToScroll()">이 프로젝트 후원하기</button>
+								</c:otherwise>
+							</c:choose>
 						</div>
 					</div>
 				</div>
@@ -192,80 +201,81 @@
 						<img alt="이동" src="${pageContext.request.contextPath}/resources/image/right-arrow.png">
 					</div>
 					
-					
-					<div id="fundingOptions">
-						<h4>후원 선택</h4>
-						<div class="wrap">
-						
-							<%-- 일반후원은 클릭하면 바로 결제페이지로 이동 --%>
-<!-- 							<div class="reward" id="reward_default" onclick="location.href='FundInProgress?reward_amt=1000&reward_title=일반후원하기'"> -->
-							<div class="reward" id="reward_default">
+					<c:if test="${today > project_detail.funding_start_date}">
+						<div id="fundingOptions">
+							<h4>후원 선택</h4>
+							<div class="wrap">
 							
-								<div class="reward_price"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원
-									<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
-								</div>
-								<div class="reward_title">일반 후원하기</div>
-								<form action="FundInProgress" method="get">
-<%-- 									<input type="hidden" value="${project_detail.project_title}" name="project_title"> --%>
-<%-- 									<input type="hidden" value="${project_detail.project_code}" name="project_code"> --%>
-									<input type="hidden" value="${project_detail.pay_date}" name="project_payDate">
-									<input type="hidden" value="1000" name="reward_price">
-									<input type="hidden" value="일반 후원하기" name="reward_title">
-									<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
-								</form>
-							</div>
-							
-							<c:forEach var="rewardList" items="${rewardList}">
-								<div class="reward">
-									<div class="reward_price"><fmt:formatNumber pattern="#,###">${rewardList.reward_price}</fmt:formatNumber>원
+								<%-- 일반후원은 클릭하면 바로 결제페이지로 이동 --%>
+	<!-- 							<div class="reward" id="reward_default" onclick="location.href='FundInProgress?reward_amt=1000&reward_title=일반후원하기'"> -->
+								<div class="reward" id="reward_default">
+									<div class="reward_price"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원
 										<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
-									</div> 
-									<div class="reward_title">${rewardList.reward_title}</div>
-									
+									</div>
+									<div class="reward_title">일반 후원하기</div>
 									<form action="FundInProgress" method="get">
-										<div class="reward_item_wrap">
-											<c:forEach var="allRewardItems" items="${allRewardItems}">
-												<c:if test="${allRewardItems.reward_idx eq rewardList.reward_idx}">
-													<div class="reward_item">
-														<div class="reward_item_name">${allRewardItems.item_name}</div>
-														
-														<!-- 옵션이 있으면 셀렉박스 표출됨 -->
-														<div class="reward_item_option">
-															<c:choose>
-																<c:when test="${allRewardItems.item_condition eq '객관식'}">
-																	<select class="reward_item_option_select">
-																		<option disabled hidden selected value="">옵션을 선택해주세요.</option>
-																		<c:forEach var="itemOptions" items="${itemOptions}">
-																			<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
-																		</c:forEach>
-																	</select>
-																</c:when>
-																<c:otherwise>
-																	<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write" >
-																</c:otherwise>
-															</c:choose>
-														</div>
-													</div>
-												</c:if>
-											</c:forEach>
-										</div>
-										
-<%-- 										<input type="hidden" value="${project_detail.project_title}" name="project_title"> --%>
-<%-- 										<input type="hidden" value="${project_detail.project_code}" name="project_code"> --%>
 										<input type="hidden" value="${project_detail.pay_date}" name="project_payDate">
-										<input type="hidden" value="${rewardList.reward_title}" name="reward_title">
-										<input type="hidden" value="${rewardList.reward_price}" name="reward_price">
-										<input type="hidden" value="${project_detail.project_idx}" name="funding_project_idx" class="funding_project_idx">
-										<input type="hidden" value="${rewardList.reward_idx}" name="funding_reward_idx" id="funding_reward_idx">
-										<input type="hidden" value="" name="reward_option_title" class="reward_option_title">
-										<input type="hidden" value="" name="funding_item_option" class="funding_item_option"> <%-- | 로 구분해서 넣을거임 --%>
-										<input type="submit" value="결정했어요!" class="rewardSubmitBtn validate">
+										<input type="hidden" value="${project_detail.project_idx}" name="funding_project_idx">
+										<input type="hidden" value="0" name="funding_reward_idx">
+										<input type="hidden" value="일반 후원하기" name="reward_title">
+										<input type="hidden" value="1000" name="reward_price">
+			<!-- 									<input type="hidden" value="" name="funding_item_option" class="funding_item_option"> -->
+										<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
 									</form>
-									<div class="optionResult"></div>
 								</div>
-							</c:forEach>
+								
+								<c:forEach var="rewardList" items="${rewardList}">
+									<div class="reward">
+										<div class="reward_price"><fmt:formatNumber pattern="#,###">${rewardList.reward_price}</fmt:formatNumber>원
+											<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
+										</div> 
+										<div class="reward_title">${rewardList.reward_title}</div>
+										
+										<form action="FundInProgress" method="get">
+											<div class="reward_item_wrap">
+												<c:forEach var="allRewardItems" items="${allRewardItems}">
+													<c:if test="${allRewardItems.reward_idx eq rewardList.reward_idx}">
+														<div class="reward_item">
+															<div class="reward_item_name">${allRewardItems.item_name}</div>
+															
+															<!-- 옵션이 있으면 셀렉박스 표출됨 -->
+															<div class="reward_item_option">
+																<c:choose>
+																	<c:when test="${allRewardItems.item_condition eq '객관식'}">
+																		<select class="reward_item_option_select">
+																			<option disabled hidden selected value="">옵션을 선택해주세요.</option>
+																			<c:forEach var="itemOptions" items="${itemOptions}">
+																				<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
+																			</c:forEach>
+																		</select>
+																	</c:when>
+																	<c:otherwise>
+																		<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write" >
+																	</c:otherwise>
+																</c:choose>
+															</div>
+														</div>
+													</c:if>
+												</c:forEach>
+											</div>
+											
+			<%-- 										<input type="hidden" value="${project_detail.project_title}" name="project_title"> --%>
+			<%-- 										<input type="hidden" value="${project_detail.project_code}" name="project_code"> --%>
+											<input type="hidden" value="${project_detail.pay_date}" name="project_payDate">
+											<input type="hidden" value="${project_detail.project_idx}" name="funding_project_idx" class="funding_project_idx">
+											<input type="hidden" value="${rewardList.reward_idx}" name="funding_reward_idx" id="funding_reward_idx">
+											<input type="hidden" value="${rewardList.reward_title}" name="reward_title">
+											<input type="hidden" value="${rewardList.reward_price}" name="reward_price">
+											<input type="hidden" value="" name="reward_option_title" class="reward_option_title">
+											<input type="hidden" value="" name="funding_item_option" class="funding_item_option"> <%-- | 로 구분해서 넣을거임 --%>
+											<input type="submit" value="결정했어요!" class="rewardSubmitBtn validate">
+										</form>
+										<div class="optionResult"></div>
+									</div>
+								</c:forEach>
+							</div>
 						</div>
-					</div>
+					</c:if>
 				</div>
 			</section>
 		</div>
@@ -460,7 +470,6 @@
 				});
 				
 				$(".reward.on").find(".funding_item_option").val(options.join("|"));  // 옵션을 구분자 | 로 연결하여 hidden input에 설정
-// 				console.log($(".reward.on").find(".funding_item_option").val());
 			}
 			
 			

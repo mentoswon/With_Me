@@ -107,7 +107,15 @@ public interface UserFundingMapper {
 	int selectTotalFundAmtOfCreator(String creator_email);
 
 	// ========================================================================================================================
+	// 일반 후원 등록
+	int insertDefaultFunding(Map<String, Object> map);
+	
+	// 사용자 후원 등록
 	int insertUserFunding(Map<String, Object> map);
+
+	// 몇 번째 후원자인지 카운트
+	int selectFundCount(int user_funding_project_idx);
+
 
 
 

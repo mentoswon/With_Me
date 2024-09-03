@@ -7,7 +7,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>index</title>
+		<title>With_Me</title>
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/fund_in_progress.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -83,7 +83,7 @@
 							
 							<div id="amtWrapper">
 								<div><fmt:formatNumber pattern="#,###"> ${selectedReward.reward_price}</fmt:formatNumber>&nbsp;원</div>
-								<input type="hidden" name="UserFundingRewardIdx" id="UserFundingRewardIdx" value="${selectedReward.funding_reward_idx}">
+								<input type="hidden" name="user_funding_reward_idx" id="user_funding_reward_idx" value="${selectedReward.funding_reward_idx}">
 								<div class="moreAmt">
 									<span id="moreAmt"></span>
 								</div>
@@ -108,7 +108,11 @@
 				
 				<section class="con02">
 					<div class="addressInfo">
-						<h4>배송지</h4>
+						<h4>배송지
+							<c:if test="${selectedReward.reward_title eq '일반 후원하기'}">
+								<span id="addWarn">일반 후원의 경우 배송되는 물품이 없습니다.</span>
+							</c:if>
+						</h4>
 						<div class="AddAddressBtn">
 							<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
 							&nbsp;&nbsp;&nbsp; 배송지 추가
@@ -175,11 +179,21 @@
 				</section>
 				
 				<section class="con06">
-					<div class="payMethod">
-						<h4>결제 수단</h4>
+					<div class="pay">
+						<div class="payWrap">
+							<h4>결제 수단 </h4>
+							<div class="payMethod on">
+								카카오페이를 선택하셨습니다. 
+								즉시할인 신용카드 적용이 불가합니다.
+							</div>
+							<div class="payMethod">
+								신용/체크카드를 선택하셨습니다. 
+								즉시할인 신용카드 적용이 가능합니다.
+							</div>
+						</div>
 						<div class="infoWrapper">
 							<div>
-								<input type="radio" id="kakaoPay" name="payMethod" required>
+								<input type="radio" id="kakaoPay" name="payMethod" required checked>
 								<label for="kakaoPay"> 카카오페이</label>
 							</div>
 							<div>
@@ -191,17 +205,20 @@
 								<label for="accountTransfer"> 계좌이체</label>
 							</div>
 						</div>
+						<div>
+							
+						</div>
 					</div>
 				
-					<input type="hidden" name="UserFundingEmail" id="UserFundingEmail" value="">					<!-- 완) 후원자 email -->
-					<input type="hidden" name="UserFundingProjectIdx" id="UserFundingProjectIdx" value="">			<!-- 프로젝트 번호 -->
-					<input type="hidden" name="UserFundingItemOption" id="UserFundingItemOption" value="">			<!-- 아이템 옵션 | 로 구분-->
-					<input type="hidden" name="UserFundingCount" id="UserFundingCount" value="">					<!-- 후원 개수 => 우리는 1개 고정 -->
-		<!-- 			<input type="hidden" name="UserFundingRewardIdx" id="UserFundingRewardIdx" value=""> -->    <!-- 리워드 번호 => 위에서 넣음 -->
-					<input type="hidden" name="UserFundingAddressIdx" id="UserFundingAddressIdx" value="">			<!-- 배송지 번호 -->
-					<input type="hidden" name="UserFundingPlusAmt" id="UserFundingPlusAmt" value="">				<!-- 추가 후원금 -->
-					<input type="hidden" name="UserFundingPayAmt" id="UserFundingPayAmt" value="">                  <!-- 총액 -->
-					<input type="submit" id="UserFundingPayment" value="결제하기"> 
+					<input type="hidden" name="user_funding_email" id="user_funding_email" value="">					<!-- 완) 후원자 email -->
+					<input type="hidden" name="user_funding_project_idx" id="user_funding_project_idx" value="">			<!-- 프로젝트 번호 -->
+					<input type="hidden" name="user_funding_itemOption" id="user_funding_itemOption" value="">			<!-- 아이템 옵션 | 로 구분-->
+					<input type="hidden" name="user_funding_count" id="user_funding_count" value="">					<!-- 후원 개수 => 우리는 1개 고정 -->
+		<!-- 			<input type="hidden" name="user_funding_reward_idx" id="user_funding_reward_idx" value=""> -->    <!-- 리워드 번호 => 위에서 넣음 -->
+					<input type="hidden" name="user_funding_address_idx" id="user_funding_address_idx" value="">			<!-- 배송지 번호 -->
+					<input type="hidden" name="user_funding_plus_amt" id="user_funding_plus_amt" value="">				<!-- 추가 후원금 -->
+					<input type="hidden" name="user_funding_pay_amt" id="user_funding_pay_amt" value="">                  <!-- 총액 -->
+					<input type="submit" id="user_funding_payment" value="결제하기"> 
 				</section>
 			</form>
 			
@@ -308,20 +325,31 @@
 			// mem_email, project_code, reward_idx, item_option, funding_count
 			$(function (){
 				// 받아오면 바로 넣을 수 있는 것
-				$("#UserFundingEmail").val('${member.mem_email}'); 
-				$("#UserFundingProjectIdx").val('${selectedReward.funding_project_idx}');
-				$("#UserFundingItemOption").val('${selectedReward.funding_item_option}');
-				$("#UserFundingCount").val(1);
-// 				$("#UserFundingRewardIdx").val($("#reward_idx").val()); // 위에서 넣음
 				
+				// 후원자 email
+				$("#user_funding_email").val('${member.mem_email}'); 
+				
+				// project_idx
+				$("#user_funding_project_idx").val('${selectedReward.funding_project_idx}');
+				
+				// itemOption
+				let item_option = "${selectedReward.funding_item_option}";
+				
+				// funding_count
+				$("#user_funding_count").val(1);
+				
+				// reward_idx
+// 				$("#user_funding_reward_idx").val($("#reward_idx").val()); // 위에서 넣음
+
+				// address_idx
 				let addressIdx = $(".addressWrapper").data("address-idx");
-				$("#UserFundingAddressIdx").val(addressIdx);
+				$("#user_funding_address_idx").val(addressIdx);
 				
 				if($("#inputMoreAmt").val() == "") { // 페이지 로딩 됐을 때는 추가 후원금이 0이니까 0도 넣어주기
-					$("#UserFundingPlusAmt").val(0);
+					$("#user_funding_plus_amt").val(0);
 				}
 				
-				$("#UserFundingPayAmt").val('${selectedReward.reward_price}');
+				$("#user_funding_pay_amt").val('${selectedReward.reward_price}');
 				
 				// ------------------------------------------------------------------------------------
 			});
@@ -545,20 +573,20 @@
 				let rewardPrice = ${selectedReward.reward_price};
 				let totalAmt = rewardPrice + Number(moreMoneyAmt);
 				
-				totalAmt = totalAmt.toString();
-				// 1000단위 마다 , 찍기
-				moreMoneyAmt = moreMoneyAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-				totalAmt = totalAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-				
-				$("#moreAmt").text("추가 후원금 : " + moreMoneyAmt + " 원");
-				
 				if(moreMoneyAmt == ""){
 					$("#moreAmt").text("");
 				}
 				
 				// 결제 할 때 넘어갈 hidden 태그에 value 넣기
-				$("#UserFundingPlusAmt").val(moreMoneyAmt);
-				$("#UserFundingPayAmt").val(totalAmt);
+				$("#user_funding_plus_amt").val(moreMoneyAmt);
+				$("#user_funding_pay_amt").val(totalAmt);
+				
+				// 1000단위 마다 , 찍기
+				totalAmt = totalAmt.toString();
+				moreMoneyAmt = moreMoneyAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+				$("#moreAmt").text("추가 후원금 : " + moreMoneyAmt + " 원");
+				
+				totalAmt = totalAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 				$("#totalAmt").text("총액 : " + totalAmt + " 원");
 			});
 			
@@ -568,6 +596,26 @@
 				$(modal).removeClass("on");
 			});
 			
+			
+			// ==================================================================================
+			//결제 수단 목록
+			let payMethod = document.querySelectorAll(".payMethod");
+			
+			// 결제 수단 변경
+			
+			$("#kakaoPay").click(function() {
+				payMethod[0].classList.remove("on");
+				payMethod[1].classList.remove("on");
+				
+				payMethod[0].classList.add("on");
+			});
+			
+			$("#creditCard").click(function() {
+				payMethod[0].classList.remove("on");
+				payMethod[1].classList.remove("on");
+				
+				payMethod[1].classList.add("on");
+			});
 			
 		</script>
 	</body>

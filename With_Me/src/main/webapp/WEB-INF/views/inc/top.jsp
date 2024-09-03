@@ -70,7 +70,7 @@
 	}
 	
 	$(function (){
-		$(". storeBtn").on('click', function StoreList() {
+		$(".storeBtn").on('click', function StoreList() {
 	   		StoreList('푸드', '');
 		});
 	});

@@ -174,10 +174,21 @@ public class UserFundingService {
 	}
 
 	// ====================================================================================
+	// 일반 후원 등록
+	public int registDefaultFunding(Map<String, Object> map) {
+		return mapper.insertDefaultFunding(map);
+	}
+	
 	// 사용자 펀딩 등록
 	public int registUserFunding(Map<String, Object> map) {
 		return mapper.insertUserFunding(map);
 	}
+
+	// 몇 번째 후원자인지 카운트
+	public int getFundCount(int user_funding_project_idx) {
+		return mapper.selectFundCount(user_funding_project_idx);
+	}
+
 
 
 

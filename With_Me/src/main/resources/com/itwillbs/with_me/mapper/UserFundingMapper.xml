@@ -370,20 +370,43 @@
 	</select>
 	
 	<!--  ============================================================================================  -->
+	<!-- 일반 후원 등록 -->
+	<insert id="insertDefaultFunding">
+		INSERT INTO funding_user
+		VALUES (
+			null
+			, #{user_funding_email}
+			, #{user_funding_project_idx}
+			, null
+			, '없음'
+			, #{user_funding_count}
+			, #{user_funding_address_idx}
+			, #{user_funding_plus_amt}
+			, #{user_funding_pay_amt}
+		)
+	</insert>
+	
 	<!-- 사용자 펀딩 등록 -->
 	<insert id="insertUserFunding">
 		INSERT INTO funding_user
 		VALUES (
 			null
-			, #{UserFundingEmail}
-			, #{UserFundingProjectIdx}
-			, #{UserFundingRewardIdx}
-			, #{UserFundingItemOption}
-			, #{UserFundingCount}
-			, #{UserFundingAddressIdx}
-			, #{UserFundingPlusAmt}
-			, #{UserFundingPayAmt}
+			, #{user_funding_email}
+			, #{user_funding_project_idx}
+			, #{user_funding_rewardIdx}
+			, #{user_funding_itemOption}
+			, #{user_funding_count}
+			, #{user_funding_address_idx}
+			, #{user_funding_plus_amt}
+			, #{user_funding_pay_amt}
 		)
 		
 	</insert>
+	
+	<!-- 몇 번째 후원자인지 카운트 -->
+	<select id="selectFundCount" resultType="int">
+		SELECT COUNT(funding_project_idx)
+		FROM funding_user
+		WHERE funding_project_idx =#{user_funding_project_idx};	
+	</select>
 </mapper>

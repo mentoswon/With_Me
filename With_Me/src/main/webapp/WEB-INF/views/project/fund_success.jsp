@@ -10,9 +10,30 @@
 		<title>With_Me</title>
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
-		<script type="text/javascript">
+		<style type="text/css">
+			section {
+				margin: 60px auto;
+				width: 60%;
+			}
 			
-		</script>
+			.inner .con01 h2 {
+				text-align: center;
+				margin-bottom: 20px;
+			}	
+			
+			.inner .con01 h2 span {
+				color: #ffab40;
+				
+			}
+			
+			.inner .con01 p {
+				text-align: center;
+			}
+			
+			.inner .con01 p a{
+				text-decoration: underline;
+			}
+		</style>
 	</head>
 	<body>
 		<header>
@@ -20,8 +41,11 @@
 		</header>
 		
 		<div class="inner">
-			<h2>감사합니다 !</h2>
 			<section class="con01">
+				<h2>축하합니다 ! </h2>
+				<h2><span>${param.FundMemCount}번째</span> 후원자가 돼셨습니다 !</h2>
+				
+				<p>후원내역은 <a href="">마이페이지</a> 에서 확인 가능합니다.
 			</section>
 		</div>
 		
