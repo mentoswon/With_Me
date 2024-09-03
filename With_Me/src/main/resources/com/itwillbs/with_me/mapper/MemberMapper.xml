@@ -149,20 +149,27 @@
 <!-- 		WHERE f.follow_mem_email = #{follow_mem_email} -->
 <!-- 	</select> -->
 	
-		<!--  -->
-<!-- 	<select id="selectFollow" resultType="follow"> -->
-<!-- 		SELECT * -->
-<!-- 		FROM follow -->
-<!-- 	</select> -->
+	<!-- 창작자에 등록되어있는지(상대방 마이페이지) -->
+	<select id="selectCreatorName" resultType="String">
+	    SELECT creator_name
+	    FROM creator_info
+	    WHERE creator_email = #{creatorEmail}
+	</select>
 	
-	<!-- 마이페이지에서 프로필 사진 삭제 -->
-	<update id="deleteProfileDelete">
-		UPDATE creator_info
-		SET
-			creator_image = CASE WHEN creator_image = #{creator_image} THEN '' ELSE creator_image END,
-		WHERE 
-			mem_idx = #{mem_idx}
-	</update>
+	<!-- 상대방 마이페이지(창작자가 아닌 경우) -->
+	<select id="selectMemberInfo" resultType="member">
+	    SELECT *
+	    FROM member
+	    WHERE mem_email = #{mem_email}
+	</select>
+	
+	<!-- 상대방 마이페이지(창작자인 경우) -->
+	<select id="selectOtherCreatorInfo" resultType="creator">
+	    SELECT creator_idx, creator_email, creator_name, creator_image, creator_introduce, phone_auth_status
+	    FROM creator_info
+	    WHERE creator_email = #{mem_email}
+	</select>
+	
 	
 	<!-- =========================================================== -->
 	<!-- 회원 아이디 조회(채팅) -->
@@ -171,7 +178,6 @@
 		FROM member
 		WHERE mem_email = #{receiver_id}
 	</select>
-	
 	
 	<!-- ==================================================== -->
 	<!-- 회원가입 시 배송지 등록 -->
@@ -189,6 +195,7 @@
 			, default		
 		)
 	</insert>
+	
 </mapper>
 
 

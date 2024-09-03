@@ -73,14 +73,29 @@ public interface MemberMapper {
 	// 회원 아이디 조회(채팅용)
 	String selectMemberId(String receiver_id);
 
+	// 마이페이지(기본정보 수정)
+	int updateMember(Map<String, String> map);
+
+	// 팔로우나 프로젝트 리스트에서 들어가는 마이페이지
+	String selectCreatorName(String creatorEmail);
+	
+	// 상대방 마이페이지(창작자가 아닌 경우)
+	MemberVO selectMemberInfo(String creatorEmail);
+	
+	// 상대방 마이페이지(창작자인 경우)
+	CreatorVO selectOtherCreatorInfo(String creatorEmail);
+	
+	
 	
 	// ===============================================
 	// 회원 가입 시 기본 배송지 등록
 	void insertTransAddress(@Param("address_mem_email")String address_mem_email, 
-							@Param("address_receiver_name")	String address_receiver_name, 
-							@Param("address_post_code") String address_post_code,
-							@Param("address_main") String address_main, 
-							@Param("address_sub") String address_sub, 
-							@Param("address_receiver_tel")String address_receiver_tel);
+			@Param("address_receiver_name")	String address_receiver_name, 
+			@Param("address_post_code") String address_post_code,
+			@Param("address_main") String address_main, 
+			@Param("address_sub") String address_sub, 
+			@Param("address_receiver_tel")String address_receiver_tel);
+
+
 
 }

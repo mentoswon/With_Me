@@ -86,8 +86,8 @@ public class MemberService {
 		return mapper.selectMember();
 	}
 
-	// 이메일로 창작자이름 조회
-	public CreatorVO getCreatorName(MemberVO member) {
+	// 이메일로 창작자정보 조회
+	public CreatorVO getCreatorInfo(MemberVO member) {
 		return mapper.selectCreator(member);
 	}
 
@@ -131,20 +131,40 @@ public class MemberService {
 		return mapper.deleteProfileDelete(map);
 	}
 
+	// 마이페이지(기본정보 수정)
+	public int modifyMember(Map<String, String> map) {
+		return mapper.updateMember(map);
+	}
+	
+	// 팔로우나 프로젝트 리스트에서 들어가는 마이페이지 들어가기 위해 창작자 이름 가져오기
+	public String getCreatorName(String creatorEmail) {
+		return mapper.selectCreatorName(creatorEmail);
+	}
+
+	// 상대방 마이페이지(창작자가 아닌 경우)
+	public MemberVO getMemberInfo(String creatorEmail) {
+		return mapper.selectMemberInfo(creatorEmail);
+	}
+	
+	// 상대방 마이페이지(창작자인 경우)
+	public CreatorVO getOtherCreatorInfo(String creatorEmail) {
+		return mapper.selectOtherCreatorInfo(creatorEmail);
+	}
+	
+	
+	
 	// ========================================
 	// 회원 아이디 조회(채팅용)
 	public String getMemberId(String receiver_id) {
 		return mapper.selectMemberId(receiver_id);
 	}
-
-	
 	// ================================================
 	// 회원 가입 시 배송지 등록
 	public void registTransAddress(String address_mem_email, String address_receiver_name, String address_post_code,
 			String address_main, String address_sub, String address_receiver_tel) {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 	}
-	
+
 }
 
 

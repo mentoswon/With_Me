@@ -156,7 +156,7 @@
 			<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 										</div>
 										<div class="item_info">
-											<h4><a href="MemberInfo?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
+											<h4><a href="OtherMemberInfo?creator_email=${project.creator_email}">${project.creator_name}</a></h4>
 											<h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
 										</div>
 										

@@ -372,14 +372,12 @@ public class MemberController {
 	@GetMapping("MemberInfo")
 	public String memberInfo(MemberVO member, Model model, HttpSession session, ProjectVO project,
 							@RequestParam(defaultValue = "1") int pageNum) {
+		
 		String id = (String)session.getAttribute("sId");
-//		System.out.println("id : !!!!!!!!" + id);
-		// 미로그인 시 로그인 페이지로 이동
-		if(id == null) {
-			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
-			model.addAttribute("targetURL", "MemberLogin");
-			return "result/fail";
-		}
+		member.setMem_email(id);
+		member = service.getMember(member);
+		
+		System.out.println("member : !!!!!!!!!! " + member);
 		
 		// 한 페이지에서 표시할 글 목록 개수 지정 (jsp 에서 가져옴)
 		int listLimit = 8;
@@ -442,13 +440,111 @@ public class MemberController {
 			return "result/fail";
 		}
 		
-		member.setMem_email(id);
-		member = service.getMember(member);
-//		System.out.println("member : !!!!!!!!!!" + member);
+		// --------------------------------------------------------------------
+		// 프로젝트 목록 표출하기
+		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
+		// 팔로우 목록 나타내기
+		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit);
+		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
+//		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
 		
-//		FollowVO follow = service.getFollow();
-//		System.out.println("follow : !!!!!!!!!!" + follow);
+//		System.out.println("projectList : " + projectList);
+		System.out.println("followList : " + followList);
+//		System.out.println("followerCount : " + followerCount);
 		
+		// --------------------------------------------------------------------
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+		PageInfo followPageInfo = new PageInfo(listCount, pageListLimit, followListMaxPage, startPage, endPage);
+		// --------------------------------------------------------------------
+		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("projectList", projectList);
+		
+		model.addAttribute("followList", followList);
+		model.addAttribute("followPageInfo", followPageInfo);
+//		model.addAttribute("followerCount", followerCount);
+		
+		// 나의 마이페이지 들어갈 때 필요한 크리에이터 정보 세션 아이디로 들어감
+		// 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자정보 가져오기
+		CreatorVO creatorInfo = service.getCreatorInfo(member);
+		
+		// ====================================================
+		// 마이페이지로 들어가는게 아닌 팔로우나 프로젝트 리스트에서 들어가서
+		// 상대방의 마이페이지로 들어가는 상황일 경우
+		
+		String mem_email = member.getMem_email();
+		
+		System.out.println("mem_email : !!!!!!!!!!!! " + mem_email);
+		
+		// 창작자가 아닌 사람의 경우 멤버 테이블을 사용하기 위해서 member테이블값 가져오기
+		MemberVO memberInfo = service.getMember(member);
+//		// 팔로워 값 들고오기
+//		List<FollowVO> followInfo = service.getFollower(member);
+		
+		
+		System.out.println("creatorInfo : " + creatorInfo);
+	    System.out.println("memberInfo : " + memberInfo);
+	    
+	    model.addAttribute("creatorInfo", creatorInfo);
+	    model.addAttribute("memberInfo", memberInfo);
+	    
+		return "mypage/mypage";
+	}
+	
+	// 마이페이지(창작자 정보)
+	@GetMapping("OtherMemberInfo")
+	public String otherMemberInfo(MemberVO member, Model model, HttpSession session, ProjectVO project, String creator_email, CreatorVO creator,
+							@RequestParam(defaultValue = "1") int pageNum) {
+		
+		// 한 페이지에서 표시할 글 목록 개수 지정 (jsp 에서 가져옴)
+		int listLimit = 8;
+		// 조회 시작 행 번호 계산
+		int startRow = (pageNum - 1) * listLimit;
+		// --------------------------------------------------------------------
+		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
+		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
+		int listCount = service.getProjectListCount();
+		int followListCount = service.getFollowListCount();
+		
+		System.out.println("listCount : " + listCount);
+		System.out.println("followListCount : " + followListCount);
+		
+		int pageListLimit = 3;
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int followListMaxPage = followListCount / listLimit + (followListCount % listLimit > 0 ? 1 : 0);
+		int startPage = (pageNum -1) / pageListLimit * pageListLimit + 1;
+		int endPage = startPage + pageListLimit - 1;
+		
+		// 수정 !! 검색 결과가 없을 때 해당페이지는 존재하지 않습니다가 뜨는 경우를 위해 
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0이면 1로 변경
+		if(maxPage == 0) {
+			maxPage = 1;
+		}
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		// ------------------------------------
+		if(followListMaxPage == 0) {
+			followListMaxPage = 1;
+		}
+		if(endPage > followListMaxPage) {
+			endPage = followListMaxPage;
+		}
+		
+		// 전달받은 페이지 번호가 1보다 작거나 최대 번호보다 클 경우
+		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
+		if(pageNum < 1 || pageNum > maxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "ProjectList");
+			
+			return "result/fail";
+		}
+		// ---------------------------------------------------------
+		if(pageNum < 1 || pageNum > followListMaxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "ProjectList");
+			
+			return "result/fail";
+		}
 		
 		// --------------------------------------------------------------------
 		// 프로젝트 목록 표출하기
@@ -473,34 +569,67 @@ public class MemberController {
 		model.addAttribute("followPageInfo", followPageInfo);
 //		model.addAttribute("followerCount", followerCount);
 		
+		// ====================================================
+		// 마이페이지로 들어가는게 아닌 팔로우나 프로젝트 리스트에서 들어가서
+		// 상대방의 마이페이지로 들어가는 상황일 경우
+		
+		String creatorEmail = creator.getCreator_email();
+//		System.out.println("creatorEmail : !!!!!!!!!!!! " + creatorEmail);
+		
+		// 이메일로 창작자 이름 들고오기
+		String creatorName = service.getCreatorName(creatorEmail);
+		System.out.println("creatorName !!!!!!!: " + creatorName);
+		model.addAttribute("creatorName", creatorName);
 		
 		
-		// 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자 이름 가져오기
-		CreatorVO creatorInfo = service.getCreatorName(member);
-		// 창작자가 아닌 사람의 경우 멤버 테이블을 사용하기 위해서 member테이블값 가져오기
-		MemberVO memberInfo = service.getMember(member);
-//		// 팔로워 값 들고오기
-//		List<FollowVO> followInfo = service.getFollower(member);
-		
-		
-//		System.out.println("creatorInfo : " + creatorInfo);
-//	    System.out.println("memberInfo : " + memberInfo);
+		// 창작자 이름이 없다면 member정보를 마이페이지에 뿌림
+	    if(creatorName == null) {
+	        MemberVO notCreatorMember= service.getMemberInfo(creatorEmail);
+	            
+	        System.out.println("창작자 아닌 사람 정보 : " + notCreatorMember);
+	        model.addAttribute("notCreatorMember", notCreatorMember);
+	        
+	    // 창작자 이름이 있다면 크리에이터 정보를 마이페이지에 뿌림
+	    } else {
+	    	CreatorVO otherCreatorInfo = service.getOtherCreatorInfo(creatorEmail);
+	            
+	        System.out.println("창작자 맞는 사람 정보 : " + otherCreatorInfo);
+	        model.addAttribute("otherCreatorInfo", otherCreatorInfo);
+	    }
 	    
-	    model.addAttribute("creatorInfo", creatorInfo);
-	    model.addAttribute("memberInfo", memberInfo);
-	    
-		return "mypage/mypage";
+		return "mypage/other_mypage";
 	}
 	
 	// 마이페이지(개인정보)
 	@GetMapping("MypageInfo")
-	public String mypageInfo(@RequestParam Map<String, String> map, MemberVO member, Model model, HttpSession session, BCryptPasswordEncoder passwordEncoder) {
+	public String mypageInfo(HttpSession session, Model model, MemberVO member) {
 		
 		String id = (String)session.getAttribute("sId");
 		
+		if(id == null) { // 세션 아이디가 아닌 경우 튕기게 하는건 시크릿모드에서 주소를 그대로 입력하는것으로 확인 가능
+			model.addAttribute("msg", "로그인 필수!");
+			model.addAttribute("targetURL", "MemberLogin"); // targetURL = ""이면 history.back() / targetURL = href이면 해당 href로 이동(fail.jsp에서 확인가능)
+	
+			return "result/fail";
+		}
+		
 		member.setMem_email(id);
 		member = service.getMember(member);
-//		System.out.println("member !!!!!!!!!!!! : " + member);
+		
+		model.addAttribute("member", member);
+		
+		return "mypage/mypage_info";
+	}
+	
+	// 마이페이지(개인정보) 수정
+	@GetMapping("MyPageInfoModify")
+	public String myPageInfoModify(@RequestParam Map<String, String> map, MemberVO member, BCryptPasswordEncoder passwordEncoder, Model model) {
+		
+//		String id = (String)session.getAttribute("sId");
+//		
+//		member.setMem_email(id);
+		member = service.getMember(member);
+		System.out.println("member !!!!!!!!!!!! : " + member);
 //		model.addAttribute("member", member);
 		
 		if(!passwordEncoder.matches(map.get("oldPasswd"), member.getMem_passwd())) { // 패스워드 불일치시
@@ -514,69 +643,17 @@ public class MemberController {
 			map.put("passwd", passwordEncoder.encode(map.get("passwd")));
 		}
 		
+		// 개인정보 수정
+		int updateCount = service.modifyMember(map);
 		
-		
-		
-		
-		
-		CreatorVO creatorInfo = service.getCreatorName(member);
-		model.addAttribute("creatorInfo", creatorInfo);
-		
-		MemberVO memberInfo = service.getMember(member);
-//		System.out.println("memberInfo !!!!!!!!!!!! : " + memberInfo);
-		model.addAttribute("memberInfo", memberInfo);
-		
-		// 뷰페이지에서 파일 목록의 효율적 처리를 위해 파일명만 별도로 List 객체에 저장
-		List<String> fileList = new ArrayList<String>();
-		fileList.add(creatorInfo.getCreator_image());
-		
-		// List 객체를 반복하면서 파일명에서 원본 파일명을 추출
-		List<String> originalFileList = new ArrayList<String>();
-		for(String file : fileList) {
-			if(!file.equals("")) {
-				// "_" 기호 다음(해당 인덱스값 + 1)부터 끝까지 추출하여 리스트에 추가
-				originalFileList.add(file.substring(file.indexOf("_") + 1));
-			}
+		if(updateCount > 0) {
+			model.addAttribute("msg", "회원정보 수정 성공!");
+			model.addAttribute("targetURL", "MypageInfo");
+			return "result/success";
+		} else {
+			model.addAttribute("msg", "회원정보 수정 실패!");
+			return "result/fail";
 		}
-		
-		// Model 객체에 파일 목록 저장
-		model.addAttribute("fileList", fileList);
-		model.addAttribute("originalFileList", originalFileList);
-		
-		return "mypage/mypage_info2";
-	}
-	
-	// 프로필 사진 삭제
-	@GetMapping("CreatorProfileDelete")
-	public String creatorProfileDelete(@RequestParam Map<String, String> map, HttpSession session) throws Exception {
-		
-		System.out.println("map : " + map);
-		
-		int deleteCount = service.removeProfileDelete(map);
-		
-		if(deleteCount > 0) {
-			// 실제 업로드 경로 알아내기
-			String realPath = session.getServletContext().getRealPath(uploadPath);
-			
-			// 전송된 파일명이 널스트링("") 아닐 경우 파일 삭제 처리
-			if(!map.get("creator_image").equals("")) {
-				// 업로드 경로와 파일명(서브디렉토리 경로 포함) 결합해서 Path 객체 생성
-				Path path = Paths.get(realPath, map.get("creator_image"));
-				// 파일 삭제
-				Files.deleteIfExists(path);
-			}
-			
-		}
-		
-		return "redirect:/MypageInfo?member_idx=" + map.get("mem_idx") + "&pageNum=" + map.get("pageNum");
-	}
-	
-	// 마이페이지(개인정보) 수정
-	@GetMapping("MyPageInfoModify")
-	public String myPageInfoModify(
-			MemberVO member, @RequestParam(defaultValue = "1") String pageNum,
-			HttpSession session, Model model) throws Exception {
-		return "";
 	}
 	
 }
