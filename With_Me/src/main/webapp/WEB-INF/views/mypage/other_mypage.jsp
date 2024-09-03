@@ -127,14 +127,16 @@ $(function() {
 			<div id="projectInfoWrap">
 				<div id="MypageMenuTop">
 					<div style="text-align: center; display: flex;">
-						<c:choose>
-					        <c:when test="${not empty creatorName}">
-					            <h3>${otherCreatorInfo.creator_name}</h3>
-					        </c:when>
-					        <c:otherwise>
-					            <h3>${notCreatorMember.mem_name}</h3>
-					        </c:otherwise>
-					    </c:choose>
+						<c:forEach var="creator" items="${creatorInfo}">
+							<c:choose>
+						        <c:when test="${not empty creatorName}">
+						            <h3>${creator.creator_name}</h3>
+						        </c:when>
+						        <c:otherwise>
+						            <h3>${notCreatorMember.mem_name}</h3>
+						        </c:otherwise>
+						    </c:choose>
+						</c:forEach>
 					</div>
 				</div>
 			</div>
@@ -170,14 +172,16 @@ $(function() {
 			<div id="writeContainer1" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-					    <c:choose>
-					        <c:when test="${not empty creatorName}">
-					            <p>${otherCreatorInfo.creator_introduce}</p>
-					        </c:when>
-					        <c:otherwise>
-					            <p>등록된 소개가 없습니다.</p>
-					        </c:otherwise>
-					    </c:choose>
+						<c:forEach var="creator" items="${creatorInfo}">
+						    <c:choose>
+						        <c:when test="${not empty creatorName}">
+						            <p>${creator.creator_introduce}</p>
+						        </c:when>
+						        <c:otherwise>
+						            <p>등록된 소개가 없습니다.</p>
+						        </c:otherwise>
+						    </c:choose>
+						</c:forEach>
 					</div>
 				</div>
 			</div>
@@ -205,9 +209,10 @@ $(function() {
 						                <c:set var="now" value="<%=new java.util.Date()%>" />
 						                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
 						
+						                <c:forEach var="creator" items="${creatorInfo}">
 						                <c:forEach var="project" items="${projectList}">
 						                    <c:choose>
-						                        <c:when test="${project.creator_idx eq creatorInfo.creator_idx && project.funding_end_date > today}">
+						                        <c:when test="${project.creator_idx eq creator.creator_idx && project.funding_end_date > today}">
 						                            <c:set var="hasValidProject" value="true" />
 						                            <div class="item">
 						                                <div class="item_image">
@@ -255,6 +260,7 @@ $(function() {
 						                            </div>
 						                        </c:when>
 						                    </c:choose>
+						                </c:forEach>
 						                </c:forEach>
 						            </div>
 						        </div>
@@ -313,35 +319,38 @@ $(function() {
 						<section id="articleForm">
 							<div align="center">
 								<section id="listForm">
-									<table border="1">
-										<tr id="tr_top">
-											<td>프로필</td>
-											<td>창작자 이름</td>
-											<td>해당창작자 정보</td>
-										</tr>
-				
-										<c:set var="pageNum" value="1" />
-										<c:if test="${not empty param.pageNum}">
-											<c:set var="pageNum" value="${param.pageNum}" />
-										</c:if>
-										<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
-										<c:forEach var="follow" items="${followList}">
-											<tr>
-												<td>
-													<img
-													src="${pageContext.request.contextPath}/resources/upload/${follow.creator_image}"
-													id="img1" selected>
-												</td>
-												<td>
-													<input type="button" value="${follow.creator_name}" onclick="location.href='MemberInfo?creator_name='${follow.creator_name}">
-												</td>
-												<td>
-												<input type="button" value="답변"
-													onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
-													</td>
-											</tr>
-										</c:forEach>
-									</table>
+									<c:if test="${not empty followList}">
+										<c:set var="hasValidProject" value="false" />
+											<table border="1">
+												<tr id="tr_top">
+													<td>프로필</td>
+													<td>창작자 이름</td>
+													<td>해당창작자 정보</td>
+												</tr>
+						
+												<c:set var="pageNum" value="1" />
+												<c:if test="${not empty param.pageNum}">
+													<c:set var="pageNum" value="${param.pageNum}" />
+												</c:if>
+												<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
+												<c:forEach var="follow" items="${followList}">
+													<tr>
+														<td>
+															<img
+															src="${pageContext.request.contextPath}/resources/upload/${follow.creator_image}"
+															id="img1" selected>
+														</td>
+														<td>
+															<input type="button" value="${follow.creator_name}" onclick="location.href='MemberInfo?creator_name='${follow.creator_name}">
+														</td>
+														<td>
+														<input type="button" value="답변"
+															onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+															</td>
+													</tr>
+												</c:forEach>
+											</table>
+									</c:if>	
 								</section>
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>

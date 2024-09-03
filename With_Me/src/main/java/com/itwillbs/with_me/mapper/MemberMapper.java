@@ -44,7 +44,7 @@ public interface MemberMapper {
 	List<MemberVO> selectMember();
 
 	// 이메일로 창작자 조회
-	CreatorVO selectCreator(MemberVO member);
+	List<CreatorVO> selectCreator(MemberVO member);
 
 	// 프로젝트 리스트 개수 조회
 	int selectProjectListCount();
@@ -52,20 +52,23 @@ public interface MemberMapper {
 	// 프로젝트 리스트
 	List<Map<String, Object>> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
 
-//	// 팔로워 값 가져오기
-//	List<FollowVO> selectFollower(MemberVO member);
-
 	// 팔로우 리스트 개수 조회
 	int selectFollowListCount();
 
-	// 팔로우 리스트 조회
-	List<Map<String, Object>> selectFollowList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
+	// 내 마이페이지에서 팔로우 리스트 조회
+	List<Map<String, Object>> selectFollowList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("member") MemberVO member);
+	
+	// 상대방 마이페이지에서 팔로우 리스트 조회
+	List<Map<String, Object>> selectOtherFollowList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("memEmail") List<MemberVO> memEmail);
 
 	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
-	List<FollowVO> selectFollowerCount(List<FollowVO> followerCount);
-
-	// 팔로우값 가져오기
-	FollowVO selectFollow();
+//	List<FollowVO> selectFollowerCount(List<FollowVO> followerCount);
 
 	// 프로필 사진 삭제
 	int deleteProfileDelete(Map<String, String> map);
@@ -83,7 +86,7 @@ public interface MemberMapper {
 	MemberVO selectMemberInfo(String creatorEmail);
 	
 	// 상대방 마이페이지(창작자인 경우)
-	CreatorVO selectOtherCreatorInfo(String creatorEmail);
+	List<CreatorVO> selectOtherCreatorInfo(String creatorEmail);
 	
 	
 	
@@ -95,6 +98,9 @@ public interface MemberMapper {
 			@Param("address_main") String address_main, 
 			@Param("address_sub") String address_sub, 
 			@Param("address_receiver_tel")String address_receiver_tel);
+
+	// creator_email 들고와서 mem_email값 가져오기
+	List<MemberVO> selectMemEmail(String creatorEmail);
 
 
 

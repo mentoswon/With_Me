@@ -373,11 +373,6 @@ public class MemberController {
 	public String memberInfo(MemberVO member, Model model, HttpSession session, ProjectVO project,
 							@RequestParam(defaultValue = "1") int pageNum) {
 		
-		String id = (String)session.getAttribute("sId");
-		member.setMem_email(id);
-		member = service.getMember(member);
-		
-		System.out.println("member : !!!!!!!!!! " + member);
 		
 		// 한 페이지에서 표시할 글 목록 개수 지정 (jsp 에서 가져옴)
 		int listLimit = 8;
@@ -440,11 +435,17 @@ public class MemberController {
 			return "result/fail";
 		}
 		
+		String id = (String)session.getAttribute("sId");
+		member.setMem_email(id);
+		member = service.getMember(member);
+		
+		System.out.println("member : !!!!!!!!!! " + member);
+		
 		// --------------------------------------------------------------------
 		// 프로젝트 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
 		// 팔로우 목록 나타내기
-		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit);
+		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit, member);
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
 		
@@ -465,7 +466,7 @@ public class MemberController {
 		
 		// 나의 마이페이지 들어갈 때 필요한 크리에이터 정보 세션 아이디로 들어감
 		// 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자정보 가져오기
-		CreatorVO creatorInfo = service.getCreatorInfo(member);
+		List<CreatorVO> creatorInfo = service.getCreatorInfo(member);
 		
 		// ====================================================
 		// 마이페이지로 들어가는게 아닌 팔로우나 프로젝트 리스트에서 들어가서
@@ -481,7 +482,7 @@ public class MemberController {
 //		List<FollowVO> followInfo = service.getFollower(member);
 		
 		
-		System.out.println("creatorInfo : " + creatorInfo);
+		System.out.println("creatorInfo!!!!!!!!! : " + creatorInfo);
 	    System.out.println("memberInfo : " + memberInfo);
 	    
 	    model.addAttribute("creatorInfo", creatorInfo);
@@ -490,7 +491,7 @@ public class MemberController {
 		return "mypage/mypage";
 	}
 	
-	// 마이페이지(창작자 정보)
+	// 다른사람 마이페이지(창작자 정보)
 	@GetMapping("OtherMemberInfo")
 	public String otherMemberInfo(MemberVO member, Model model, HttpSession session, ProjectVO project, String creator_email, CreatorVO creator,
 							@RequestParam(defaultValue = "1") int pageNum) {
@@ -549,12 +550,30 @@ public class MemberController {
 		// --------------------------------------------------------------------
 		// 프로젝트 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
+		
+//		String memEmail = member.getMem_email();
+		String creatorEmail = creator.getCreator_email();
+		
+		// 크리에이터 이메일이랑 조인해서 mem_email 들고오기
+		List<MemberVO> memEmail = service.getMemEmail(creatorEmail);
+		System.out.println("memEmail !!!!!!!!!! : " + memEmail);
+		
 		// 팔로우 목록 나타내기
-		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit);
+		List<Map<String, Object>> followList = service.getOtherFollowtList(startRow, listLimit, memEmail);
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
 		
-//		System.out.println("projectList : " + projectList);
+		
+//		System.out.println("creatorEmail : !!!!!!!!!!!! " + creatorEmail);
+		
+		// 팔로우, 좋아요는 창작자이거나 아니거나 다 볼 수 있어야 하기 때문에
+		// mem_email을 들고와서 비교를 해야 값을 들고올 수 있다.
+		List<CreatorVO> creatorInfo = service.getOtherCreatorInfo(creatorEmail);
+		System.out.println("creatorInfo : " + creatorInfo);
+		model.addAttribute("creatorInfo", creatorInfo);
+		
+		
+		System.out.println("projectList : " + projectList);
 		System.out.println("followList : " + followList);
 //		System.out.println("followerCount : " + followerCount);
 		
@@ -573,8 +592,6 @@ public class MemberController {
 		// 마이페이지로 들어가는게 아닌 팔로우나 프로젝트 리스트에서 들어가서
 		// 상대방의 마이페이지로 들어가는 상황일 경우
 		
-		String creatorEmail = creator.getCreator_email();
-//		System.out.println("creatorEmail : !!!!!!!!!!!! " + creatorEmail);
 		
 		// 이메일로 창작자 이름 들고오기
 		String creatorName = service.getCreatorName(creatorEmail);
@@ -591,10 +608,9 @@ public class MemberController {
 	        
 	    // 창작자 이름이 있다면 크리에이터 정보를 마이페이지에 뿌림
 	    } else {
-	    	CreatorVO otherCreatorInfo = service.getOtherCreatorInfo(creatorEmail);
-	            
-	        System.out.println("창작자 맞는 사람 정보 : " + otherCreatorInfo);
-	        model.addAttribute("otherCreatorInfo", otherCreatorInfo);
+	        // 위에서 만든 creatorInfo를 들고와서 창작자가 맞다면 크리에이터 정보를 뿌림
+	        System.out.println("창작자 맞는 사람 정보 : " + creatorInfo);
+	        model.addAttribute("creatorInfo", creatorInfo);
 	    }
 	    
 		return "mypage/other_mypage";

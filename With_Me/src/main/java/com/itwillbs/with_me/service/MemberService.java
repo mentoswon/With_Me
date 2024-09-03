@@ -87,7 +87,7 @@ public class MemberService {
 	}
 
 	// 이메일로 창작자정보 조회
-	public CreatorVO getCreatorInfo(MemberVO member) {
+	public List<CreatorVO> getCreatorInfo(MemberVO member) {
 		return mapper.selectCreator(member);
 	}
 
@@ -111,20 +111,20 @@ public class MemberService {
 		return mapper.selectFollowListCount();
 	}
 
-	// 팔로우 리스트 가져오기
-	public List<Map<String, Object>> getFollowtList(int startRow, int listLimit) {
-		return mapper.selectFollowList(startRow, listLimit);
+	// 내 마이페이지에서 팔로우 리스트 가져오기
+	public List<Map<String, Object>> getFollowtList(int startRow, int listLimit, MemberVO member) {
+		return mapper.selectFollowList(startRow, listLimit, member);
+	}
+	
+	// 상대방 마이페이지에서 팔로우 리스트 가져오기
+	public List<Map<String, Object>> getOtherFollowtList(int startRow, int listLimit, List<MemberVO> memEmail) {
+		return mapper.selectOtherFollowList(startRow, listLimit, memEmail);
 	}
 
 	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
-	public List<FollowVO> getFollowerCount(List<FollowVO> followerCount) {
-		return mapper.selectFollowerCount(followerCount);
-	}
-
-	// 팔로우 값 가져오기
-	public FollowVO getFollow() {
-		return mapper.selectFollow();
-	}
+//	public List<FollowVO> getFollowerCount(List<FollowVO> followerCount) {
+//		return mapper.selectFollowerCount(followerCount);
+//	}
 
 	// 프로필 사진 삭제
 	public int removeProfileDelete(Map<String, String> map) {
@@ -147,7 +147,7 @@ public class MemberService {
 	}
 	
 	// 상대방 마이페이지(창작자인 경우)
-	public CreatorVO getOtherCreatorInfo(String creatorEmail) {
+	public List<CreatorVO> getOtherCreatorInfo(String creatorEmail) {
 		return mapper.selectOtherCreatorInfo(creatorEmail);
 	}
 	
@@ -163,6 +163,11 @@ public class MemberService {
 	public void registTransAddress(String address_mem_email, String address_receiver_name, String address_post_code,
 			String address_main, String address_sub, String address_receiver_tel) {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
+	}
+
+	// 크리에이터 이메일 들고와서 mem_email 들고오기
+	public List<MemberVO> getMemEmail(String creatorEmail) {
+		return mapper.selectMemEmail(creatorEmail);
 	}
 
 }
