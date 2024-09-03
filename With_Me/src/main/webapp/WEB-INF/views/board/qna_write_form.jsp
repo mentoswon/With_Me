@@ -122,23 +122,23 @@
                                 </td>
                             </tr> -->
                             <tr>
-                                <td class="write_td_left"><label for="qna_inquery">제목</label></td>
+                                <td class="write_td_left"><label for="faq_subject">제목</label></td>
                             </tr>
                             <tr>
-                                <td class="write_td_right"><input type="text" id="qna_inquery" size="35" placeholder="한글 기준 2자 ~ 50자 사이로 입력해주세요" name="qna_inquery" required="required" /></td>
+                                <td class="write_td_right"><input type="text" id="faq_inquery" size="35" placeholder="한글 기준 2자 ~ 50자 사이로 입력해주세요" name="faq_subject" required="required" /></td>
                             </tr>
                             <tr>
-                                <td class="write_td_left"><label for="qna_content">내용</label></td>
+                                <td class="write_td_left"><label for="faq_content">내용</label></td>
                             </tr>
                             <tr>
                                 <td class="write_td_right">
-                                    <textarea id="qna_content" name="qna_content" rows="15" cols="40" placeholder="한글 기준 10자 이상 입력해주세요" required="required"></textarea>
+                                    <textarea id="qna_content" name="faq_content" rows="15" cols="40" placeholder="한글 기준 10자 이상 입력해주세요" required="required"></textarea>
                                 </td>
                             </tr>
                         </table>
                         <section id="commandCell">
-                            <input type="button" value="수정" onclick="history.back()">
                             <input type="submit" value="등록">&nbsp;&nbsp;
+                            <input type="reset" value="다시쓰기">&nbsp;&nbsp;
                             <input type="button" value="취소" onclick="history.back()">
                         </section>
                     </form>

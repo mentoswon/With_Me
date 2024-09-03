@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.with_me.mapper.BoardMapper;
 import com.itwillbs.with_me.vo.BoardVO;
@@ -126,7 +127,21 @@ public class BoardService {
 	}
 	
 	
-	
+	// 답글 등록 요청
+	// => 순서번호 조정 작업과 답글 등록 작업 두 가지의 DB 데이터 조작 작업을 차례대로 수행하는데
+	//    이 때, 두 작업에 대한 트랜잭션을 적용하기 위해 @Transactional 어노테이션 적용 필수!
+	//    (주의! root-context.xml 과 servlet-context.xml 파일에 트랜잭션 설정 필수!)
+	//    별도로 개발자가 commit 또는 rollback 명령을 내릴 필요 없이 자동으로 처리됨!
+	@Transactional
+	public int registReplyBoard(BoardVO board) {
+		// 기존 답글들의 순서번호 조정을 위해 updateBoardReSeq() 메서드 호출
+		// => 파라미터 : BoardVO 객체   리턴타입 : void
+		mapper.updateBoardReSeq(board);
+		
+		// 답글 등록 작업 위해 insertReplyBoard() 메서드 호출
+		// => 파라미터 : BoardVO 객체   리턴타입 : int
+		return mapper.insertReplyBoard(board);
+	}
 	
 	
 	

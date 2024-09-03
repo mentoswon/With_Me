@@ -139,10 +139,10 @@
 				<c:if test="${not empty sessionScope.sId}">
 					<c:if test="${sessionScope.sId eq 'admin@naver.com'}">
 					<%-- 세션아이디가 관리자이메일과 일치할 때만 "답변"버튼 표시  --%>
-						<input type="button" value="답변" onclick="location.href='BoardReply?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}'">
+						<input type="button" value="답변" onclick="location.href='QnaBoardReply?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}'">
 					</c:if>
 					<c:if test="${sessionScope.sId eq qnabo.mem_email}">
-						<input type="button" value="수정" onclick="location.href='QnaBoardModify?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}'">
+						<input type="button" value="수정" onclick="location.href='QnaBoardModify?faq_idx=${qnabo.faq_idx}&pageNum=${param.pageNum}'">
 						<%-- 임시) 삭제 버튼 클릭 시 BoardDeleteForm.bo 서블릿 요청(삭제 폼 페이지 포워딩) --%>
 						<%-- 파라미터 : 글번호(board_num) --%>
 	<%-- 					<input type="button" value="삭제" onclick="location.href='BoardDeleteForm.bo?board_num=${board.board_num}'"> --%>
