@@ -92,6 +92,16 @@ public class AdminService {
 		return mapper.insertNotice(notice);
 	}
 	
+	// 공지사항 수정 - 파일 삭제
+	public int removeFile(BoardVO notice) {
+		return mapper.deleteFile(notice);
+	}
+	
+	// 공지사항 수정
+	public int modifyNotice(BoardVO notice) {
+		return mapper.updateNotice(notice);
+	}
+	
 	// 공지사항 삭제
 	public int removeNotice(int bo_idx) {
 		return mapper.deleteNotice(bo_idx);

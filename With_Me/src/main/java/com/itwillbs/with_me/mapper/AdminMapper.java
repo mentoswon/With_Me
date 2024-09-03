@@ -63,6 +63,12 @@ public interface AdminMapper {
 	// 공지사항 등록
 	int insertNotice(BoardVO notice);
 	
+	// 공지사항 수정 - 파일 삭제
+	int deleteFile(BoardVO notice);
+	
+	// 공지사항 수정
+	int updateNotice(BoardVO notice);
+	
 	// 공지사항 삭제
 	int deleteNotice(int bo_idx);
 	

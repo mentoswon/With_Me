@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>index</title>
+<title>With_Me</title>
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <style>
@@ -58,7 +58,7 @@
 	    top:0;
 	    left: 0;
 	    width: 100%;
-	    height: 140vh;
+	    height: 100%;
 	    overflow: hidden;
 	    background: rgba(0,0,0,0.5);
 	    z-index: 9;
@@ -67,7 +67,7 @@
 		/*팝업*/
 	    position: absolute;
 	    width: 500px;
-	    top: 30%;
+	    top: 42.5%;
 	    left: 50%;
 	    transform: translate(-50%, -50%);
 	    padding: 20px;
@@ -136,6 +136,7 @@
 							<th>공지사항 제목</th>
 							<th>작성일</th>
 							<th>조회수</th>
+							<th>첨부파일</th>
 							<th>수정 및 삭제</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
@@ -152,8 +153,14 @@
 								<td>${notice.bo_sysdate}</td>
 								<td>${notice.bo_readcount}</td>
 								<td>
-									<button value="${notice.bo_idx}" class="modifyBtn">수정</button>
-									<input type="button" class="delete" value="삭제" onclick="removeNotice('${notice.bo_idx}')">
+									<c:choose>
+										<c:when test="${empty notice.bo_file}">첨부파일이 없습니다</c:when>
+										<c:otherwise>${notice.bo_file}</c:otherwise>
+									</c:choose>
+								</td>
+								<td>
+									<input type="button" class="modifyBtn" value="수정" onclick="modifyNotice('${notice.bo_idx}')">
+									<input type="button" class="deleteBtn" value="삭제" onclick="removeNotice('${notice.bo_idx}')">
 								</td>
 							</tr>
 						</c:forEach>
@@ -226,7 +233,7 @@
 		<div class="notice_popup">
 			<h3>공지사항 수정</h3>
 			<div class="content">
-				<form action="AdminNoticeModify" method="post" name="modifyForm">
+				<form action="AdminNoticeModify" method="post" name="modifyForm" enctype="multipart/form-data">
 					<div id="resultArea"></div> <%-- 수정 팝업 내용 들어갈 자리 --%>
 					<div class="btnArea" style="text-align : center">
 						<input type="submit" class="regist_btn" value="등록">
@@ -241,45 +248,63 @@
 		function showListLimit(limit){
 			location.href="AdminNotice?listLimit=" + limit;
 		}
-		
+		// ----------------------------------------------------------
 		let notice = document.querySelectorAll('.notice');
-		let modifyBtn = document.querySelectorAll('.modifyBtn'); // 반복문으로 버튼이 여러 개 뜨니까 버튼도 여러개임을 인지하고, 팝업 뜨는 것도 반복문 작성필요
 		
 		// 공지사항 등록 팝업 띄우기
 		$("#registBtn").click(function() {
 			notice[0].classList.add('on');
 		});
-		
 		// 공지사항 수정 팝업 띄우기
-		for(let i = 0; i < modifyBtn.length ; i++) {
-			modifyBtn[i].onclick = function(){
-				notice[1].classList.add('on');
+		function modifyNotice(bo_idx) {
+			notice[1].classList.add('on');
+			// 상세 내용 가져오는 AJAX
+			$.ajax({
+				type : "GET",
+				url : "AdminNoticeModify",
+				data : {
+					"bo_idx" : bo_idx
+				},
+				success : function(response) {
+					$("#resultArea").html(response);
+				},
+				error : function() {
+					alert("공지사항 정보 로딩 과정에서 오류 발생!");
+				}
+			});
+		}
+		// 공지사항 수정 - 파일 삭제
+		function removeFile(bo_idx, fileName) {
+			if(confirm("파일을 삭제하시겠습니까?")) {
+				$.ajax({
+					type : "POST",
+					url : "AdminRemoveFile",
+					data : {
+						"bo_idx" : bo_idx,
+						"bo_file" : fileName
+					},
+					success : function(response) {
+						if(response) {
+							alert("파일 삭제에 성공했습니다.");
+							modifyNotice(bo_idx);
+						} else if(!response) {
+							alert("파일 삭제에 실패했습니다.");
+							modifyNotice(bo_idx);
+						}
+					},
+					error : function() {
+						alert("파일 삭제 처리 과정에서 오류 발생!");
+					}
+				});
 			}
 		}
-		
-		// 상세 내용 가져오는 AJAX - resources 에 js 있어야함 (script 태그에 주소 연결도 해야함)
-// 		$(function() {
-// 			$(modifyBtn).click(function() {
-// 				$.ajax({
-// 					url:"AdminNoticeModify",
-//     				data:{
-//     					"notice_num": $(this).val()
-//     					},
-//     				method:"get",
-//     				success: function (response) {
-//     					$("#resultArea").html(response);
-//     				}
-// 				});
-// 			});
-// 		});
-		
-		// 공지사항 등록/수정 취소 버튼
+		// 공지사항 등록/수정 취소
 		for(let i = 0; i < notice.length; i++) {
 			$(".close_btn").click(function() {
 				notice[i].classList.remove('on');
 			});
 		}
-		// 공지사항 삭제 버튼
+		// 공지사항 삭제
 		function removeNotice(bo_idx){
 			if(confirm("공지사항을 삭제하시겠습니까?")) {
 				location.href="AdminNoticeRemove?bo_idx=" + bo_idx;

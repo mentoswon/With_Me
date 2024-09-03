@@ -7,19 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>
-	<c:choose>
-		<c:when test="${param.status eq '등록대기'}">
-			위드미 | 관리자-등록신청관리
-		</c:when>
-		<c:when test="${param.status eq '진행중'}">
-			위드미 | 관리자-진행중인 프로젝트
-		</c:when>
-		<c:when test="${param.status eq '종료'}">
-			위드미 | 관리자-종료된 프로젝트
-		</c:when>
-	</c:choose>
-</title>
+<title>With_Me</title>
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <style>
@@ -65,7 +53,7 @@
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
 	// 프로젝트 등록 승인/거부
-	function projectApproval(isAuthorize, project_idx){
+	function projectRegistApproval(isAuthorize, project_idx){
 		let msg = "";
 		
 		if(isAuthorize == 'YES') {
@@ -75,11 +63,11 @@
 		}
 		
 		if(confirm("프로젝트 등록을 " + msg + "하시겠습니까?")){
-			location.href="AdminProjectApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
+			location.href="AdminProjectRegistApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
 		}
 	}
 	// 프로젝트 취소 승인/거부
-	function projectCancel(isAuthorize, project_idx){
+	function projectCancelApproval(isAuthorize, project_idx){
 		let msg = "";
 		
 		if(isAuthorize == 'YES') {
@@ -102,7 +90,7 @@
 					return;
 				} else if(response.isCancelExists) {
 					if(confirm("프로젝트 취소를 " + msg + "하시겠습니까?")){
-						location.href = "AdminProjectCancel?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
+						location.href = "AdminProjectCancelApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
 					}
 				}
 			},
@@ -190,8 +178,8 @@
 										<td><fmt:formatNumber value="${PL.target_price}" pattern="#,###"/>원</td>
 										<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
 										<td>
-											<input type="button" value="승인" onclick="projectApproval('YES', ${PL.project_idx})">
-											<input type="button" value="거부" onclick="projectApproval('NO', ${PL.project_idx})">
+											<input type="button" value="승인" onclick="projectRegistApproval('YES', ${PL.project_idx})">
+											<input type="button" value="거부" onclick="projectRegistApproval('NO', ${PL.project_idx})">
 										</td>
 									</c:when>
 									<c:when test="${param.status eq '진행중'}">
@@ -203,8 +191,8 @@
 										<%-- 남은 날짜 계산 end --%>
 										<td>${leftDay}일 후에 종료</td>
 										<td>
-											<input type="button" value="승인" onclick="projectCancel('YES', ${PL.project_idx})">
-											<input type="button" value="거부" onclick="projectCancel('NO', ${PL.project_idx})">
+											<input type="button" value="승인" onclick="projectCancelApproval('YES', ${PL.project_idx})">
+											<input type="button" value="거부" onclick="projectCancelApproval('NO', ${PL.project_idx})">
 										</td>
 									</c:when>
 									<c:when test="${param.status eq '종료'}">
