@@ -55,8 +55,8 @@ public interface UserFundingMapper {
 	// 기본 배송지 여부 확인
 	int selectAddressIsDefault(String id);
 
-	// 기본 배송지 변경
-	int updateDefaultAddress(String id);
+	// 기본 배송지 변경 (N으로)
+	int updateDefaultAddressToN(String id);
 
 	// 배송지 등록
 	int insertNewAddress(AddressVO new_address);
@@ -73,6 +73,9 @@ public interface UserFundingMapper {
 	// 배송지 변경
 	int updateSelectedAddressToY(int address_idx);
 
+	// 기본 배송지 변경
+	int updateDefaultAddressToY(int address_idx);
+	
 	// 신고 접수
 	int insertReport(Map<String, Object> map);
 
@@ -99,6 +102,13 @@ public interface UserFundingMapper {
 
 	// 좋아요 취소
 	int cancleLike(@Param("like_project_code")String like_project_code, @Param("like_mem_email")String like_mem_email);
+
+	// 창작자의 누적 펀딩액
+	int selectTotalFundAmtOfCreator(String creator_email);
+
+	// ========================================================================================================================
+	int insertUserFunding(Map<String, Object> map);
+
 
 
 

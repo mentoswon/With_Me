@@ -373,31 +373,31 @@ public class BoardController {
 	@PostMapping("QnaBoardWrite")
 	public String qnaboardWritePro(BoardVO qnabo, HttpServletRequest request, HttpSession session, Model model) {
 		System.out.println(qnabo);
-		String realPath = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
-		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
-		LocalDate today = LocalDate.now();
-		String datePattern = "yyyy/MM/dd"; // 형식 변경에 사용할 패턴 문자열 지정
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern);
-		subDir = today.format(dtf); // LocalDate - DateTimeFormatter
-		realPath += "/" + subDir;
-		try {
-			Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
-			Files.createDirectories(path);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		String realPath = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
+//		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
+//		LocalDate today = LocalDate.now();
+//		String datePattern = "yyyy/MM/dd"; // 형식 변경에 사용할 패턴 문자열 지정
+//		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern);
+//		subDir = today.format(dtf); // LocalDate - DateTimeFormatter
+//		realPath += "/" + subDir;
+//		try {
+//			Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
+//			Files.createDirectories(path);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
 		// --------------------------------------------------------------------------------------
-		// [ 업로드 되는 실제 파일 처리 ]
-		MultipartFile mFile1 = qnabo.getFile();
+//		//[ 업로드 되는 실제 파일 처리 ]
+//		MultipartFile mFile1 = qnabo.getFile();
 		// MultipartFile 객체의 getOriginalFile() 메서드 호출 시 업로드 한 원본 파일명 리턴
-		System.out.println("원본파일명1 : " + mFile1.getOriginalFilename());
-		// [ 파일명 중복 방지 대책 ]
-		String fileName1 = UUID.randomUUID().toString().substring(0, 8) + "_" + mFile1.getOriginalFilename();
-		qnabo.setBo_file("");
-		if(!mFile1.getOriginalFilename().equals("")) {
-			qnabo.setBo_file(subDir + "/" + fileName1);
-		}
+//		System.out.println("원본파일명1 : " + mFile1.getOriginalFilename());
+//		// [ 파일명 중복 방지 대책 ]
+//		String fileName1 = UUID.randomUUID().toString().substring(0, 8) + "_" + mFile1.getOriginalFilename();
+//		qnabo.setBo_file("");
+//		if(!mFile1.getOriginalFilename().equals("")) {
+//			qnabo.setBo_file(subDir + "/" + fileName1);
+//		}
 		
 		// BoardService - registBoard() 메서드 호출하여 게시물 등록 작업 요청
 		// => 파라미터 : BoardVO 객체   리턴타입 : int(insertCount)
@@ -405,17 +405,17 @@ public class BoardController {
 		
 		// 게시물 등록 작업 요청 결과 판별
 		if(insertCount > 0) { // 성공
-			try {
-				if(!mFile1.getOriginalFilename().equals("")) {
-					mFile1.transferTo(new File(realPath, fileName1));
-				}
-				
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
+//			try {
+//				if(!mFile1.getOriginalFilename().equals("")) {
+//					mFile1.transferTo(new File(realPath, fileName1));
+//				}
+//				
+//			} catch (IllegalStateException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			
 			// 글목록(BoardList) 서블릿 주소 리다이렉트
 			return "redirect:/QnaBoardList";
 		} else { 
@@ -555,7 +555,8 @@ public class BoardController {
 	
 	// [ 글 수정 ]
 	@GetMapping("QnaBoardModify")
-	public String qnaboardModifyForm(int bo_idx, HttpSession session, Model model) {
+	public String qnaboardModifyForm(int faq_idx, HttpSession session, Model model,
+									@RequestParam(defaultValue = "1") int pageNum) {
 		// 미 로그인 처리
 		String id = (String)session.getAttribute("sId");
 		if(id == null) {
@@ -566,7 +567,7 @@ public class BoardController {
 		// ----------------------------------------------------------------
 		// BoardService - getBoard() 메서드 재사용하여 게시물 1개 정보 조회
 		// => 조회수 증가되지 않도록 두번째 파라미터값 false 값 전달
-		BoardVO qnabo = service.getQnaBoardDetail(bo_idx, false);
+		BoardVO qnabo = service.getQnaBoardDetail(faq_idx, false);
 //				System.out.println(board);
 		
 		// 게시물이 존재하지 않거나, 
@@ -581,7 +582,7 @@ public class BoardController {
 		model.addAttribute("qnabo", qnabo);
 		
 		
-		return "board/qnaboard_modify_form";
+		return "board/qna_modify_form";
 	}
 	
 	// [ 1:1문의 게시글 수정 ]
@@ -592,61 +593,194 @@ public class BoardController {
 			HttpSession session, Model model) throws Exception {
 		System.out.println(qnabo);
 		
-		// 실제 업로드 경로 알아내기
-		String realPath = session.getServletContext().getRealPath(uploadPath);
-		
-		// 날짜별 서브디렉토리 생성하여 기본 경로에 결합
-		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
-		LocalDate today = LocalDate.now();
+//		//실제 업로드 경로 알아내기
+//		String realPath = session.getServletContext().getRealPath(uploadPath);
+//		
+//		// 날짜별 서브디렉토리 생성하여 기본 경로에 결합
+//		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
+//		LocalDate today = LocalDate.now();
 		String datePattern = "yyyy/MM/dd"; // 형식 변경에 사용할 패턴 문자열 지정
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern);
-		subDir = today.format(dtf); // LocalDate - DateTimeFormatter
-		realPath += "/" + subDir;
-		Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
-		System.out.println("path가 나오는지 확인해봅시다 : " + path);
-		// ------------------------------------------------------------------
-		Files.createDirectories(path);
-		//파일명 중복 방지
-		MultipartFile mFile1 = qnabo.getFile();
-		 if (mFile1 == null) {
-		        model.addAttribute("msg", "업로드된 파일이 없습니다.");
-		        return "result/fail";
-		    }else if(mFile1.getOriginalFilename().equals("")) {
-		    	model.addAttribute("msg", "업로드된 파일이 없습니다2.");
-		    	return "result/fail";
-		    }
-		 
-		String fileName1 = UUID.randomUUID().toString().substring(0, 8) + "_" + mFile1.getOriginalFilename();
-		qnabo.setBo_file("");
-		System.out.println("과연 이것도 나올가요? : " + mFile1.getOriginalFilename());
-		if(!mFile1.getOriginalFilename().equals("")) {
-			qnabo.setBo_file(subDir + "/" + fileName1);
-		}
-		
+//		subDir = today.format(dtf); // LocalDate - DateTimeFormatter
+//		realPath += "/" + subDir;
+//		Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
+//		System.out.println("path가 나오는지 확인해봅시다 : " + path);
+//		// ------------------------------------------------------------------
+//		Files.createDirectories(path);
+//		//파일명 중복 방지
+//		MultipartFile mFile1 = qnabo.getFile();
+//		 if (mFile1 == null) {
+//		        model.addAttribute("msg", "업로드된 파일이 없습니다.");
+//		        return "result/fail";
+//		    }else if(mFile1.getOriginalFilename().equals("")) {
+//		    	model.addAttribute("msg", "업로드된 파일이 없습니다2.");
+//		    	return "result/fail";
+//		    }
+//		 
+//		String fileName1 = UUID.randomUUID().toString().substring(0, 8) + "_" + mFile1.getOriginalFilename();
+//		qnabo.setBo_file("");
+//		System.out.println("과연 이것도 나올가요? : " + mFile1.getOriginalFilename());
+//		if(!mFile1.getOriginalFilename().equals("")) {
+//			qnabo.setBo_file(subDir + "/" + fileName1);
+//		}
+//		
 		System.out.println("사진 수정이 왜 안될까요? : " + qnabo);
 		
 		
 		int updateCount = service.qnaModifyBoard(qnabo);
-		
+		System.out.println("updateCount : " + updateCount);
 		// DB 작업 요청 처리 결과 판별하여
 		// 성공 시 실제 파일 업로드 처리 후 글 상세정보 조회 페이지 리다이렉트
 		// 실패 시 "글 수정 실패!" 출력 후 이전페이지 돌아가기 처리
 		 if (updateCount > 0) {
-		        try {
-		            // 수정된 부분: 파일 업로드 과정에서 발생할 수 있는 예외 처리
-		            mFile1.transferTo(new File(realPath, fileName1));
-		        } catch (IllegalStateException | IOException e) {
-		            e.printStackTrace();
-		            model.addAttribute("msg", "파일 업로드 중 오류 발생!");
-		            return "result/fail";
-		        }
-		        return "redirect:/QnaBoardDetail?bo_idx=" + qnabo.getBo_idx() + "&pageNum=" + pageNum;
-		    } else {
-		        model.addAttribute("msg", "글 수정 실패!");
-		        return "result/fail";
-		    }
+//		        try {
+//		            // 수정된 부분: 파일 업로드 과정에서 발생할 수 있는 예외 처리
+//		            mFile1.transferTo(new File(realPath, fileName1));
+//		        } catch (IllegalStateException | IOException e) {
+//		            e.printStackTrace();
+//		            model.addAttribute("msg", "파일 업로드 중 오류 발생!");
+//		            return "result/fail";
+//		        }
+		        return "redirect:/QnaBoardDetail?faq_idx=" + qnabo.getFaq_idx() + "&pageNum=" + pageNum;
+		 } else {
+	        model.addAttribute("msg", "글 수정 실패!");
+	        return "result/fail";
+		 }
 		
 	}
+	
+	// ============================================================================
+	// [문의게시판 답글 작성 폼 ]
+	// => 글 수정 폼과 동일하게 기존 게시물 정보 조회하여 뷰페이지로 전달
+	// => BoardReply 서블릿 주소 매핑
+	@GetMapping("QnaBoardReply")
+	public String qnaboardReplyForm(
+			BoardVO qnabo, @RequestParam(defaultValue = "1") String pageNum, 
+			HttpSession session, Model model) {
+		if(session.getAttribute("sId") == null) {
+			model.addAttribute("msg", "로그인 필수!");
+			model.addAttribute("targetURL", "MemberLogin");
+			// 로그인 후 현재 작업으로 돌아오기 위해 세션에 prevURL 속성값 저장
+			session.setAttribute("prevURL", "QnaBoardReply?faq_idx=" + qnabo.getFaq_idx() + "&pageNum=" + pageNum);
+			return "result/fail";
+		}
+		
+		// BoardService - getBoard() 메서드 재사용하여 게시물 1개 정보 조회
+		// => 조회수 증가되지 않도록 두번째 파라미터 false 값 전달
+		qnabo = service.getQnaBoardDetail(qnabo.getFaq_idx(), false);
+		
+		// 조회 결과 저장 후 board/board_reply_form.jsp 페이지 포워딩
+		model.addAttribute("qnabo", qnabo);
+		
+		return "board/qna_reply_form";
+	}
+	
+	// [ 답글 작성 비즈니스 로직 ]
+	@PostMapping("QnaBoardReply")
+	public String boardReplyPro(
+			BoardVO qnabo, @RequestParam(defaultValue = "1") String pageNum, 
+			HttpSession session, Model model, HttpServletRequest request) {
+		// 미로그인 처리
+		if(session.getAttribute("sId") == null) {
+			model.addAttribute("msg", "로그인 필수!");
+			model.addAttribute("targetURL", "MemberLogin");
+			// 로그인 후 현재 작업으로 돌아오기 위해 세션에 prevURL 속성값 저장
+			session.setAttribute("prevURL", "QnaBoardReply?faq_idx=" + qnabo.getFaq_idx() + "&pageNum=" + pageNum);
+			return "result/fail";
+		}
+		// ==================================================================================
+		// 작성자 IP 주소 가져와서 BoardVO 객체에 저장
+//		board.setBoard_writer_ip(request.getRemoteAddr());
+		// ----------------------------------------------------------------------------------
+//		// [ 답글 등록 과정에서 파일 업로드 처리 ]
+//		String realPath = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
+//		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
+//		LocalDate today = LocalDate.now();
+//		// 형식 변경에 사용할 패턴 문자열 지정
+//		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+//		subDir = today.format(dtf); // LocalDate - DateTimeFormatter
+//		realPath += "/" + subDir;
+//		try {
+//			Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
+//			Files.createDirectories(path);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
+		// --------------------------------------------------------------------------------------
+//		// [ 업로드 되는 실제 파일 처리 ]
+//		// 실제 파일은 BoardVO 객체의 MultipartFile 타입 객체(멤버변수 fileX)가 관리함
+//		MultipartFile mFile1 = board.getFile1();
+//		MultipartFile mFile2 = board.getFile2();
+//		MultipartFile mFile3 = board.getFile3();
+//		
+//		String fileName1 = UUID.randomUUID().toString().substring(0, 8) + "_" + mFile1.getOriginalFilename();
+//		String fileName2 = UUID.randomUUID().toString().substring(0, 8) + "_" + mFile2.getOriginalFilename();
+//		String fileName3 = UUID.randomUUID().toString().substring(0, 8) + "_" + mFile3.getOriginalFilename();
+//		
+//		// 업로드 할 파일이 존재할 경우(원본 파일명이 널스트링이 아닐 경우)에만 
+//		// BoardVO 객체에 서브디렉토리명과 함께 파일명 저장
+//		// => 단, 업로드 파일이 선택되지 않은 파일은 파일명에 null 값이 저장되므로
+//		//    파일명 저장 전 BoardVO 객체의 파일명에 해당하는 멤버변수값을 널스트링("") 으로 변경
+//		board.setBoard_file("");
+//		board.setBoard_file1("");
+//		board.setBoard_file2("");
+//		board.setBoard_file3("");
+//		
+//		if(!mFile1.getOriginalFilename().equals("")) {
+//			board.setBoard_file1(subDir + "/" + fileName1);
+//		}
+//		
+//		if(!mFile2.getOriginalFilename().equals("")) {
+//			board.setBoard_file2(subDir + "/" + fileName2);
+//		}
+//		
+//		if(!mFile3.getOriginalFilename().equals("")) {
+//			board.setBoard_file3(subDir + "/" + fileName3);
+//		}
+		
+		// ===============================================================================
+		// BoardService - registReplyBoard() 메서드 호출하여 게시물 등록 작업 요청
+		// => 파라미터 : BoardVO 객체   리턴타입 : int(insertCount)
+		int insertCount = service.registReplyBoard(qnabo);
+		
+		// 게시물 등록 작업 요청 결과 판별
+		if(insertCount > 0) { // 성공
+//			try {
+//				// 파일명 존재할 경우 실제 업로드 처리
+//				if(!mFile1.getOriginalFilename().equals("")) {
+//					mFile1.transferTo(new File(realPath, fileName1));
+//				}
+//				
+//				if(!mFile2.getOriginalFilename().equals("")) {
+//					mFile2.transferTo(new File(realPath, fileName2));
+//				}
+//				
+//				if(!mFile3.getOriginalFilename().equals("")) {
+//					mFile3.transferTo(new File(realPath, fileName3));
+//				}
+//			} catch (IllegalStateException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			
+			// 글목록(BoardList) 서블릿 주소 리다이렉트
+			return "redirect:/QnaBoardList?pageNum=" + pageNum;
+		} else { // 실패
+			// "글쓰기 실패!" 메세지 출력 및 이전 페이지 돌아가기 처리
+			model.addAttribute("msg", "답글 등록 실패!");
+			return "result/fail";
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	//공지사항 수정 파일 삭제
 	@GetMapping("QnaBoardDeleteFile")
 	public String qnaboardDeleteFile(@RequestParam Map<String, String> map, HttpSession session) throws Exception {
@@ -668,42 +802,6 @@ public class BoardController {
 	
 	
 	
-	//=========================================================================
-	//-------------------------------------------------------------------------
-	// 헬프센터 
+
 	
-	
-	
-	// 헬프센터 메인 페이지 
-	@GetMapping("HelpCenter")
-	public String helpCenter() {
-		return "help/helpcenter_main";
-	}
-	
-	// 헬프센터 기본질문-1
-	@GetMapping("Basic1")
-	public String basic1() {
-		return "help/basic_1";
-	}
-	
-	// 헬프센터 기본질문-2
-	@GetMapping("Basic2")
-	public String basic2() {
-		return "help/basic_2";
-		
-	}
-	
-	// 헬프센터 기본질문-3
-	@GetMapping("Basic3")
-	public String basic3() {
-		return "help/basic_3";
-		
-	}
-	
-	// 헬프센터 기본질문-4
-	@GetMapping("Basic4")
-	public String basic4() {
-		return "help/basic_4";
-		
-	}
 }

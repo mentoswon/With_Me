@@ -29,7 +29,7 @@
 #startNow {	/* 지금 시작하기 */
 	border: none;
 	background-color: #FFAB40;
-/* 	color: #ffffff; */
+ 	color: #ffffff;
 }
 #creatorGuide {	/* 창작자 가이드 */
 	background-color: #ffffff;

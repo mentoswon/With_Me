@@ -606,7 +606,7 @@ $(function() {
 // 	    console.log("removeItem : " + removeItem.html());
 	    let removeItem2 = $("input[name='reward_item_idx'][value='" + item_idx + "']").parent();
 	
-	    if (confirm("정말로 삭제하시겠습니까?")) {
+	    if (confirm("아이템을 삭제하시겠습니까?")) {
 	    	// AJAX 활용하여 "DeleteItem" 서블릿 요청(파라미터 : item_idx) - POST
 	    	$.ajax({
 	            type: "POST",
@@ -779,6 +779,12 @@ $(function() {
     function updateRewardList(rewardList) {
 		// 기존 리스트 초기화
         $("#rewardListContainer").empty();
+		$("#rewardListContainer").append('<div class="rewardListWrap">'
+										 +		'<div class="rewardList">'
+										 +		'<h2>1,000원+</h2>'
+										 +		'<h4>선물 없이 후원하기</h4>'
+										 +	'</div>'
+										 +'</div>');
 
         // 서버로부터 받은 후원 구성 리스트를 사용하여 새로운 리스트 생성
         rewardList.forEach(function(reward) {
@@ -827,7 +833,7 @@ $(function() {
 	    let removeReward = $(this).parent();	// 아이템 삭제할 영역
 // 	    console.log("removeReward : " + removeReward.html());
 	
-	    if (confirm("정말로 삭제하시겠습니까?")) {
+	    if (confirm("후원 구성을 삭제하시겠습니까?")) {
 	    	// AJAX 활용하여 "DeleteItem" 서블릿 요청(파라미터 : item_idx) - POST
 	    	$.ajax({
 	            type: "POST",

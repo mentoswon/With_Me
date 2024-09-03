@@ -17,14 +17,14 @@
     padding: 2em;
 }
 
-.qnaHeader h2 {
+.qnaHeader h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 30px;
     color: #333;
     text-align: left;
 }
 
-.qnaHeader h3 {
+.qnaHeader h2 {
     margin: 0;
     font-size: 18px;
     color: #555;
@@ -33,7 +33,7 @@
 }
 
 .groupTitle h4 {
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
     margin-bottom: 15px;
     text-align: left;
@@ -44,8 +44,9 @@
     justify-content: space-between;
     border: 1px solid #ccc;
     border-radius: 10px;
-    padding: 2em;
+    padding: 4em;
     margin-bottom: 4em; 
+    margin-top: 1.4em;
 }
 
 .qnaList {
@@ -53,7 +54,7 @@
 }
 
 .qnaList h5 {
-    font-size: 16px;
+    font-size: 24px;
     color: #333;
     margin-bottom: 10px;
     border-bottom: 1px solid #ddd;
@@ -86,8 +87,8 @@
 	<section>
 		<div class="qnaWrapper">
 			<div class="qnaHeader">
-				<h2>헬프센터</h2>
-				<h3>무엇을 도와드릴까요?</h3>
+				<h1>헬프센터</h1>
+				<h2>무엇을 도와드릴까요?</h2>
 			</div>
 			<br>
 			<div align="left" class="groupcreator_qna_1.jspTitle">
@@ -99,13 +100,12 @@
 					<span class="basicList"><a href="Basic1">위드미(withme)는 무엇인가요?</a></span>
 					<span class="basicList"><a href="Basic2">크라우드펀딩과 후원이란 무엇인가요?</a></span>
 					<span class="basicList"><a href="Basic3">프로젝트 후원은 무엇인가요?</a></span>
-					<span class="basicList"><a href="Basic4">선물은 무엇인가요?</a></span>
 				</div>	
 				
 				<div class="qnaList">
 					<h5>후원자 질문</h5>
 					<span class="creatorQna"><a href="CreatorQna1">결제는 언제 되나요?</a></span>
-					<span class="creatorQna"><a href="CreatorQna2">후원을 변경하거나 취소할 수 있나요?</a></span>
+					<span class="creatorQna"><a href="CreatorQna2">후원했는데 후원현황에 보이지 않아요.</a></span>
 					<span class="creatorQna"><a href="CreatorQna3">가능한 결제수단은 무엇인가요?</a></span>
 				</div>	
 				

@@ -82,8 +82,8 @@ public class UserFundingService {
 	}
 
 	// 기본 배송지 변경
-	public int modifyDefaultAddress(String id) {
-		return mapper.updateDefaultAddress(id);
+	public int modifyDefaultAddressToN(String id) {
+		return mapper.updateDefaultAddressToN(id);
 	}
 
 
@@ -112,6 +112,12 @@ public class UserFundingService {
 	public int modifySelectedAddressToY(int address_idx) {
 		return mapper.updateSelectedAddressToY(address_idx);
 	}
+	
+	// 기본 배송지 변경
+	public int modifyDefaultAddressToY(int address_idx) {
+		return mapper.updateDefaultAddressToY(address_idx);
+	}
+	
 
 	// 신고 접수
 	public int registReport(Map<String, Object> map) {
@@ -160,6 +166,20 @@ public class UserFundingService {
 	public int cancleLike(String like_project_code, String like_mem_email) {
 		return mapper.cancleLike(like_project_code, like_mem_email);
 	}
+
+	
+	// 창작자의 누적 펀딩액 
+	public int getTotalFundAmtOfCreator(String creator_email) {
+		return mapper.selectTotalFundAmtOfCreator(creator_email);
+	}
+
+	// ====================================================================================
+	// 사용자 펀딩 등록
+	public int registUserFunding(Map<String, Object> map) {
+		return mapper.insertUserFunding(map);
+	}
+
+
 
 	
 

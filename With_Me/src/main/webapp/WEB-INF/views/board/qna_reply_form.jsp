@@ -89,6 +89,13 @@
                 <div>
                     <h1>1:1 문의하기</h1>
                     <form action="QnaBoardWrite" name="writeForm" method="post">
+                    			<%-- 입력받지 않은 글번호, 페이지번호는 input 태그의 hidden 속성으로 파라미터에 포함시키기 --%>
+			<input type="hidden" name="faq_idx" value="${qnabo.faq_idx}">
+			<input type="hidden" name="pageNum" value="${param.pageNum}">
+			<%-- 답글 작성에 필요한 원본글에 대한 추가 정보(참조글번호, 들여쓰기레벨, 순서번호)도 전달 --%>
+			<input type="hidden" name="faq_re_ref" value="${qnabo.faq_re_ref}">
+			<input type="hidden" name="faq_re_lev" value="${qnabo.faq_re_lev}">
+			<input type="hidden" name="faq_re_seq" value="${qnabo.faq_re_seq}">
                         <table>
                             <tr>
                             	<td>작성자</td>
@@ -125,7 +132,7 @@
                                 <td class="write_td_left"><label for="faq_subject">제목</label></td>
                             </tr>
                             <tr>
-                                <td class="write_td_right"><input type="text" id="faq_inquery" size="35" placeholder="한글 기준 2자 ~ 50자 사이로 입력해주세요" name="faq_subject" required="required" /></td>
+                                <td class="write_td_right"><input type="text" id="qna_inquery" size="35" placeholder="한글 기준 2자 ~ 50자 사이로 입력해주세요" name="faq_subject" required="required" /></td>
                             </tr>
                             <tr>
                                 <td class="write_td_left"><label for="faq_content">내용</label></td>
@@ -137,7 +144,7 @@
                             </tr>
                         </table>
                         <section id="commandCell">
-                            <input type="submit" value="등록">&nbsp;&nbsp;
+                            <input type="submit" value="답글등록">&nbsp;&nbsp;
                             <input type="reset" value="다시쓰기">&nbsp;&nbsp;
                             <input type="button" value="취소" onclick="history.back()">
                         </section>

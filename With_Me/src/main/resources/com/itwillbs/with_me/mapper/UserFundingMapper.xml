@@ -45,6 +45,8 @@
 		FROM project_info p 
 		JOIN creator_info c
 		ON p.creator_idx = c.creator_idx 
+		LEFT JOIN like_ l
+		ON l.like_project_code = p.project_code
 		WHERE 
 		<choose>
 			<when test="!searchKeyword.equals('')">
@@ -167,26 +169,38 @@
 		SELECT *
 		FROM user_address
 		WHERE address_mem_email = #{mem_email}
-		ORDER BY address_is_default DESC 
+		ORDER BY address_selected DESC 
 				, address_receiver_name
 	</select>
 	
 	<!-- 기본 배송지 여부 확인 -->
 	<select id="selectAddressIsDefault" resultType="int">
 		SELECT COUNT(*)
-		FROM user_address
-		WHERE address_mem_email = #{id}
-		AND address_is_default = 'Y';
+		FROM user_address u JOIN member m
+		ON u.address_mem_email = m.mem_email
+		WHERE 
+			address_mem_email = #{id}
+			AND address_is_default = 'Y'
+			AND m.mem_status = 1;
 	</select>
 	
 	<!-- 기본 배송지 변경 (원래 기본 배송지였던거를 N으로) -->
-	<update id="updateDefaultAddress">
+	<update id="updateDefaultAddressToN">
 		UPDATE user_address
 		SET address_is_default = 'N'
-		WHERE address_mem_email = #{id}
-		AND address_is_default = 'Y';
+		WHERE 
+			address_mem_email = #{id}
+			AND address_is_default = 'Y';
 	</update>
 	
+	<!-- 기본 배송지 변경 -->
+	<update id="updateDefaultAddressToY">
+		UPDATE user_address
+		SET address_is_default = 'Y'
+		WHERE 
+			address_idx = #{address_idx}
+			ANd address_is_default = 'N'
+	</update>
 	
 	<!-- 배송지 등록 -->
 	<insert id="insertNewAddress">
@@ -200,11 +214,11 @@
 			,#{address_sub}
 			,#{address_receiver_tel}
 			<choose>
-				<when test="#{address_is_default == 'on'}">
-				,'Y'
+				<when test="address_is_default.equals('off')">
+				,'N'
 				</when>
 				<otherwise>
-				, 'N'
+				, 'Y'
 				</otherwise>
 			</choose>
 			, default		
@@ -221,9 +235,12 @@
 	<!-- 선택 배송지 여부 확인 -->
 	<select id="selectAddressIsSelected" resultType="int">
 		SELECT COUNT(*)
-		FROM user_address
-		WHERE address_mem_email = #{id}
-		AND address_selected = 'Y';
+		FROM user_address u JOIN member m
+		ON u.address_mem_email = m.mem_email
+		WHERE 
+			address_mem_email = #{id}
+			AND address_selected = 'Y'
+			AND m.mem_status = 1;;
 	</select>
 	
 	<!-- 원래 선택배송지였던 걸 N으로 변경 -->
@@ -340,4 +357,33 @@
 			AND like_mem_email = #{like_mem_email}
 			AND like_status = 'Y'
 	</update>
+	
+	<!-- 창작자의 누적 펀딩액 -->
+	<select id="selectTotalFundAmtOfCreator" resultType="int">
+		SELECT IFNULL(SUM(f.funding_pay_amt), 0)
+		FROM project_info p 
+		JOIN creator_info c
+		ON p.creator_idx = c.creator_idx
+		JOIN funding_user f
+		ON p.project_idx = f.funding_project_idx
+		WHERE c.creator_email = #{creator_email};
+	</select>
+	
+	<!--  ============================================================================================  -->
+	<!-- 사용자 펀딩 등록 -->
+	<insert id="insertUserFunding">
+		INSERT INTO funding_user
+		VALUES (
+			null
+			, #{UserFundingEmail}
+			, #{UserFundingProjectIdx}
+			, #{UserFundingRewardIdx}
+			, #{UserFundingItemOption}
+			, #{UserFundingCount}
+			, #{UserFundingAddressIdx}
+			, #{UserFundingPlusAmt}
+			, #{UserFundingPayAmt}
+		)
+		
+	</insert>
 </mapper>

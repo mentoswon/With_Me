@@ -107,10 +107,11 @@
 		<section id="articleForm">
 			<h2>1:1 문의글 상세내용 보기</h2>
 			<section id="basicInfoArea">
+<%-- 				<input type="hidden" value="${qnabo.mem_email}"> --%>
 				<table border="1">
 				<tr><th width="70">제 목</th><td colspan="3">${qnabo.faq_subject}</td></tr>
 				<tr>
-					<th width="70">작성자</th><td>${qnabo.mem_id}</td>
+					<th width="70">작성자</th><td>${qnabo.mem_name}</td>
 					<%-- 작성일시 출력 형식은 ex) 2024-06-04 12:30 --%>
 					<th width="70">작성일시</th>
 					<td><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd"/></td>
@@ -135,13 +136,22 @@
 			<section id="commandCell">
 				<%-- 답글, 수정, 삭제 버튼은 로그인 한 사용자에게만 표시 --%>
 				<%-- 단, 수정, 삭제 버튼은 세션 아이디와 작성자 아이디가 일치할 경우에만 표시 --%>
-				<c:if test="${sessionScope.sId eq qnabo.mem_id}">
-					<%-- 임시) 삭제 버튼 클릭 시 BoardDeleteForm.bo 서블릿 요청(삭제 폼 페이지 포워딩) --%>
-					<%-- 파라미터 : 글번호(board_num) --%>
-<%-- 					<input type="button" value="삭제" onclick="location.href='BoardDeleteForm.bo?board_num=${board.board_num}'"> --%>
-					<%-- 삭제 버튼 클릭 시 패스워드 확인페이지 이동 없이 삭제 확인만 받기 위해 --%>
-					<%-- 자바스크립트 confirmDelete() 메서드 호출하여 확인 후 비즈니스 로직 요청 --%>
-					<input type="button" value="삭제" onclick="confirmDelete()">
+				<c:if test="${not empty sessionScope.sId}">
+					<c:if test="${sessionScope.sId eq 'admin@naver.com'}">
+					<%-- 세션아이디가 관리자이메일과 일치할 때만 "답변"버튼 표시  --%>
+						<input type="button" value="답변" onclick="location.href='QnaBoardReply?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}'">
+					</c:if>
+					<c:if test="${sessionScope.sId eq qnabo.mem_email}">
+						<input type="button" value="수정" onclick="location.href='QnaBoardModify?faq_idx=${qnabo.faq_idx}&pageNum=${param.pageNum}'">
+						<%-- 임시) 삭제 버튼 클릭 시 BoardDeleteForm.bo 서블릿 요청(삭제 폼 페이지 포워딩) --%>
+						<%-- 파라미터 : 글번호(board_num) --%>
+	<%-- 					<input type="button" value="삭제" onclick="location.href='BoardDeleteForm.bo?board_num=${board.board_num}'"> --%>
+						<%-- 삭제 버튼 클릭 시 패스워드 확인페이지 이동 없이 삭제 확인만 받기 위해 --%>
+						<%-- 자바스크립트 confirmDelete() 메서드 호출하여 확인 후 비즈니스 로직 요청 --%>
+					</c:if>
+					<c:if test="${sessionScope.sId eq qnabo.mem_email || sessionScope.sId eq 'admin@naver.com'}">
+						<input type="button" value="삭제" onclick="confirmDelete()">
+					</c:if>
 				</c:if>
 				<input type="button" value="돌아가기" onclick="history.back()">
 			</section>

@@ -150,7 +150,7 @@ h4 {
 	display: flex;
 	align-items: center;
 	margin-top: 30px;
-	
+    margin-bottom: 30px;
 }
 
 .inner .con04 .rewardInfo .infoWrapper #amtWrapper div {
@@ -167,6 +167,15 @@ h4 {
 	font-size: 13px;
     color: #555;
     margin: 20px 0;
+}
+
+#totalAmt {
+	border: none;
+    padding-top: 15px;
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    border-top: 1px solid #99999950;
 }
 
 /*  con05  */
@@ -252,6 +261,22 @@ h4 {
 	display: flex;
 	justify-content: space-around;
 }
+
+/* con07_pay */
+#UserFundingPayment {
+	margin-top: 60px;
+	width: 100%;
+	padding: 15px 0;
+	border: none;
+	border-radius: 10px;
+	background-color: #ffab40;
+	color: #fff;
+	font-weight: bold;
+	font-size: 20px;
+	text-align: center;
+	cursor: pointer;
+}
+
 
 
 /* 모달 팝업 */
@@ -357,18 +382,25 @@ h4 {
 .modal .modal_popup .content.change .infoWrapper {
 	position: relative;
 	margin-bottom: 10px;
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.modal .modal_popup .content.change .infoWrapper .deleteAddress{
-	position: absolute;
-	top: 37%;
-    right: 4%;
+.modal .modal_popup .content.change .infoWrapper .addressWrapper {
+	width: 90%;
+}
+
+.modal .modal_popup .content.change .infoWrapper .cancleDefault, .registDefault, .deleteAddress{
 	padding: 5px;
 	background-color: #eee;
 	font-size: 13px;
 	border-radius: 5px;
 	cursor: pointer;
+	text-align: center;
+	margin-bottom: 5px;
 }
+
 
 .modal .modal_popup .content.change .infoWrapper label {
 	display: flex;

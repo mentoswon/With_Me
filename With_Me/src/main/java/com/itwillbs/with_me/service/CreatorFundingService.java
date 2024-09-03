@@ -106,9 +106,24 @@ public class CreatorFundingService {
 		return mapper.updateProject(project);
 	}
 
-	// 창작자정보 임시저장 요청
+	// 창작자 정보 임시저장 요청
 	public int modifyCreator(CreatorVO creator) {
 		return mapper.updateCreator(creator);
+	}
+
+	// 프로젝트 삭제 요청
+	public int deleteProject(String project_idx) {
+		return mapper.deleteProject(project_idx);
+	}
+
+	// 프로젝트 삭제 요청 폼 제출 요청
+	public int requestDeleteProject(String project_idx, String project_cancel_reason) {
+		return mapper.insertRequestDeleteProject(project_idx, project_cancel_reason);
+	}
+
+	// 프로젝트 취소 요청한 프로젝트 조회 요청
+	public List<Map<String, String>> getDeleteRequestList(String id) {
+		return mapper.selectDeleteRequestList(id);
 	}
 
 	// 심사중인 프로젝트 목록 조회 요청

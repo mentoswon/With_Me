@@ -185,45 +185,43 @@
     UPDATE project_info
     SET 
     	<if test="!project_code.equals('FUND')">
-	        project_code = #{project_code},
+	        project_code = #{project_code}
     	</if>
         <if test="!project_status.equals('')">
-            project_status = #{project_status},
+            , project_status = #{project_status}
         </if>
-        project_category = (SELECT common_code_name
+        , project_category = (SELECT common_code_name
                             FROM common_code
                             WHERE common_code = #{project_category}
-                            AND common_code_top = 'FUND'),
+                            AND common_code_top = 'FUND')
         <if test="!project_category_detail.equals('')">
-            project_category_detail = (SELECT common_code_name
-                                       FROM common_code
-                                       WHERE common_code = #{project_category_detail}),
+        	, project_category_detail = (SELECT common_code_name
+             	                         FROM common_code
+               		                     WHERE common_code = #{project_category_detail})
         </if>
         <if test="project_category_detail.equals('')">
-            project_category_detail = '',
+            , project_category_detail = ''
         </if>
-        project_title = #{project_title},
-        project_summary = #{project_summary},
-        project_image = #{project_image},
-        search_tag = #{search_tag},
-        target_price = #{target_price},
-        funding_commission = #{funding_commission},
-        funding_start_date = CASE 
+        , project_title = #{project_title}
+        , project_summary = #{project_summary}
+        , project_image = #{project_image}
+        , search_tag = #{search_tag}
+        , target_price = #{target_price}
+        , funding_commission = #{funding_commission}
+        , funding_start_date = CASE 
             WHEN #{funding_start_date} != '' THEN #{funding_start_date}  -- 시작일 선택시에만 값 넣기
-            ELSE null 
-        END,
-        funding_end_date = CASE 
+            ELSE null END
+        , funding_end_date = CASE 
             WHEN #{funding_end_date} != '' THEN #{funding_end_date} 
-            ELSE null 
-        END,
-        project_introduce = #{project_introduce},
-        project_budget = #{project_budget},
-        project_schedule = #{project_schedule},
-        project_team_introduce = #{project_team_introduce},
-        project_sponsor = #{project_sponsor},
-        project_policy = #{project_policy},
-        project_submit_date = now()
-    WHERE project_idx = #{project_idx};
+            ELSE null END
+        , project_introduce = #{project_introduce}
+        , project_budget = #{project_budget}
+        , project_schedule = #{project_schedule}
+        , project_team_introduce = #{project_team_introduce}
+        , project_sponsor = #{project_sponsor}
+       	, project_policy = #{project_policy}
+        , project_submit_date = now()
+    WHERE project_idx = #{project_idx}
 </update>
 
 
@@ -231,11 +229,39 @@
 <update id="updateCreator">
 	UPDATE creator_info
 	SET
-		creator_email = #{creator_email},
-		creator_name = #{creator_name},
-		creator_image = #{creator_image},
-		creator_introduce = #{creator_introduce}
+		creator_email = #{creator_email}
+		, creator_name = #{creator_name}
+		, creator_image = #{creator_image}
+		, creator_introduce = #{creator_introduce}
 	WHERE creator_email = #{creator_email}
 </update>
+
+<!-- 프로젝트 삭제 - DELETE -->
+<delete id="deleteProject">
+	DELETE FROM project_info
+	WHERE project_idx = #{project_idx}
+</delete>
+
+<!-- 프로젝트 삭제 요청 폼 제출 - INSERT -->
+<insert id="insertRequestDeleteProject">
+	INSERT INTO project_cancel
+	VALUES (
+		null						-- project_cancel_idx
+		, #{project_idx}			-- project_idx
+		, #{project_cancel_reason}	-- project_cancel_reason
+		, '취소대기'				-- project_cancel_status
+	)
+</insert>
+
+<!-- 프로젝트 취소 요청한 프로젝트 조회 - SELECT -->
+<select id="selectDeleteRequestList" resultType="String">
+	SELECT project_idx
+	FROM project_cancel
+	WHERE project_idx IN (SELECT project_idx 
+						  FROM project_info
+				          WHERE creator_idx = (SELECT creator_idx 
+											 FROM creator_info
+				                             WHERE creator_email = #{id}))
+</select>
 
 </mapper>

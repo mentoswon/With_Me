@@ -68,6 +68,16 @@ public interface CreatorFundingMapper {
 	// 창작자정보 임시저장
 	int updateCreator(CreatorVO creator);
 
+	// 프로젝트 삭제
+	int deleteProject(String project_idx);
+
+	// 프로젝트 삭제 요청 폼 제출
+	int insertRequestDeleteProject(@Param("project_idx") String project_idx, 
+								   @Param("project_cancel_reason") String project_cancel_reason);
+
+	// 프로젝트 취소 요청한 프로젝트 조회
+	List<Map<String, String>> selectDeleteRequestList(String id);
+
 
 
 

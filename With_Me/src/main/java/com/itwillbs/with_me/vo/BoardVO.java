@@ -50,6 +50,7 @@ public class BoardVO {
 	private String faq_file;
 	private Timestamp faq_date;
 	private String mem_name;
+	private String mem_email;
 	
 	
 	

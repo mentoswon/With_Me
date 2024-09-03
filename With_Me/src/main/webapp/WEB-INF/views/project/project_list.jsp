@@ -35,8 +35,11 @@
 				bottom: 0;
 				left: 90%;
 				right: 0;
-				width: 20px;
-				height: 20px;
+			    width: 25px;	
+			    height: 25px;
+			    background-color: transparent;
+			    border: none;
+			    cursor: pointer;
 			}
 			
 			.sec02 .itemList .itemWrapper .item .item_info h4 {
@@ -94,15 +97,6 @@
 			}
 		</style>
 		
-		<script type="text/javascript">
-			$(function() {
-				let progress = document.querySelectorAll('.progress');
-				let fund_rate = document.querySelectorAll('.fund_rate');
-
-				
-			});
-		
-		</script>
 	</head>
 	<body>
 		<header>
@@ -150,10 +144,18 @@
 											<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
 												<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 											</a>
-											<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-											
-											<!-- 나중에 쓸 채워진 하트 -->
-			<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
+											<c:choose>
+												<c:when test="${project.like_mem_email eq sId and project.like_status eq 'Y'}">
+													<button class="like Btn" type="button" onclick="cancleLike('${project.project_code}', '${sId}')">
+														<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
+													</button>
+												</c:when>
+												<c:otherwise>
+													<button class="like Btn" type="button" onclick="registLike('${project.project_code}', '${sId}')">
+														<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+													</button>
+												</c:otherwise>
+											</c:choose>
 										</div>
 										<div class="item_info">
 											<h4><a href="OtherMemberInfo?creator_email=${project.creator_email}">${project.creator_name}</a></h4>
@@ -239,6 +241,55 @@
 	</body>
 	
 	<script type="text/javascript">
+		// 프로젝트 좋아요
+		function registLike(project_code, sId) {
+				console.log("project_code : " + project_code + ", sId : " + sId);
+			if(confirm("프로젝트를 좋아요 하시겠습니까?")){
+				$.ajax({
+					url: "RegistLike",
+					type : "POST",
+					async:false, // 이 한줄만 추가해주시면 됩니다.
+					data:{
+						"like_project_code": project_code,
+						"like_mem_email": sId
+					},
+					dataType: "json",
+					success: function (response) {
+						if(response.result){
+							alert("좋아한 프로젝트에 추가되었습니다.");
+							location.reload();
+						} else if(!response.result) {
+							alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+							location.href="MemberLogin";
+						}
+					}
+				});
+			}
+		}
+		
+		// 프로젝트 좋아요 취소
+		function cancleLike(project_code, sId) {
+				console.log("project_code : " + project_code + ", sId : " + sId);
+			$.ajax({
+				url: "CancleLike",
+				type : "POST",
+				async:false, // 이 한줄만 추가해주시면 됩니다.
+				data:{
+					"like_project_code": project_code,
+					"like_mem_email": sId
+				},
+				dataType: "json",
+				success: function (response) {
+					if(response.result){
+						alert("좋아요가 취소되었습니다.");
+						location.reload();
+					} else if(!response.result) {
+						alert("로그인 후 이용가능합니다. \n로그인 페이지로 이동합니다.");
+						location.href="MemberLogin";
+					}
+				}
+			});
+		}
 	</script>
 </html>
 

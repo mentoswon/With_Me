@@ -155,7 +155,7 @@
 			, 0                 -- faq_re_lev
 			, 0                 -- faq_re_seq
 			, #{faq_content}
-			, #{faq_file}
+<!-- 			, #{faq_file} -->
 			, now()
 			, #{sId}                 -- sId
 		)
@@ -222,7 +222,8 @@
 	<!-- 1:1문의 상세글 조회  -->
    <select id="selectQnaBoardDetail" resultType="qnabo">
 		SELECT * 
-		FROM faq
+		FROM faq f JOIN member m 
+		ON f.mem_email = m.mem_email
 		WHERE faq_idx = #{faq_idx}
 	</select>
 	
@@ -249,13 +250,58 @@
 		SET
 			faq_subject = #{faq_subject}
 			, faq_content = #{faq_content}
-			, faq_file = #{faq_file}
+<!-- 			, faq_file = #{faq_file} -->
 		WHERE
 			faq_idx = #{faq_idx}	
 	</update>
 	
 	
 	
+	
+	
+		<!-- 
+	답글 작성을 위한 기존 답글들의 순서번호 조정 - UPDATE
+	=> 참조글번호(board_re_ref)가 대상 게시물의 참조글 번호와 같고
+	   순서번호(board_re_seq)가 대상 게시물의 순서번호보다 큰 레코드들의
+	   순서번호 값을 1씩 증가(+1) 처리
+	-->
+	<update id="updateBoardReSeq">
+		UPDATE faq
+		SET
+			faq_re_seq = faq_re_seq + 1
+		WHERE
+			faq_re_ref = #{faq_re_ref}
+			AND faq_re_seq > #{faq_re_seq}
+	</update>
+	
+	
+	
+		<!-- 
+	답글 등록 - INSERT
+	=> 기본적으로 새 글 등록 작업과 대부분 동일하나, 
+	   참조글번호(board_re_ref)는 전달받은 값(원본글의 참조글번호) 그대로 사용하고
+	   순서번호와 들여쓰기레벨 값은 전달받은 값(원본글의 값) + 1 값 사용
+	-->
+	<insert id="insertReplyBoard">
+		<selectKey keyProperty="faq_idx" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(faq_idx), 0) -- faq_idx 최대값 조회(null 일 경우 기본값 0 사용)
+			FROM faq
+		</selectKey>
+		
+		<!-- 새 글 번호와 참조글 번호는 <selectKey> 를 통회 조회한 #{board_num} 값 사용 -->
+		INSERT
+		INTO faq
+		VALUES (
+			#{faq_idx} + 1    -- selectKey 를 통회 조회된 게시물 번호 + 1 값 사용
+			, #{faq_subject}
+			, #{faq_re_ref}      -- faq_re_ref(전달받은 원본글의 값 사용)  => 새 글 작성과 다름
+			, #{faq_re_lev} + 1  -- faq_re_lev(전달받은 원본글의 값 + 1 사용)  => 새 글 작성과 다름
+			, #{faq_re_seq} + 1  -- faq_re_seq(전달받은 원본글의 값 + 1 사용)  => 새 글 작성과 다름
+			, #{faq_content}
+			, now()
+			, #{mem_name}
+		)
+	</insert>
 	
 
 

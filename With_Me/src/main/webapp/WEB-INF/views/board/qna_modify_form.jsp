@@ -52,7 +52,8 @@
 }
 
 #writeForm input[type="submit"],
-#writeForm input[type="button"] {
+#writeForm input[type="button"],
+#writeForm input[type="reset"] {
     background-color: #59b9a9; /* 버튼 배경색 */
     color: #fff; /* 버튼 텍스트 색상 */
     border: none;
@@ -84,17 +85,18 @@
     </header>
     <main>
         <section>
-            <!-- 게시판 등록 -->
+            <!-- 1:1문의 게시판 수정 -->
             <article id="writeForm">
                 <div>
                     <h1>1:1 문의하기</h1>
-                    <form action="QnaBoardWrite" name="writeForm" method="post">
+                    <form action="QnaBoardModify" name="writeForm" method="post">
                         <table>
                             <tr>
                             	<td>작성자</td>
                             </tr>
                             <tr>
                             	<td>
+                                	<input type="hidden" name="faq_idx" value="${qnabo.faq_idx}" required="required" size="15" readonly="readonly">
                                 	<input type="hidden" name="mem_id" value="${sessionScope.sId}" required="required" size="15" readonly="readonly">
                                 	<input type="text" name="mem_name" value="${sessionScope.sName}" required="required" size="15" readonly="readonly">
                                 </td>
@@ -125,20 +127,22 @@
                                 <td class="write_td_left"><label for="faq_subject">제목</label></td>
                             </tr>
                             <tr>
-                                <td class="write_td_right"><input type="text" id="faq_inquery" size="35" placeholder="한글 기준 2자 ~ 50자 사이로 입력해주세요" name="faq_subject" required="required" /></td>
+                                <td class="write_td_right"><input type="text" id="qna_inquery" size="35" placeholder="한글 기준 2자 ~ 50자 사이로 입력해주세요" 
+                                name="faq_subject" required="required"  value="${qnabo.faq_subject}"/></td>
+                                
                             </tr>
                             <tr>
                                 <td class="write_td_left"><label for="faq_content">내용</label></td>
                             </tr>
                             <tr>
                                 <td class="write_td_right">
-                                    <textarea id="qna_content" name="faq_content" rows="15" cols="40" placeholder="한글 기준 10자 이상 입력해주세요" required="required"></textarea>
+                                    <textarea id="qna_content" name="faq_content" rows="15" cols="40" placeholder="한글 기준 10자 이상 입력해주세요" required="required">${qnabo.faq_content}</textarea>
                                 </td>
                             </tr>
                         </table>
                         <section id="commandCell">
-                            <input type="submit" value="등록">&nbsp;&nbsp;
                             <input type="reset" value="다시쓰기">&nbsp;&nbsp;
+                            <input type="submit" value="수정">&nbsp;&nbsp;
                             <input type="button" value="취소" onclick="history.back()">
                         </section>
                     </form>

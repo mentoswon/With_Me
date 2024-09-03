@@ -69,6 +69,12 @@ public interface BoardMapper {
 	// 1:1 게시물 파일 삭제
 	int deleteQnaBoFile(Map<String, String> map);
 	
+	// 1:1 게시글 답글 순서번호 조정
+	void updateBoardReSeq(BoardVO board);
+	
+	// 1:1 게시글 답글 등록
+	int insertReplyBoard(BoardVO board);
+	
 	
 	
 	
