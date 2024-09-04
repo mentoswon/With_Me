@@ -39,12 +39,9 @@ section {
 	padding-top: 30px;
 	display: block;
 	height: 350px;
-/* 	background-color: gray; */
-	display: flex;
 }
 
 .sec01 .mainWrapper .itemList #category01 {
-	width: 50%;
 	height: 100%;
 /* 	background-color: pink; */
 }
@@ -56,7 +53,7 @@ section {
 }
 
 .sec01 .mainWrapper .itemList .cateTitle h4 {
-	margin-left: 10px;
+	font-size: 20px;
 }
 
 .sec01 .mainWrapper .itemList .cateTitle .more{
@@ -67,12 +64,11 @@ section {
 
 .sec01 .mainWrapper .itemList .itemWrapper {
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
 }
 
 .sec01 .mainWrapper .itemList .itemWrapper .item{
-/* 	background-color: blue; */
-	width: 45%;
+	width: 23%;
 	height: 100%;
 	position: relative;
 }
@@ -203,6 +199,9 @@ section {
 
 /* -------------------------------------------------------------------------------------- */
 /* section02 */
+.sec02>h4 {
+	font-size: 20px;
+}
 
 .sec02 .itemList {
 	padding-top: 30px;
@@ -257,6 +256,9 @@ section {
 
 /* -------------------------------------------------------------------------------------- */
 /* section03 */
+.sec03>h4 {
+	font-size: 20px;
+}
 
 .sec03 .itemList {
 	padding-top: 30px;

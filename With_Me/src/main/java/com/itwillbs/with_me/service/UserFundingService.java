@@ -189,6 +189,11 @@ public class UserFundingService {
 		return mapper.selectFundCount(user_funding_project_idx);
 	}
 
+	// 결제 정보 db 저장
+	public void registPaymentInfo(Map<String, Object> map) {
+		mapper.insertPaymentInfo(map);
+	}
+
 
 
 

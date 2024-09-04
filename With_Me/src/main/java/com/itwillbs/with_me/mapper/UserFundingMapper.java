@@ -117,6 +117,9 @@ public interface UserFundingMapper {
 	// 몇 번째 후원자인지 카운트
 	int selectFundCount(int user_funding_project_idx);
 
+	// 결제 정보 db 저장
+	void insertPaymentInfo(Map<String, Object> map);
+
 
 
 

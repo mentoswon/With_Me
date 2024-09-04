@@ -38,16 +38,6 @@
 
 	<!-- 프로젝트 목록 표출 -->
 	<select id="selectProjectList" resultType="hashmap">
-<!-- 		SELECT *  -->
-<!-- 			, (SELECT IFNULL(SUM(funding_pay_amt),0)  -->
-<!-- 				FROM funding_user  -->
-<!-- 				WHERE funding_project_idx = p.project_idx) AS funding_amt -->
-<!-- 		FROM project_info p  -->
-<!-- 		JOIN creator_info c -->
-<!-- 		ON p.creator_idx = c.creator_idx  -->
-<!-- 		LEFT JOIN like_ l -->
-<!-- 		ON l.like_project_code = p.project_code -->
-
 		SELECT p.*, c.*, 
 		<if test="id">
 			l.like_mem_email, l.like_status,
@@ -395,6 +385,7 @@
 			, #{user_funding_count}
 			, #{user_funding_address_idx}
 			, #{user_funding_plus_amt}
+			, now()
 			, #{user_funding_pay_amt}
 		)
 	</insert>
@@ -406,11 +397,12 @@
 			null
 			, #{user_funding_email}
 			, #{user_funding_project_idx}
-			, #{user_funding_rewardIdx}
-			, #{user_funding_itemOption}
+			, #{user_funding_reward_idx}
+			, #{user_funding_item_option}
 			, #{user_funding_count}
 			, #{user_funding_address_idx}
 			, #{user_funding_plus_amt}
+			, now()
 			, #{user_funding_pay_amt}
 		)
 		
@@ -422,4 +414,23 @@
 		FROM funding_user
 		WHERE funding_project_idx =#{user_funding_project_idx};	
 	</select>
+	
+	<!-- 결제 정보 db 저장 -->
+	<insert id="insertPaymentInfo">
+		<selectKey keyProperty="funding_idx" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(funding_idx),0)
+			FROM funding_user
+			WHERE funding_mem_email = #{user_funding_email}
+		</selectKey>
+		INSERT INTO project_payment
+		VALUES (
+			null
+			, #{user_funding_email}
+			, #{funding_idx}
+			, null
+			, 1
+			, null
+			, #{user_funding_pay_amt}
+		)
+	</insert>
 </mapper>

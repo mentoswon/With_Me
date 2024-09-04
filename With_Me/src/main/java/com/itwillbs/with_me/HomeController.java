@@ -2,7 +2,9 @@ package com.itwillbs.with_me;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,8 +16,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.itwillbs.with_me.service.HomeService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.StoreVO;
 
 /**
  * Handles requests for the application home page.
@@ -24,6 +29,9 @@ import com.itwillbs.with_me.vo.MemberVO;
 public class HomeController {
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private HomeService homeService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -57,6 +65,18 @@ public class HomeController {
 		}
 		// 세션 타이머 1시간으로 변경
 		session.setMaxInactiveInterval(60 * 60); // 60초 * 60분 = 3600
+		
+		// ========================================================================
+		
+		// 메인 페이지에 프로젝트 리스트 띄우기
+		List<Map<String, Object>> projectList = homeService.getProjectList();
+		model.addAttribute("projectList", projectList);
+		System.out.println(projectList);
+		
+		// 메인 페이지에 스토어 리스트 띄우기
+		List<StoreVO> storeList = homeService.getStoreList();
+		model.addAttribute("storeList", storeList);
+		System.out.println(storeList);
 		
 		return "index";
 	}

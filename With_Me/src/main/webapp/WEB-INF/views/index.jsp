@@ -26,68 +26,45 @@
 					<div class="itemList">
 						<div id="category01">
 							<div class="cateTitle">
-								<h4>해피 멍뭉 시리즈</h4>
-								<img class="more" alt="더보기" src="${pageContext.request.contextPath}/resources/image/plus.png">
+								<h4>주목할 만한 프로젝트</h4>
+								<a href="ProjectList?project_category=푸드">
+									<img class="more" alt="더보기" src="${pageContext.request.contextPath}/resources/image/plus.png">
+								</a>
 							</div>
 							<div class="itemWrapper">
-								<div class="item">
-									<div class="item_image">
-										<a href="#">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-										</a>
-									</div>
-									<div class="item_info">
-										<h4>55% 달성</h4>
-										<a href="#">제목</a>
-									</div>
-									<span class="tag">펀딩</span>
-								</div>
-								
-								<div class="item">
-									<div class="item_image">
-										<a href="#">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-										</a>
-									</div>
-									<div class="item_info">
-										<h4>55% 달성</h4>
-										<a href="#">제목</a>
-									</div>
-									<span class="tag">펀딩</span>
-								</div>
-							</div>
-						</div>
-						<div id="category02">
-							<div class="cateTitle">
-								<h4>해피 냥냥 시리즈</h4>
-								<img class="more" alt="더보기" src="${pageContext.request.contextPath}/resources/image/plus.png">
-							</div>
-							<div class="itemWrapper">
-								<div class="item">
-									<div class="item_image">
-										<a href="#">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample.jpg">
-										</a>
-									</div>
-									<div class="item_info">
-										<h4>55% 달성</h4>
-										<a href="#">제목</a>
-									</div>
-									<span class="tag">펀딩</span>
-								</div>
-								
-								<div class="item">
-									<div class="item_image">
-										<a href="#">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample.jpg">
-										</a>
-									</div>
-									<div class="item_info">
-										<h4>55% 달성</h4>
-										<a href="#">제목</a>
-									</div>
-									<span class="tag">펀딩</span>
-								</div>
+								<c:set var="limit" value="0"/>
+								<c:forEach items="${projectList}" varStatus="status">
+									<c:if test="${projectList[status.index] != null and limit < 4}">
+										<div class="item">
+											<div class="item_image">
+												<a href="ProjectDetail?project_title=${projectList[status.index].project_title}&project_code=${projectList[status.index].project_code}">
+													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${projectList[status.index].project_image}">
+												</a>
+											</div>
+											<div class="item_info">
+											
+												<%-- 펀딩률 --%>
+												<fmt:parseNumber var="funding_amt" value="${projectList[status.index].funding_amt*1.0}" ></fmt:parseNumber>
+												<fmt:parseNumber var="target_price" value="${projectList[status.index].target_price}" ></fmt:parseNumber>
+												
+												<c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
+												
+												
+												<c:choose>
+													<c:when test="${fund_rate eq 0.0}">
+														<h4>0% 달성</h4>
+													</c:when>
+													<c:otherwise>
+														<h4><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>% 달성</h4>
+													</c:otherwise>
+												</c:choose>
+												<a href="ProjectDetail?project_title=${projectList[status.index].project_title}&project_code=${projectList[status.index].project_code}">${projectList[status.index].project_title}</a>
+											</div>
+											<span class="tag">펀딩</span>
+										</div>
+									<c:set var="limit" value="${limit + 1}"/>
+									</c:if>
+								</c:forEach>
 							</div>
 						</div>
 					</div>
@@ -239,114 +216,27 @@
 				</div>
 			</section>
 			
-			<section class="sec02">
-				<h4>컨텐츠 제목 입력</h4>
-				
-				<div class="itemList">
-					<div class="itemWrapper">
-						<div class="item">
-							<div class="item_image">
-								<a href="#">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
-								</a>
-							</div>
-							<div class="item_info">
-								<h4>55% 달성</h4>
-								<a href="#">제목</a>
-							</div>
-							<span class="tag">펀딩</span>
-						</div>
-						
-						<div class="item">
-							<div class="item_image">
-								<a href="#">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
-								</a>
-							</div>
-							<div class="item_info">
-								<h4>55% 달성</h4>
-								<a href="#">제목</a>
-							</div>
-							<span class="tag">펀딩</span>
-						</div>
-						<div class="item">
-							<div class="item_image">
-								<a href="#">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
-								</a>
-							</div>
-							<div class="item_info">
-								<h4>55% 달성</h4>
-								<a href="#">제목</a>
-							</div>
-							<span class="tag">펀딩</span>
-						</div>
-						<div class="item">
-							<div class="item_image">
-								<a href="#">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
-								</a>
-							</div>
-							<div class="item_info">
-								<h4>55% 달성</h4>
-								<a href="#">제목</a>
-							</div>
-							<span class="tag">펀딩</span>
-						</div>
-						<div class="item">
-							<div class="item_image">
-								<a href="#">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
-								</a>
-							</div>
-							<div class="item_info">
-								<h4>55% 달성</h4>
-								<a href="#">제목</a>
-							</div>
-							<span class="tag">펀딩</span>
-						</div>
-					</div>
-				</div>
-			</section>
-			
 			<section class="sec03">
-				<h4>컨텐츠 제목 입력</h4>
+				<h4>위드미의 PICK !</h4>
 				<div class="itemList">
 					<div class="itemWrapper">
-						<div class="item">
-							<div class="item_image">
-								<a href="#">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
-								</a>
-							</div>
-							<div class="item_info">
-								<h4><a href="#">제품명</a></h4>
-								<span><fmt:formatNumber value="10000" pattern="#,###"/>원</span>
-							</div>
-						</div>
-						
-						<div class="item">
-							<div class="item_image">
-								<a href="#">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
-								</a>
-							</div>
-							<div class="item_info">
-								<h4><a href="#">제품명</a></h4>
-								<span><fmt:formatNumber value="10000" pattern="#,###"/>원</span>
-							</div>
-						</div>
-						<div class="item">
-							<div class="item_image">
-								<a href="#">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample3.jpg">
-								</a>
-							</div>
-							<div class="item_info">
-								<h4><a href="#">제품명</a></h4>
-								<span><fmt:formatNumber value="10000" pattern="#,###"/>원</span>
-							</div>
-						</div>
+						<c:set var="limit" value="0"/>
+						<c:forEach items="${storeList}" varStatus="status">
+							<c:if test="${storeList[status.index] != null and limit < 3}">
+								<div class="item">
+									<div class="item_image">
+										<a href="StoreDetail?product_name=${storeList[status.index].product_name}&product_code=${storeList[status.index].product_code}">
+											<img alt="이미지" src="${pageContext.request.contextPath}/resources/${storeList[status.index].product_img}">
+										</a>
+									</div>
+									<div class="item_info">
+										<h4><a href="StoreDetail?product_name=${storeList[status.index].product_name}&product_code=${storeList[status.index].product_code}">${storeList[status.index].product_name}</a></h4>
+										<span><fmt:formatNumber value="${storeList[status.index].product_price}" pattern="#,###"/>원</span>
+									</div>
+								</div>
+								<c:set var="limit" value="${limit + 1}"/>
+							</c:if>
+						</c:forEach>
 					</div>
 				</div>
 			</section>
