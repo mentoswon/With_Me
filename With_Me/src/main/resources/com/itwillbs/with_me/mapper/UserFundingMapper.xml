@@ -38,15 +38,28 @@
 
 	<!-- 프로젝트 목록 표출 -->
 	<select id="selectProjectList" resultType="hashmap">
-		SELECT * 
-			, (SELECT IFNULL(SUM(funding_pay_amt),0) 
-				FROM funding_user 
-				WHERE funding_project_idx = p.project_idx) AS funding_amt
-		FROM project_info p 
-		JOIN creator_info c
-		ON p.creator_idx = c.creator_idx 
-		LEFT JOIN like_ l
-		ON l.like_project_code = p.project_code
+<!-- 		SELECT *  -->
+<!-- 			, (SELECT IFNULL(SUM(funding_pay_amt),0)  -->
+<!-- 				FROM funding_user  -->
+<!-- 				WHERE funding_project_idx = p.project_idx) AS funding_amt -->
+<!-- 		FROM project_info p  -->
+<!-- 		JOIN creator_info c -->
+<!-- 		ON p.creator_idx = c.creator_idx  -->
+<!-- 		LEFT JOIN like_ l -->
+<!-- 		ON l.like_project_code = p.project_code -->
+
+		SELECT p.*, c.*, 
+		<if test="id">
+			l.like_mem_email, l.like_status,
+		</if>
+		(SELECT IFNULL(SUM(funding_pay_amt),0) FROM funding_user WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p JOIN creator_info c
+		ON p.creator_idx = c.creator_idx
+		
+		<if test="id">
+			LEFT JOIN like_ l
+			ON p.project_code = l.like_project_code AND l.like_mem_email = #{id}
+		</if> 
 		WHERE 
 		<choose>
 			<when test="!searchKeyword.equals('')">

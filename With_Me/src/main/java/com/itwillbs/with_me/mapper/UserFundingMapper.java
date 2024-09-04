@@ -25,7 +25,8 @@ public interface UserFundingMapper {
 												@Param("category_detail")String category_detail,
 												@Param("searchKeyword")String searchKeyword, 
 												@Param("startRow")int startRow, 
-												@Param("listLimit")int listLimit);
+												@Param("listLimit")int listLimit,
+												@Param("id")String id);
 
 
 	// 프로젝트 상세정보 가져오기

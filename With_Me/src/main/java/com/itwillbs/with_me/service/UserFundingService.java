@@ -26,8 +26,8 @@ public class UserFundingService {
 	}
 	
 	// 리스트 가져오기
-	public List<Map<String, Object>> getProjectList(String category, String category_detail, String searchKeyword, int startRow, int listLimit) {
-		return mapper.selectProjectList(category,category_detail, searchKeyword,startRow,listLimit);
+	public List<Map<String, Object>> getProjectList(String category, String category_detail, String searchKeyword, int startRow, int listLimit, String id) {
+		return mapper.selectProjectList(category,category_detail, searchKeyword,startRow,listLimit, id);
 	}
 
 	

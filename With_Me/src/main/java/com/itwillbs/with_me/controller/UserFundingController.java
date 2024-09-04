@@ -97,20 +97,12 @@ public class UserFundingController {
 		}
 		
 		// ===================================================================
-        
-        // 내가 좋아요 한건지 판단 후 가져가기 -----------------------------
-//        String id = (String) session.getAttribute("sId");
-//        String project_code = project.getProject_code();
-//        
-//        LikeVO isLike = service.getIsLike(project_code, id);
-//        System.out.println("isLike : " + isLike);
-        
-        // ===================================================================
-		
-		
 		// --------------------------------------------------------------------
 		// 목록 표출하기
-		List<Map<String, Object>> projectList = service.getProjectList(category, category_detail, searchKeyword, startRow, listLimit);
+		
+		String id = (String)session.getAttribute("sId");
+		
+		List<Map<String, Object>> projectList = service.getProjectList(category, category_detail, searchKeyword, startRow, listLimit, id);
 		
 		System.out.println("projectList : " + projectList);
 		
