@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>위드미 | 프로젝트 시작하기</title>
+<title>With_Me</title>
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
@@ -41,7 +41,7 @@ article {	/* 가운데 정렬 */
 
 /* ----- 작성중인 프로젝트 ---------- */
 #updateProjectWrap img {
-	width: 100px;
+	width: 120px;
 	height: 100px;
 	margin-right: 20px;
 	caret-color: transparent;	/* 커서 깜빡임 없애기 */
@@ -186,7 +186,14 @@ label.selected {
 				</a>
 				<div id="updateProjectWrap">
 					<div id="projectContent">
-						<img alt="로고" src="${pageContext.request.contextPath}/resources/image/image.png">
+						<c:choose>
+							<c:when test="${empty project[0].project_image}">
+								<img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
+							</c:when>
+							<c:otherwise>
+								<img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project[0].project_image}">
+							</c:otherwise>
+						</c:choose>
 						<h3>${project[0].project_title}</h3>
 					</div>
 					<div>

@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>위드미 | 프로젝트 등록</title>
+<title>With_Me</title>
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/project_create.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
@@ -516,6 +516,33 @@ $(function() {
             alert("옵션 항목은 최대 15개까지 추가할 수 있습니다.");
         }
     });
+	
+	// 'Enter' 누를 시 새로운 input 필드 추가 (최대 15개까지)
+    $(document).on("keydown", ".itemText", function(event) {
+    	if(event.keyCode == 13) {	// Enter(13) 누를 시
+            event.preventDefault();
+    		
+         	// 현재 포커스된 input이 마지막 input인지 확인
+            let inputFields = $("#objectiveWrap input[type='text']");
+            let currentIndex = inputFields.index(this);
+            
+            console.log("inputFields : " + (inputFields.length - 1)  + ", currentIndex : " + currentIndex);
+            
+            if (currentIndex == (inputFields.length - 1)) {
+                // 마지막 input일 경우, 새 input 필드를 추가
+                if (inputFields.length < 15) { // 현재 input 개수가 15개 미만일 때만 추가
+                    let newInput = $("<input type='text' name='item_option_name' class='itemText'>");
+                    $("#objectiveWrap").append(newInput); // objectiveWrap의 마지막 input 요소 뒤에 새 input 요소 추가
+                    newInput.focus(); // 새로운 input 필드에 포커스 이동
+                } else {
+                    alert("옵션 항목은 최대 15개까지 추가할 수 있습니다.");
+                }
+            } else {
+                // 마지막 input이 아닐 경우, 다음 input으로 포커스 이동
+                inputFields.eq(currentIndex + 1).focus();
+            }
+        }
+    });
     
 	// 등록 버튼 클릭 시 AJAX 요청 전송(아이템 등록 및 리스트 조회)
     $("#itemRegist").on("click", function(event) {
@@ -610,27 +637,70 @@ $(function() {
 	    	// AJAX 활용하여 "DeleteItem" 서블릿 요청(파라미터 : item_idx) - POST
 	    	$.ajax({
 	            type: "POST",
-	            url: "DeleteItem",  // 서버의 삭제 처리 URL
+	            url: "DeleteItem",
 	            data: {
-	            	"item_idx" : item_idx
+	            	"item_idx" : item_idx,
+	            	"deleteConfirm" : false
 	            },
 	            dataType: "json",
 	            success: function(response) {
-	            	console.log(JSON.stringify(response));
-					if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
-						alert("잘못된 접근입니다!");
-					} else if(!response.result) { // 삭제 실패일 경우
-	                    alert("아이템 삭제에 실패하였습니다.");
-					} else if(response.result) { // 삭제 성공일 경우
-	                    // 삭제된 아이템 요소 제거
+	            	console.log("서버 응답 데이터:", response); // 응답 데이터 전체 출력
+	                
+	                if(response.isInvalidSession) {
+	                    alert("잘못된 접근입니다!");
+	                // 후원구성에 아이템 포함되어 있을 경우 재 confirm
+	                } else if (response.confirm) {
+	                	// rewardIdxList에 해당하는 요소들을 미리 선택하여 저장
+	                    let elementsToRemove = [];
+	                    response.rewardIdxList.forEach(function(item) {
+	                    	let element = $(".trashImg2[data-reward-idx='" + item.reward_idx + "']").parent();
+	                        if (element.length > 0) {
+	                            elementsToRemove.push(element);
+	                        }
+	                    });
+	                	
+	                    console.log("elementsToRemove" + elementsToRemove);
+	                    
+	                    if (confirm("이 아이템 삭제 시 " + response.rewardIdxList.length + "개의 후원 구성도 함께 삭제됩니다.\n정말 삭제하시겠습니까?")) {
+	                        $.ajax({
+	                            type: "POST",
+	                            url: "DeleteItem",
+	                            data: {
+	                                "item_idx": item_idx,
+	                                "deleteConfirm" : true
+	                            },
+	                            dataType: "json",
+	                            success: function(deleteResponse) {
+	                                if (deleteResponse.result) {
+	                                    alert("삭제 되었습니다.");
+	                                    $(removeItem).remove(); 
+	                                    $(removeItem2).remove();
+	                                 	
+	                                    // 미리 저장된 요소들을 삭제
+	                                    elementsToRemove.forEach(function(element) {
+	                                        element.remove();
+	                                    });
+	                                } else {
+	                                    alert("아이템 삭제에 실패하였습니다.");
+	                                }
+	                            },
+	                            error: function() {
+	                                alert("아이템 삭제 요청에 실패하였습니다.");
+	                            }
+	                        });	// 내부 ajax 끝
+	                    }
+	                } else if(response.result) {
 	                    $(removeItem).remove(); 
 	                    $(removeItem2).remove(); 
+	                } else {
+	                    alert("아이템 삭제에 실패하였습니다22.");
 	                }
 	            },
 	            error: function() {
-	                alert("아이템 삭제 요청에 실패하였습니다.");
+	                alert("아이템 삭제 요청에 실패하였습니다22.");
 	            }
 	        });	// ajax 끝
+	            
 	    }
 	});
 	
@@ -789,22 +859,24 @@ $(function() {
         // 서버로부터 받은 후원 구성 리스트를 사용하여 새로운 리스트 생성
         rewardList.forEach(function(reward) {
 			let listReward =  
-            	'<div class="rewardListWrap">'
-				+	'<div class="rewardList">'
-				+ 		'<h2>' + reward.reward_price + '원+</h2>'
-				+ 		'<h4>' + reward.reward_title + '</h4>'
-				+ 		'<p>'
-				+ 			'${reward.item_details}<br>'
-				+ 			'<c:if test="' + reward.amount_limit + ' == 'Y'">'
-				+ 				'수량 : ' + reward.item_amount + '개'
-				+ 			'</c:if>'
-				+ 		'</p>'
-				+ 		'<br>'
-				+ 	'</div>'
-				+ 	'<div class="trashImg2" data-reward-idx="' + reward.reward_idx + '">'
-				+ 		'<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">'
-				+ 	'</div>'
-				+ '</div>';
+			    	'<div class="rewardListWrap">'
+				  +   '<div class="rewardList">'
+				  +     '<h2>' + reward.reward_price + '원+</h2>'
+				  +     '<h4>' + reward.reward_title + '</h4>'
+				  +     '<p>'
+				  +       reward.item_details + '<br>';
+
+				if (reward.amount_limit === 'Y') {
+				    listReward += '수량 : ' + reward.item_amount + '개<br>';
+				}
+
+				listReward += 
+				      '</p>'
+				  +   '</div>'
+				  +   '<div class="trashImg2" data-reward-idx="' + reward.reward_idx + '">'
+				  +     '<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">'
+				  +   '</div>'
+				  + '</div>';
 				
 			$("#rewardListContainer").append(listReward);
 			
@@ -1074,6 +1146,43 @@ $(function() {
     $("#projectForm").on("submit", function() {
         let targetPrice = $("#target_price").val().replace(/,/g, ""); // 콤마 제거
         $("#target_price").val(targetPrice); // 원래 값으로 복원
+        
+		// 각 필수 필드가 입력되었는지 확인
+		// 1) 기본정보(카테고리, 세부카테고리, 제목, 요약, 대표이미지)
+		let isCategorySelected = $("#project_category").val() !== null;
+		let isCategoryDetailSelected = $("#project_category_detail").val() !== null;
+		let isTitleFilled = $("#project_title").val().trim() !== '' && $("#project_title").val().length >= 10;
+		let isSummaryFilled = $("#project_summary").val().trim() !== '' && $("#project_summary").val().length >= 10;
+		let isImageUploaded = $("#projectImg").val() !== '' || $("#project_image").val() !== '';
+		
+		// 2) 펀딩계획(목표금액, 펀딩일정(시작일, 종료일))
+		let targetPriceValue = $("#target_price").val().trim().replace(/,/g, '');
+        let isPriceFilled = targetPriceValue !== '' && parseInt(targetPriceValue, 10) >= 500000 && parseInt(targetPriceValue, 10) <= 9999999999;
+
+		let isStartDateFilled = $("#start_date").val() !== '';
+		let isEndDateFilled = $("#end_date").val() !== '';
+		// ---- 요금제는 기본 Basic으로 선택되어 있음 -----
+		
+		// 3) 프로젝트계획(소개, 예산)
+		let isIntroduceUploaded = $("#introduceImg").val() !== '' || $("#project_introduce").val() !== '';
+		let isBudgetUploaded = $("#budgetImg").val() !== '' || $("#project_budget").val() !== '';
+		
+		// 4) 창작자정보(창작자이름, 프로필이미지, 창작자소개, 본인인증, 입금계좌)
+		let isCreatorNameFilled = $("#creator_name").val() !== '';
+		let isCreatorUploaded = $("#creatorImg").val() !== '' || $("#creator_image").val() !== '';
+		let isCreatorIntroduceFilled = $("#creator_introduce").val() !== '';
+		
+		// 모든 필수 항목이 입력되었거나 선택되었는지 확인
+		if (isCategorySelected && isCategoryDetailSelected && isTitleFilled && isSummaryFilled && isImageUploaded 
+				&& isPriceFilled && isStartDateFilled && isEndDateFilled
+				&& isIntroduceUploaded && isBudgetUploaded
+				&& isCreatorNameFilled && isCreatorUploaded && isCreatorIntroduceFilled) {
+			return true;
+		} else {
+			return false;
+		}
+        
+		
     });
     
 });	// ready 이벤트 끝
@@ -1105,10 +1214,12 @@ function linkAccount() {
 				<a href="./" class="main_logo">
 					<img alt="위드미 로고" src="${pageContext.request.contextPath}/resources/image/withme.png">
 				</a>
-				<div>
-					<input type="button" id="save" value="저장하기">
-					<input type="button" id="request" value="심사요청" disabled>
-					<input type="hidden" name="project_code" id="project_code" value="FUND">
+				<div style="width: 245px;">
+					<c:if test="${project.project_status eq '작성중'}">
+						<input type="button" id="save" value="저장하기">
+						<input type="button" id="request" value="심사요청" disabled>
+						<input type="hidden" name="project_code" id="project_code" value="FUND">
+					</c:if>
 				</div>
 			</div>
 		</header>
@@ -1168,13 +1279,13 @@ function linkAccount() {
 						</p>
 					</div>
 					<div class="projectContentWrap">
-						<select id="project_category" class="select" name="project_category">
+						<select id="project_category" class="select" name="project_category" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
 							<c:forEach var="category" items="${category}">
 								<option value="${category.common_code}" <c:if test="${project.project_category eq category.common_code_name}">selected</c:if>>${category.common_code_name}</option>
 							</c:forEach>
 						</select>
 						<br><br>
-						<select id="project_category_detail" class="select" name="project_category_detail">
+						<select id="project_category_detail" class="select" name="project_category_detail" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
 							<option disabled selected hidden>세부 카테고리를 선택하세요.</option>
 							<c:forEach var="categoryDetail" items="${category_detail}">
 								<option value="${categoryDetail.common_code}" <c:if test="${project.project_category_detail eq categoryDetail.common_code_name}">selected</c:if>>${categoryDetail.common_code_name}</option>
@@ -1192,7 +1303,7 @@ function linkAccount() {
 						</p>
 					</div>
 					<div class="projectContentWrap">
-						<input type="text" name="project_title" id="project_title" placeholder="제목을 입력해주세요." maxlength="30" value="${project.project_title}">
+						<input type="text" name="project_title" id="project_title" placeholder="제목을 입력해주세요." maxlength="30" value="${project.project_title}" <c:if test="${project.project_status != '작성중'}">readonly</c:if>>
 						<div class="LengthCheck">
 							<span id="checkLengthTitle"></span>
 							<p><span id="titleLength">0</span>/30</p>
@@ -1215,7 +1326,7 @@ function linkAccount() {
 						</div>
 					</div>
 					<div class="projectContentWrap">
-						<textarea name="project_summary" id="project_summary" rows="5" cols="10" placeholder="프로젝트 요약을 입력해주세요." maxlength="50"><c:if test="${not empty project.project_summary}">${project.project_summary}</c:if></textarea>
+						<textarea name="project_summary" id="project_summary" rows="5" cols="10" placeholder="프로젝트 요약을 입력해주세요." maxlength="50" <c:if test="${project.project_status != '작성중'}">readonly</c:if>><c:if test="${not empty project.project_summary}">${project.project_summary}</c:if></textarea>
 						<div class="LengthCheck">
 							<span id="checkLengthSummary"></span>
 							<p><span id="summaryLength">0</span>/50</p>
@@ -1234,16 +1345,18 @@ function linkAccount() {
 					</div>
 					<div class="projectContentWrap">
 						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
-						<input type="hidden" id="projectImg" value="${project.project_image}">
-						<input type="file" name="projectImg" id="project_image">
-						<label for="project_image">
-							<div class="fileUpload">
-								<span class="uploadImg">
-									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-									이미지 업로드
-								</span>
-							</div>
-						</label>
+						<c:if test="${project.project_status eq '작성중'}">
+							<input type="hidden" name="project_image" id="projectImg" value="${project.project_image}">
+							<input type="file" name="projectImg" id="project_image" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
+							<label for="project_image">
+								<div class="fileUpload">
+									<span class="uploadImg">
+										<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+										이미지 업로드
+									</span>
+								</div>
+							</label>
+						</c:if>
 						<div class="imagePreview">
 							<img id="project_image_preview" <c:if test="${not empty project.project_image}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_image}"</c:if>>
 						</div>
@@ -1269,7 +1382,7 @@ function linkAccount() {
 						</div>
 					</div>
 					<div class="projectContentWrap">
-						<input type="text" id="search_tag_text" placeholder="Enter를 눌러 핵심 키워드를 등록해주세요.">
+						<input type="text" id="search_tag_text" placeholder="Enter를 눌러 핵심 키워드를 등록해주세요." <c:if test="${project.project_status != '작성중'}">readonly</c:if>>
 						<input type="hidden" name="search_tag" id="search_tag" value="${project.search_tag}">
 						<div class="LengthCheck">
 							<span id="checkTagResult" style="color: #ccc; font-size: 13px;">문자로만 최소 1자 이상 입력해주세요.</span>
@@ -1280,9 +1393,11 @@ function linkAccount() {
 			                <c:forTokens items="${project.search_tag}" delims="|" var="tag">
 			                	<span class='tag'>
 			                		${tag}
-			                		<span class='removeTag'>
-			                			<img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'>
-			                		</span>
+			                		<c:if test="${project.project_status eq '작성중'}">
+				                		<span class='removeTag'>
+				                			<img src='${pageContext.request.servletContext.contextPath}/resources/image/removeTag.png'>
+				                		</span>
+			                		</c:if>
 			                	</span>
 			                </c:forTokens>
 			            </div>
@@ -1316,7 +1431,7 @@ function linkAccount() {
 							<table style="border: 1px solid #ccc; width: 100%;">
 								<tr>
 									<td>
-										<input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." maxlength="14" value="${project.target_price}" style="border: none; text-align: right; width: 565px;">
+										<input type="text" name="target_price" id="target_price" placeholder="50만원 이상의 금액을 입력하세요." maxlength="14" value="${project.target_price}" style="border: none; text-align: right; width: 565px;" <c:if test="${project.project_status != '작성중'}">readonly</c:if>>
 									</td>
 									<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
 								</tr>
@@ -1369,7 +1484,7 @@ function linkAccount() {
 						</div>
 					</div>
 					<div class="projectContentWrap">
-						<jsp:include page="/WEB-INF/views/project/calendar.jsp"></jsp:include>
+						<jsp:include page="/WEB-INF/views/project/project_create_calendar.jsp"></jsp:include>
 						<br><br>
 					</div>
 				</div>
@@ -1396,7 +1511,7 @@ function linkAccount() {
 									<p>
 										<b style="color: #FFAB40; font-size: 20px;">✓</b> 위드미 펀딩의 기본 기능으로 나만의 프로젝트를 실현하세요.
 									</p>
-									<button id="basic" class="paymentButton">선택하기</button>
+									<button id="basic" class="paymentButton" onclick="alert('서비스 준비중입니다'); return false;">선택하기</button>
 								</div>
 							</div>
 							<br>
@@ -1415,7 +1530,7 @@ function linkAccount() {
 									<p>
 										<b style="color: #FFAB40; font-size: 20px;">✓</b> 프리미엄 요금제 선택 시 우선적으로 메인페이지 상단에 노출될 수 있어요!
 									</p>
-									<button id="premium" class="paymentButton">선택하기</button>
+									<button id="premium" class="paymentButton" onclick="alert('서비스 준비중입니다'); return false;">선택하기</button>
 								</div>
 								
 							</div>
@@ -1442,9 +1557,11 @@ function linkAccount() {
 		           						</p>
 		           						<br>
 									</div>
-		           					<div class="trashImg" data-item-idx="${item.item_idx}">
-		           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
-									</div>
+		        					<c:if test="${project.project_status eq '작성중'}">
+			           					<div class="trashImg" data-item-idx="${item.item_idx}">
+			           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+										</div>
+	           						 </c:if>
 								</div>
 							</c:forEach>
 						</div>
@@ -1460,7 +1577,7 @@ function linkAccount() {
 							<div id="registItemForm">
 								<input type="hidden" name="project_idx" value="${project.project_idx}">
 								<b>아이템 이름</b>
-								<input type="text" name="item_name" id="item_name" maxlength="50" style="width: 100%;">
+								<input type="text" name="item_name" id="item_name" maxlength="50" style="width: 100%;" <c:if test="${project.project_status != '작성중'}">readonly</c:if>>
 								<div class="LengthCount">
 									<p><span id="itemNameLength">0</span>/50</p>
 								</div>
@@ -1499,7 +1616,7 @@ function linkAccount() {
 								<hr class="dividingLine2">
 								<div style="display: flex; justify-content: space-between;">
 									<input type="reset" id="reset" value="초기화">
-									<input type="button" id="itemRegist" value="등록">
+									<input type="button" id="itemRegist" value="등록" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
 								</div>
 							</div>
 						</div>
@@ -1531,9 +1648,11 @@ function linkAccount() {
 										</p>
 		           						<br>
 									</div>
-		           					<div class="trashImg2" data-reward-idx="${reward.reward_idx}">
-		           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
-									</div>
+		        					<c:if test="${project.project_status eq '작성중'}">
+			           					<div class="trashImg2" data-reward-idx="${reward.reward_idx}">
+			           						<img alt="휴지통아이콘" src="${pageContext.request.contextPath}/resources/image/trash_icon.png">
+										</div>
+			           				</c:if>
 								</div>
 							</c:forEach>
 						</div>
@@ -1561,7 +1680,7 @@ function linkAccount() {
 								
 								<b>후원 이름</b><br>
 								<span>어떤 아이템으로 구성되었는지 쉽게 알 수 있는 설명을 입력해주세요.</span>
-								<input type="text" name="reward_title" id="reward_title" placeholder="예) 강아지 간식, 배송비 포함" maxlength="50" style="width: 100%;">
+								<input type="text" name="reward_title" id="reward_title" placeholder="예) 강아지 간식, 배송비 포함" maxlength="50" style="width: 100%;" <c:if test="${project.project_status != '작성중'}">readonly</c:if>>
 								<div class="LengthCount">
 									<p><span id="rewardTitleLength">0</span>/50</p>
 								</div>
@@ -1604,7 +1723,7 @@ function linkAccount() {
 								<table style="border: 1px solid #ccc; width: 100%;">
 									<tr>
 										<td>
-											<input type="text" name="reward_price" id="reward_price" placeholder="1000원 이상의 금액을 입력하세요." maxlength="10" style="border: none; text-align: right; width: 565px;">
+											<input type="text" name="reward_price" id="reward_price" placeholder="1000원 이상의 금액을 입력하세요." maxlength="10" style="border: none; text-align: right; width: 565px;" <c:if test="${project.project_status != '작성중'}">readonly</c:if>>
 										</td>
 										<td style="text-align: center; padding-bottom: 2px;" width="40px">원</td>
 									</tr>
@@ -1615,7 +1734,7 @@ function linkAccount() {
 								<hr class="dividingLine2">
 								<div style="display: flex; justify-content: space-between;">
 									<input type="reset" id="reset" value="초기화">
-									<input type="button" id="rewardRegist" value="등록">
+									<input type="button" id="rewardRegist" value="등록" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
 								</div>
 							</div>
 						</div>
@@ -1645,16 +1764,18 @@ function linkAccount() {
 					</div>
 					<div class="projectContentWrap">
 						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
-						<input type="hidden" id="introduceImg" value="${project.project_introduce}">
-						<input type="file" name="introduceImg" id="project_introduce">
-						<label for="project_introduce">
-							<div class="fileUpload">
-								<span class="uploadImg">
-									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-									소개 이미지 업로드
-								</span>
-							</div>
-						</label>
+						<c:if test="${project.project_status eq '작성중'}">
+							<input type="hidden" name="project_introduce" id="introduceImg" value="${project.project_introduce}">
+							<input type="file" name="introduceImg" id="project_introduce">
+							<label for="project_introduce">
+								<div class="fileUpload">
+									<span class="uploadImg">
+										<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+										소개 이미지 업로드
+									</span>
+								</div>
+							</label>
+						</c:if>
 						<div class="imagePreview">
 							<img id="project_introduce_preview" <c:if test="${not empty project.project_introduce}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_introduce}"</c:if>>
 						</div>
@@ -1681,16 +1802,18 @@ function linkAccount() {
 					</div>
 					<div class="projectContentWrap">
 						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
-						<input type="hidden" id="budgetImg" value="${project.project_budget}">
-						<input type="file" name="budgetImg" id="project_budget">
-						<label for="project_budget">
-							<div class="fileUpload">
-								<span class="uploadImg">
-									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-									예산 이미지 업로드
-								</span>
-							</div>
-						</label>
+						<c:if test="${project.project_status eq '작성중'}">
+							<input type="hidden" name="project_budget" id="budgetImg" value="${project.project_budget}">
+							<input type="file" name="budgetImg" id="project_budget">
+							<label for="project_budget">
+								<div class="fileUpload">
+									<span class="uploadImg">
+										<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+										예산 이미지 업로드
+									</span>
+								</div>
+							</label>
+						</c:if>
 						<div class="imagePreview">
 							<img id="project_budget_preview"  <c:if test="${not empty project.project_budget}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_budget}"</c:if>>
 						</div>
@@ -1724,16 +1847,18 @@ function linkAccount() {
 					</div>
 					<div class="projectContentWrap">
 						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
-						<input type="hidden" id="scheduleImg" value="${project.project_schedule}">
-						<input type="file" name="scheduleImg" id="project_schedule">
-						<label for="project_schedule">
-							<div class="fileUpload">
-								<span class="uploadImg">
-									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-									일정 이미지 업로드
-								</span>
-							</div>
-						</label>
+						<c:if test="${project.project_status eq '작성중'}">
+							<input type="hidden" name="project_schedule" id="scheduleImg" value="${project.project_schedule}">
+							<input type="file" name="scheduleImg" id="project_schedule">
+							<label for="project_schedule">
+								<div class="fileUpload">
+									<span class="uploadImg">
+										<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+										일정 이미지 업로드
+									</span>
+								</div>
+							</label>
+						</c:if>
 						<div class="imagePreview">
 							<img id="project_schedule_preview" <c:if test="${not empty project.project_schedule}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_schedule}"</c:if>>
 						</div>
@@ -1753,16 +1878,18 @@ function linkAccount() {
 					</div>
 					<div class="projectContentWrap">
 						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
-						<input type="hidden" id="teamIntroduceImg" value="${project.project_team_introduce}">
-						<input type="file" name="teamIntroduceImg" id="project_team_introduce">
-						<label for="project_team_introduce">
-							<div class="fileUpload">
-								<span class="uploadImg">
-									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-									팀소개 이미지 업로드
-								</span>
-							</div>
-						</label>
+						<c:if test="${project.project_status eq '작성중'}">
+							<input type="hidden" name="project_team_introduce" id="teamIntroduceImg" value="${project.project_team_introduce}">
+							<input type="file" name="teamIntroduceImg" id="project_team_introduce">
+							<label for="project_team_introduce">
+								<div class="fileUpload">
+									<span class="uploadImg">
+										<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+										팀소개 이미지 업로드
+									</span>
+								</div>
+							</label>
+						</c:if>
 						<div class="imagePreview">
 							<img id="project_team_introduce_preview" <c:if test="${not empty project.project_team_introduce}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_team_introduce}"</c:if>>
 						</div>
@@ -1781,16 +1908,18 @@ function linkAccount() {
 					</div>
 					<div class="projectContentWrap">
 						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
-						<input type="hidden" id="sponsorImg" value="${project.project_sponsor}">
-						<input type="file" name="sponsorImg" id="project_sponsor">
-						<label for="project_sponsor">
-							<div class="fileUpload">
-								<span class="uploadImg">
-									<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-									후원 설명 이미지 업로드
-								</span>
-							</div>
-						</label>
+						<c:if test="${project.project_status eq '작성중'}">
+							<input type="hidden" name="project_sponsor" id="sponsorImg" value="${project.project_sponsor}">
+							<input type="file" name="sponsorImg" id="project_sponsor">
+							<label for="project_sponsor">
+								<div class="fileUpload">
+									<span class="uploadImg">
+										<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+										후원 설명 이미지 업로드
+									</span>
+								</div>
+							</label>
+						</c:if>
 						<div class="imagePreview">
 							<img id="project_sponsor_preview" <c:if test="${not empty project.project_sponsor}"> src="${pageContext.request.contextPath}/resources/upload/${project.project_sponsor}"</c:if>>
 						</div>
@@ -1812,7 +1941,7 @@ function linkAccount() {
 						<div class="projectWriteBorder">
 							<h4>프로젝트 정책</h4>
 							<p>이 프로젝트의 정책을 기입해주세요.</p>
-							<textarea name="project_policy" id="project_policy" rows="8" cols="10" maxlength="10000" style="width: 100%;">${project.project_policy}</textarea>
+							<textarea name="project_policy" id="project_policy" rows="8" cols="10" maxlength="10000" style="width: 100%;" <c:if test="${project.project_status != '작성중'}">readonly</c:if>>${project.project_policy}</textarea>
 							<div class="LengthCount">
 								<p><span id="projectPolicyLength">0</span>/1000</p>
 							</div>
@@ -1832,7 +1961,7 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<input type="text" name="creator_name" id="creator_name" maxlength="20" value="${creator.creator_name}">
+						<input type="text" name="creator_name" id="creator_name" maxlength="20" value="${creator.creator_name}" <c:if test="${project.project_status != '작성중'}">readonly</c:if>>
 						<div class="LengthCheck">
 							<span id="checkCreatorName"></span>
 							<p><span id="nameLength">0</span>/20</p>
@@ -1852,7 +1981,7 @@ function linkAccount() {
 					</div>
 					<div class="projectContentWrap" style="display: flex; align-items: center;">
 						<!-- 기존 파일 경로를 숨겨진 필드로 저장 -->
-						<input type="hidden" id="creatorImg" value="${creator.creator_image}">
+						<input type="hidden" name="creator_image" id="creatorImg" value="${creator.creator_image}">
 						<input type="file" name="creatorImg" id="creator_image">
 						<div class="imagePreview creatorName">
 							<c:choose>
@@ -1865,14 +1994,16 @@ function linkAccount() {
 							</c:choose>
 						</div>
 						<div>
-							<label for="creator_image">
-								<div class="fileUpload" style="width: 410px;">
-									<span class="uploadImg">
-										<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
-										이미지 업로드
-									</span>
-								</div>
-							</label>
+							<c:if test="${project.project_status eq '작성중'}">
+								<label for="creator_image">
+									<div class="fileUpload" style="width: 410px;">
+										<span class="uploadImg">
+											<img alt="업로드아이콘" src="${pageContext.request.contextPath}/resources/image/upload_icon.png">
+											이미지 업로드
+										</span>
+									</div>
+								</label>
+							</c:if>
 							<p>
 								파일 형식은 jpg 또는 gif로, 사이즈는 가로 200px, <br>
 								세로 200px 이상으로 올려주세요.
@@ -1892,7 +2023,7 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<textarea name="creator_introduce" id="creator_introduce" rows="5" cols="10" placeholder="간단한 이력과 소개를 써주세요." maxlength="300"><c:if test="${not empty creator.creator_introduce}">${creator.creator_introduce}</c:if></textarea>
+						<textarea name="creator_introduce" id="creator_introduce" rows="5" cols="10" placeholder="간단한 이력과 소개를 써주세요." maxlength="300" <c:if test="${project.project_status != '작성중'}">readonly</c:if>><c:if test="${not empty creator.creator_introduce}">${creator.creator_introduce}</c:if></textarea>
 						<div class="LengthCheck">
 							<span id="checkCreatorIntroduce"></span>
 							<p><span id="introduceLength">0</span>/300</p>
@@ -1911,7 +2042,7 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<input type="button" value="본인인증하기" class="button" onclick="selfIdentification()">
+						<input type="button" value="본인인증하기" class="button" onclick="selfIdentification()" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
 						<br><br> 
 					</div>
 				</div>
@@ -1927,7 +2058,7 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<input type="button" value="계좌등록하기" class="button" onclick="linkAccount()">
+						<input type="button" value="계좌등록하기" class="button" onclick="linkAccount()" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
 						<p>
 							<span class="importanceImg">
 								<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">

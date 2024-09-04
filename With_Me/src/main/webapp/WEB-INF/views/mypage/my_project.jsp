@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>위드미 | 내가 만든 프로젝트</title>
+<title>With_Me</title>
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
@@ -134,7 +134,7 @@ input[type="button"]:hover:not(:disabled) {
 .requestDelete.disabled {
     background-color: #e0e0e0;
     color: #a0a0a0;
-    cursor: not-allowed;
+    cursor: default;
     opacity: 0.6;
 }
 

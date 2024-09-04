@@ -134,10 +134,34 @@
 	WHERE project_idx = #{project_idx}
 </select>
 
+<!-- 삭제하려는 아이템이 포함되어 있는 후원구성 개수 조회 - SELECT -->
+<select id="selectRewardIdxList" resultType="hashmap">
+	SELECT r.reward_idx
+	FROM reward_info r
+	JOIN project_info p ON r.project_idx = p.project_idx
+	JOIN item_info i ON p.project_idx = i.project_idx
+	WHERE i.item_idx = #{item_idx}
+	AND FIND_IN_SET(#{item_idx}, REPLACE(r.reward_item_idx, '|', ',')) > 0
+</select>
+
 <!-- 아이템 삭제 - DELETE -->
 <delete id="deleteItem">
 	DELETE FROM item_info
 	WHERE item_idx = #{item_idx}
+</delete>
+
+<!-- 아이템 포함되어 있는 후원구성까지 삭제 - DELETE -->
+<delete id="deleteIncludeReward">
+	DELETE r
+	FROM reward_info r
+	JOIN (
+	    SELECT r.reward_idx
+	    FROM reward_info r
+	    JOIN project_info p ON r.project_idx = p.project_idx
+	    JOIN item_info i ON p.project_idx = i.project_idx
+	    WHERE i.item_idx = #{item_idx}
+	    AND FIND_IN_SET(#{item_idx}, REPLACE(r.reward_item_idx, '|', ',')) > 0
+	) AS subquery ON r.reward_idx = subquery.reward_idx
 </delete>
 
 <!-- 후원 구성 등록 - INSERT -->
@@ -185,42 +209,42 @@
     UPDATE project_info
     SET 
     	<if test="!project_code.equals('FUND')">
-	        project_code = #{project_code}
+	        project_code = #{project_code}, 
     	</if>
         <if test="!project_status.equals('')">
-            , project_status = #{project_status}
+            project_status = #{project_status}, 
         </if>
-        , project_category = (SELECT common_code_name
+        project_category = (SELECT common_code_name
                             FROM common_code
                             WHERE common_code = #{project_category}
-                            AND common_code_top = 'FUND')
+                            AND common_code_top = 'FUND'), 
         <if test="!project_category_detail.equals('')">
-        	, project_category_detail = (SELECT common_code_name
-             	                         FROM common_code
-               		                     WHERE common_code = #{project_category_detail})
+        	project_category_detail = (SELECT common_code_name
+             	                       FROM common_code
+               		                   WHERE common_code = #{project_category_detail}), 
         </if>
         <if test="project_category_detail.equals('')">
-            , project_category_detail = ''
+            project_category_detail = '', 
         </if>
-        , project_title = #{project_title}
-        , project_summary = #{project_summary}
-        , project_image = #{project_image}
-        , search_tag = #{search_tag}
-        , target_price = #{target_price}
-        , funding_commission = #{funding_commission}
-        , funding_start_date = CASE 
+        project_title = #{project_title}, 
+        project_summary = #{project_summary}, 
+        project_image = #{project_image}, 
+        search_tag = #{search_tag}, 
+        target_price = #{target_price}, 
+        funding_commission = #{funding_commission}, 
+        funding_start_date = CASE 
             WHEN #{funding_start_date} != '' THEN #{funding_start_date}  -- 시작일 선택시에만 값 넣기
-            ELSE null END
-        , funding_end_date = CASE 
+            ELSE null END, 
+        funding_end_date = CASE 
             WHEN #{funding_end_date} != '' THEN #{funding_end_date} 
-            ELSE null END
-        , project_introduce = #{project_introduce}
-        , project_budget = #{project_budget}
-        , project_schedule = #{project_schedule}
-        , project_team_introduce = #{project_team_introduce}
-        , project_sponsor = #{project_sponsor}
-       	, project_policy = #{project_policy}
-        , project_submit_date = now()
+            ELSE null END, 
+        project_introduce = #{project_introduce}, 
+        project_budget = #{project_budget}, 
+        project_schedule = #{project_schedule}, 
+        project_team_introduce = #{project_team_introduce}, 
+        project_sponsor = #{project_sponsor}, 
+       	project_policy = #{project_policy}, 
+        project_submit_date = now()
     WHERE project_idx = #{project_idx}
 </update>
 

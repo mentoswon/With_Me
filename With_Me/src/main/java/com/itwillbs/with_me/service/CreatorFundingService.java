@@ -81,9 +81,19 @@ public class CreatorFundingService {
 		return mapper.selectItemList(project_idx);
 	}
 
+	// 삭제하려는 아이템이 포함되어 있는 후원구성 개수 조회 요청
+	public List<Integer> getRewardIdxList(String item_idx) {
+		return mapper.selectRewardIdxList(item_idx);
+	}
+
 	// 아이템 삭제 요청
 	public int deleteItem(String item_idx) {
 		return mapper.deleteItem(item_idx);
+	}
+
+	// 아이템 포함되어 있는 후원구성 삭제 요청
+	public int deleteIncludeReward(String item_idx) {
+		return mapper.deleteIncludeReward(item_idx);
 	}
 
 	// 후원 구성 등록 요청
@@ -125,6 +135,8 @@ public class CreatorFundingService {
 	public List<Map<String, String>> getDeleteRequestList(String id) {
 		return mapper.selectDeleteRequestList(id);
 	}
+
+
 
 	// 심사중인 프로젝트 목록 조회 요청
 //	public List<ProjectVO> getReviewProjectList(String id) {

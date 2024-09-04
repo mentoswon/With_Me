@@ -197,19 +197,47 @@ public class CreatorFundingController {
 	// 아이템 삭제
 	@ResponseBody
 	@PostMapping("DeleteItem")
-	public String deleteItem(@RequestParam("item_idx") String item_idx) throws Exception {
+	public String deleteItem(@RequestParam("item_idx") String item_idx, @RequestParam("deleteConfirm") boolean deleteConfirm) throws Exception {
 		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
-		// 아이템 삭제 요청
-		int deleteCount = service.deleteItem(item_idx);
-		// 삭제 요청 처리 결과 판별
-		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
-		if(deleteCount > 0) {
-			resultMap.put("result", true);
-		} else {
-			resultMap.put("result", false);
+		
+		if (!deleteConfirm) {
+			// 아이템 삭제 전 포함되어 있는 후원 구성 몇 개인지 도출
+//			int rewardCount = service.getRewardCount(item_idx);
+//			if (rewardCount > 0) {	// 후원 구성에 포함되어 있을 경우 사용자에게 확인 후 삭제
+			List<Integer> rewardIdxList  = service.getRewardIdxList(item_idx);
+			if (!rewardIdxList.isEmpty()) {	// 후원 구성에 포함되어 있을 경우 사용자에게 확인 후 삭제
+				// 사용자에게 이 값을 확인하여 사용자에게 confirm 창을 띄울 수 있도록 보냄
+				resultMap.put("confirm", true);
+//				resultMap.put("rewardCount", rewardCount);  // 몇 개의 후원 구성에 포함되어 있는지 정보도 함께 보냄
+				resultMap.put("rewardIdxList", rewardIdxList );  // 몇번의 후원 구성에 아이템이 포함되어 있는지 정보도 함께 보냄
+			} else {	// 후원 구성에 포함되어 있지 않으면 바로 삭제
+				// 아이템 삭제 요청
+				int deleteCount = service.deleteItem(item_idx);
+				// 삭제 요청 처리 결과 판별
+				// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+				if(deleteCount > 0) {
+					resultMap.put("result", true);	// 삭제 성공
+				} else {
+					resultMap.put("result", false);	// 삭제 실패
+				}
+			}
+		} else {	// 삭제 허용 시
+			// 아이템 포함되어 있는 후원구성부터 삭제 요청
+			int deleteCount = service.deleteIncludeReward(item_idx);
+			// 아이템 삭제 요청
+			int deleteCount2 = service.deleteItem(item_idx);
+			
+			// 삭제 요청 처리 결과 판별
+			// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
+			if(deleteCount > 0 && deleteCount2 > 0) {
+				resultMap.put("result", true);	// 삭제 성공
+			} else {
+				resultMap.put("result", false);	// 삭제 실패
+			}
 		}
+		
 		
 		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
 		// => org.json.JSONObject 클래스 활용

@@ -49,9 +49,15 @@ public interface CreatorFundingMapper {
 
 	// 아이템 리스트 조회
 	List<ItemVO> selectItemList(String project_idx);
+	
+	// 삭제하려는 아이템이 포함되어 있는 후원구성 개수 조회
+	List<Integer> selectRewardIdxList(String item_idx);
 
 	// 아이템 삭제
 	int deleteItem(String item_idx);
+
+	// 아이템 포함되어 있는 후원구성 삭제
+	int deleteIncludeReward(String item_idx);
 
 	// 후원 구성 등록
 	int insertReward(Map<String, String> map);
@@ -77,6 +83,8 @@ public interface CreatorFundingMapper {
 
 	// 프로젝트 취소 요청한 프로젝트 조회
 	List<Map<String, String>> selectDeleteRequestList(String id);
+
+
 
 
 
