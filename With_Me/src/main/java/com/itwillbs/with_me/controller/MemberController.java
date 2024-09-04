@@ -571,14 +571,13 @@ public class MemberController {
 		// 좋아요 리스트 나타내기
 //		List<Map<String, Object>> likeList = service.getOtherLikeList(startRow, listLimit, memEmail);
 		
-		// 팔로우, 좋아요는 창작자이거나 아니거나 다 볼 수 있어야 하기 때문에
-		// mem_email을 들고와서 비교를 해야 값을 들고올 수 있다. !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		List<CreatorVO> creatorInfo = service.getOtherCreatorInfo(creatorEmail);
-		if(creatorInfo != null) {
-			String getCreator_email = creatorInfo.get(0).getCreator_email();
-			System.out.println("getCreator_email : " + getCreator_email);
+//		if(creatorInfo.size() > 0 ) {
+//			creatorEmail = creatorInfo.get(0).getCreator_email();
+//		} 
+		
+		System.out.println("creatorEmail : " + creatorEmail);
 			
-		}
 		
 		System.out.println("creatorInfo : " + creatorInfo);
 		model.addAttribute("creatorInfo", creatorInfo);
@@ -628,10 +627,11 @@ public class MemberController {
 	    	System.out.println("창작자 맞는 사람 정보 : " + creatorInfo);
 	    	model.addAttribute("creatorInfo", creatorInfo);
 	    	
-	    	// 창작자가 아닌경우 팔로우 목록 나타내기
+	    	// 창작자인 경우 팔로우 목록 나타내기
 //	    	List<Map<String, Object>> otherCreatorfollowList = service.getOtherCreatorFollowtList(startRow, listLimit, getCreator_email);
-//	    	System.out.println("otherCreatorfollowList : " + otherCreatorfollowList);
-//	    	model.addAttribute("otherCreatorfollowList", otherCreatorfollowList);
+	    	List<Map<String, Object>> otherCreatorfollowList = service.getOtherCreatorFollowtList(startRow, listLimit, creator_email);
+	    	System.out.println("otherCreatorfollowList : " + otherCreatorfollowList);
+	    	model.addAttribute("otherCreatorfollowList", otherCreatorfollowList);
 	    	
 	    }
 	    

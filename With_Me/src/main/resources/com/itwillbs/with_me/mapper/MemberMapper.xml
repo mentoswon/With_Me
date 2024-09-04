@@ -100,7 +100,7 @@
 	</select>
 	
 	<!-- 상대방 마이페이지 이메일로 창작자 조회 -->
-	<select id="selectOtherCreatorInfo" resultType="hashmap">
+	<select id="selectOtherCreatorInfo" resultType="creator">
 		SELECT c.creator_idx, c.creator_email, c.creator_name, c.creator_image, c.creator_introduce, c.phone_auth_status
 				, m.mem_email
 		FROM creator_info c JOIN member m
