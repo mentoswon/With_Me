@@ -445,7 +445,7 @@ public class MemberController {
 		// 프로젝트 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
 		// 팔로우 목록 나타내기
-		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit, member);
+		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit, member.getMem_email());
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
 		
@@ -554,8 +554,9 @@ public class MemberController {
 //		String memEmail = member.getMem_email();
 		String creatorEmail = creator.getCreator_email();
 		
-		// 크리에이터 이메일이랑 조인해서 mem_email 들고오기
-		List<MemberVO> memEmail = service.getMemEmail(creatorEmail);
+		// 크리에이터 이메일이랑 조인해서 mem_email 들고오면은 창작자 아닌 사람의 경우에는 값을 가져오지 못함
+		// 그래서 mem_email로 팔로우나 크리에이터 정보를 가져와야한다.
+		String memEmail = service.getMemEmail(creatorEmail);
 		System.out.println("memEmail !!!!!!!!!! : " + memEmail);
 		
 		// 팔로우 목록 나타내기
@@ -603,7 +604,7 @@ public class MemberController {
 	    if(creatorName == null) {
 	        MemberVO notCreatorMember= service.getMemberInfo(creatorEmail);
 	            
-	        System.out.println("창작자 아닌 사람 정보 : " + notCreatorMember);
+	        System.out.println("창작자 아닌 사람 정보  !!!!!!!!!! : " + notCreatorMember);
 	        model.addAttribute("notCreatorMember", notCreatorMember);
 	        
 	    // 창작자 이름이 있다면 크리에이터 정보를 마이페이지에 뿌림

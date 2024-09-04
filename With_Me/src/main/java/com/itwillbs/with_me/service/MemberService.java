@@ -112,12 +112,17 @@ public class MemberService {
 	}
 
 	// 내 마이페이지에서 팔로우 리스트 가져오기
-	public List<Map<String, Object>> getFollowtList(int startRow, int listLimit, MemberVO member) {
-		return mapper.selectFollowList(startRow, listLimit, member);
+	public List<Map<String, Object>> getFollowtList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectFollowList(startRow, listLimit, mem_email);
+	}
+	
+	// 크리에이터 이메일 들고와서 mem_email 들고오기
+	public String getMemEmail(String creatorEmail) {
+		return mapper.selectMemEmail(creatorEmail);
 	}
 	
 	// 상대방 마이페이지에서 팔로우 리스트 가져오기
-	public List<Map<String, Object>> getOtherFollowtList(int startRow, int listLimit, List<MemberVO> memEmail) {
+	public List<Map<String, Object>> getOtherFollowtList(int startRow, int listLimit, String memEmail) {
 		return mapper.selectOtherFollowList(startRow, listLimit, memEmail);
 	}
 
@@ -165,10 +170,6 @@ public class MemberService {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 	}
 
-	// 크리에이터 이메일 들고와서 mem_email 들고오기
-	public List<MemberVO> getMemEmail(String creatorEmail) {
-		return mapper.selectMemEmail(creatorEmail);
-	}
 
 }
 

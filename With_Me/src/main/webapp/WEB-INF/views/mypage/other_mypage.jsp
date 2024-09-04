@@ -210,57 +210,57 @@ $(function() {
 						                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
 						
 						                <c:forEach var="creator" items="${creatorInfo}">
-						                <c:forEach var="project" items="${projectList}">
-						                    <c:choose>
-						                        <c:when test="${project.creator_idx eq creator.creator_idx && project.funding_end_date > today}">
-						                            <c:set var="hasValidProject" value="true" />
-						                            <div class="item">
-						                                <div class="item_image">
-						                                    <a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
-						                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-						                                    </a>
-						                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-						                                    <!-- 나중에 쓸 채워진 하트 -->
-								<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
-						                                </div>
-						                                <div class="item_info">
-						                                    <h4><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
-						                                    <h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
-						                                </div>
-						                                <div class="fund_info">
-						                                    <div class="fund_leftWrap">
-						                                        <fmt:parseNumber var="funding_amt" value="${project.funding_amt*1.0}" ></fmt:parseNumber>
-						                                        <fmt:parseNumber var="target_price" value="${project.target_price}" ></fmt:parseNumber>
-						                                        <c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
-						                                        <c:choose>
-						                                            <c:when test="${fund_rate eq 0.0}">
-						                                                <div class="fund_rate">0%</div>
-						                                            </c:when>
-						                                            <c:otherwise>
-						                                                <div class="fund_rate">${fund_rate}%</div>
-						                                            </c:otherwise>
-						                                        </c:choose>
-						                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
-						                                    </div>
-						                                    <div class="fund_etc">
-						                                        <c:choose>
-						                                            <c:when test="${leftDay eq 0}">
-						                                                오늘 마감
-						                                            </c:when>
-						                                            <c:otherwise>
-						                                                <fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
-						                                                <fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-						                                                <c:set value="${endDate - strDate}" var="leftDay"/>
-						                                                <c:out value="${leftDay}" />일 남음
-						                                            </c:otherwise>
-						                                        </c:choose>
-						                                    </div>
-						                                </div>
-						                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
-						                            </div>
-						                        </c:when>
-						                    </c:choose>
-						                </c:forEach>
+							                <c:forEach var="project" items="${projectList}">
+							                    <c:choose>
+							                        <c:when test="${project.creator_idx eq creator.creator_idx && project.funding_end_date > today}">
+							                            <c:set var="hasValidProject" value="true" />
+							                            <div class="item">
+							                                <div class="item_image">
+							                                    <a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
+							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+							                                    </a>
+							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+							                                    <!-- 나중에 쓸 채워진 하트 -->
+									<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
+							                                </div>
+							                                <div class="item_info">
+							                                    <h4><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
+							                                    <h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
+							                                </div>
+							                                <div class="fund_info">
+							                                    <div class="fund_leftWrap">
+							                                        <fmt:parseNumber var="funding_amt" value="${project.funding_amt*1.0}" ></fmt:parseNumber>
+							                                        <fmt:parseNumber var="target_price" value="${project.target_price}" ></fmt:parseNumber>
+							                                        <c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
+							                                        <c:choose>
+							                                            <c:when test="${fund_rate eq 0.0}">
+							                                                <div class="fund_rate">0%</div>
+							                                            </c:when>
+							                                            <c:otherwise>
+							                                                <div class="fund_rate">${fund_rate}%</div>
+							                                            </c:otherwise>
+							                                        </c:choose>
+							                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
+							                                    </div>
+							                                    <div class="fund_etc">
+							                                        <c:choose>
+							                                            <c:when test="${leftDay eq 0}">
+							                                                오늘 마감
+							                                            </c:when>
+							                                            <c:otherwise>
+							                                                <fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+							                                                <fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
+							                                                <c:set value="${endDate - strDate}" var="leftDay"/>
+							                                                <c:out value="${leftDay}" />일 남음
+							                                            </c:otherwise>
+							                                        </c:choose>
+							                                    </div>
+							                                </div>
+							                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+							                            </div>
+							                        </c:when>
+							                    </c:choose>
+							                </c:forEach>
 						                </c:forEach>
 						            </div>
 						        </div>

@@ -59,13 +59,13 @@ public interface MemberMapper {
 	List<Map<String, Object>> selectFollowList(
 								@Param("startRow") int startRow,
 								@Param("listLimit") int listLimit,
-								@Param("member") MemberVO member);
+								@Param("mem_email") String mem_email);
 	
 	// 상대방 마이페이지에서 팔로우 리스트 조회
 	List<Map<String, Object>> selectOtherFollowList(
 								@Param("startRow") int startRow,
 								@Param("listLimit") int listLimit,
-								@Param("memEmail") List<MemberVO> memEmail);
+								@Param("memEmail") String memEmail);
 
 	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //	List<FollowVO> selectFollowerCount(List<FollowVO> followerCount);
@@ -100,7 +100,7 @@ public interface MemberMapper {
 			@Param("address_receiver_tel")String address_receiver_tel);
 
 	// creator_email 들고와서 mem_email값 가져오기
-	List<MemberVO> selectMemEmail(String creatorEmail);
+	String selectMemEmail(String creatorEmail);
 
 
 

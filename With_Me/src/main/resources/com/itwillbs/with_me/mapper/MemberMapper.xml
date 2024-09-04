@@ -144,33 +144,40 @@
 	
 	<!-- 내 마이페이지에서 팔로우 리스트 조회 -->
 	<select id="selectFollowList" resultType="hashmap">
-		SELECT f.follow_idx, f.follow_mem_email, f.follow_creator, f.follow_status
-		FROM follow f join member m
-		ON m.mem_email = f.follow_mem_email
-		WHERE m.mem_email = #{mem_email}
+		SELECT *,
+			(SELECT mem_name
+		 	FROM member m
+         	WHERE f.follow_mem_email = m.mem_email) AS mem_name,
+         	(SELECT creator_name
+			 FROM creator_info c
+        	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
+		FROM follow f
+		WHERE follow_creator = #{mem_email}
 		LIMIT
-			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
-			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+			#{startRow}     
+			, #{listLimit}  
 	</select>
 	
 	
 	<!-- 크리에이터 이메일로 mem_email값 가져오기 -->
-	<select id="selectMemEmail" resultType="hashmap">
+	<select id="selectMemEmail" resultType="String">
 		SELECT m.mem_email
 		FROM member m JOIN creator_info c
 		ON m.mem_email = c.creator_email
-		where c.creator_email = #{creatorEmail}
+		WHERE c.creator_email = #{creatorEmail}
 	</select>
 	
-	<!-- 상대방 마이페이지에서 팔로우 리스트 조회 -->
+	<!-- 상대방 마이페이지에서 팔로우 리스트 조회(나를 팔로우 한 사람) -->
 	<select id="selectOtherFollowList" resultType="hashmap">
-		SELECT f.follow_idx, f.follow_mem_email, f.follow_creator, f.follow_status
-				, c.creator_email, c.creator_idx, c.creator_name, c.creator_image
-		FROM follow f join member m
-		ON m.mem_email = f.follow_mem_email
-		JOIN creator_info c
-		ON m.mem_email = c.creator_email
-		WHERE m.mem_email = #{memEmail}
+		SELECT *,
+			(SELECT mem_name
+		 	FROM member m
+         	WHERE f.follow_mem_email = m.mem_email) AS mem_name,
+         	(SELECT creator_name
+			 FROM creator_info c
+        	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
+		FROM follow f
+		WHERE follow_creator = #{memEmail}
 		LIMIT
 			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
 			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
