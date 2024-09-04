@@ -461,7 +461,7 @@
 			});
 			
 			// 주소 리스트 출력 및 주소 영역 초기화
-			function updateAddressList(addressList) {
+			function updateAddressList(addressList) { 
 				console.log(addressList);
 				// 기존 리스트 초기화
 				$("#addressList").empty();
