@@ -510,6 +510,26 @@ input[type="radio"] {
 	object-fit: cover;
 }
 
+#smsBtn {
+	width: 100px;
+	height: 40px;
+	margin: 10px;
+	border-radius: 8px;
+	border: none;
+	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+}
+
+#smsBtn:enabled:hover {
+	background-color: #FFAB40;
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+#smsBtn:disabled {
+	background-color: #f0f0f0;
+}
+
 /* ----- 창작자 가이드 ----------- */
 .creatorGuide {
 	background-color: #ffebeb;

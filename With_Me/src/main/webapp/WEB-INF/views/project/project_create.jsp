@@ -1047,11 +1047,103 @@ $(function() {
 	    reader.readAsDataURL(file);
 	});
     
+	// 본인인증 - 휴대번호 입력
+	$('#phone_number').on('input', function() {
+        // 숫자만 남기기
+        let value = $(this).val().replace(/\D/g, '');
+        let formattedValue = '';
+
+        // 포맷팅 로직
+        if (value.length > 0) {
+            if (value.length <= 10) {
+                // 10자리 이하일 경우
+                formattedValue += value.substring(0, 3); // 첫 3자리
+                if (value.length > 3) {
+                    formattedValue += '-' + value.substring(3, 6); // 중간 3자리
+                }
+                if (value.length > 6) {
+                    formattedValue += '-' + value.substring(6, 10); // 마지막 4자리
+                }
+            } else {
+                // 11자리 이상일 경우
+                formattedValue += value.substring(0, 3); // 첫 3자리
+                formattedValue += '-' + value.substring(3, 7); // 중간 4자리
+                formattedValue += '-' + value.substring(7, 11); // 마지막 4자리
+            }
+        }
+
+        // 포맷된 값으로 업데이트
+        $(this).val(formattedValue);
+    });
+
+    // 숫자입력만 허용하는 keypress
+    $('#phone_number').on('keypress', function(e) {
+    	let keyCode = event.keyCode;
+        if (keyCode < 48 || keyCode > 57) {
+            event.preventDefault();
+        }
+    });
     
-    
+	// 유효성 검사: 첫 3자리가 010 또는 011인지 확인
+    $('#phone_number').on('keyup', function() {
+        let value = $(this).val().replace(/\D/g, ''); // 숫자만 남기기
+        if (value.length >= 3) {
+            let prefix = value.substring(0, 3);
+            if (prefix !== '010' && prefix !== '011') {
+                $("#checkTelResult").text("010또는 011 먼저 입력해주세요.");
+		        $("#checkTelResult").css("color", "red");
+		        $("#smsBtn").prop("disabled", true);	// 버튼 비활성화
+		    } else {
+		        $("#checkTelResult").text(""); // 메시지 제거
+		        $("#smsBtn").prop("disabled", false);	// 버튼 활성화
+            }
+        }
+        if (value.length < 10) {
+            $("#checkTelResult").text("양식에 맞지 않는 번호입니다.");
+	        $("#checkTelResult").css("color", "red");
+	        $("#smsBtn").prop("disabled", true);	// 버튼 비활성화
+	    } else {
+	        $("#checkTelResult").text(""); // 메시지 제거
+	        $("#smsBtn").prop("disabled", false);	// 버튼 활성화
+		}
+    });
+
     // -----------------------------------------------
     // 본인인증(cool sms)
+    function selfIdentification() {
+	    $.ajax({
+	        type: 'POST',
+	        url: 'SendSms',
+	        data: { 
+	        	"phone_number": $("#phone_number").val().trim().replace(/\D/g, ''); // 하이픈 제거(숫자만 남기기)
+	        },
+	        dataType : "json",
+	        success: function(response) {
+	            alert("인증코드가 전송되었습니다.");
+	        },
+	        error: function() {
+	            alert("인증코드 전송이 실패했습니다.");
+	        }
+	    });
+	}
     
+    function verifyCode() {
+        $.ajax({
+            type: 'POST',
+            url: 'VerifyCode',
+            data: { 
+                "phone_number": $("#phone_number").val().trim().replace(/\D/g, ''),
+                "code": $("#verification_code").val().trim() 
+            },
+            dataType : "json",
+            success: function(response) {
+                alert(response);
+            },
+            error: function() {
+                alert("인증에 실패했습니다.");
+            }
+        });
+    }
     
     
     
@@ -1181,9 +1273,9 @@ $(function() {
 		} else {
 			return false;
 		}
-        
-		
     });
+
+    
     
 });	// ready 이벤트 끝
 
@@ -2042,7 +2134,20 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<input type="button" value="본인인증하기" class="button" onclick="selfIdentification()" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
+						<table style="border: 1px solid #ccc;">
+							<tr>
+								<td>
+									<input type="text" name="phone_number" id="phone_number" placeholder="휴대번호를 숫자로만 입력해주세요." maxlength="13" style="border: none; text-align: left; width: 420px;">
+								</td>
+								<td style="text-align: center; padding-bottom: 2px;" width="40px">
+									<input type="button" value="본인인증하기" id="smsBtn" onclick="selfIdentification()"disabled>
+								</td>
+							</tr>
+						</table>
+						<div>
+							<span id="checkTelResult"></span>
+						</div>
+<%-- 						<input type="button" value="본인인증하기" class="button" onclick="selfIdentification()" <c:if test="${creator.phone_auth_status == 'Y'}">disabled</c:if>> --%>
 						<br><br> 
 					</div>
 				</div>
