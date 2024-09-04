@@ -95,6 +95,11 @@
 				background-color: #ffab40;
 				border-radius: 3px;
 			}
+			
+			.progress.end::-webkit-progress-value {
+				background-color: #ffab40;
+				border-radius: 3px;
+			}
 		</style>
 		
 	</head>
@@ -170,23 +175,26 @@
 											
 											<c:choose>
 												<c:when test="${fund_rate eq 0.0}">
-													<div class="fund_rate">0%</div>
+													<div class="fund_rate" style="<c:if test='${project.funding_end_date < today}'> color: #575757; </c:if>" >0%</div>
 												</c:when>
 												<c:otherwise>
-													<div class="fund_rate"><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>%</div>
+													<div class="fund_rate" style="<c:if test='${project.funding_end_date < today}'> color: #575757; </c:if>" ><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>%</div>
 												</c:otherwise>
 											</c:choose>
 											<%-- 펀딩률 end --%>
 											
-											<div class="fund_amt"><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
+											<div class="fund_amt" style="<c:if test='${project.funding_end_date < today}'> color: #575757; </c:if>" ><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
 										</div>
-										<div class="fund_etc" style="<c:if test="${leftDay eq 0 || project.funding_start_date > today}">color:#ffab40;font-weight: bold;</c:if>">
+										<div class="fund_etc" style="<c:if test="${leftDay eq 0 or project.funding_start_date > today}">color:#ffab40;font-weight: bold;</c:if> <c:if test='${project.funding_end_date < today}'>font-weight: bold;</c:if>">
 											<c:choose>
 												<c:when test="${leftDay eq 0}">
 													오늘 마감
 												</c:when>
 												<c:when test="${project.funding_start_date > today}">
 													<fmt:formatDate value="${project.funding_start_date}" pattern="MM/dd"/>  오픈
+												</c:when>
+												<c:when test="${project.funding_end_date < today}">
+													펀딩 마감
 												</c:when>
 												<c:otherwise>
 												
@@ -202,7 +210,14 @@
 										</div> <%-- 남은 날짜/오늘 마감/오픈 날짜/펀딩 성공 --%>
 									</div>
 <!-- 										<div class="fund_rate_var"></div> -->
-									<progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+									<c:choose>
+										<c:when test="${project.funding_end_date < today}">
+											<progress class="progress end" value="${fund_rate}" min="0" max="100"></progress>
+										</c:when>
+										<c:otherwise>
+											<progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+										</c:otherwise>
+									</c:choose>
 								</div>
 							</c:forEach>
 							</div>

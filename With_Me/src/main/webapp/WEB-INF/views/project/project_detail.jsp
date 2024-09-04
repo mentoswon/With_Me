@@ -138,6 +138,11 @@
 										 style="<c:if test="${project_detail.funding_start_date > today}">background-color: #f5f5f5; color: #555;</c:if>"
 									>아직 오픈하지 않은 프로젝트예요!</button>
 								</c:when>
+								<c:when test="${project_detail.funding_end_date < today}">
+									<button type="button" class="goFund Btn" id="goFund" disabled
+										 style="<c:if test="${project_detail.funding_end_date < today}">background-color: #f5f5f5; color: #555;</c:if>"
+									>마감된 프로젝트예요!</button>
+								</c:when>
 								<c:otherwise>
 									<button type="button" class="goFund Btn" id="goFund" onclick="goToScroll()">이 프로젝트 후원하기</button>
 								</c:otherwise>
@@ -160,7 +165,7 @@
 							<div>
 								<div class="creator">
 									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_image}">
-									<span><a href="MemberInfo?mem_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
+									<span><a href="OtherMemberInfo?creator_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
 								</div>
 								<div>
 									<ul>
@@ -205,10 +210,9 @@
 						<div id="fundingOptions">
 							<h4>후원 선택</h4>
 							<div class="wrap">
-							
 								<%-- 일반후원은 클릭하면 바로 결제페이지로 이동 --%>
 	<!-- 							<div class="reward" id="reward_default" onclick="location.href='FundInProgress?reward_amt=1000&reward_title=일반후원하기'"> -->
-								<div class="reward" id="reward_default">
+								<div class="reward" id="reward_default" style="<c:if test='${project_detail.funding_end_date < today}'>pointer-events: none; opacity: 0.5; cursor: not-allowed;</c:if>">
 									<div class="reward_price"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원
 										<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
 									</div>
@@ -567,7 +571,7 @@
 			// 언팔로우 - AJAX
 			function unfollow(sId, creatorEmail){
 				
-				if(confirm("팔로우를 취소하시면 더 이상 프로젝트 공개 알림을 받으실 수 없습니다. \n 팔로우를 취소하시겠습니까?")){
+				if(confirm("팔로우를 취소하시면 더 이상 프로젝트 공개 알림을 받으실 수 없습니다. \n팔로우를 취소하시겠습니까?")){
 					
 					$.ajax({
 						url: "UnFollow",
