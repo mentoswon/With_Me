@@ -100,7 +100,7 @@
 	</select>
 	
 	<!-- 상대방 마이페이지 이메일로 창작자 조회 -->
-	<select id="selectOtherCreatorInfo" resultType="hashmap">
+	<select id="selectOtherCreatorInfo" resultType="creator">
 		SELECT c.creator_idx, c.creator_email, c.creator_name, c.creator_image, c.creator_introduce, c.phone_auth_status
 				, m.mem_email
 		FROM creator_info c JOIN member m
@@ -113,6 +113,7 @@
 		SELECT COUNT(*)
 		FROM project_info
 	</select>
+	
 	
 	<!-- 프로젝트 리스트 -->
 	<select id="selectProjectList" resultType="hashmap">
@@ -142,6 +143,12 @@
 		FROM follow
 	</select>
 	
+	<!-- 좋아요 전체 리스트 개수 조회 -->
+	<select id="selectLikeListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM like_
+	</select>
+	
 	<!-- 내 마이페이지에서 팔로우 리스트 조회 -->
 	<select id="selectFollowList" resultType="hashmap">
 		SELECT *,
@@ -160,15 +167,15 @@
 	
 	
 	<!-- 크리에이터 이메일로 mem_email값 가져오기 -->
-	<select id="selectMemEmail" resultType="String">
-		SELECT m.mem_email
-		FROM member m JOIN creator_info c
-		ON m.mem_email = c.creator_email
-		WHERE c.creator_email = #{creatorEmail}
-	</select>
+<!-- 	<select id="selectMemEmail" resultType="String"> -->
+<!-- 		SELECT m.mem_email -->
+<!-- 		FROM member m JOIN creator_info c -->
+<!-- 		ON m.mem_email = c.creator_email -->
+<!-- 		WHERE c.creator_email = #{creatorEmail} -->
+<!-- 	</select> -->
 	
-	<!-- 상대방 마이페이지에서 팔로우 리스트 조회(나를 팔로우 한 사람) -->
-	<select id="selectOtherFollowList" resultType="hashmap">
+	<!-- 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 조회(나를 팔로우 한 사람) -->
+	<select id="selectOtherNoCreatorFollowList" resultType="hashmap">
 		SELECT *,
 			(SELECT mem_name
 		 	FROM member m
@@ -177,7 +184,23 @@
 			 FROM creator_info c
         	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
 		FROM follow f
-		WHERE follow_creator = #{memEmail}
+		WHERE follow_creator = #{mem_email}
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
+	
+	<!-- 창작자인 상대방 마이페이지에서 팔로우 리스트 조회(나를 팔로우 한 사람) -->
+	<select id="selectOtherCreatorFollowList" resultType="hashmap">
+		SELECT *,
+			(SELECT mem_name
+		 	FROM member m
+         	WHERE f.follow_mem_email = m.mem_email) AS mem_name,
+         	(SELECT creator_name
+			 FROM creator_info c
+        	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
+		FROM follow f
+		WHERE follow_creator = #{getCreator_email}
 		LIMIT
 			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
 			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용

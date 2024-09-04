@@ -110,6 +110,11 @@ public class MemberService {
 	public int getFollowListCount() {
 		return mapper.selectFollowListCount();
 	}
+	
+	// 좋아요 리스트 개수 가져오기
+	public int getLikeListCount() {
+		return mapper.selectLikeListCount();
+	}
 
 	// 내 마이페이지에서 팔로우 리스트 가져오기
 	public List<Map<String, Object>> getFollowtList(int startRow, int listLimit, String mem_email) {
@@ -121,10 +126,17 @@ public class MemberService {
 		return mapper.selectMemEmail(creatorEmail);
 	}
 	
-	// 상대방 마이페이지에서 팔로우 리스트 가져오기
-	public List<Map<String, Object>> getOtherFollowtList(int startRow, int listLimit, String memEmail) {
-		return mapper.selectOtherFollowList(startRow, listLimit, memEmail);
+	// 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 가져오기
+	public List<Map<String, Object>> getOtherNoCreatorFollowtList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectOtherNoCreatorFollowList(startRow, listLimit, mem_email);
 	}
+	
+	// 창작자인 상대방 마이페이지에서 팔로우 리스트 가져오기 
+	public List<Map<String, Object>> getOtherCreatorFollowtList(int startRow, int listLimit, String getCreator_email) {
+		return mapper.selectOtherCreatorFollowList(startRow, listLimit, getCreator_email);
+	}
+	
+	
 
 	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //	public List<FollowVO> getFollowerCount(List<FollowVO> followerCount) {
@@ -169,6 +181,9 @@ public class MemberService {
 			String address_main, String address_sub, String address_receiver_tel) {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 	}
+
+
+
 
 
 }

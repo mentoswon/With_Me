@@ -323,7 +323,6 @@ $(function() {
 										<c:set var="hasValidProject" value="false" />
 											<table border="1">
 												<tr id="tr_top">
-													<td>프로필</td>
 													<td>창작자 이름</td>
 													<td>해당창작자 정보</td>
 												</tr>
@@ -333,22 +332,21 @@ $(function() {
 													<c:set var="pageNum" value="${param.pageNum}" />
 												</c:if>
 												<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
-												<c:forEach var="follow" items="${followList}">
-													<tr>
-														<td>
-															<img
-															src="${pageContext.request.contextPath}/resources/upload/${follow.creator_image}"
-															id="img1" selected>
-														</td>
-														<td>
-															<input type="button" value="${follow.creator_name}" onclick="location.href='MemberInfo?creator_name='${follow.creator_name}">
-														</td>
-														<td>
-														<input type="button" value="답변"
-															onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
-															</td>
-													</tr>
-												</c:forEach>
+												<c:choose>
+													<c:when test="${not empty creatorName}">
+														<c:forEach var="follow" items="${followList}">
+															<tr>
+																<td>
+																	<input type="button" value="${follow.creator_name}" onclick="location.href='MemberInfo?creator_name='${follow.creator_name}">
+																</td>
+																<td>
+																<input type="button" value="답변"
+																	onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+																	</td>
+															</tr>
+														</c:forEach>
+													</c:when>
+												</c:choose>
 											</table>
 									</c:if>	
 								</section>

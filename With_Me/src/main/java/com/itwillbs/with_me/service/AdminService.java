@@ -58,7 +58,7 @@ public class AdminService {
 	}
 	
 	// 프로젝트 목록 조회
-	public List<ProjectVO> getProjectList(int startRow, int listLimit, String searchKeyword, String projectStatus) {
+	public List<Map<String, Object>> getProjectList(int startRow, int listLimit, String searchKeyword, String projectStatus) {
 		return mapper.selectProjectList(startRow, listLimit, searchKeyword, projectStatus);
 	}
 	

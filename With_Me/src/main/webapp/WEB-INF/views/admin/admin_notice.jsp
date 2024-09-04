@@ -234,6 +234,7 @@
 			<h3>공지사항 수정</h3>
 			<div class="content">
 				<form action="AdminNoticeModify" method="post" name="modifyForm" enctype="multipart/form-data">
+					<input type="hidden" name="pageNum" value="${pageNum}">
 					<div id="resultArea"></div> <%-- 수정 팝업 내용 들어갈 자리 --%>
 					<div class="btnArea" style="text-align : center">
 						<input type="submit" class="regist_btn" value="등록">
@@ -261,7 +262,7 @@
 			// 상세 내용 가져오는 AJAX
 			$.ajax({
 				type : "GET",
-				url : "AdminNoticeModify",
+				url : "AdminNoticeDetail",
 				data : {
 					"bo_idx" : bo_idx
 				},

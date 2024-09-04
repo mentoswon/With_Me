@@ -313,7 +313,7 @@ public class AdminController {
 		
 		// 프로젝트 목록 조회
 		// 검색어는 기본적으로 "" 널스트링
-		List<ProjectVO> projectList = adminService.getProjectList(startRow, listLimit, searchKeyword, projectStatus);
+		List<Map<String, Object>> projectList = adminService.getProjectList(startRow, listLimit, searchKeyword, projectStatus);
 //		System.out.println("projectList : " + projectList);
 		
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
@@ -472,7 +472,7 @@ public class AdminController {
 		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
 		if(pageNum < 1 || pageNum > maxPage) {
 			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "AdminProjectList?pageNum=1");
+			model.addAttribute("targetURL", "AdminNotice?pageNum=1");
 			return "result/fail";
 		}
 		
@@ -588,9 +588,9 @@ public class AdminController {
 		}
 	}
 	
-	// 공지사항 수정 - 상세정보 가져오기
-	@GetMapping("AdminNoticeModify")
-	public String adminNoticeModify(@RequestParam(defaultValue = "0") int bo_idx, HttpSession session, Model model) {
+	// 공지사항 상세정보 가져오기
+	@GetMapping("AdminNoticeDetail")
+	public String adminNoticeDetail(@RequestParam(defaultValue = "0") int bo_idx, HttpSession session, Model model) {
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
 			model.addAttribute("msg", "관리자 권한이 없습니다.");

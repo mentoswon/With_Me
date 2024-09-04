@@ -12,7 +12,7 @@
 	
 	<!-- 로그 메세지를 파일로 출력 -->
 	<appender name="rollingFile" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="file" value="d:/log/test.log" />
+		<param name="file" value="c:/log/test.log" />
 		<param name="DatePattern" value=".yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
