@@ -334,26 +334,34 @@ $(function() {
 												<c:set var="pageNum" value="${param.pageNum}" />
 											</c:if>
 											<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
-											<c:forEach var="follow" items="${followList}">
-											    <tr>
-											        <td>
-											            <c:choose>
-											                <c:when test="${not empty follow.creator_name}">
-											                    <input type="button" value="${follow.creator_name}" 
-											                           onclick="location.href='MemberInfo?creator_name=${follow.creator_name}'">
-											                </c:when>
-											                <c:otherwise>
-											                    <input type="button" value="${follow.mem_name}" 
-											                           onclick="location.href='MemberInfo?mem_name=${follow.mem_name}'">
-											                </c:otherwise>
-											            </c:choose>
-											        </td>
-											        <td>
-											            <input type="button" value="답변" 
-											                   onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
-											        </td>
-											    </tr>
-											</c:forEach>
+											<c:choose>
+											    <c:when test="${empty followList}">
+											        <p>팔로우한 사용자가 없습니다.</p>
+											    </c:when>
+											    <c:otherwise>
+											        <!-- Display follow list items -->
+											        <c:forEach var="follow" items="${followList}">
+											            <tr>
+											                <td>
+											                    <c:choose>
+											                        <c:when test="${not empty follow.creator_name}">
+											                            <input type="button" value="${follow.creator_name}" 
+											                                   onclick="location.href='MemberInfo?creator_name=${follow.creator_name}'">
+											                        </c:when>
+											                        <c:otherwise>
+											                            <input type="button" value="${follow.mem_name}" 
+											                                   onclick="location.href='MemberInfo?mem_name=${follow.mem_name}'">
+											                        </c:otherwise>
+											                    </c:choose>
+											                </td>
+											                <td>
+											                    <input type="button" value="답변" 
+											                           onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+											                </td>
+											            </tr>
+											        </c:forEach>
+											    </c:otherwise>
+											</c:choose>
 										</table>
 									</c:if>	
 								</section>
@@ -390,9 +398,79 @@ $(function() {
 			<div id="writeContainer6" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<p>
-							팔로우한 사용자가 없습니다.
-						</p>
+						<section id="articleForm">
+							<div align="center">
+								<section id="listForm">
+									<c:if test="${not empty followingList}">
+										<table border="1">
+											<tr id="tr_top">
+												<td>창작자 이름</td>
+												<td>해당창작자 정보</td>
+											</tr>
+					
+											<c:set var="pageNum" value="1" />
+											<c:if test="${not empty param.pageNum}">
+												<c:set var="pageNum" value="${param.pageNum}" />
+											</c:if>
+											<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
+											<c:choose>
+											    <c:when test="${empty followingList}">
+											        <p>팔로우한 사용자가 없습니다.</p>
+											    </c:when>
+											    <c:otherwise>
+											        <!-- Display follow list items -->
+											        <c:forEach var="follow" items="${followingList}">
+											            <tr>
+											                <td>
+											                    <c:choose>
+											                        <c:when test="${not empty follow.creator_name}">
+											                            <input type="button" value="${follow.creator_name}" 
+											                                   onclick="location.href='MemberInfo?creator_name=${follow.creator_name}'">
+											                        </c:when>
+											                        <c:otherwise>
+											                            <input type="button" value="${follow.mem_name}" 
+											                                   onclick="location.href='MemberInfo?mem_name=${follow.mem_name}'">
+											                        </c:otherwise>
+											                    </c:choose>
+											                </td>
+											                <td>
+											                    <input type="button" value="답변" 
+											                           onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+											                </td>
+											            </tr>
+											        </c:forEach>
+											    </c:otherwise>
+											</c:choose>
+										</table>
+									</c:if>	
+								</section>
+								<br>
+								<%-- ========================== 페이징 처리 영역 ========================== --%>
+								<section id="pageList">
+									<input type="button" value="이전"
+										onclick="location.href='qna_ask?pageNum=${pageNum - 1}'"
+										<c:if test="${pageNum <= 1}">disabled</c:if>>
+				
+									<c:forEach var="i" begin="${pageInfo.startPage}"
+										end="${pageInfo.endPage}">
+										<c:choose>
+											<c:when test="${i eq pageNum}">
+												<b>${i}</b>
+												<%-- 현재 페이지 번호 --%>
+											</c:when>
+											<c:otherwise>
+												<a href="qna_ask?pageNum=${i}">${i}</a>
+												<%-- 다른 페이지 번호 --%>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+				
+									<input type="button" value="다음"
+										onclick="location.href='qna_ask?pageNum=${pageNum + 1}'"
+										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+								</section>
+							</div>
+						</section>
 					</div>
 				</div>
 			</div>

@@ -1,9 +1,6 @@
 package com.itwillbs.with_me.controller;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.security.PrivateKey;
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.itwillbs.with_me.handler.RsaKeyGenerator;
 import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
-import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.CreatorVO;
-import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
@@ -42,8 +38,22 @@ public class MemberController {
 	
 	// 회원가입폼 페이지
 	@GetMapping("MemberJoin")
-	public String memberJoin() {
-		return "member/member_join_form3";
+	public String memberJoin(HttpSession session, Model model) {
+		
+		// 로그인 폼 요청 시 아이디와 패스워드 암호화 과정에서 사용할 공개키/개인키 생성(RSA 알고리즘)
+		// 사용자 정의 클래스 RsaKeyGenerator 클래스의 static 메서드 generateKey() 호출
+		Map<String, Object> rsaKey = RsaKeyGenerator.generateKey();
+//		System.out.println("개인키 : " + rsaKey.get("RSAPrivateKey"));
+//		System.out.println("공개키(Modulus) : " + rsaKey.get("RSAModulus"));
+//		System.out.println("공개키(Exponent) : " + rsaKey.get("RSAExponent"));
+		
+		// 개인키는 세션에 저장하고, 공개키는 Model 객체를 통해 클라이언트측으로 전송
+		session.setAttribute("RSAPrivateKey", rsaKey.get("RSAPrivateKey"));
+		model.addAttribute("RSAModulus", rsaKey.get("RSAModulus"));
+		model.addAttribute("RSAExponent", rsaKey.get("RSAExponent"));
+		
+		
+		return "member/member_join_form";
 	}
 	
 	
@@ -191,7 +201,19 @@ public class MemberController {
 	
 	// 로그인 페이지
 	@GetMapping("MemberLogin")
-	public String login() {
+	public String login(HttpSession session, Model model) {
+		// 로그인 폼 요청 시 아이디와 패스워드 암호화 과정에서 사용할 공개키/개인키 생성(RSA 알고리즘)
+		// 사용자 정의 클래스 RsaKeyGenerator 클래스의 static 메서드 generateKey() 호출
+		Map<String, Object> rsaKey = RsaKeyGenerator.generateKey();
+//		System.out.println("개인키 : " + rsaKey.get("RSAPrivateKey"));
+//		System.out.println("공개키(Modulus) : " + rsaKey.get("RSAModulus"));
+//		System.out.println("공개키(Exponent) : " + rsaKey.get("RSAExponent"));
+		
+		// 개인키는 세션에 저장하고, 공개키는 Model 객체를 통해 클라이언트측으로 전송
+		session.setAttribute("RSAPrivateKey", rsaKey.get("RSAPrivateKey"));
+		model.addAttribute("RSAModulus", rsaKey.get("RSAModulus"));
+		model.addAttribute("RSAExponent", rsaKey.get("RSAExponent"));
+		
 		return "member/member_login_form";
 	}
 	
@@ -201,6 +223,25 @@ public class MemberController {
 	@PostMapping("MemberLoginPro")
 	public String memberLoginPro(MemberVO member, Model model, HttpSession session, String rememberId,
 								BCryptPasswordEncoder passwordEncoder, HttpServletResponse response) {
+		
+		// ============================= 아이디/패스워드 복호화 ====================================
+		System.out.println("암호화 된 아이디 : " + member.getMem_email());
+		System.out.println("암호화 된 패스워드 : " + member.getMem_passwd());
+		
+		// RSAKeyGenerator 클래스의 decrypt() 메서드 호출하여 전달받은 암호문 복호화
+		PrivateKey privateKey = (PrivateKey)session.getAttribute("RSAPrivateKey");
+		
+		// RsaKeyGenerator 클래스의 decrypt() 메서드 호출하여 전달받은 암호문 복호화
+		// => 파라미터 : 세션에 저장된 개인키, 암호문   리턴타입 : String
+		String id = RsaKeyGenerator.decrypt(privateKey, member.getMem_email());
+		String passwd = RsaKeyGenerator.decrypt(privateKey, member.getMem_passwd());
+		System.out.println("복호화 된 아이디 : " + id);
+		System.out.println("복호화 된 패스워드 : " + passwd);
+		
+		// MemberVO 객체에 복호화 된 아이디, 패스워드 저장
+		member.setMem_email(id);
+		member.setMem_passwd(passwd);
+		// ===============================================================================================
 		
 		MemberVO dbMember = service.getMember(member);
 		System.out.println(dbMember);
@@ -446,11 +487,14 @@ public class MemberController {
 		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
 		// 팔로우 목록 나타내기
 		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit, member.getMem_email());
+		// 팔로잉 목록 나타내기
+		List<Map<String, Object>> followingList = service.getFollowingtList(startRow, listLimit, member.getMem_email());
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
 		
 //		System.out.println("projectList : " + projectList);
 		System.out.println("followList : " + followList);
+		System.out.println("followingList : " + followingList);
 //		System.out.println("followerCount : " + followerCount);
 		
 		// --------------------------------------------------------------------
@@ -461,6 +505,7 @@ public class MemberController {
 		model.addAttribute("projectList", projectList);
 		
 		model.addAttribute("followList", followList);
+		model.addAttribute("followingList", followingList);
 		model.addAttribute("followPageInfo", followPageInfo);
 //		model.addAttribute("followerCount", followerCount);
 		
@@ -552,17 +597,10 @@ public class MemberController {
 		// --------------------------------------------------------------------
 		// 프로젝트 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
+		System.out.println("projectList : " + projectList);
 		
-//		String memEmail = member.getMem_email();
 		String creatorEmail = creator.getCreator_email();
 //		System.out.println("creatorEmail : !!!!!!!!!!!! " + creatorEmail);
-		
-		// 크리에이터 이메일이랑 조인해서 mem_email 들고오면은 창작자 아닌 사람의 경우에는 값을 가져오지 못함
-		// 그래서 mem_email로 팔로우나 크리에이터 정보를 가져와야한다.
-//		String memEmail = service.getMemEmail(creatorEmail);
-//		System.out.println("memEmail !!!!!!!!!! : " + memEmail);
-		
-
 		
 		
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
@@ -576,14 +614,9 @@ public class MemberController {
 //			creatorEmail = creatorInfo.get(0).getCreator_email();
 //		} 
 		
-		System.out.println("creatorEmail : " + creatorEmail);
-			
-		
 		System.out.println("creatorInfo : " + creatorInfo);
 		model.addAttribute("creatorInfo", creatorInfo);
 		
-		
-		System.out.println("projectList : " + projectList);
 
 //		System.out.println("followerCount : " + followerCount);
 		
@@ -629,10 +662,9 @@ public class MemberController {
 	    	
 	    	// 창작자인 경우 팔로우 목록 나타내기
 //	    	List<Map<String, Object>> otherCreatorfollowList = service.getOtherCreatorFollowtList(startRow, listLimit, getCreator_email);
-	    	List<Map<String, Object>> otherCreatorfollowList = service.getOtherCreatorFollowtList(startRow, listLimit, creator_email);
+	    	List<Map<String, Object>> otherCreatorfollowList = service.getOtherCreatorFollowtList(startRow, listLimit, creatorEmail);
 	    	System.out.println("otherCreatorfollowList : " + otherCreatorfollowList);
 	    	model.addAttribute("otherCreatorfollowList", otherCreatorfollowList);
-	    	
 	    }
 	    
 		return "mypage/other_mypage";

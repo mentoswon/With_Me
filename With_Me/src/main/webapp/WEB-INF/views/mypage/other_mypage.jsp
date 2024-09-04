@@ -332,21 +332,46 @@ $(function() {
 													<c:set var="pageNum" value="${param.pageNum}" />
 												</c:if>
 												<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
-												<c:choose>
-													<c:when test="${not empty creatorName}">
-														<c:forEach var="follow" items="${followList}">
-															<tr>
-																<td>
-																	<input type="button" value="${follow.creator_name}" onclick="location.href='MemberInfo?creator_name='${follow.creator_name}">
-																</td>
-																<td>
-																<input type="button" value="답변"
-																	onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
-																	</td>
-															</tr>
-														</c:forEach>
-													</c:when>
-												</c:choose>
+												<c:forEach var="follow" items="${OtherNoCreatorfollowList}">
+												    <tr>
+												        <td>
+												            <c:choose>
+												                <c:when test="${not empty follow.creator_name}">
+												                    <input type="button" value="${follow.creator_name}" 
+												                           onclick="location.href='MemberInfo?creator_name=${follow.creator_name}'">
+												                </c:when>
+												                <c:otherwise>
+												                    <input type="button" value="${follow.mem_name}" 
+												                           onclick="location.href='MemberInfo?mem_name=${follow.mem_name}'">
+												                </c:otherwise>
+												            </c:choose>
+												        </td>
+												        <td>
+												            <input type="button" value="답변" 
+												                   onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+												        </td>
+												    </tr>
+												</c:forEach>
+												<c:forEach var="follow" items="${otherCreatorfollowList}">
+												    <tr>
+												        <td>
+												            <c:choose>
+												                <c:when test="${not empty follow.creator_name}">
+												                    <input type="button" value="${follow.creator_name}" 
+												                           onclick="location.href='MemberInfo?creator_name=${follow.creator_name}'">
+												                </c:when>
+												                <c:otherwise>
+												                    <input type="button" value="${follow.mem_name}" 
+												                           onclick="location.href='MemberInfo?mem_name=${follow.mem_name}'">
+												                </c:otherwise>
+												            </c:choose>
+												        </td>
+												        <td>
+												            <input type="button" value="답변" 
+												                   onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+												        </td>
+												    </tr>
+												</c:forEach>
 											</table>
 									</c:if>	
 								</section>

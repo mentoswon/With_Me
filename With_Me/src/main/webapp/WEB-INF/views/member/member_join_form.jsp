@@ -11,6 +11,11 @@
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
+<%-- RSA 양방향 암호화 자바스크립트 라이브러리 추가 --%>
+<script src="${pageContext.request.servletContext.contextPath}/resources/js/rsa/rsa.js"></script>
+<script src="${pageContext.request.servletContext.contextPath}/resources/js/rsa/jsbn.js"></script>
+<script src="${pageContext.request.servletContext.contextPath}/resources/js/rsa/prng4.js"></script>
+<script src="${pageContext.request.servletContext.contextPath}/resources/js/rsa/rng.js"></script>
 <%-- 다음 우편번호 API --%>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript">
@@ -22,32 +27,16 @@
 	let checkJuminResult = false;
 	let checkTelResult = false;
 	// =============================================================
-	// 1. ID 중복확인 버튼 클릭 시 새 창(check_id.jsp) 띄우기
-// 	function checkId2() {
-// // 		window.open("member/check_id.jsp", "id_check", "width=300,height=200");
-// 		window.open("MemberCheckId", "id_check", "width=500,height=300");
-// 	}
 	
-	// 2. ID 입력 후 빠져나갈 때(blur) 아이디 입력값 체크하기
 	function checkEmail() {
-		// 입력받은 아이디 값 가져오기
+		// 입력받은 이메일 값 가져오기
 		let mem_email = $("#mem_email").val();
 		
-		/*
-		[ 아이디 입력값 검증을 위한 정규표현식 활용 ]
-		- 규칙 : 영문자([A-Za-z]), 숫자([0-9] 또는 \d), 특수문자(_) 조합 4 ~ 16자리
-		  => 이 때, 영문자 + 숫자 + 특수문자 _ 기호는 \w 로 대체 가능
-		  => 단, 첫글자는 영문자 또는 숫자만 허용하고 특수문자(_)는 사용 불가
-		     ex) "admin_" : 사용 가능, "_admin" : 사용 불가
-		- 자바스크립트 정규표현식 문자열 생성 방법
-		  1) /정규표현식문자열/
-		  2) new RegExp("정규표현식문자열")
-		- 자바스크립트 정규표현식 판별 방법
-		  정규표현식객체명.exec(비교할문자열)
-		  => 정규표현식과 일치하면 문자열 그대로 리턴, 불일치 시 null 값 리턴
-		  => if 문에 사용할 경우 null 이면(데이터가 없으면) false 로 판별됨
-		*/
 		let regex =  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+		
+		let msg = "";
+		let color = "";
+		let bgColor = "";
 
 		// 정규표현식 문자열을 관리하는 객체(regex)의 exec() 메서드 호출하여
 		// 검사할 문자열을 전달하면 정규표현식 일치 여부 확인 가능
@@ -57,9 +46,6 @@
 			checkEmailResult = true; // 아이디 검사 적합 여부 true(적합) 값 저장
 		}
 		
-		let msg = "";
-		let color = "";
-		let bgColor = "";
 		
 		// 정규표현식 규칙 검사 결과 판별
 		// => 불일치 시 불일치 메세지 출력 처리
@@ -78,11 +64,11 @@
 				success : function(result) {
 					console.log("result = " + result);
 					if(result.trim() == "true") {
-						msg = "이미 사용중인 아이디";
+						msg = "이미 사용중인 이메일";
 						color = "red";
 						bgColor = "lightpink";
 					} else if(result.trim() == "false") {
-						msg = "사용 가능한 아이디";
+						msg = "사용 가능한 이메일";
 						color = "green";
 						bgColor = "";
 					}
@@ -101,9 +87,9 @@
 		$("#checkEmailResult").text(msg);
 		$("#checkEmailResult").css("color", color);
 		$("#mem_email").css("background", bgColor);
-
 		
 	}
+	
 	
 	function checkTel() {
 		// 입력받은 전화번호 값 가져오기
@@ -265,7 +251,19 @@
 	//==================================================================================================================
 	$(function() {
 		// 10. 가입(submit) 클릭 시 이벤트 처리(생략)
-// 		$("form").submit(function() {
+		$("form").submit(function() {
+			
+			// ==================== RSA 알고리즘을 활용한 비대칭키 방식 암호화 ===================
+			// 자바스크립트 외부 라이브러리를 통해 양방향 암호화를 수행할 RsaKey 객체 생성
+			let rsa = new RSAKey();
+			
+			// RSAKey 객체의 setPublic() 메서드를 호출하여 전달받은 공개키(Modulus, Exponent)값 전달
+			rsa.setPublic("${RSAModulus}", "${RSAExponent}");
+			// 입력받은 평문 아이디와 평문 패스워드 암호화 => RSAKey 객체의 encrypt() 메서드 활용
+			// => 16진수 문자열로 변환된 암호문을 hidden 속성 value 값으로 저장
+			$("#hiddenPassswd").val(rsa.encrypt($("#mem_passwd").val()));
+			$("#hiddenPassswd2").val(rsa.encrypt($("#mem_passwd2").val()));
+			
 // 			// 아이디 정규표현식 검사, 패스워드와 패스워드 확인 정규표현식 검사,
 // 			// 취미 항목 체크 여부 확인을 통해 해당 항목이 부적합 할 경우 
 // 			// 오류메세지 출력 및 submit 동작 취소
@@ -300,7 +298,7 @@
 // 			}
 			
 			
-// 		});
+		});
 		
 		
 		// 주소 검색 API 활용 기능 추가
@@ -339,19 +337,6 @@
 		});
 		
 		
-// 	    // "보기" 링크 클릭 시 팝업 표시
-// 	    $("#agree").click(function(event) {
-// 	        event.preventDefault();
-// 	        $(".popUp").show();
-// 	    });
-
-// 	    // 팝업 닫기
-// 	    $(".popUp .close, .popUpConfirm button").click(function() {
-// 	        $(".popUp").hide();
-// 	    });
-		
-		
-		
 	});
 	
 	//----------------------------------------------------------------------------------------------------
@@ -374,87 +359,62 @@
 		<jsp:include page="/WEB-INF/views//inc/top.jsp"></jsp:include>
 	</header>
 	<main>
-		<article>
-			<h1 align="center">회원 가입</h1>
+		<div align="center">
+			<h4>회원 가입</h4>
+			<br>
 			<form action="MemberJoinPro" name="joinForm" method="post">
-				<section class="joinForm1">
-					<table id="tb01">
-						<tr>
-							<td>이름</td>
-						</tr>
-						<tr>
-							<td><input type="text" name="mem_name" size="6" id="mem_name" pattern="^[가-힣]{2,5}$" title="한글 2-5글자"></td>
-						</tr>	
-						<tr>
-							<td>이메일</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="text" name="mem_email" id="mem_email" size="15" placeholder="이메일입력" onblur="checkEmail()">
-								<div id="checkEmailResult"></div>
-							</td>
-						</tr>	
-						<tr>
-							<td>비밀번호</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="password" name="mem_passwd" id="mem_passwd" size="25" onblur="checkPasswd()">
-								<span id="checkPasswdComplexResult"></span>
-								<div id="checkPasswdResult"></div>
-							</td> 
-						</tr>	
-						<tr>
-							<td>비밀번호확인</td>
-						</tr>
-						<tr>	
-							<td>
-								<input type="password" name="mem_passwd2" id="mem_passwd2" size="25" onblur="checkSamePasswd()">
-								<div id="checkPasswd2Result"></div>
-							</td>
-						</tr>	
-						<tr>
-							<td>주소</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="text" name="mem_post_code" id="mem_post_code" size="6" readonly>
-								<input type="button" value="주소검색" id="btnSearchAddress">
-								<br>
-								<input type="text" name="mem_add1" id="mem_add1" size="30" placeholder="기본주소">
-								<br>
-								<input type="text" name="mem_add2" id="mem_add2" size="30" placeholder="상세주소">
-							</td>
-						</tr>	
-						<tr>
-							<td>생년월일</td>
-						</tr>
-						<tr>
-							<td id="tdjumin">(생년월일 6자리를 입력해주세요)</td>
-						</tr>
-						<tr>
-							<td><input type="text" name="mem_birthday" size="15" id="mem_birthday" maxlength="14" required="required" onblur="checkJumin()">
-								<div id="checkBirthResult"></div>
-							</td>
-						</tr>
-						<tr>
-							<td>휴대폰 번호</td>
-						</tr>
-						<tr>
-							<td id="tdtel">(휴대폰 번호를 입력 시 "-"를 입력해주세요)</td>
-						</tr>
-						<tr>
-							<td><input type="text" name="mem_tel" size="10" id="mem_tel" maxlength="13" required="required" onblur="checkTel()">
-								<div id="checkTelResult"></div>
-							</td>
-						</tr>	
-						<tr>
-							<td align="center"><br><input type="submit" value="가입"></td>
-						</tr>
-					</table>
-				</section>
+				<div>
+					<label for="name">이름</label> 
+					<input placeholder="2~5글자의 한글" maxlength="5" type="text" name="mem_name" id="mem_name" required>
+					<div id="checkNameResult"></div>
+				</div>
+				<div>
+					<label for="email">이메일</label> 
+					<input placeholder="이메일을 입력해주세요" type="text" name="mem_email" id="mem_email" required onblur="checkEmail()">
+					<input type="button" value="이메일 인증" id="emailAuthCodeButton" onclick="sendAuthMail()">
+					<div id="checkEmailResult"></div>
+				</div>
+				<div>
+					<label for="passwd">비밀번호</label> 
+					<input maxlength="16" placeholder="8~16자의 영문 대/소문자, 숫자, 특수문자(!@#%^&*)" type="password" id="mem_passwd" required onblur="checkPasswd()">
+					<span id="checkPasswdComplexResult"></span>
+					<div id="checkPasswdResult"></div>
+					<input type="hidden" name="mem_passwd" id="hiddenPassswd">
+				</div>
+				<div>
+					<label for="passwd2">비밀번호 확인</label> 
+					<input maxlength="16" placeholder="비밀번호를 다시 입력해주세요" type="password" id="mem_passwd2" required onblur="checkSamePasswd()">
+					<div id="checkPasswd2Result"></div>
+					<input type="hidden" name="mem_passwd2" id="hiddenPassswd2">
+				</div>
+				<div>
+					<label for="address">주소</label>
+						<input type="text" name="mem_post_code" id="mem_post_code" size="6" required readonly>
+						<input type="button" value="주소검색" id="btnSearchAddress">
+						<br>
+						<input type="text" name="mem_add1" id="mem_add1" size="30" placeholder="기본주소" required>
+						<br>
+						<input type="text" name="mem_add2" id="mem_add2" size="30" placeholder="상세주소">
+				</div>
+				<div>
+					<label for="birthday" id="mgForFour">생년월일</label> 
+					<input type="text" name="mem_birthday" id="mem_birthday" required>
+					<div id="checkBirthdateResult"></div>
+				</div>
+				<div>
+					<label for="tel" id="mgForFive">휴대폰번호</label> 
+					<input maxlength="13" placeholder="숫자만 입력해주세요" type="tel" name="mem_tel" id="mem_tel" required onblur="checkTel()">
+					<div id="checkTelResult"></div>
+				</div>
+				<div>
+					<button class="btn" type="button" onclick="history.back()">돌아가기</button>
+					<button class="btn" type="submit">가입완료</button>
+				</div>
+				<p class="outer-link">
+					이미 계정이 있나요? <a href="MemberLogin">로그인 하기</a>
+				</p>
 			</form>
-		</article>
+		</div>
 	</main>
 	<footer>
 		<%-- 회사 소개 영역(inc/bottom.jsp) 페이지 삽입 --%>

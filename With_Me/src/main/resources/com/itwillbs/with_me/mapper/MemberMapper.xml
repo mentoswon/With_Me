@@ -149,7 +149,7 @@
 		FROM like_
 	</select>
 	
-	<!-- 내 마이페이지에서 팔로우 리스트 조회 -->
+	<!-- 내 마이페이지에서 팔로워 리스트 조회 -->
 	<select id="selectFollowList" resultType="hashmap">
 		SELECT *,
 			(SELECT mem_name
@@ -165,14 +165,30 @@
 			, #{listLimit}  
 	</select>
 	
-	
-	<!-- 크리에이터 이메일로 mem_email값 가져오기 -->
-<!-- 	<select id="selectMemEmail" resultType="String"> -->
-<!-- 		SELECT m.mem_email -->
-<!-- 		FROM member m JOIN creator_info c -->
-<!-- 		ON m.mem_email = c.creator_email -->
-<!-- 		WHERE c.creator_email = #{creatorEmail} -->
+		<!-- 내가 팔로우한 사람이 팔로우한 수 -->
+<!-- 	<select id="selectFollowerCount" resultType="hashmap"> -->
+<!-- 		SELECT COUNT(f.follow_creator) -->
+<!-- 		FROM follow f JOIN creator_info c -->
+<!-- 		ON f.follow_creator = c.creator_email -->
+<!-- 		WHERE f.follow_mem_email = #{follow_mem_email} -->
 <!-- 	</select> -->
+	
+	
+	<!-- 내 마이페이지에서 팔로잉 리스트 조회 -->
+	<select id="selectFollowingList" resultType="hashmap">
+		SELECT *,
+			(SELECT mem_name
+		 	FROM member m
+         	WHERE f.follow_creator = m.mem_email) AS mem_name,
+         	(SELECT creator_name
+			 FROM creator_info c
+        	 WHERE f.follow_creator = c.creator_email) AS creator_name
+		FROM follow f
+		WHERE follow_mem_email = #{mem_email}
+		LIMIT
+			#{startRow}     
+			, #{listLimit}  
+	</select>
 	
 	<!-- 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 조회(나를 팔로우 한 사람) -->
 	<select id="selectOtherNoCreatorFollowList" resultType="hashmap">
@@ -200,20 +216,14 @@
 			 FROM creator_info c
         	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
 		FROM follow f
-		WHERE follow_creator = #{getCreator_email}
+		WHERE follow_creator = #{creatorEmail}
 		LIMIT
 			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
 			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
 	</select>
 	
 	
-	<!-- 내가 팔로우한 사람이 팔로우한 수 -->
-<!-- 	<select id="selectFollowerCount" resultType="hashmap"> -->
-<!-- 		SELECT COUNT(f.follow_creator) -->
-<!-- 		FROM follow f JOIN creator_info c -->
-<!-- 		ON f.follow_creator = c.creator_email -->
-<!-- 		WHERE f.follow_mem_email = #{follow_mem_email} -->
-<!-- 	</select> -->
+
 	
 	<!-- 창작자에 등록되어있는지(상대방 마이페이지) -->
 	<select id="selectCreatorName" resultType="String">

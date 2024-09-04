@@ -64,6 +64,12 @@ public interface MemberMapper {
 								@Param("listLimit") int listLimit,
 								@Param("mem_email") String mem_email);
 	
+	// 내 마이페이지에서 팔로잉 리스트 조회
+	List<Map<String, Object>> selectFollowingList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("mem_email") String mem_email);
+	
 	// 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 가져오기
 	List<Map<String, Object>> selectOtherNoCreatorFollowList(
 								@Param("startRow") int startRow,
@@ -74,7 +80,7 @@ public interface MemberMapper {
 	List<Map<String, Object>> selectOtherCreatorFollowList(
 								@Param("startRow") int startRow,
 								@Param("listLimit") int listLimit,
-								@Param("getCreator_email") String getCreator_email);
+								@Param("creatorEmail") String creatorEmail);
 	
 	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //	List<FollowVO> selectFollowerCount(List<FollowVO> followerCount);
@@ -110,6 +116,7 @@ public interface MemberMapper {
 
 	// creator_email 들고와서 mem_email값 가져오기
 	String selectMemEmail(String creatorEmail);
+
 
 
 
