@@ -127,16 +127,16 @@ $(function() {
 			<div id="projectInfoWrap">
 				<div id="MypageMenuTop">
 					<div style="text-align: center; display: flex;">
-						<c:forEach var="creator" items="${creatorInfo}">
-							<c:choose>
-						        <c:when test="${not empty creatorName}">
+						<c:choose>
+					        <c:when test="${not empty creatorName}">
+								<c:forEach var="creator" items="${creatorInfo}">
 						            <h3>${creator.creator_name}</h3>
-						        </c:when>
-						        <c:otherwise>
-						            <h3>${notCreatorMember.mem_name}</h3>
-						        </c:otherwise>
-						    </c:choose>
-						</c:forEach>
+								</c:forEach>
+					        </c:when>
+					        <c:otherwise>
+					            <h3>${notCreatorMember.mem_name}</h3>
+					        </c:otherwise>
+					    </c:choose>
 					</div>
 				</div>
 			</div>
