@@ -505,9 +505,11 @@ public class MemberController {
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
 		int listCount = service.getProjectListCount();
 		int followListCount = service.getFollowListCount();
+		int likeListCount = service.getLikeListCount();
 		
 		System.out.println("listCount : " + listCount);
 		System.out.println("followListCount : " + followListCount);
+		System.out.println("likeListCount : " + likeListCount);
 		
 		int pageListLimit = 3;
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
@@ -553,29 +555,37 @@ public class MemberController {
 		
 //		String memEmail = member.getMem_email();
 		String creatorEmail = creator.getCreator_email();
+//		System.out.println("creatorEmail : !!!!!!!!!!!! " + creatorEmail);
 		
 		// 크리에이터 이메일이랑 조인해서 mem_email 들고오면은 창작자 아닌 사람의 경우에는 값을 가져오지 못함
 		// 그래서 mem_email로 팔로우나 크리에이터 정보를 가져와야한다.
-		String memEmail = service.getMemEmail(creatorEmail);
-		System.out.println("memEmail !!!!!!!!!! : " + memEmail);
+//		String memEmail = service.getMemEmail(creatorEmail);
+//		System.out.println("memEmail !!!!!!!!!! : " + memEmail);
 		
-		// 팔로우 목록 나타내기
-		List<Map<String, Object>> followList = service.getOtherFollowtList(startRow, listLimit, memEmail);
+
+		
+		
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
 		
-		
-//		System.out.println("creatorEmail : !!!!!!!!!!!! " + creatorEmail);
+		// 좋아요 리스트 나타내기
+//		List<Map<String, Object>> likeList = service.getOtherLikeList(startRow, listLimit, memEmail);
 		
 		// 팔로우, 좋아요는 창작자이거나 아니거나 다 볼 수 있어야 하기 때문에
-		// mem_email을 들고와서 비교를 해야 값을 들고올 수 있다.
+		// mem_email을 들고와서 비교를 해야 값을 들고올 수 있다. !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		List<CreatorVO> creatorInfo = service.getOtherCreatorInfo(creatorEmail);
+		if(creatorInfo != null) {
+			String getCreator_email = creatorInfo.get(0).getCreator_email();
+			System.out.println("getCreator_email : " + getCreator_email);
+			
+		}
+		
 		System.out.println("creatorInfo : " + creatorInfo);
 		model.addAttribute("creatorInfo", creatorInfo);
 		
 		
 		System.out.println("projectList : " + projectList);
-		System.out.println("followList : " + followList);
+
 //		System.out.println("followerCount : " + followerCount);
 		
 		// --------------------------------------------------------------------
@@ -584,9 +594,9 @@ public class MemberController {
 		// --------------------------------------------------------------------
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("projectList", projectList);
-		
-		model.addAttribute("followList", followList);
 		model.addAttribute("followPageInfo", followPageInfo);
+		
+
 //		model.addAttribute("followerCount", followerCount);
 		
 		// ====================================================
@@ -607,11 +617,22 @@ public class MemberController {
 	        System.out.println("창작자 아닌 사람 정보  !!!!!!!!!! : " + notCreatorMember);
 	        model.addAttribute("notCreatorMember", notCreatorMember);
 	        
+			// 창작자가 아닌경우 팔로우 목록 나타내기
+			List<Map<String, Object>> OtherNoCreatorfollowList = service.getOtherNoCreatorFollowtList(startRow, listLimit, notCreatorMember.getMem_email());
+			System.out.println("OtherNoCreatorfollowList : " + OtherNoCreatorfollowList);
+			model.addAttribute("OtherNoCreatorfollowList", OtherNoCreatorfollowList);
+	        
 	    // 창작자 이름이 있다면 크리에이터 정보를 마이페이지에 뿌림
 	    } else {
-	        // 위에서 만든 creatorInfo를 들고와서 창작자가 맞다면 크리에이터 정보를 뿌림
-	        System.out.println("창작자 맞는 사람 정보 : " + creatorInfo);
-	        model.addAttribute("creatorInfo", creatorInfo);
+	    	// 위에서 만든 creatorInfo를 들고와서 창작자가 맞다면 크리에이터 정보를 뿌림
+	    	System.out.println("창작자 맞는 사람 정보 : " + creatorInfo);
+	    	model.addAttribute("creatorInfo", creatorInfo);
+	    	
+	    	// 창작자가 아닌경우 팔로우 목록 나타내기
+//	    	List<Map<String, Object>> otherCreatorfollowList = service.getOtherCreatorFollowtList(startRow, listLimit, getCreator_email);
+//	    	System.out.println("otherCreatorfollowList : " + otherCreatorfollowList);
+//	    	model.addAttribute("otherCreatorfollowList", otherCreatorfollowList);
+	    	
 	    }
 	    
 		return "mypage/other_mypage";
