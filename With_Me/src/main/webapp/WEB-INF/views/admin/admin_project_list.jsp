@@ -183,7 +183,7 @@
 										</td>
 									</c:when>
 									<c:when test="${param.status eq '진행중'}">
-										<td><fmt:formatNumber value="${PL.target_price}" pattern="#,###"/>원 <%-- 임시로 목표 후원 금액 출력 --%></td>
+										<td><fmt:formatNumber value="${PL.funding_amt}" pattern="#,###"/>원</td>
 										<%-- 남은 날짜 계산 --%>
 										<fmt:parseNumber var="strDate" value="${now.time/(1000*60*60*24)}" integerOnly="true"></fmt:parseNumber>
 										<fmt:parseNumber var="endDate" value="${PL.funding_end_date.time/(1000*60*60*24)}" integerOnly="true"></fmt:parseNumber>
@@ -191,14 +191,19 @@
 										<%-- 남은 날짜 계산 end --%>
 										<td>${leftDay}일 후에 종료</td>
 										<td>
-											<input type="button" value="승인" onclick="projectCancelApproval('YES', ${PL.project_idx})">
-											<input type="button" value="거부" onclick="projectCancelApproval('NO', ${PL.project_idx})">
+											<input type="button" value="승인" onclick="projectCancelApproval('YES', ${PL.project_idx})" <c:if test="${PL.project_cancel_status eq ''}">disabled</c:if>>
+											<input type="button" value="거부" onclick="projectCancelApproval('NO', ${PL.project_idx})" <c:if test="${PL.project_cancel_status eq ''}">disabled</c:if>>
 										</td>
 									</c:when>
 									<c:when test="${param.status eq '종료'}">
-										<td><fmt:formatNumber value="${PL.target_price}" pattern="#,###"/>원 <%-- 임시로 목표 후원 금액 출력 --%></td>
+										<td><fmt:formatNumber value="${PL.funding_amt}" pattern="#,###"/>원</td>
 										<td>${PL.funding_end_date}</td>
-										<td>...</td>
+										<td>
+											<c:choose>
+												<c:when test="${PL.funding_amt < PL.target_price}">목표 금액 달성 실패</c:when>
+												<c:otherwise>특이사항 없음</c:otherwise>
+											</c:choose>
+										</td>
 									</c:when>
 								</c:choose>
 							</tr>

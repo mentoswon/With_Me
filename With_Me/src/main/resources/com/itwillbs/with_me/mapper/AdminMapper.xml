@@ -184,9 +184,15 @@
 	</select>
 	
 	<!-- 프로젝트 목록 조회 -->
-	<select id="selectProjectList" resultType="project">
-		SELECT * 
-		FROM project_info
+	<select id="selectProjectList" resultType="Map">
+		SELECT * ,
+			(SELECT IFNULL(SUM(funding_pay_amt),0)
+			FROM funding_user
+			WHERE funding_project_idx = p.project_idx) AS funding_amt,
+			IFNULL((SELECT project_cancel_status
+			FROM project_cancel
+			WHERE project_idx = p.project_idx),'') AS project_cancel_status
+		FROM project_info p
 		WHERE 
 		<choose>
 			<when test="projectStatus.equals('심사중')">
