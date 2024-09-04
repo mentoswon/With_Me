@@ -18,11 +18,12 @@
 		border: 1px solid #ccc;
 	    position: absolute;
 	    width: 150px;
-	    top: 11%;
-	    left: 76.5%;
-	    transform: translate(-50%, -50%);
+	    top: 70px;
+  		right: 205px;
+/* 	    transform: translate(-50%, -50%); */
 	    padding: 20px;
 	    background: #ffffff;
+	    z-index: 999;
 	}
 	.profile .profile_popup ul>li {
 		margin-bottom: 15px;
@@ -31,13 +32,16 @@
 		color: skyblue;
 	}
 	.profile .profile_popup .close_btn {
-	    padding: 2.5px 5px;
-	    background-color: skyblue;
+	    padding: 3px 10px;
+	    background-color: #FFAB40;
 	    border: none;
 	    border-radius: 5px;
 	    color: #fff;
 	    cursor: pointer;
 	    transition: box-shadow 0.2s;
+	}
+	.profile .profile_popup .close_btn:hover {
+		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 	}
 	.profile.on {display: block;}
 </style>

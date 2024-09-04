@@ -533,10 +533,12 @@ input[type="radio"] {
 }
 #save {
 	background-color: #FFAB40;
+	color: #fff;
 }
 
 #save:hover, #request:enabled:hover {
 	background-color: #FFAB40;
+	color: #fff;
 	cursor: pointer;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }

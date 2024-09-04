@@ -102,6 +102,7 @@ label b {
 #start {	/* 시작하기 */
 	border: none;
 	background-color: #FFAB40;
+	color: #fff;
 }
 #back:hover,#start:enabled:hover {
 	cursor: pointer;

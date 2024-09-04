@@ -79,6 +79,7 @@ label {
 }
 
 label.selected {
+	color: #fff;
 	background-color: #FFAB40;
 	border: none;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
@@ -119,12 +120,14 @@ label.selected {
 	border: none;
 	background-color: #FFAB40;
 	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+	color: #fff;
 }
 
 #next:enabled:hover, #create:hover {
 	background-color: #FFAB40;
 	cursor: pointer;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+	color: #fff;
 }
 
 #next:disabled {
