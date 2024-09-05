@@ -62,7 +62,7 @@ public class HomeController {
 			} else if(member.getMem_isAdmin() == 1) { // 관리자일 경우
 				session.setAttribute("sIsAdmin", "Y"); // 관리자 권한 있음
 			}
-		}
+		} 
 		// 세션 타이머 1시간으로 변경
 		session.setMaxInactiveInterval(60 * 60); // 60초 * 60분 = 3600
 		
