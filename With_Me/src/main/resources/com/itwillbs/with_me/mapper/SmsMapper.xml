@@ -5,9 +5,17 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="com.itwillbs.with_me.mapper.SmsMapper">
-<!-- SMS 인증 정보를 저장하는 쿼리 -->
-<insert id="saveSmsAuthInfo" parameterType="com.itwillbs.with_me.vo.SmsAuthInfo">
-    INSERT INTO sms_auth_info
+<!-- 기존 인증정보 존재 여부 확인 - SELECT -->
+<select id="selectSmsAuthInfo" resultType="smsAuth">
+	SELECT *
+	FROM sms_auth_info
+	WHERE creator_email = #{creator_email}
+	AND  phone_number =  #{phone_number}
+</select>
+
+<!-- 새 인증번호 등록 - INSERT -->
+<insert id="insertSmsAuthInfo">
+    INSERT INTO sms_auth_info (creator_email, phone_number, auth_code)
     VALUES (
     	#{creator_email}
     	, #{phone_number}
@@ -15,18 +23,13 @@
     )
 </insert>
 
-<!-- 전화번호로 SMS 인증 정보를 조회하는 쿼리 -->
-<select id="getSmsAuthInfoByPhoneNumber" resultType="com.itwillbs.with_me.vo.SmsAuthInfo">
-    SELECT *
-    FROM sms_auth_info
-    WHERE phone_number = #{phone_number}
-    ORDER BY created_at DESC
-    LIMIT 1
-</select>
+<!-- 기존 인증정보 갱신 - UPDATE -->
+<update id="updateSmsAuthInfo">
+    UPDATE sms_auth_info
+    SET auth_code = #{auth_code}
+	WHERE creator_email = #{creator_email}
+</update>
 
-<!-- (선택적) SMS 인증 정보를 삭제하는 쿼리 -->
-<delete id="deleteSmsAuthInfo" parameterType="String">
-    DELETE FROM sms_auth_info
-    WHERE phone_number = #{phone_number}
-</delete>
+
+
 </mapper>

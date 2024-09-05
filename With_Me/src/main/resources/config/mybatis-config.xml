@@ -21,5 +21,6 @@
 		<typeAlias type="com.itwillbs.with_me.vo.FollowVO" alias="follow"/>
 		<typeAlias type="com.itwillbs.with_me.vo.ChatRoom" alias="chatRoom"/>
   		<typeAlias type="com.itwillbs.with_me.vo.ChatMessage2" alias="chatMessage"/>
+  		<typeAlias type="com.itwillbs.with_me.vo.SmsAuthInfo" alias="smsAuth"/>
 	</typeAliases>
  </configuration>

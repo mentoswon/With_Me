@@ -161,7 +161,7 @@ article {	/* 가운데 정렬 */
     display: none;
 }
 
-.select, input[type="text"]:not(.itemText), textarea, .button {
+.select, input[type="text"]:not(.itemText):not(#auth_code), textarea, .button {
 	padding: 8px 10px;
 	width: 550px;
 	border: 1px solid #ccc;
@@ -489,7 +489,7 @@ input[type="radio"] {
 /* 	color: #ffffff; */
 }
 
-#reset:hover, #itemRegist:hover, .button:hover, #rewardRegist:hover {
+#reset:hover, #itemRegist:hover, #accountRegist:hover, #rewardRegist:hover {
 	cursor: pointer;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
@@ -519,7 +519,7 @@ input[type="radio"] {
 	caret-color: transparent;	/* 커서 깜빡임 없애기 */
 }
 
-#smsBtn:enabled:hover {
+#smsBtn:enabled:hover, #verifyCode:hover {
 	background-color: #FFAB40;
 	color: #fff;
 	cursor: pointer;
@@ -528,6 +528,23 @@ input[type="radio"] {
 
 #smsBtn:disabled {
 	background-color: #f0f0f0;
+}
+#auth_code {
+	padding: 8px 10px;
+	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
+	width: 200px; 
+	border: none;
+}
+
+#verifyCode {
+	width: 100px;
+	height: 40px;
+	margin: 10px;
+	border-radius: 8px;
+	border: none;
+	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+/* 	background-color: #FFAB40; */
+/* 	color: #fff; */
 }
 
 /* ----- 창작자 가이드 ----------- */

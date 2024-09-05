@@ -99,7 +99,7 @@ public class CreatorFundingController {
 		String id = (String)session.getAttribute("sId");
 		// 미로그인 시 로그인 페이지로 이동
 		if(id == null) {
-			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("msg", "접근 권한이 없습니다.\\n로그인 후 이용해주세요.");
 			model.addAttribute("targetURL", "MemberLogin");
 			return "result/fail";
 		}
@@ -130,17 +130,20 @@ public class CreatorFundingController {
 	public String projectCreateGet(HttpSession session, Model model, @RequestParam("project_idx") String project_idx) {
 	    String id = (String) session.getAttribute("sId");
 
-	    // 미로그인 시 로그인 페이지로 이동
-	    if (id == null) {
-	        model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
-	        model.addAttribute("targetURL", "MemberLogin");
-	        return "result/fail";
-	    }
-
 	    // 프로젝트 정보 조회
 	    ProjectVO project = service.getProject(project_idx);
 	    // 창작자 정보 조회
-	    CreatorVO creator = service.getCreator(id);
+	    CreatorVO creator = service.getCreator(project.getCreator_idx());
+
+	    if (id == null) {	// 미로그인 시 로그인 페이지로 이동
+	    	model.addAttribute("msg", "접근 권한이 없습니다.\\n로그인 후 이용해주세요.");
+	        model.addAttribute("targetURL", "MemberLogin");
+	        return "result/fail";
+	    } else if (!creator.getCreator_email().equals(id)) {	// 프로젝트의 창작자와 로그인한 id 일치하지 않을 경우
+	    	model.addAttribute("msg", "접근 권한이 없습니다.");
+	    	return "result/fail";
+		}
+
 
 	    // 공통코드 테이블에서 상위공통코드 FUND 인 컬럼(카테고리) 조회
 	    List<CommonCodeVO> category = service.getCategory();

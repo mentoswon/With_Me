@@ -25,11 +25,14 @@ public interface CreatorFundingMapper {
 	// 세부 카테고리 조회
 	List<CommonCodeVO> selectCategoryDetail(String project_category);
 
-	// 창작자 정보 조회
-	CreatorVO selectCreator(String id);
+	// 기존 창작자 정보 있는지 조회
+	CreatorVO selectIsCreator(String id);
 
 	// 창작자 정보 등록
 	void insertCreator(String id);
+
+	// 창작자 정보 조회
+	CreatorVO selectCreator(int creator_idx);
 
 	// 카테고리 코드 조회
 	String selectProjectCategory(String project_category);
@@ -83,6 +86,7 @@ public interface CreatorFundingMapper {
 
 	// 프로젝트 취소 요청한 프로젝트 조회
 	List<Map<String, String>> selectDeleteRequestList(String id);
+
 
 
 

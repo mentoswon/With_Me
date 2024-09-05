@@ -6,6 +6,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,46 +21,56 @@ public class SmsController {
 	@Autowired
 	private SmsService service;
 	
-	// 전화번호와 인증번호를 매핑하여 저장하는 Map (DB 대신 예시용)
-    private Map<String, String> verificationCodes = new HashMap<>();
-    
     // 인증번호 전송
 	@ResponseBody
 	@PostMapping("SendSms")
 	public String sendSms(HttpSession session, @RequestParam String phone_number) {
+		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
 		String id = (String)session.getAttribute("sId");
         
-        // 메시지 구성
-//        String message = "위드미의 인증번호는 [" + verificationCode + "]입니다. 인증번호를 입력해주세요.";
-        
-        // SmsVO 객체 생성 및 값 설정
-        SmsAuthInfo smsAuthInfo = new SmsAuthInfo();
-        smsAuthInfo.setCreator_email(id);
-        smsAuthInfo.setPhone_number(phone_number);
-        
-        // 서비스 호출 (SMS 전송)
-        boolean isSent = service.sendSMS(smsAuthInfo);
-        
-        if (isSent) {
-            // 전송된 인증번호를 Map 또는 DB에 저장
-            return "문자인증 성공!";
+        // 문자 인증 발송 요청
+        SmsAuthInfo smsAuthInfo = service.sendAuthSMS(id, phone_number);
+        if (smsAuthInfo != null) {
+            // 문자 인증 정보 등록
+            service.registSmsAuthInfo(smsAuthInfo);
+            resultMap.put("result", true);
         } else {
-        	return "문자인증 실패ㅠ";
+            resultMap.put("result", false);
         }
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
     }
     
     // 인증번호 확인
     @ResponseBody
     @PostMapping("VerifyCode")
-    public String verifyCode(@RequestParam String phone_number, @RequestParam String code) {
+    public String verifyCode(HttpSession session, SmsAuthInfo smsAuthInfo) {
+    	// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	String id = (String)session.getAttribute("sId");
+		smsAuthInfo.setCreator_email(id);
+    	
     	// DB에서 인증 정보 조회
-        SmsAuthInfo storedInfo = service.getSmsAuthInfo(phone_number);
+        SmsAuthInfo storedInfo = service.getSmsAuthInfo(smsAuthInfo);
         
-        if (storedInfo != null && storedInfo.getAuth_code().equals(code)) {
-            return "인증되었습니다.";
+        if (storedInfo != null && storedInfo.getAuth_code().equals(smsAuthInfo.getAuth_code())) {
+        	resultMap.put("result", true);	// 인증 성공
         } else {
-            return "인증번호가 틀립니다.";
+        	resultMap.put("result", false);	// 인증 실패
         }
+        // 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+        // => org.json.JSONObject 클래스 활용
+        JSONObject jo = new JSONObject(resultMap);
+        System.out.println("응답 JSON 데이터 " + jo.toString());
+        
+        return jo.toString();
     }
     
     

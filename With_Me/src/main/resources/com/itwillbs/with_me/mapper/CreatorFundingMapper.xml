@@ -38,13 +38,13 @@
 						  AND common_code_top = 'FUND')
 </select>
 
-<!-- 창작자 정보 조회 - SELECT -->
-<select id="selectCreator" resultType="creator">
+<!-- 기존 창작자 정보 있는지 조회 - SELECT -->
+<select id="selectIsCreator" resultType="creator">
 	SELECT *
 	FROM creator_info
 	WHERE creator_email = #{id}
-
 </select>
+
 <!-- 창작자 정보 등록 - INSERT -->
 <insert id="insertCreator">
 	INSERT INTO creator_info
@@ -56,6 +56,13 @@
 		, ''	-- 임시값("") creator_introduce
 	)
 </insert>
+
+<!-- 창작자 정보 조회 - SELECT -->
+<select id="selectCreator" resultType="creator">
+	SELECT *
+	FROM creator_info
+	WHERE creator_idx = #{creator_idx}
+</select>
 
 <!-- 프로젝트 등록 - INSERT -->
 <insert id="insertProject">

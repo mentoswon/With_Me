@@ -1075,9 +1075,15 @@ $(function() {
         // 포맷된 값으로 업데이트
         $(this).val(formattedValue);
     });
+	
+	// 인증번호 - 숫자만 입력
+	$('#auth_code').on('input', function() {
+        let value = $(this).val().replace(/\D/g, '');	// 숫자만 남기기
+        $(this).val(value);
+    });
 
     // 숫자입력만 허용하는 keypress
-    $('#phone_number').on('keypress', function(e) {
+    $('#phone_number, #auth_code').on('keypress', function(e) {
     	let keyCode = event.keyCode;
         if (keyCode < 48 || keyCode > 57) {
             event.preventDefault();
@@ -1107,50 +1113,70 @@ $(function() {
 	        $("#smsBtn").prop("disabled", false);	// 버튼 활성화
 		}
     });
-
-    // -----------------------------------------------
-    // 본인인증(cool sms)
-    function selfIdentification() {
-	    $.ajax({
+    
+	// -----------------------------------------------
+	// 본인인증 요청(cool sms)
+	$("#smsBtn").on("click", function(event) {
+		$("#phone_number").prop("disabled", true);	// 전화번호 입력란 비활성화
+		event.preventDefault();
+		$("#authCodeWrap").show();
+		
+		$.ajax({
 	        type: 'POST',
 	        url: 'SendSms',
 	        data: { 
-	        	"phone_number": $("#phone_number").val().trim().replace(/\D/g, ''); // 하이픈 제거(숫자만 남기기)
+	        	"phone_number": $("#phone_number").val().trim().replace(/\D/g, '') // 하이픈 제거(숫자만 남기기)
 	        },
 	        dataType : "json",
 	        success: function(response) {
-	            alert("인증코드가 전송되었습니다.");
+	        	if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+					alert("잘못된 접근입니다!");
+				} else if(!response.result) {
+                    alert("인증번호 전송에 실패하였습니다.");
+				} else if(response.result) {
+		            alert("인증코드가 전송되었습니다.\n6자리 인증번호를 입력해주세요.");
+		            $("#smsBtn").val("재발송");
+		            $("#auth_code").focus();
+				}
 	        },
 	        error: function() {
 	            alert("인증코드 전송이 실패했습니다.");
 	        }
+	    });	// ajax 끝
+	});
+	
+	// 인증번호 확인
+	$("#verifyCode").on("click", function(event) {
+	    $.ajax({
+	        type: 'POST',
+	        url: 'VerifyCode',
+	        data: { 
+	            "phone_number": $("#phone_number").val().trim().replace(/\D/g, ''),
+	            "auth_code": $("#auth_code").val()
+	        },
+	        dataType : "json",
+	        success: function(response) {
+	        	if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+					alert("잘못된 접근입니다!");
+				} else if(!response.result) {
+                    alert("인증실패!");
+                    $("#auth_code").focus();
+                    $("#auth_code").val("");
+				} else if(response.result) {
+		            alert("인증되었습니다.");
+		            $("#phoneAuthWrap").empty();
+		            $("#phoneAuthWrap").append('<div class="button" align="center" id="phone_auth_status_Y">인증완료</div>');
+					$("#accountRegist").prop("disabled", false);	// 입금계좌 버튼 활성화
+					$("#BeforePhoneAuth").empty();	// "! 본인인증 후 계좌등록이 가능합니다." 지우기
+				}
+	        },
+	        error: function() {
+	            alert("인증에 실패했습니다.");
+	        }
 	    });
-	}
-    
-    function verifyCode() {
-        $.ajax({
-            type: 'POST',
-            url: 'VerifyCode',
-            data: { 
-                "phone_number": $("#phone_number").val().trim().replace(/\D/g, ''),
-                "code": $("#verification_code").val().trim() 
-            },
-            dataType : "json",
-            success: function(response) {
-                alert(response);
-            },
-            error: function() {
-                alert("인증에 실패했습니다.");
-            }
-        });
-    }
-    
-    
-    
-    
-    
-    
-    
+	});
+	// -----------------------------------------------
+
     
     
     
@@ -1278,6 +1304,10 @@ $(function() {
     
     
 });	// ready 이벤트 끝
+
+
+
+
 
 // 입금 계좌 등록
 function linkAccount() {
@@ -2134,21 +2164,33 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<table style="border: 1px solid #ccc;">
-							<tr>
-								<td>
-									<input type="text" name="phone_number" id="phone_number" placeholder="휴대번호를 숫자로만 입력해주세요." maxlength="13" style="border: none; text-align: left; width: 420px;">
-								</td>
-								<td style="text-align: center; padding-bottom: 2px;" width="40px">
-									<input type="button" value="본인인증하기" id="smsBtn" onclick="selfIdentification()"disabled>
-								</td>
-							</tr>
-						</table>
-						<div>
-							<span id="checkTelResult"></span>
-						</div>
-<%-- 						<input type="button" value="본인인증하기" class="button" onclick="selfIdentification()" <c:if test="${creator.phone_auth_status == 'Y'}">disabled</c:if>> --%>
-						<br><br> 
+						<c:choose>
+							<c:when test="${creator.phone_auth_status eq 'N'}">
+								<div id="phoneAuthWrap">
+									<table style="border: 1px solid #ccc;">
+										<tr>
+											<td>
+												<input type="text" name="phone_number" id="phone_number" placeholder="휴대번호를 숫자로만 입력해주세요." maxlength="13" style="border: none; text-align: left; width: 420px;">
+											</td>
+											<td style="text-align: center; padding-bottom: 2px;" width="40px">
+												<input type="button" value="본인인증하기" id="smsBtn" disabled>
+											</td>
+										</tr>
+									</table>
+									<div>
+										<span id="checkTelResult"></span>
+									</div>
+									<div id="authCodeWrap" style="display: none;">
+										<input type="text" id="auth_code" placeholder="인증번호를 입력해주세요" maxlength="6">
+										<input type="button" value="인증번호확인" id="verifyCode">
+									</div>
+								</div>
+								<br><br> 
+							</c:when>
+							<c:otherwise>
+								<div class="button" align="center" id="phone_auth_status_Y">인증완료</div>
+							</c:otherwise>
+						</c:choose>
 					</div>
 				</div>
 				
@@ -2163,8 +2205,8 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<input type="button" value="계좌등록하기" class="button" onclick="linkAccount()" <c:if test="${project.project_status != '작성중'}">disabled</c:if>>
-						<p>
+						<input type="button" value="계좌등록하기" id="accountRegist" class="button" onclick="linkAccount()" disabled>
+						<p id="BeforePhoneAuth">
 							<span class="importanceImg">
 								<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
 							</span>

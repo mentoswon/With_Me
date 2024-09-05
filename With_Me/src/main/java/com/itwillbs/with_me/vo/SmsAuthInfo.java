@@ -1,8 +1,16 @@
 package com.itwillbs.with_me.vo;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class SmsAuthInfo {
 	// 1. 멤버변수 선언
 	// ---- 생성자 정의 생략(기본 생성자 활용) ------

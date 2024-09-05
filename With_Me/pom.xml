@@ -198,6 +198,19 @@
 		    <version>20210307</version>
 		</dependency>
 		
+		<!-- HTTP 요청 처리를 위한 라이브러리 (Apache HttpClient) -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>4.5.13</version>
+		</dependency>
+		
+<!-- 		<dependency> -->
+<!-- 		    <groupId>net.nurigo.sdk</groupId> -->
+<!-- 		    <artifactId>coolsms-sdk</artifactId> -->
+<!-- 		    <version>2.2.4</version> -->
+<!-- 		</dependency> -->
+		
 	    <!-- ============================================================= -->
 	    
 		
@@ -295,6 +308,14 @@
 		</dependency>        
 	</dependencies>
     <build>
+    	<!-- ===== 2024.09.05 추가 =================== -->
+    	<resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    	<!-- ======================================== -->
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
