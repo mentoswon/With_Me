@@ -15,13 +15,6 @@ public class BoardService {
 	@Autowired
 	private BoardMapper mapper;
 	
-	
-	// 공지사항 등록 요청
-	public int applyBoard(BoardVO bo) {
-		return mapper.insertBoard(bo);
-	}
-	
-	
 	// 공지사항 총 갯수 조회 요청
 	public int getBoardListCount(String searchType, String searchKeyword) {
 		return mapper.selectBoardListCount(searchType, searchKeyword);
@@ -46,26 +39,6 @@ public class BoardService {
 		}
 		return bo;
 	}
-	
-	
-	//공지사항 삭제
-		public int deleteBoard(int bo_idx) {
-			return mapper.deleteBoard(bo_idx);
-		}
-
-
-	
-	//공지사항 수정
-	public int modifyBoard(BoardVO bo) {
-		return mapper.updateBoard(bo);
-	}
-		
-	//공지사항 파일 삭제
-	public int removeBoFile(Map<String, String> map) {
-		return mapper.deleteBoFile(map);
-	}
-
-	
 	
 // ===========================================================================================
 	// 1:1문의 게시

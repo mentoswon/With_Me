@@ -56,6 +56,10 @@
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
+	// 페이지당 목록 개수 변경
+	function showListLimit(limit){
+		location.href="AdminMemberList?listLimit=" + limit;
+	}
 	// 관리자 권한 변경
 	function confirmAdmin(email, isAdmin, isAuthorize){
 		let msg = "";
@@ -82,6 +86,16 @@
 			<article class="main">
 				<h3>회원목록</h3>
 				<div class="wrapper_top">
+					<div>
+						<span>Show</span>
+						<select onchange="showListLimit(this.value)">
+							<option value="5" <c:if test="${param.listLimit eq 5}">selected</c:if>>5</option>
+							<option value="10" <c:if test="${param.listLimit eq 10}">selected</c:if>>10</option>
+							<option value="20" <c:if test="${param.listLimit eq 20}">selected</c:if>>20</option>
+							<option value="30" <c:if test="${param.listLimit eq 30}">selected</c:if>>30</option>
+						</select>
+						<span>entries</span>
+					</div>
 					<form action="AdminMemberList">
 						<div class="search">
 							<span>Search</span>
@@ -90,7 +104,6 @@
 						</div>
 					</form>
 				</div>
-				<br>
 				<div class="content">
 					<table border="1">
 						<tr>
@@ -101,7 +114,7 @@
 							<th>회원상태</th>
 							<th>관리자여부</th>
 							<th>관리자 권한관리</th>
-							<th></th>
+							<th>결제내역</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
 						<c:set var="pageNum" value="1" />

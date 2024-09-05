@@ -52,6 +52,10 @@
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
+	// 페이지당 목록 개수 변경
+	function showListLimit(limit){
+		location.href="AdminProjectList?status=${param.status}&listLimit=" + limit;
+	}
 	// 프로젝트 등록 승인/거부
 	function projectRegistApproval(isAuthorize, project_idx){
 		let msg = "";
@@ -121,6 +125,16 @@
 					</c:when>
 				</c:choose>
 				<div class="wrapper_top">
+					<div>
+						<span>Show</span>
+						<select onchange="showListLimit(this.value)">
+							<option value="5" <c:if test="${param.listLimit eq 5}">selected</c:if>>5</option>
+							<option value="10" <c:if test="${param.listLimit eq 10}">selected</c:if>>10</option>
+							<option value="20" <c:if test="${param.listLimit eq 20}">selected</c:if>>20</option>
+							<option value="30" <c:if test="${param.listLimit eq 30}">selected</c:if>>30</option>
+						</select>
+						<span>entries</span>
+					</div>
 					<form action="AdminProjectList">
 						<div class="search">
 							<span>Search</span>
@@ -130,7 +144,6 @@
 						</div>
 					</form>
 				</div>
-				<br>
 				<div class="content">
 					<table border="1">
 						<tr>
