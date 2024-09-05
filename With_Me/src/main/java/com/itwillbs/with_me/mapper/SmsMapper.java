@@ -15,6 +15,9 @@ public interface SmsMapper {
 
 	// 기존 인증정보 갱신(UPDATE)
 	void updateSmsAuthInfo(SmsAuthInfo smsAuthInfo);
+
+	// 휴대번호 인증 상태 변경
+	int updatePhoneAuth(String id);
 	
 	
 	

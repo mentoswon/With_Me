@@ -30,6 +30,10 @@
 	WHERE creator_email = #{creator_email}
 </update>
 
-
-
+<!-- 휴대번호 인증상태 변경 - UPDATE -->
+<update id="updatePhoneAuth">
+	UPDATE creator_info
+	SET phone_auth_status = 'Y'
+	WHERE creator_email = #{id}
+</update>
 </mapper>

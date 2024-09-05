@@ -64,7 +64,7 @@ input[type="button"]:hover {
 			</div>
 			<div>
 				<input type="button" id="startNow" class="projectStartButton" value="지금 시작하기" onclick="location.href='ProjectCategory'">
-				<input type="button" id="creatorGuide" class="projectStartButton" value="창작자 가이드" onclick="creatorGuide()">
+				<input type="button" id="creatorGuide" class="projectStartButton" value="창작자 가이드" onclick="location.href='CreatorGuide'">
 			</div>
 		</div>
 		<br><br><br><br><br><br>

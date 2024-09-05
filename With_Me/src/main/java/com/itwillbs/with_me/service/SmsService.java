@@ -71,5 +71,10 @@ public class SmsService {
 		System.out.println("strNum : " + strNum);
 		return strNum;
 	}
+
+	// 휴대번호 인증 상태 변경 요청
+	public int changePhoneAuth(String id) {
+		return mapper.updatePhoneAuth(id);
+	}
 	
 }

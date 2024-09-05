@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.SmsService;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.SmsAuthInfo;
 
 @Controller
@@ -61,7 +62,13 @@ public class SmsController {
         SmsAuthInfo storedInfo = service.getSmsAuthInfo(smsAuthInfo);
         
         if (storedInfo != null && storedInfo.getAuth_code().equals(smsAuthInfo.getAuth_code())) {
-        	resultMap.put("result", true);	// 인증 성공
+        	// 인증성공 시 creator_info 테이블의 phone_auth_status = 'Y'로 변경
+        	int updateCount = service.changePhoneAuth(id);
+        	if (updateCount > 0) {	// update 성공
+        		resultMap.put("result", true);	// 인증 성공
+			} else {
+				resultMap.put("result", false);	// 인증 실패
+			}
         } else {
         	resultMap.put("result", false);	// 인증 실패
         }
