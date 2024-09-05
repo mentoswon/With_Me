@@ -69,14 +69,14 @@ public class HomeController {
 		// ========================================================================
 		
 		// 메인 페이지에 프로젝트 리스트 띄우기
-		List<Map<String, Object>> projectList = homeService.getProjectList();
+		List<Map<String, Object>> projectList = homeService.getProjectList(sId);
 		model.addAttribute("projectList", projectList);
-		System.out.println(projectList);
+//		System.out.println(projectList);
 		
 		// 메인 페이지에 스토어 리스트 띄우기
-		List<StoreVO> storeList = homeService.getStoreList();
+		List<Map<String, Object>> storeList = homeService.getStoreList(sId);
 		model.addAttribute("storeList", storeList);
-		System.out.println(storeList);
+//		System.out.println(storeList);
 		
 		return "index";
 	}

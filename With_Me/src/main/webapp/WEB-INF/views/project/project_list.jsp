@@ -33,9 +33,7 @@
 			.sec02 .itemList .itemWrapper .item .item_image .like{
 				position: absolute;
 				top: 88%;
-				bottom: 0;
-				left: 90%;
-				right: 0;
+				right: 2%;
 			    width: 25px;	
 			    height: 25px;
 			    background-color: transparent;

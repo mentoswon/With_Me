@@ -393,12 +393,12 @@
 			null
 			, #{user_funding_email}
 			, #{user_funding_project_idx}
-			, null
-			, '없음'
+			, null						-- 리워드
+			, null						-- 아이템 옵션
 			, #{user_funding_count}
 			, #{user_funding_address_idx}
 			, #{user_funding_plus_amt}
-			, now()
+			, #{user_funding_pay_date}
 			, #{user_funding_pay_amt}
 		)
 	</insert>
@@ -415,7 +415,7 @@
 			, #{user_funding_count}
 			, #{user_funding_address_idx}
 			, #{user_funding_plus_amt}
-			, now()
+			, #{user_funding_pay_date}
 			, #{user_funding_pay_amt}
 		)
 		

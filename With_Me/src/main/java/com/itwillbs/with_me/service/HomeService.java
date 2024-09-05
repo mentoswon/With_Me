@@ -14,12 +14,12 @@ public class HomeService {
 	@Autowired
 	private HomeMapper mapper;
 
-	public List<Map<String, Object>> getProjectList() {
-		return mapper.selectProjectList();
+	public List<Map<String, Object>> getProjectList(String sId) {
+		return mapper.selectProjectList(sId);
 	}
 
-	public List<StoreVO> getStoreList() {
-		return mapper.selectStoreList();
+	public List<Map<String, Object>> getStoreList(String sId) {
+		return mapper.selectStoreList(sId);
 	}
 	
 	

@@ -107,7 +107,7 @@
 						<div class="infoWrapper">
 							<div>
 								<div>후원금</div>
-								<input type="number" value="" id="inputMoreAmt">&nbsp; 원
+								<input type="number" value="" id="inputMoreAmt" min="0">&nbsp; 원
 							</div>
 						</div>
 					</div>
@@ -227,6 +227,7 @@
 					<input type="hidden" name="user_funding_plus_amt" id="user_funding_plus_amt" value="">				<!-- 추가 후원금 -->
 					<input type="hidden" name="user_funding_pay_amt" id="user_funding_pay_amt" value="">                  <!-- 총액 -->
 					<input type="hidden" name="user_funding_pay_method" id="user_funding_pay_method" value="">                  <!-- 결제 방법 -->
+					<input type="hidden" name="user_funding_pay_date" id="user_funding_pay_date" value="${selectedReward.project_payDate}">                  
 					<input type="button" id="user_funding_complete" value="후원하기"> 
 				</section>
 			</form>
@@ -613,23 +614,33 @@
 			$("#inputMoreAmt").keyup(function (){
 				let moreMoneyAmt = $("#inputMoreAmt").val();
 				let rewardPrice = ${selectedReward.reward_price};
-				let totalAmt = rewardPrice + Number(moreMoneyAmt);
 				
-				// 결제 할 때 넘어갈 hidden 태그에 value 넣기
-				$("#user_funding_plus_amt").val(moreMoneyAmt);
-				$("#user_funding_pay_amt").val(totalAmt);
-				
-				// 1000단위 마다 , 찍기
-				totalAmt = totalAmt.toString();
-				moreMoneyAmt = moreMoneyAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-				$("#moreAmt").text("추가 후원금 : " + moreMoneyAmt + " 원");
-				
-				totalAmt = totalAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-				$("#totalAmt").text("총액 : " + totalAmt + " 원");
-				
-				if(moreMoneyAmt == ""){
-					$("#moreAmt").text("");
-				}
+				// 숫자일 경우에만 계산
+			    if (!isNaN(moreMoneyAmt) && moreMoneyAmt !== "") {
+			        moreMoneyAmt = Number(moreMoneyAmt);
+
+			        // 범위 체크
+			        if (moreMoneyAmt > 100000000) {
+			            alert("추가후원은 100,000,000원까지 가능합니다.");
+			            return false;
+			        }
+
+			        let totalAmt = rewardPrice + moreMoneyAmt;
+
+			        // 결제 할 때 넘어갈 hidden 태그에 value 넣기
+			        $("#user_funding_plus_amt").val(moreMoneyAmt);
+			        $("#user_funding_pay_amt").val(totalAmt);
+
+			        // 1000단위 마다 , 찍기
+			        let formattedMoreMoneyAmt = moreMoneyAmt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			        $("#moreAmt").text("추가 후원금 : " + formattedMoreMoneyAmt + " 원");
+
+			        let formattedTotalAmt = totalAmt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			        $("#totalAmt").text("총액 : " + formattedTotalAmt + " 원");
+			    } else {
+			        // 비어 있을 경우 초기화
+			        $("#moreAmt").text("");
+			    }
 			});
 			
 			// -------------------------------------------------------------------------

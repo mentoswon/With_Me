@@ -10,8 +10,8 @@ import com.itwillbs.with_me.vo.StoreVO;
 @Mapper
 public interface HomeMapper {
 
-	List<Map<String, Object>> selectProjectList();
+	List<Map<String, Object>> selectProjectList(String sId);
 
-	List<StoreVO> selectStoreList();
+	List<Map<String, Object>> selectStoreList(String sId);
 	
 }

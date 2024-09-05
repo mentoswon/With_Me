@@ -15,8 +15,10 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +36,6 @@ import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
-@EnableScheduling
 @Controller
 public class UserFundingController {
 	@Autowired
@@ -373,24 +374,6 @@ public class UserFundingController {
 	}
 	
 	// ================================================================================================================
-	@Scheduled(cron = "0 53 12 * * ?")
-	public void sche () {
-//		 오전 10시마다 결제 진행
-		System.out.println("스케줄 확인");
-		// ----------------------------------------------------------
-		// DB 가서 결제일이 오늘인 후원 내역 찾기
-		
-		// 1) 오늘 날짜 구하기
-		// 현재 날짜 구하기        
-		LocalDate now = LocalDate.now();
-		
-		System.out.println(now);
-		
-		List<Map<String, Object>> payList = service.getTodayPayFunding(now);
-		
-		System.out.println(payList);
-	}
-	
 
 	// =================================================================================================================
 	

@@ -7,14 +7,28 @@
 	<select id="selectProjectList" resultType="hashmap">
 		SELECT * , (SELECT IFNULL(SUM(funding_pay_amt),0) FROM 
 					funding_user WHERE funding_project_idx = project_idx) AS funding_amt
-		FROM project_info
+		<if test="sId">
+			,l.like_mem_email, l.like_status
+		</if>
+		FROM project_info p
+		<if test="sId">
+			LEFT JOIN like_ l
+			ON p.project_code = l.like_project_code AND l.like_mem_email = #{sId}
+		</if> 
 		ORDER BY funding_amt DESC
 	</select>
 	
 	<!-- 스토어 리스트 -->
-	<select id="selectStoreList" resultType="store">
+	<select id="selectStoreList" resultType="hashmap">
 		SELECT * 
-		FROM product_info
+		<if test="sId">
+			,l.like_mem_email, l.like_status
+		</if>
+		FROM product_info p
+		<if test="sId">
+			LEFT JOIN like_ l
+			ON p.product_code = l.like_product_code AND l.like_mem_email = #{sId}
+		</if> 
 	</select>
 
 </mapper>
