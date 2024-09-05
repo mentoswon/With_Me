@@ -54,6 +54,7 @@
 		, ''	-- 임시값("") creator_name
 		, ''	-- 임시값("") creator_image
 		, ''	-- 임시값("") creator_introduce
+		, 'N'	-- 임시값(N) phone_auth_status
 	)
 </insert>
 

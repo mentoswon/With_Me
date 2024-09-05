@@ -2205,7 +2205,8 @@ function linkAccount() {
 						<br>
 					</div>
 					<div class="projectContentWrap">
-						<input type="button" value="계좌등록하기" id="accountRegist" class="button" onclick="linkAccount()" disabled>
+						<input type="button" value="계좌등록하기" id="accountRegist" class="button" onclick="linkAccount()" <c:if test="${creator.phone_auth_status eq 'N'}">disabled</c:if>>
+						
 						<p id="BeforePhoneAuth">
 							<span class="importanceImg">
 								<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
