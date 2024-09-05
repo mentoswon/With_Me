@@ -129,9 +129,7 @@ $(function() {
 					<div style="text-align: center; display: flex;">
 						<c:choose>
 					        <c:when test="${not empty creatorName}">
-								<c:forEach var="creator" items="${creatorInfo}">
-						            <h3>${creator.creator_name}</h3>
-								</c:forEach>
+						            <h3>${creatorInfo.creator_name}</h3>
 					        </c:when>
 					        <c:otherwise>
 					            <h3>${notCreatorMember.mem_name}</h3>
@@ -172,16 +170,14 @@ $(function() {
 			<div id="writeContainer1" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<c:forEach var="creator" items="${creatorInfo}">
 						    <c:choose>
 						        <c:when test="${not empty creatorName}">
-						            <p>${creator.creator_introduce}</p>
+						            <p>${creatorInfo.creator_introduce}</p>
 						        </c:when>
 						        <c:otherwise>
 						            <p>등록된 소개가 없습니다.</p>
 						        </c:otherwise>
 						    </c:choose>
-						</c:forEach>
 					</div>
 				</div>
 			</div>
@@ -209,10 +205,9 @@ $(function() {
 						                <c:set var="now" value="<%=new java.util.Date()%>" />
 						                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
 						
-						                <c:forEach var="creator" items="${creatorInfo}">
 							                <c:forEach var="project" items="${projectList}">
 							                    <c:choose>
-							                        <c:when test="${project.creator_idx eq creator.creator_idx && project.funding_end_date > today}">
+							                        <c:when test="${project.creator_idx eq creatorInfo.creator_idx && project.funding_end_date > today}">
 							                            <c:set var="hasValidProject" value="true" />
 							                            <div class="item">
 							                                <div class="item_image">
@@ -261,7 +256,6 @@ $(function() {
 							                        </c:when>
 							                    </c:choose>
 							                </c:forEach>
-						                </c:forEach>
 						            </div>
 						        </div>
 						

@@ -39,12 +39,38 @@
 		OR mem_name = #{mem_name}
 	</select>
 	
-	<!-- 전화번호로 아이디 조회 -->
+	<!-- 아이디 조회 -->
 	<select id="selectId" resultType="member">
 		SELECT *
 		FROM member
 		WHERE mem_email = #{mem_email}
 	</select>
+	
+	<!-- 회원 비밀번호 찾기 -->
+	<select id="selectFindPasswdFromEmail" resultType="member">
+		SELECT *
+		FROM member
+		WHERE mem_email = #{mem_email}
+	</select>
+	
+	<!-- 비밀번호 변경 위한 전화번호 검색 -->
+	<select id="selectFindPasswdFromTel" resultType="member">
+		SELECT *
+		FROM member
+		WHERE 
+			mem_tel = #{mem_tel}
+	</select>
+	
+	<!-- 회원 비밀번호 수정 - UPDATE -->
+	<update id="updatePasswd">
+		UPDATE member
+		SET 
+			mem_passwd = #{mem_passwd}
+		WHERE
+			mem_tel = #{mem_tel}
+
+	</update>
+	
 	
 	<!-- 이메일 인증 정보 조회 -->
 	<!-- 이메일주소에 해당하는 정보 조회 -->
@@ -90,8 +116,26 @@
 			email = #{email}
 	</delete>
 	
+
+	
+	<!-- 마이페이지(기본정보 수정) -->
+	<update id="updateMember">
+		UPDATE member
+		SET 
+			mem_name = #{mem_name}
+			,mem_passwd = #{mem_passwd}
+			,mem_post_code = #{mem_post_code}
+			,mem_add1 = #{mem_add1}
+			,mem_add2 = #{mem_add2}
+			,mem_tel = #{mem_tel}
+			,mem_birthday = #{mem_birthday}
+		WHERE
+			mem_email = #{mem_email}
+		
+	</update>
+	
 	<!-- 세션 아이디인 이메일로 창작자 조회 -->
-	<select id="selectCreator" resultType="hashmap">
+	<select id="selectCreator" resultType="creator">
 		SELECT c.creator_idx, c.creator_email, c.creator_name, c.creator_image, c.creator_introduce, c.phone_auth_status
 				, m.mem_email
 		FROM member m JOIN creator_info c
@@ -114,7 +158,6 @@
 		FROM project_info
 	</select>
 	
-	
 	<!-- 프로젝트 리스트 -->
 	<select id="selectProjectList" resultType="hashmap">
 		SELECT * 
@@ -129,6 +172,17 @@
 			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
 	</select>
 	
+	<!-- 내 마이페이지에서 후원한 프로젝트 가져오기 -->
+	<select id="selectDonationProjectList" resultType="hashmap">
+		SELECT *
+		FROM funding_user f JOIN project_info p
+		ON f.funding_project_idx = p.project_idx
+		WHERE f.funding_mem_email = #{mem_email}
+		limit 
+			#{startRow}             -- Mapper 내의 메서드에서 @Param("startRow")
+			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
+	</select>
+	
 	<!-- 팔로워 값 가져오기(조회) -->
 <!-- 	<select id="selectFollower" resultType="hashmap"> -->
 <!-- 		SELECT f.follow_idx, f.follow_mem_email, f.follow_creator -->
@@ -137,10 +191,11 @@
 <!-- 		WHERE mem_email = #{mem_email} -->
 <!-- 	</select> -->
 	
-	<!-- 팔로우 전체 리스트 개수 조회 -->
+	<!-- 팔로워 전체 리스트 개수 조회 -->
 	<select id="selectFollowListCount" resultType="int">
 		SELECT COUNT(*)
 		FROM follow
+		WHERE follow_creator = #{mem_email}
 	</select>
 	
 	<!-- 좋아요 전체 리스트 개수 조회 -->
@@ -165,15 +220,6 @@
 			, #{listLimit}  
 	</select>
 	
-		<!-- 내가 팔로우한 사람이 팔로우한 수 -->
-<!-- 	<select id="selectFollowerCount" resultType="hashmap"> -->
-<!-- 		SELECT COUNT(f.follow_creator) -->
-<!-- 		FROM follow f JOIN creator_info c -->
-<!-- 		ON f.follow_creator = c.creator_email -->
-<!-- 		WHERE f.follow_mem_email = #{follow_mem_email} -->
-<!-- 	</select> -->
-	
-	
 	<!-- 내 마이페이지에서 팔로잉 리스트 조회 -->
 	<select id="selectFollowingList" resultType="hashmap">
 		SELECT *,
@@ -190,7 +236,28 @@
 			, #{listLimit}  
 	</select>
 	
-	<!-- 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 조회(나를 팔로우 한 사람) -->
+	<!-- 내 마이페이지에서 좋아요 리스트 조회 -->
+	<select id="selectLikeList" resultType="hashmap">
+		SELECT l.like_idx, l.like_mem_email, p.*, s.*
+		FROM like_ l left JOIN project_info p
+		ON l.like_project_code = p.project_code
+		LEFT join product_info s
+		ON l.like_product_code = s.product_code
+		WHERE l.like_mem_email = #{mem_email}
+		LIMIT
+			#{startRow}     
+			, #{listLimit}  
+	</select>
+	
+		<!-- 내가 팔로우한 사람이 팔로우한 수 -->
+<!-- 	<select id="selectFollowerCount" resultType="hashmap"> -->
+<!-- 		SELECT COUNT(f.follow_creator) -->
+<!-- 		FROM follow f JOIN creator_info c -->
+<!-- 		ON f.follow_creator = c.creator_email -->
+<!-- 		WHERE f.follow_mem_email = #{follow_mem_email} -->
+<!-- 	</select> -->
+
+	<!-- 창작자가 아닌 상대방 마이페이지에서 팔로워 리스트 조회(나를 팔로우 한 사람) -->
 	<select id="selectOtherNoCreatorFollowList" resultType="hashmap">
 		SELECT *,
 			(SELECT mem_name
@@ -200,13 +267,29 @@
 			 FROM creator_info c
         	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
 		FROM follow f
-		WHERE follow_creator = #{mem_email}
+		WHERE f.follow_creator = #{mem_email}
 		LIMIT
 			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
 			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
 	</select>
 	
-	<!-- 창작자인 상대방 마이페이지에서 팔로우 리스트 조회(나를 팔로우 한 사람) -->
+	<!-- 창작자가 아닌 상대방 마이페이지에서 팔로잉 리스트 조회(내가 팔로우한 사람) -->
+	<select id="selectOtherNoCreatorFollowingList" resultType="hashmap">
+		SELECT *,
+			(SELECT mem_name
+		 	FROM member m
+         	WHERE f.follow_creator = m.mem_email) AS mem_name,
+         	(SELECT creator_name
+			 FROM creator_info c
+        	 WHERE f.follow_creator = c.creator_email) AS creator_name
+		FROM follow f
+		WHERE f.follow_mem_email = #{mem_email}
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
+	
+	<!-- 창작자인 상대방 마이페이지에서 팔로워 리스트 조회(나를 팔로우 한 사람) -->
 	<select id="selectOtherCreatorFollowList" resultType="hashmap">
 		SELECT *,
 			(SELECT mem_name
@@ -216,13 +299,49 @@
 			 FROM creator_info c
         	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
 		FROM follow f
-		WHERE follow_creator = #{creatorEmail}
+		WHERE f.follow_creator = #{creatorEmail}
 		LIMIT
 			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
 			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
 	</select>
 	
+	<!-- 창작자인 상대방 마이페이지에서 팔로잉 리스트 조회(내가 팔로우한 사람) -->
+	<select id="selectOtherCreatorFollowingList" resultType="hashmap">
+		SELECT *,
+			(SELECT mem_name
+		 	FROM member m
+         	WHERE f.follow_creator = m.mem_email) AS mem_name,
+         	(SELECT creator_name
+			 FROM creator_info c
+        	 WHERE f.follow_creator = c.creator_email) AS creator_name
+		FROM follow f
+		WHERE f.follow_mem_email = #{creatorEmail}
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
 	
+	<!-- 창작작가 아닌 상대방 마이페이지에서 후원한 프로젝트 가져오기 -->
+	<select id="selectOtherNoCreatorDonationProjectList" resultType="hashmap">
+		SELECT *
+		FROM funding_user f JOIN project_info p
+		ON f.funding_project_idx = p.project_idx
+		WHERE f.funding_mem_email = #{mem_email}
+		limit 
+			#{startRow}             -- Mapper 내의 메서드에서 @Param("startRow")
+			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
+	</select>
+	
+	<!-- 창작작인 상대방 마이페이지에서 후원한 프로젝트 가져오기 -->
+	<select id="selectOtherCreatorDonationProjectList" resultType="hashmap">
+		SELECT *
+		FROM funding_user f JOIN project_info p
+		ON f.funding_project_idx = p.project_idx
+		WHERE f.funding_mem_email = #{creatorEmail}
+		limit 
+			#{startRow}             -- Mapper 내의 메서드에서 @Param("startRow")
+			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
+	</select>
 
 	
 	<!-- 창작자에 등록되어있는지(상대방 마이페이지) -->

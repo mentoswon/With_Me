@@ -38,8 +38,8 @@
 	<main>
 		<section>
 			<div id="findPw_wrap2">
-				<form action=PwReset method="post">
-					<input type="hidden" name="mem_id" value="${param.mem_id}" id="mem_id" size="10">
+				<form action=PwResetPro method="post">
+					<input type="hidden" name="mem_email" value="${param.mem_email}" id="mem_email" size="10">
 					<section id="sec01">
 						<table>
 							<tr>

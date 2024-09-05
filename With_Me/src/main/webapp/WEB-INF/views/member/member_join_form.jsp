@@ -262,7 +262,6 @@
 			// 입력받은 평문 아이디와 평문 패스워드 암호화 => RSAKey 객체의 encrypt() 메서드 활용
 			// => 16진수 문자열로 변환된 암호문을 hidden 속성 value 값으로 저장
 			$("#hiddenPassswd").val(rsa.encrypt($("#mem_passwd").val()));
-			$("#hiddenPassswd2").val(rsa.encrypt($("#mem_passwd2").val()));
 			
 // 			// 아이디 정규표현식 검사, 패스워드와 패스워드 확인 정규표현식 검사,
 // 			// 취미 항목 체크 여부 확인을 통해 해당 항목이 부적합 할 경우 
@@ -365,7 +364,7 @@
 			<form action="MemberJoinPro" name="joinForm" method="post">
 				<div>
 					<label for="name">이름</label> 
-					<input placeholder="2~5글자의 한글" maxlength="5" type="text" name="mem_name" id="mem_name" required>
+					<input placeholder="2~5글자의 한글" type="text" name="mem_name" id="mem_name" required>
 					<div id="checkNameResult"></div>
 				</div>
 				<div>

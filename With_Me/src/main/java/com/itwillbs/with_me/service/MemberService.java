@@ -81,13 +81,28 @@ public class MemberService {
 		return isAuthSuccess;
 	}
 
+	// 회원 아이디로 비밀번호 찾기
+	public MemberVO getFindPasswdFromEmail(MemberVO member) {
+		return mapper.selectFindPasswdFromEmail(member);
+	}
+	
+	// 아이디 + 전화번호로 비밀번호 리셋폼으로 넘어가기
+	public MemberVO getFindPasswdFromTel(MemberVO member) {
+		return mapper.selectFindPasswdFromTel(member);
+	}
+	
+	//회원 비밀번호 변경
+	public int modifyPasswd(Map<String, String> map) {
+		return mapper.updatePasswd(map);
+	}
+	
 	// 회원정보 조회
 	public List<MemberVO> getMember() {
 		return mapper.selectMember();
 	}
 
 	// 이메일로 창작자정보 조회
-	public List<CreatorVO> getCreatorInfo(MemberVO member) {
+	public CreatorVO getCreatorInfo(MemberVO member) {
 		return mapper.selectCreator(member);
 	}
 
@@ -100,15 +115,15 @@ public class MemberService {
 	public List<Map<String, Object>> getProjectList(int startRow, int listLimit) {
 		return mapper.selectProjectList(startRow, listLimit);
 	}
-
-//	// 팔로워 값 가져오기
-//	public List<FollowVO> getFollower(MemberVO member) {
-//		return mapper.selectFollower(member);
-//	}
+	
+	// 내 마이페이지에서 후원한 프로젝트 가져오기
+	public List<Map<String, Object>> getDonationProjectList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectDonationProjectList(startRow, listLimit, mem_email);
+	}
 
 	// 팔로우 리스트 개수 가져오기
-	public int getFollowListCount() {
-		return mapper.selectFollowListCount();
+	public int getFollowListCount(String mem_email) {
+		return mapper.selectFollowListCount(mem_email);
 	}
 	
 	// 좋아요 리스트 개수 가져오기
@@ -126,22 +141,45 @@ public class MemberService {
 		return mapper.selectFollowingList(startRow, listLimit, mem_email);
 	}
 	
+	// 좋아요 리스트 목록 나타내기
+	public List<Map<String, Object>> getLikeList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectLikeList(startRow, listLimit, mem_email);
+	}
+	
 	// 크리에이터 이메일 들고와서 mem_email 들고오기
 	public String getMemEmail(String creatorEmail) {
 		return mapper.selectMemEmail(creatorEmail);
 	}
 	
-	// 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 가져오기
+	// 창작자가 아닌 상대방 마이페이지에서 팔로워 리스트 가져오기
 	public List<Map<String, Object>> getOtherNoCreatorFollowtList(int startRow, int listLimit, String mem_email) {
 		return mapper.selectOtherNoCreatorFollowList(startRow, listLimit, mem_email);
 	}
 	
-	// 창작자인 상대방 마이페이지에서 팔로우 리스트 가져오기 
+	// 창작자가 아닌 상대방 마이페이지에서 팔로잉 리스트 가져오기
+	public List<Map<String, Object>> getOtherNoCreatorFollowingtList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectOtherNoCreatorFollowingList(startRow, listLimit, mem_email);
+	}
+	
+	// 창작자인 상대방 마이페이지에서 팔로워 리스트 가져오기 
 	public List<Map<String, Object>> getOtherCreatorFollowtList(int startRow, int listLimit, String creatorEmail) {
 		return mapper.selectOtherCreatorFollowList(startRow, listLimit, creatorEmail);
 	}
 	
+	// 창작자인 상대방 마이페이지에서 팔로잉 리스트 가져오기 
+	public List<Map<String, Object>> getOtherCreatorFollowingList(int startRow, int listLimit, String creatorEmail) {
+		return mapper.selectOtherCreatorFollowingList(startRow, listLimit, creatorEmail);
+	}
 	
+	// 창작자가 아닌 상대방 마이페이지에서 후원한 프로젝트 목록 나타내기
+	public List<Map<String, Object>> getOtherNoCreatorDonationProjectList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectOtherNoCreatorDonationProjectList(startRow, listLimit, mem_email);
+	}
+	
+	// 창작자인 상대방 마이페이지에서 후원한 프로젝트 목록 나타내기
+	public List<Map<String, Object>> getOtherCreatorDonationProjectList(int startRow, int listLimit, String creatorEmail) {
+		return mapper.selectOtherCreatorDonationProjectList(startRow, listLimit, creatorEmail);
+	}
 
 	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //	public List<FollowVO> getFollowerCount(List<FollowVO> followerCount) {
@@ -169,7 +207,7 @@ public class MemberService {
 	}
 	
 	// 상대방 마이페이지(창작자인 경우)
-	public List<CreatorVO> getOtherCreatorInfo(String creatorEmail) {
+	public CreatorVO getOtherCreatorInfo(String creatorEmail) {
 		return mapper.selectOtherCreatorInfo(creatorEmail);
 	}
 	
@@ -186,6 +224,15 @@ public class MemberService {
 			String address_main, String address_sub, String address_receiver_tel) {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 	}
+
+
+
+
+
+
+
+
+
 
 
 

@@ -54,7 +54,7 @@
 								<table>
 									<tr>
 										<td id="td03">아이디</td>
-										<td><input type="text" name="mem_id" id="mem_id" size="10" required="required"></td>
+										<td><input type="text" name="mem_email" id="mem_email" size="10" required="required"></td>
 									</tr>
 									
 									<tr>

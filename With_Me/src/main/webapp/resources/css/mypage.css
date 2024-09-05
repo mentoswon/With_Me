@@ -94,6 +94,15 @@ a {
     cursor: pointer;
     transition: color 0.3s;
    	caret-color: transparent;	/* 커서 깜빡임 없애기 */
+}   	
+
+#LikeMenuList li {
+    margin: 0 10px;
+    padding: 15px 0;
+    width: 150px;
+    cursor: pointer;
+    transition: color 0.3s;
+   	caret-color: transparent;	/* 커서 깜빡임 없애기 */
 }
 
 #MypageMenuList li.active {
@@ -101,8 +110,17 @@ a {
     border-bottom: 3px solid #FFAB40;
 }
 
+#LikeMenuList li.active {
+    font-weight: bold;
+    border-bottom: 3px solid #FFAB40;
+}
 
 #MypageMenuList li span {
+    display: block;
+    text-align: center;
+}
+
+#LikeMenuList li span {
     display: block;
     text-align: center;
 }
@@ -116,6 +134,10 @@ article {	/* 가운데 정렬 */
 
 /* 프로젝트 등록글 작성 영역 */
 .writeContainer {
+        display: none;
+    }
+    
+.likeContainer {
         display: none;
     }
 

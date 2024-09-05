@@ -127,16 +127,14 @@ $(function() {
 			<div id="projectInfoWrap">
 				<div id="MypageMenuTop">
 					<div style="text-align: center; display: flex;">
-						<c:forEach var="creator" items="${creatorInfo}">
 							<c:choose>
-						        <c:when test="${not empty creator and not empty creator.creator_name}">
-						            <h3>${creator.creator_name}</h3>
+						        <c:when test="${not empty creator and not empty creatorInfo.creator_name}">
+						            <h3>${creatorInfo.creator_name}</h3>
 						        </c:when>
 						        <c:otherwise>
 						            <h3>${memberInfo.mem_name}</h3>
 						        </c:otherwise>
 						    </c:choose>
-						</c:forEach>
 						<button class="option" type="button" onclick="location.href='MypageInfo'">
 							<img src="${pageContext.request.contextPath}/resources/image/mypage.png" width="25">
 						</button>
@@ -175,27 +173,62 @@ $(function() {
 			<div id="writeContainer1" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<c:forEach var="creator" items="${creatorInfo}">
 						    <c:choose>
-						        <c:when test="${not empty creator and not empty creator.creator_introduce}">
-						            <p>${creator.creator_introduce}</p>
+						        <c:when test="${not empty creator and not empty creatorInfo.creator_introduce}">
+						            <p>${creatorInfo.creator_introduce}</p>
 						        </c:when>
 						        <c:otherwise>
 						            <p>등록된 소개가 없습니다.</p>
 						        </c:otherwise>
 						    </c:choose>
-						</c:forEach>
 					</div>
 				</div>
 			</div>
 			<div id="writeContainer2" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<p>
-							좋아요가 없습니다.
-						</p>
+						<div id="MypageMenu">
+							<ul id="LikeMenuList">
+								<li class="writeList active" data-index="1">
+									<span>내가 좋아요한 프로젝트</span>
+								</li>
+								<li class="writeList" data-index="2">
+									<span>내가 좋아요한 상품</span>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
+				<article>
+					<div id="likeContainer1" class="likeContainer">
+						<div class="MypageWriteWrap">
+							<div class="MypageExplanationWrap">
+								    <c:choose>
+								        <c:when test="${not empty creator and not empty creatorInfo.creator_introduce}">
+								            <p>${creatorInfo.creator_introduce}</p>
+								        </c:when>
+								        <c:otherwise>
+								            <p>등록된 소개가 없습니다.</p>
+								        </c:otherwise>
+								    </c:choose>
+							</div>
+						</div>
+					</div>
+					<div id="likeContainer2" class="likeContainer">
+						<div class="MypageWriteWrap">
+							<div class="MypageExplanationWrap">
+								    <c:choose>
+								        <c:when test="${not empty creator and not empty creatorInfo.creator_introduce}">
+								            <p>${creatorInfo.creator_introduce}</p>
+								        </c:when>
+								        <c:otherwise>
+								            <p>등록된 소개가 없습니다.</p>
+								        </c:otherwise>
+								    </c:choose>
+							</div>
+						</div>
+					</div>
+				</article>
 			</div>
 			<div id="writeContainer3" class="writeContainer">
 				<div class="MypageWriteWrap">
@@ -212,10 +245,9 @@ $(function() {
 						                <c:set var="now" value="<%=new java.util.Date()%>" />
 						                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
 						
-						                <c:forEach var="creator" items="${creatorInfo}">
 						                <c:forEach var="project" items="${projectList}">
 						                    <c:choose>
-						                        <c:when test="${project.creator_idx eq creator.creator_idx && project.funding_end_date > today}">
+						                        <c:when test="${project.creator_idx eq creatorInfo.creator_idx && project.funding_end_date > today}">
 						                            <c:set var="hasValidProject" value="true" />
 						                            <div class="item">
 						                                <div class="item_image">
@@ -264,7 +296,6 @@ $(function() {
 						                        </c:when>
 						                    </c:choose>
 						                </c:forEach>
-						                </c:forEach>
 						            </div>
 						        </div>
 						
@@ -282,7 +313,7 @@ $(function() {
 							
 							<section id="pageList">
 								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-								<input type="button" value="이전" onclick="location.href='ProjectList?pageNum=${pageNum - 1}'"
+								<input type="button" value="이전" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
 										<c:if test="${pageNum <= 1}">disabled</c:if> >
 								
 								<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
@@ -293,14 +324,14 @@ $(function() {
 											<b>${i}</b>
 										</c:when>
 										<c:otherwise>
-											<a href="ProjectList?pageNum=${i}">${i}</a>
+											<a href="MemberInfo?pageNum=${i}">${i}</a>
 										</c:otherwise>
 									</c:choose>
 								
 						<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
 								</c:forEach>
 								
-								<input type="button" value="다음" onclick="location.href='ProjectList?pageNum=${pageNum + 1}'"
+								<input type="button" value="다음" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
 										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 							</section>
 						</div>
@@ -369,7 +400,7 @@ $(function() {
 								<%-- ========================== 페이징 처리 영역 ========================== --%>
 								<section id="pageList">
 									<input type="button" value="이전"
-										onclick="location.href='qna_ask?pageNum=${pageNum - 1}'"
+										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
 										<c:if test="${pageNum <= 1}">disabled</c:if>>
 				
 									<c:forEach var="i" begin="${pageInfo.startPage}"
@@ -380,14 +411,14 @@ $(function() {
 												<%-- 현재 페이지 번호 --%>
 											</c:when>
 											<c:otherwise>
-												<a href="qna_ask?pageNum=${i}">${i}</a>
+												<a href="MemberInfo?pageNum=${i}">${i}</a>
 												<%-- 다른 페이지 번호 --%>
 											</c:otherwise>
 										</c:choose>
 									</c:forEach>
 				
 									<input type="button" value="다음"
-										onclick="location.href='qna_ask?pageNum=${pageNum + 1}'"
+										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
 										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 								</section>
 							</div>
@@ -448,7 +479,7 @@ $(function() {
 								<%-- ========================== 페이징 처리 영역 ========================== --%>
 								<section id="pageList">
 									<input type="button" value="이전"
-										onclick="location.href='qna_ask?pageNum=${pageNum - 1}'"
+										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
 										<c:if test="${pageNum <= 1}">disabled</c:if>>
 				
 									<c:forEach var="i" begin="${pageInfo.startPage}"
@@ -459,14 +490,14 @@ $(function() {
 												<%-- 현재 페이지 번호 --%>
 											</c:when>
 											<c:otherwise>
-												<a href="qna_ask?pageNum=${i}">${i}</a>
+												<a href="MemberInfo?pageNum=${i}">${i}</a>
 												<%-- 다른 페이지 번호 --%>
 											</c:otherwise>
 										</c:choose>
 									</c:forEach>
 				
 									<input type="button" value="다음"
-										onclick="location.href='qna_ask?pageNum=${pageNum + 1}'"
+										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
 										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 								</section>
 							</div>

@@ -102,8 +102,27 @@ public class MemberController {
 	
 	// 회원가입 폼
 	@PostMapping("MemberJoinPro")
-	public String memberJoinPro(MemberVO member, Model model, BCryptPasswordEncoder passwordEncoder) {
+	public String memberJoinPro(MemberVO member, Model model, BCryptPasswordEncoder passwordEncoder, HttpSession session) {
 		System.out.println(member);
+		
+		// ============================= 아이디/패스워드 복호화 ====================================
+//		System.out.println("암호화 된 아이디 : " + member.getMem_email());
+		System.out.println("암호화 된 패스워드 : " + member.getMem_passwd());
+		
+		// RSAKeyGenerator 클래스의 decrypt() 메서드 호출하여 전달받은 암호문 복호화
+		PrivateKey privateKey = (PrivateKey)session.getAttribute("RSAPrivateKey");
+		
+		// RsaKeyGenerator 클래스의 decrypt() 메서드 호출하여 전달받은 암호문 복호화
+		// => 파라미터 : 세션에 저장된 개인키, 암호문   리턴타입 : String
+//		String id = RsaKeyGenerator.decrypt(privateKey, member.getMem_email());
+		String passwd = RsaKeyGenerator.decrypt(privateKey, member.getMem_passwd());
+//		System.out.println("복호화 된 아이디 : " + id);
+		System.out.println("복호화 된 패스워드 : " + passwd);
+		
+		// MemberVO 객체에 복호화 된 아이디, 패스워드 저장
+//		member.setMem_email(id);
+		member.setMem_passwd(passwd);
+		
 		
 		// 평문(원문) 패스워드에 대한 해싱(Hashing = 단방향 암호화) 수행 후 결과값 문자열로 저장
 		String securePasswd = passwordEncoder.encode(member.getMem_passwd());
@@ -126,8 +145,6 @@ public class MemberController {
 		String address_receiver_tel = member.getMem_tel();  
 		
 		service.registTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
-		
-		
 		
 		// --------------------------------------------------------------
 		// 회원가입 성공/실패에 따른 페이징 처리
@@ -360,7 +377,7 @@ public class MemberController {
 	}
 	
 	
-	// 전화번호로 아이디 찾기
+	// 아이디 찾기
 	@PostMapping("IdFindPro")
 	public String idFindPro(MemberVO member, Model model) {
 		
@@ -385,35 +402,75 @@ public class MemberController {
 	}
 	
 //	// 비밀번호 찾기
-//	@PostMapping("PwFindPro")
-//	public String pwFindPro(MemberVO member, Model model) {
-//			
-//		MemberVO dbMember = service.isExistId(member);
-//		
-//		if(dbMember == null) { // !member.getMem_tel().equals(mem_tel)
-//			model.addAttribute("msg", "없는 아이디입니다");
-//			return "result/fail";
-//
-//		} else {
-////				model.addAttribute("mem_id", mem_id); // model에 아이디값 저장
-//			model.addAttribute("dbMember", dbMember); // model에 아이디값 저장
-//			return "member/member_pw_find_pro";
-//		}
-//		
-//		return "member/member_pw_find_pro";
-//	}
+	@PostMapping("PwFindPro")
+	public String pwFindPro(MemberVO member, Model model) {
+			
+		MemberVO dbMember = service.getFindPasswdFromEmail(member);
+		
+		if(dbMember == null) { // !member.getMem_tel().equals(mem_tel)
+			model.addAttribute("msg", "없는 아이디입니다");
+			return "result/fail";
+
+		} else {
+//				model.addAttribute("mem_id", mem_id); // model에 아이디값 저장
+			model.addAttribute("dbMember", dbMember); // model에 아이디값 저장
+			return "member/member_pw_find_pro";
+		}
+	}
 	
-//	// 비밀번호 재설정
-//	@PostMapping("PwReset")
-//	public String pwReset() {
-//		return "member/member_pw_reset";
-//	}
+	// 전화번호로 비밀번호 찾기
+	@PostMapping("PwResetPro")
+	public String pwResetPro(MemberVO member, Model model) {
+		MemberVO dbMember = service.getFindPasswdFromTel(member);
+		if(dbMember == null) { // !member.getMem_tel().equals(mem_tel)
+			model.addAttribute("msg", "없거나 해당 아이디와 맞지 않는 전화번호입니다");
+			return "result/fail";
+			
+		} else {
+			model.addAttribute("dbMember", dbMember); // model에 전화번호값 저장
+			return "member/member_pw_reset";
+		}
+		
+//		return "member/member_pw_find";
+	}
+	
+	// 비밀번호 재설정
+	@PostMapping("PwResetFinal")
+	public String pwResetFinal(@RequestParam Map<String, String> map, MemberVO member
+								, BCryptPasswordEncoder passwordEncoder, Model model) {
+		member = service.getMember(member); // // map이 있으니까 member에 덮어씌워도 상관없다
+		
+		// 새 비밀번호 입력 여부를 확인하여 새 비밀번호 입력됐을 경우 암호화 수행 필요
+		if(!map.get("mem_passwd").equals("")) { // 널스트링이 아니면 새 비밀번호 암호화 수행
+			map.put("mem_passwd", passwordEncoder.encode(map.get("mem_passwd")));
+			System.out.println("map : " + map); // passwd 항목 암호화 결과 확인
+		}
+		
+		int updateCount = service.modifyPasswd(map);
+		
+		if(updateCount > 0) {
+//			return "redirect:/MemberInfo";
+			model.addAttribute("msg", "패스워드 수정 성공!");
+			model.addAttribute("targetURL", "MemberLogin");
+			return "result/success";
+		} else {
+			model.addAttribute("msg", "패스워드 수정 실패!");
+			return "result/fail";
+		}
+		
+	}
+	
 	
 	// 마이페이지(창작자 정보)
 	@GetMapping("MemberInfo")
 	public String memberInfo(MemberVO member, Model model, HttpSession session, ProjectVO project,
 							@RequestParam(defaultValue = "1") int pageNum) {
 		
+		String id = (String)session.getAttribute("sId");
+		member.setMem_email(id);
+		member = service.getMember(member);
+		
+		System.out.println("member : !!!!!!!!!! " + member);
 		
 		// 한 페이지에서 표시할 글 목록 개수 지정 (jsp 에서 가져옴)
 		int listLimit = 8;
@@ -426,7 +483,8 @@ public class MemberController {
 		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
 		int listCount = service.getProjectListCount();
-		int followListCount = service.getFollowListCount();
+		int followListCount = service.getFollowListCount(member.getMem_email());
+		int likeListCount = service.getFollowListCount(member.getMem_email());
 		
 		System.out.println("listCount : " + listCount);
 		System.out.println("followListCount : " + followListCount);
@@ -464,37 +522,38 @@ public class MemberController {
 		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
 		if(pageNum < 1 || pageNum > maxPage) {
 			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "ProjectList");
+			model.addAttribute("targetURL", "MemberInfo");
 			
 			return "result/fail";
 		}
 		// ---------------------------------------------------------
 		if(pageNum < 1 || pageNum > followListMaxPage) {
 			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "ProjectList");
+			model.addAttribute("targetURL", "MemberInfo");
 			
 			return "result/fail";
 		}
 		
-		String id = (String)session.getAttribute("sId");
-		member.setMem_email(id);
-		member = service.getMember(member);
-		
-		System.out.println("member : !!!!!!!!!! " + member);
 		
 		// --------------------------------------------------------------------
 		// 프로젝트 목록 표출하기
 		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
+		// 후원한 프로젝트 목록 나타내기
+		List<Map<String, Object>> DonationProjectList = service.getDonationProjectList(startRow, listLimit, member.getMem_email());
 		// 팔로우 목록 나타내기
 		List<Map<String, Object>> followList = service.getFollowtList(startRow, listLimit, member.getMem_email());
 		// 팔로잉 목록 나타내기
 		List<Map<String, Object>> followingList = service.getFollowingtList(startRow, listLimit, member.getMem_email());
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
+		// 좋아요 목록 나타내기
+		List<Map<String, Object>> likeList = service.getLikeList(startRow, listLimit, member.getMem_email());
 		
 //		System.out.println("projectList : " + projectList);
-		System.out.println("followList : " + followList);
-		System.out.println("followingList : " + followingList);
+		System.out.println("DonationProjectList : " + DonationProjectList);
+//		System.out.println("followList : " + followList);
+//		System.out.println("followingList : " + followingList);
+//		System.out.println("likeList : " + likeList);
 //		System.out.println("followerCount : " + followerCount);
 		
 		// --------------------------------------------------------------------
@@ -503,15 +562,16 @@ public class MemberController {
 		// --------------------------------------------------------------------
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("projectList", projectList);
-		
+		model.addAttribute("DonationProjectList", DonationProjectList);
 		model.addAttribute("followList", followList);
 		model.addAttribute("followingList", followingList);
+		model.addAttribute("likeList", likeList);
 		model.addAttribute("followPageInfo", followPageInfo);
 //		model.addAttribute("followerCount", followerCount);
 		
 		// 나의 마이페이지 들어갈 때 필요한 크리에이터 정보 세션 아이디로 들어감
 		// 창작자에 등록되어있는지 알아내기 위해 email 이용해서 창작자정보 가져오기
-		List<CreatorVO> creatorInfo = service.getCreatorInfo(member);
+		CreatorVO creatorInfo = service.getCreatorInfo(member);
 		
 		// ====================================================
 		// 마이페이지로 들어가는게 아닌 팔로우나 프로젝트 리스트에서 들어가서
@@ -549,16 +609,16 @@ public class MemberController {
 		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
 		int listCount = service.getProjectListCount();
-		int followListCount = service.getFollowListCount();
+//		int followListCount = service.getFollowListCount();
 		int likeListCount = service.getLikeListCount();
 		
 		System.out.println("listCount : " + listCount);
-		System.out.println("followListCount : " + followListCount);
+//		System.out.println("followListCount : " + followListCount);
 		System.out.println("likeListCount : " + likeListCount);
 		
 		int pageListLimit = 3;
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
-		int followListMaxPage = followListCount / listLimit + (followListCount % listLimit > 0 ? 1 : 0);
+//		int followListMaxPage = followListCount / listLimit + (followListCount % listLimit > 0 ? 1 : 0);
 		int startPage = (pageNum -1) / pageListLimit * pageListLimit + 1;
 		int endPage = startPage + pageListLimit - 1;
 		
@@ -571,12 +631,12 @@ public class MemberController {
 			endPage = maxPage;
 		}
 		// ------------------------------------
-		if(followListMaxPage == 0) {
-			followListMaxPage = 1;
-		}
-		if(endPage > followListMaxPage) {
-			endPage = followListMaxPage;
-		}
+//		if(followListMaxPage == 0) {
+//			followListMaxPage = 1;
+//		}
+//		if(endPage > followListMaxPage) {
+//			endPage = followListMaxPage;
+//		}
 		
 		// 전달받은 페이지 번호가 1보다 작거나 최대 번호보다 클 경우
 		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
@@ -587,12 +647,12 @@ public class MemberController {
 			return "result/fail";
 		}
 		// ---------------------------------------------------------
-		if(pageNum < 1 || pageNum > followListMaxPage) {
-			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "ProjectList");
-			
-			return "result/fail";
-		}
+//		if(pageNum < 1 || pageNum > followListMaxPage) {
+//			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+//			model.addAttribute("targetURL", "ProjectList");
+//			
+//			return "result/fail";
+//		}
 		
 		// --------------------------------------------------------------------
 		// 프로젝트 목록 표출하기
@@ -602,14 +662,10 @@ public class MemberController {
 		String creatorEmail = creator.getCreator_email();
 //		System.out.println("creatorEmail : !!!!!!!!!!!! " + creatorEmail);
 		
-		
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
 		
-		// 좋아요 리스트 나타내기
-//		List<Map<String, Object>> likeList = service.getOtherLikeList(startRow, listLimit, memEmail);
-		
-		List<CreatorVO> creatorInfo = service.getOtherCreatorInfo(creatorEmail);
+		CreatorVO creatorInfo = service.getOtherCreatorInfo(creatorEmail);
 //		if(creatorInfo.size() > 0 ) {
 //			creatorEmail = creatorInfo.get(0).getCreator_email();
 //		} 
@@ -622,18 +678,14 @@ public class MemberController {
 		
 		// --------------------------------------------------------------------
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
-		PageInfo followPageInfo = new PageInfo(listCount, pageListLimit, followListMaxPage, startPage, endPage);
+//		PageInfo followPageInfo = new PageInfo(listCount, pageListLimit, followListMaxPage, startPage, endPage);
 		// --------------------------------------------------------------------
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("projectList", projectList);
-		model.addAttribute("followPageInfo", followPageInfo);
+//		model.addAttribute("followPageInfo", followPageInfo);
 		
 
 //		model.addAttribute("followerCount", followerCount);
-		
-		// ====================================================
-		// 마이페이지로 들어가는게 아닌 팔로우나 프로젝트 리스트에서 들어가서
-		// 상대방의 마이페이지로 들어가는 상황일 경우
 		
 		
 		// 이메일로 창작자 이름 들고오기
@@ -651,8 +703,17 @@ public class MemberController {
 	        
 			// 창작자가 아닌경우 팔로우 목록 나타내기
 			List<Map<String, Object>> OtherNoCreatorfollowList = service.getOtherNoCreatorFollowtList(startRow, listLimit, notCreatorMember.getMem_email());
+			// 창작자가 아닌경우 팔로잉 목록 나타내기
+			List<Map<String, Object>> OtherNoCreatorfollowingList = service.getOtherNoCreatorFollowingtList(startRow, listLimit, notCreatorMember.getMem_email());
+			// 창작자가 아닌경우 후원한 프로젝트 목록 나타내기
+			List<Map<String, Object>> OtherNoCreatorDonationProjectList = service.getOtherNoCreatorDonationProjectList(startRow, listLimit, notCreatorMember.getMem_email());
 			System.out.println("OtherNoCreatorfollowList : " + OtherNoCreatorfollowList);
+			System.out.println("OtherNoCreatorfollowingList : " + OtherNoCreatorfollowingList);
+			System.out.println("OtherNoCreatorDonationProjectList : " + OtherNoCreatorDonationProjectList);
+			
 			model.addAttribute("OtherNoCreatorfollowList", OtherNoCreatorfollowList);
+			model.addAttribute("OtherNoCreatorfollowingList", OtherNoCreatorfollowingList);
+			model.addAttribute("OtherNoCreatorDonationProjectList", OtherNoCreatorDonationProjectList);
 	        
 	    // 창작자 이름이 있다면 크리에이터 정보를 마이페이지에 뿌림
 	    } else {
@@ -661,10 +722,18 @@ public class MemberController {
 	    	model.addAttribute("creatorInfo", creatorInfo);
 	    	
 	    	// 창작자인 경우 팔로우 목록 나타내기
-//	    	List<Map<String, Object>> otherCreatorfollowList = service.getOtherCreatorFollowtList(startRow, listLimit, getCreator_email);
 	    	List<Map<String, Object>> otherCreatorfollowList = service.getOtherCreatorFollowtList(startRow, listLimit, creatorEmail);
+	    	// 창작자인 경우 팔로잉 목록 나타내기
+	    	List<Map<String, Object>> otherCreatorfollowingList = service.getOtherCreatorFollowingList(startRow, listLimit, creatorEmail);
+			// 창작자가 아닌경우 후원한 프로젝트 목록 나타내기
+			List<Map<String, Object>> OtherCreatorDonationProjectList = service.getOtherCreatorDonationProjectList(startRow, listLimit, creatorEmail);
 	    	System.out.println("otherCreatorfollowList : " + otherCreatorfollowList);
+	    	System.out.println("otherCreatorfollowingList : " + otherCreatorfollowingList);
+	    	System.out.println("OtherCreatorDonationProjectList : " + OtherCreatorDonationProjectList);
+	    	
 	    	model.addAttribute("otherCreatorfollowList", otherCreatorfollowList);
+	    	model.addAttribute("otherCreatorfollowingList", otherCreatorfollowingList);
+	    	model.addAttribute("OtherCreatorDonationProjectList", OtherCreatorDonationProjectList);
 	    }
 	    
 		return "mypage/other_mypage";
@@ -692,25 +761,22 @@ public class MemberController {
 	}
 	
 	// 마이페이지(개인정보) 수정
-	@GetMapping("MyPageInfoModify")
-	public String myPageInfoModify(@RequestParam Map<String, String> map, MemberVO member, BCryptPasswordEncoder passwordEncoder, Model model) {
+	@PostMapping("MyPageInfoModify")
+	public String myPageInfoModify(@RequestParam Map<String, String> map, MemberVO member, BCryptPasswordEncoder passwordEncoder, Model model, HttpSession session) {
 		
-//		String id = (String)session.getAttribute("sId");
-//		
-//		member.setMem_email(id);
+		// => 조회된 상세정보의 암호화 된 패스워드와 입력받은 기존 패스워드 비교
+		// => 만약, 두 패스워드가 다를 경우 "수정 권한이 없습니다!" 출력 후 이전페이지 처리
 		member = service.getMember(member);
-		System.out.println("member !!!!!!!!!!!! : " + member);
-//		model.addAttribute("member", member);
 		
-		if(!passwordEncoder.matches(map.get("oldPasswd"), member.getMem_passwd())) { // 패스워드 불일치시
-			model.addAttribute("msg", "비밀번호가 올바르지 않습니다.");
+		if(!passwordEncoder.matches(map.get("old_mem_passwd"), member.getMem_passwd())) { // 패스워드 불일치시
+			model.addAttribute("msg", "수정 권한이 없습니다.");
 			return "result/fail";
 		}
 		
 		// 기존 비밀번호 일치 시 회원 정보 수정 요청 전에
 		// 새 비밀번호 입력 여부를 확인하여 새 비밀번호 입력됐을 경우 암호화 수행 필요
-		if(!map.get("passwd").equals("")) { // 널스트링이 아니면 새 비밀번호 암호화 수행
-			map.put("passwd", passwordEncoder.encode(map.get("passwd")));
+		if(!map.get("mem_passwd").equals("")) { // 널스트링이 아니면 새 비밀번호 암호화 수행
+			map.put("mem_passwd", passwordEncoder.encode(map.get("mem_passwd")));
 		}
 		
 		// 개인정보 수정

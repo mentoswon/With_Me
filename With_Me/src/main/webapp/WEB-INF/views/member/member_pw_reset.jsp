@@ -118,24 +118,24 @@
 		}
 	}
 	
-	$(function() {
-		// 가입(submit) 클릭 시 이벤트 처리(생략)
-		$("form").submit(function() {
-			// 아이디 정규표현식 검사, 패스워드와 패스워드 확인 정규표현식 검사,
-			// 취미 항목 체크 여부 확인을 통해 해당 항목이 부적합 할 경우 
-			// 오류메세지 출력 및 submit 동작 취소
-			if(!checkPasswdResult) {
-				alert("패스워드를 부적합하게 입력했습니다.");
-				$("#mem_passwd").focus();
-				return false; // submit 동작 취소
+// 	$(function() {
+// 		// 가입(submit) 클릭 시 이벤트 처리(생략)
+// 		$("form").submit(function() {
+// 			// 아이디 정규표현식 검사, 패스워드와 패스워드 확인 정규표현식 검사,
+// 			// 취미 항목 체크 여부 확인을 통해 해당 항목이 부적합 할 경우 
+// 			// 오류메세지 출력 및 submit 동작 취소
+// 			if(!checkPasswdResult) {
+// 				alert("패스워드를 부적합하게 입력했습니다.");
+// 				$("#mem_passwd").focus();
+// 				return false; // submit 동작 취소
 				
-			} else if(!checkPasswd2Result) {
-				alert("패스워드 확인 항목이 일치하지 않습니다!");
-				$("#mem_passwd2").focus();
-				return false;
-			}
-		});
-	});
+// 			} else if(!checkPasswd2Result) {
+// 				alert("패스워드 확인 항목이 일치하지 않습니다!");
+// 				$("#mem_passwd2").focus();
+// 				return false;
+// 			}
+// 		});
+// 	});
 	
 	
 	//========================================================================================================
@@ -174,7 +174,7 @@
 			<div id="findPw_wrap3">
 				<form action="PwResetFinal" name="joinForm" method="post">
 					<input type="hidden" name="mem_tel" value="${dbMember.mem_tel}" id="mem_tel" size="10">	
-					<input type="hidden" name="mem_id" value="${dbMember.mem_id}" id="mem_tel" size="10">	
+					<input type="hidden" name="mem_id" value="${dbMember.mem_email}" id="mem_email" size="10">	
 					<section id="sec01">
 						<table>
 							<tr>

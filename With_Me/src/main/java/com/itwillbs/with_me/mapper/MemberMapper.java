@@ -40,23 +40,38 @@ public interface MemberMapper {
 	// 이메일 인증 정보 삭제
 	void deleteMailAuthInfo(MailAuthInfo authInfo);
 	
+	// 회원 아이디로 비밀번호 찾기
+	MemberVO selectFindPasswdFromEmail(MemberVO member);
+	
+	// 아이디 + 전화번호로 비밀번호 리셋폼으로 넘어가기
+	MemberVO selectFindPasswdFromTel(MemberVO member);
+	
+	// 회원 비밀번호 변경
+	int updatePasswd(Map<String, String> map);
+	
 	// 회원 상세정보 조회
 	List<MemberVO> selectMember();
 
 	// 이메일로 창작자 조회
-	List<CreatorVO> selectCreator(MemberVO member);
+	CreatorVO selectCreator(MemberVO member);
 
 	// 프로젝트 리스트 개수 조회
 	int selectProjectListCount();
 
-	// 프로젝트 리스트
-	List<Map<String, Object>> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
-
 	// 팔로우 리스트 개수 조회
-	int selectFollowListCount();
+	int selectFollowListCount(String mem_email);
 	
 	// 좋아요 리스트 개수 조회
 	int selectLikeListCount();
+	
+	// 프로젝트 리스트
+	List<Map<String, Object>> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
+	
+	// 내 마이페이지에서 후원한 프로젝트 가져오기
+	List<Map<String, Object>> selectDonationProjectList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("mem_email") String mem_email);
 
 	// 내 마이페이지에서 팔로우 리스트 조회
 	List<Map<String, Object>> selectFollowList(
@@ -70,14 +85,44 @@ public interface MemberMapper {
 								@Param("listLimit") int listLimit,
 								@Param("mem_email") String mem_email);
 	
+	// 내 마이페이지에서 좋아요 리스트 조회
+	List<Map<String, Object>> selectLikeList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("mem_email") String mem_email);
+	
 	// 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 가져오기
 	List<Map<String, Object>> selectOtherNoCreatorFollowList(
 								@Param("startRow") int startRow,
 								@Param("listLimit") int listLimit,
 								@Param("mem_email") String mem_email);
 	
-	// 창작자인 상대방 마이페이지에서 팔로우 리스트 가져오기
+	// 창작자가 아닌 상대방 마이페이지에서 팔로잉 리스트 가져오기
+	List<Map<String, Object>> selectOtherNoCreatorFollowingList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("mem_email") String mem_email);
+	
+	// 창작자인 상대방 마이페이지에서 팔로워 리스트 가져오기
 	List<Map<String, Object>> selectOtherCreatorFollowList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("creatorEmail") String creatorEmail);
+	
+	// 창작자인 상대방 마이페이지에서 팔로잉 리스트 가져오기
+	List<Map<String, Object>> selectOtherCreatorFollowingList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("creatorEmail") String creatorEmail);
+	
+	// 창작자가 아닌경우 후원한 프로젝트 목록 나타내기
+	List<Map<String, Object>> selectOtherNoCreatorDonationProjectList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("mem_email") String mem_email);
+	
+	// 창작자가 아닌경우 후원한 프로젝트 목록 나타내기
+	List<Map<String, Object>> selectOtherCreatorDonationProjectList(
 								@Param("startRow") int startRow,
 								@Param("listLimit") int listLimit,
 								@Param("creatorEmail") String creatorEmail);
@@ -101,7 +146,7 @@ public interface MemberMapper {
 	MemberVO selectMemberInfo(String creatorEmail);
 	
 	// 상대방 마이페이지(창작자인 경우)
-	List<CreatorVO> selectOtherCreatorInfo(String creatorEmail);
+	CreatorVO selectOtherCreatorInfo(String creatorEmail);
 	
 	
 	
@@ -116,6 +161,13 @@ public interface MemberMapper {
 
 	// creator_email 들고와서 mem_email값 가져오기
 	String selectMemEmail(String creatorEmail);
+
+
+
+
+
+
+
 
 
 
