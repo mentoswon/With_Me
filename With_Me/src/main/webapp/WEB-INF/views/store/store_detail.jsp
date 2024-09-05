@@ -60,29 +60,29 @@
 						<form action="StoreInProgress" method="post">
 							
 							<div class="productInfo3">
-								<c:choose>
-									<c:when test="${rewardItemList.item_condition eq '객관식'}">
+<%-- 								<c:choose> --%>
+<%-- 									<c:when test="${rewardItemList.item_condition eq '객관식'}"> --%>
 										<select class="reward_item_option_select option">
 											<option>옵션을 선택해주세요.</option>
 											<c:forEach var="itemOptions" items="${itemOptions}">
 												<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
 											</c:forEach>
 										</select>
-									</c:when>
-									<c:otherwise>
-										<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write option" >
-									</c:otherwise>
-								</c:choose>
+<%-- 									</c:when> --%>
+<%-- 									<c:otherwise> --%>
+<!-- 										<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write option" > -->
+<%-- 									</c:otherwise> --%>
+<%-- 								</c:choose> --%>
 							</div>
 							<div class="productInfo4">
 							<c:choose>
 								<c:when test="${product_detail.isLike.like_mem_email eq sId and product_detail.isLike.like_status eq 'Y'}">
-									<button class="like Btn" type="button" onclick="cancleLike'${product_detail.product_code}', '${sId}')">
+									<button class="like Btn" type="button" onclick="CancleLikeProduct('${product_detail.product_code}', '${sId}')">
 										<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 									</button>
 								</c:when>
 								<c:otherwise>
-									<button class="like Btn" type="button" onclick="registLike'${product_detail.product_code}', '${sId}')">
+									<button class="like Btn" type="button" onclick="RegistLikeProduct('${product_detail.product_code}', '${sId}')">
 										<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
 									</button>
 								</c:otherwise>
@@ -314,13 +314,13 @@
 			
 			// ===========================================
 			// 상품 좋아요
-			function registLike(product_code, sId) {
+			function RegistLikeProduct(product_code, sId) {
 				console.log("product_code : " + product_code + ", sId : " + sId);
 				if(confirm("해당 상품을 좋아요 하시겠습니까?")){
 					$.ajax({
 						url : "RegistLikeProduct",
 						type : "POST",
-						async: false,
+// 						async: false,
 						data:{
 							"like_product_code": product_code,
 							"like_mem_email": sId
@@ -341,11 +341,11 @@
 			}
 				
 			// 상품 좋아요 취소 
-			function cancleLike(product_code, sId) {
+			function CancleLikeProduct(product_code, sId) {
 				$.ajax({
 					url : "CancleLikeProduct",
-					type : "POST"
-					async:false,
+					type : "POST",
+// 					async:false,
 					data :{
 						"like_product_code" : product_code,
 						"like_mem_email" : sId

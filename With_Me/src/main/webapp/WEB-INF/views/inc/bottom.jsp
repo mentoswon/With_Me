@@ -10,11 +10,11 @@
 				<h4>위드미 이용안내</h4>
 				<ul>
 					<li><a href="BoardList">공지사항</a></li>
-					<li><a href="#">후원자 가이드</a></li>
+					<li><a href="UserGuide">후원자 가이드</a></li>
 				</ul>
 				<ul>
 					<li><a href="HelpCenter">헬프센터</a></li>
-					<li><a href="#">창작자 가이드</a></li>
+					<li><a href="CreatorGuide">창작자 가이드</a></li>
 				</ul>
 			</div>
 			

@@ -130,8 +130,8 @@
 		VALUES (
 			null
 			, #{like_mem_email}
-			, #{like_product_code}
 			, null
+			, #{like_product_code}
 			, 'Y'
 		)
 	</insert>
@@ -162,35 +162,34 @@
 	<!-- 기본 배송지 여부 확인 -->
 	<select id="selectAddressIsDefault" resultType="int">
 		SELECT COUNT(*)
-		FROM user_address
-		WHERE address_mem_email = #{id}
-		AND address_is_default = 'Y';
+		FROM user_address u JOIN member m
+		ON u.address_mem_email = m.mem_email
+		WHERE 
+			address_mem_email = #{id}
+			AND address_is_default = 'Y'
+			AND m.mem_status = 1;
+			
 	</select>
 	
 	<!-- 기본 배송지 변경 (원래 기본 배송지였던거를 N으로) -->
-	<update id="updateDefaultAddress">
+	<update id="updateDefaultAddressToN">
 		UPDATE user_address
 		SET address_is_default = 'N'
-		WHERE address_mem_email = #{id}
-		AND address_is_default = 'Y';
+		WHERE 
+			address_mem_email = #{id}
+			AND address_is_default = 'Y';
 	</update>
 	
-	<!-- 1. 기본 배송지 변경하고 새로운 기본배송지 설정 -->
-	<insert id="insertNewDefaultAddress">
-		INSERT INTO user_address 
-		VALUES (
-			null
-			,#{address_mem_email}
-			,#{address_receiver_name}
-			,#{address_post_code}
-			,#{address_main}
-			,#{address_sub}
-			,#{address_receiver_tel}
-			,'Y'
-		)
-	</insert>
+	<!-- 기본 배송지 변경 -->
+	<update id="updateDefaultAddressToY">
+		UPDATE user_address
+		SET address_is_default = 'Y'
+		WHERE 
+			address_idx = #{address_idx}
+			ANd address_is_default = 'N'
+	</update>
 	
-	<!-- 2. 나머지 배송지 등록 -->
+	<!-- 배송지 등록 -->
 	<insert id="insertNewAddress">
 		INSERT INTO user_address 
 		VALUES (
@@ -202,21 +201,48 @@
 			,#{address_sub}
 			,#{address_receiver_tel}
 			<choose>
-				<when test="#{address_is_default == null}">
+				<when test="address_is_default.equals('off')">
 				,'N'
 				</when>
 				<otherwise>
 				, 'Y'
 				</otherwise>
-			</choose>			
+			</choose>
+			, default		
 		)
 	</insert>
 	
+	<!-- 배송지 삭제 -->
 	<delete id="deleteAddress">
 		DELETE FROM user_address
 		WHERE address_idx = #{address_idx}
 	</delete>
 
+	<!-- 선택 배송지 여부 확인 -->
+	<select id="selectAddressIsSelected" resultType="int">
+		SELECT COUNT(*)
+		FROM user_address u JOIN member m
+		ON u.address_mem_email = m.mem_email
+		WHERE 
+			address_mem_email = #{id}
+			AND address_selected = 'Y'
+			AND m.mem_status = 1;;
+	</select>
+	
+	<!-- 원래 선택배송지였던 걸 N으로 변경 -->
+	<update id="updateSelectedAddressToN">
+		UPDATE user_address
+		SET address_selected = 'N'
+		WHERE address_mem_email = #{id}
+		AND address_selected = 'Y';
+	</update>
+	
+	<!-- 선택 배송지로 변경 -->
+	<update id="updateSelectedAddressToY">
+		UPDATE user_address
+		SET address_selected = 'Y'
+		WHERE address_idx = #{address_idx}
+	</update>
 
 
 

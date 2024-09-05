@@ -40,18 +40,32 @@ public interface StoreMapper {
 	// 기본 배송지 여부 확인
 	int selectAddressIsDefault(String id);
 
-	// 기본 배송지 변경
-	int updateDefaultAddress(String id);
+	// 기본 배송지 변경(N으로)
+	int updateDefaultAddressToN(String id);
 
 	// 1. 기본 배송지 변경후 새로운 기본 배송지 설정
 	void insertNewDefaultAddress(AddressVO new_address);
 
 	// 2. 나머지 배송지 등록
-	void insertNewAddress(AddressVO new_address);
+	int insertNewAddress(AddressVO new_address);
 
 	// 배송지 삭제
-	int deleteAddres(AddressVO address);
+	int deleteAddress(AddressVO address);
 
+
+
+	int selectAddressIsSelected(String id);
+
+
+	int updateSelectedAddressToN(String id);
+
+
+	int updateSelectedAddressToY(int address_idx);
+
+
+	int updateDefaultAddressToY(int address_idx);
+
+// ===========================================================
 	// 좋아요 했는지 판단 후에 가져가기 
 	LikeVO selectIsLike(
 			@Param("like_product_code")String like_product_code, 
@@ -65,10 +79,9 @@ public interface StoreMapper {
 	
 	// 좋아요 등록
 	int insertLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
-
+	
 	// 좋아요 취소
 	int cancleLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
-	
 	
 
 }

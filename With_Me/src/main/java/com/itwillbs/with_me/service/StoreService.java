@@ -55,27 +55,46 @@ public class StoreService {
 	}
 	
 	// 기본 배송지 변경
-	public int modifyDefaultAddress(String id) {
+	public int modifyDefaultAddressToN(String id) {
 		 
-		return mapper.updateDefaultAddress(id);
+		return mapper.updateDefaultAddressToN(id);
 	}
 	
-	// 1. 기본 배송지 변경하고 새로운 기본배송지 설정
-	public void registNewDefaultAddress(AddressVO new_address) {
-		mapper.insertNewDefaultAddress(new_address);
-	}
-	
-	// 2. 나머지 배송지 등록
-	public void registNewAddress(AddressVO new_address) {
-		mapper.insertNewAddress(new_address);
+	// 배송지 등록
+	public int registNewAddress(AddressVO new_address) {
+		return mapper.insertNewAddress(new_address);
 		
 	}
 	
 	// 배송지 삭제
 	public int removeAddress(AddressVO address) {
 		
-		return mapper.deleteAddres(address);
+		return mapper.deleteAddress(address);
 	}
+	// 선택된 배송지 있는지 확인
+	public int getAddressIsSelected(String id) {
+		return mapper.selectAddressIsSelected(id);
+	}
+	
+	// 원래 선택된 배송지였던 걸 N으로 변경
+	public int modifySelectedAddressToN(String id) {
+		return mapper.updateSelectedAddressToN(id);
+	}
+	
+	// 배송지 변경
+	public int modifySelectedAddressToY(int address_idx) {
+		return mapper.updateSelectedAddressToY(address_idx);
+	}
+	
+	// 기본 배송지 변경
+	public int modifyDefaultAddressToY(int address_idx) {
+		return mapper.updateDefaultAddressToY(address_idx);
+	}	
+	
+	
+	
+	
+// ==============================================================================
 	
 	// 좋아요 했다면 정보 가져가기
 	public LikeVO getIsLike(String like_product_code, String like_mem_email) {
@@ -102,7 +121,12 @@ public class StoreService {
 	public int cancleLike(String like_product_code, String like_mem_email) {
 		return mapper.cancleLike(like_product_code, like_mem_email);
 	}
+// ===============================================================================
+	
 
+	
+	
+	
 	
 
 }

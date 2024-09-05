@@ -7,7 +7,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>index</title>
+		<title>With_Me</title>
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/fund_in_progress.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -44,79 +44,143 @@
 		
 		<div class="inner">
 			<h2>${member.mem_name} 후원자님! 다시 한 번 확인해주세요.</h2>
-			<section class="con01">
-				<div class="userInfo">
-					<h4>후원자 정보</h4>
-					<div class="infoWrapper">
-						<div>
-							<div>연락처</div>
-							<div>${member.mem_tel}</div>
+			<form action="UserPayingPro" name="goFundForm" method="post">
+				<section class="con01">
+					<div class="userInfo">
+						<h4>후원자 정보</h4>
+						<div class="infoWrapper">
+							<div>
+								<div>연락처</div>
+								<div>${member.mem_tel}</div>
+							</div>
+							<div>
+								<div>이메일</div>
+								<div>${member.mem_email}</div>
+							</div>
+							
+							<span> * 위 연락처와 이메일로 후원 관련 소식이 전달됩니다. </span>
+							<span> * 연락처 및 이메일 변경은 마이페이지에서 가능합니다. </span>
 						</div>
-						<div>
-							<div>이메일</div>
-							<div>${member.mem_email}</div>
+					</div>
+				</section>
+				
+				<section class="con04">
+					<div class="rewardInfo">
+						<h4>결제 정보</h4>
+						<div class="infoWrapper">
+							<div>${selectedReward.reward_title}</div>
+							<div>
+								<c:if test="${optionMap ne null}">
+									<c:forEach var="optionMap" items="${optionMap}">
+										<%-- foreach --%>
+										<div>제품 구성</div>
+										<div>&nbsp;&nbsp;&nbsp; -옵션 : ${optionMap.value}</div>
+									</c:forEach>
+								</c:if>
+							</div>
+							<div id="amtWrapper">
+								<div><fmt:formatNumber pattern="#,###">${selectedReward.reward_price}</fmt:formatNumber>&nbsp;원</div>
+								<div class="">추가 후원금 : </div>
+							</div>
+							<span id="totalAmt">총액 : <fmt:formatNumber pattern="#,###">${selectedReward.reward_price}</fmt:formatNumber>원</span>
 						</div>
-						
-						<span> * 위 연락처와 이메일로 후원 관련 소식이 전달됩니다. </span>
-						<span> * 연락처 및 이메일 변경은 마이페이지에서 가능합니다. </span>
 					</div>
-				</div>
-			</section>
-			
-			<section class="con02">
-				<div class="addressInfo">
-					<h4>배송지</h4>
-					<div class="AddAddressBtn">
-						<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
-						&nbsp;&nbsp;&nbsp; 배송지 추가
-					</div>
-
-					<%-- address 테이블에서 가져와서 반복 --%>
-					<div class="infoWrapper">
-						<c:forEach var="userAddress" items="${userAddress}">
-							<c:if test="${userAddress.address_is_default eq 'Y'}">
-								<div class="addressWrapper">
-									<div class="left">
-										<div>${userAddress.address_receiver_name}
-											<span class="default_simbol">기본 배송지</span>
-										</div>											
-										<div>[${userAddress.address_post_code}] ${userAddress.address_main}</div>											
-										<div>${userAddress.address_sub}</div>
+				</section>
+				
+				<section class="con02">
+					<div class="addressInfo">
+						<h4>배송지</h4>
+						<div class="AddAddressBtn">
+							<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
+							&nbsp;&nbsp;&nbsp; 배송지 추가
+						</div>
+	
+						<%-- address 테이블에서 가져와서 반복 --%>
+						<div class="infoWrapper" id="addressList">
+							<c:forEach var="userAddress" items="${userAddress}">
+								<c:if test="${userAddress.address_selected eq 'Y'}">
+									<div class="addressWrapper" data-address-idx="${userAddress.address_idx}">
+										<div class="left">
+											<div>${userAddress.address_receiver_name}
+												<c:if test="${userAddress.address_is_default eq 'Y'}">
+													<span class="default_simbol">기본 배송지</span>
+												</c:if>	
+											</div>											
+											<div>[${userAddress.address_post_code}] ${userAddress.address_main}</div>											
+											<div>${userAddress.address_sub}</div>
+										</div>
+										<div class="changeAddressBtn">변경</div>
 									</div>
-									<div class="changeAddressBtn">변경</div>
-								</div>
-							</c:if>	
-						</c:forEach>
+								</c:if>	
+							</c:forEach>
+						</div>
 					</div>
-				</div>
-			</section>
-			
-			<section class="con04">
-				<div class="rewardInfo">
-					<h4>결제 정보</h4>
-					<div class="infoWrapper">
-						<div>${selectedReward.reward_title}</div>
+				</section>
+				
+				<section class="con05">
+					<div class="payInfo">
+						<h3>결제하기 전에 확인해주세요 !</h3>
+						<div class="infoWrapper">
+							<div class="agreementInfo">
+								<input type="checkbox" name="agreement" id="fund_agreement1" required> 
+								<label for="fund_agreement1">개인정보 제3자 제공 동의 <span>(필수)</span></label>
+							</div>	
+							<div class="agreementInfo">
+								<input type="checkbox" name="agreement" id="fund_agreement2" required>
+								<label for="fund_agreement2">구매조건, 결제 진행 및 결제 대행 서비스 동의 <span>(필수)</span></label>
+								<div>
+									<p>· 전자금융거래 이용약관</p>
+									<p>· 개인정보 수집 및 이용 및 제3자 제공의 대한 동의</p>
+				
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				
+				<section class="con06">
+					<div class="pay">
+						<div class="payWrap">
+							<h4>결제 수단 </h4>
+							<div class="payMethod on">
+								카카오페이를 선택하셨습니다. 
+								즉시할인 신용카드 적용이 불가합니다.
+							</div>
+							<div class="payMethod">
+								신용/체크카드를 선택하셨습니다. 
+								즉시할인 신용카드 적용이 가능합니다.
+							</div>
+						</div>
+						<div class="infoWrapper">
+							<div>
+								<input type="radio" id="kakaoPay" name="payMethod" required checked>
+								<label for="kakaoPay"> 카카오페이</label>
+							</div>
+							<div>
+								<input type="radio" id="creditCard" name="payMethod" required>
+								<label for="creditCard"> 카드결제</label>
+							</div>
+							<div>
+								<input type="radio" id="accountTransfer" name="payMethod" required>
+								<label for="accountTransfer"> 계좌이체</label>
+							</div>
+						</div>
 						<div>
-							<%-- foreach --%>
-							<div>제품 구성</div>
-							<div>&nbsp;&nbsp;&nbsp; 옵션 : </div>
 							
 						</div>
-						<div>${selectedReward.reward_price}원 </div>
-						<div class="">추가 후원금 : </div>
 					</div>
-				</div>
-			</section>
-			
-			<section class="con05">
-				<div class="payMethod">
-					<h4>결제 수단</h4>
-					<div class="infoWrapper">
-						<div>
-						</div>
-					</div>
-				</div>
-			</section>
+				
+					<input type="hidden" name="user_funding_email" id="user_funding_email" value="">					<!-- 완) 후원자 email -->
+					<input type="hidden" name="user_funding_project_idx" id="user_funding_project_idx" value="">			<!-- 프로젝트 번호 -->
+					<input type="hidden" name="user_funding_itemOption" id="user_funding_itemOption" value="">			<!-- 아이템 옵션 | 로 구분-->
+					<input type="hidden" name="user_funding_count" id="user_funding_count" value="">					<!-- 후원 개수 => 우리는 1개 고정 -->
+		<!-- 			<input type="hidden" name="user_funding_reward_idx" id="user_funding_reward_idx" value=""> -->    <!-- 리워드 번호 => 위에서 넣음 -->
+					<input type="hidden" name="user_funding_address_idx" id="user_funding_address_idx" value="">			<!-- 배송지 번호 -->
+					<input type="hidden" name="user_funding_plus_amt" id="user_funding_plus_amt" value="">				<!-- 추가 후원금 -->
+					<input type="hidden" name="user_funding_pay_amt" id="user_funding_pay_amt" value="">                  <!-- 총액 -->
+					<input type="submit" id="user_funding_payment" value="결제하기"> 
+				</section>
+			</form>
 		</div>
 		
 		<!-- 배송지 추가 -->
@@ -124,10 +188,10 @@
 		    <div class="modal_popup">
 		        <h3>배송지 추가</h3>
 		        <div class="content add">
-		        	<form action="RegistAddress" method="post" class="addressForm">
+		        	<form action="StoreRegistAddress" method="POST" class="addressForm">
 			        	<div>
 			        		<span>받는 사람</span>
-			        		<input type="text" placeholder="&nbsp;&nbsp;받는 분 성함을 입력해주세요." name="address_receiver_name" required>
+			        		<input type="text" placeholder="&nbsp;&nbsp;받는 분 성함을 입력해주세요." id="address_receiver_name" name="address_receiver_name" required>
 			        	</div>
 			        	
 			        	<div>
@@ -144,17 +208,17 @@
 			        	<div>
 			        		<span>받는 사람 휴대폰 번호</span>
 			        		<br>
-			        		<input type="text" name="address_receiver_tel" placeholder="&nbsp;&nbsp;받는 분 휴대폰 번호를 입력해주세요." required>
+			        		<input type="text" name="address_receiver_tel" id="address_receiver_tel" placeholder="&nbsp;&nbsp;받는 분 휴대폰 번호를 입력해주세요." required>
 			        	</div>
 			        	
 		        		<label>
-		        			<input type="checkbox" name="address_is_default" id="isDefault">
+		        			<input type="checkbox" name="address_is_default" id="address_is_default">
 		        			<span>기본 배송지로 등록</span>
 		        		</label>
 		        		
-			        	<input type="hidden" name="address_mem_email" value="${member.mem_email}">
+			        	<input type="hidden" name="address_mem_email" id="address_mem_email" value="${member.mem_email}">
 			        	
-			        	<input type="submit" value="배송지 등록" id="addRegBtn">
+			        	<input type="button" value="배송지 등록" id="addRegBtn">
 		        	</form>
 				</div>
    				<img alt="닫기" src="${pageContext.request.contextPath}/resources/image/close.png" class="close_btn">
@@ -166,11 +230,18 @@
 		    <div class="modal_popup">
 		        <h3>배송지 변경</h3>
 		        <div class="content change">
-		        	<form action="ChangeDefaultAddress" method="post">
+		        	<form action="StoreChangeAddress" method="POST">
 			        	<c:forEach var="userAddress" items="${userAddress}">
 			        		<div class="infoWrapper">
 				        		<label>
-				        			<input type="radio" name="address" value="${userAddress.address_idx}">
+					        		<c:choose>
+					        			<c:when test="${userAddress.address_selected eq 'Y'}">
+					        				<input type="radio" name="address_idx" value="${userAddress.address_idx}" checked> 
+					        			</c:when>
+					        			<c:otherwise>
+					        				<input type="radio" name="address_idx" value="${userAddress.address_idx}"> 
+					        			</c:otherwise>
+					        		</c:choose>
 									<div class="addressWrapper">
 										<div>${userAddress.address_receiver_name}
 											<c:if test="${userAddress.address_is_default eq 'Y'}">
@@ -181,12 +252,21 @@
 										<div>${userAddress.address_sub}</div>											
 									</div>
 								</label>
-								<div class="deleteAddress" data-address-idx="${userAddress.address_idx}">삭제</div>
+								<div>
+									<div class="deleteAddress" data-address-idx="${userAddress.address_idx}">삭제</div>
+									<c:choose>
+										<c:when test="${userAddress.address_is_default eq 'Y'}">
+											<div class="cancleDefault" data-address-mem-email="${sId}">기본 배송지<br> 해제</div>
+										</c:when>
+										<c:otherwise>
+											<div class="registDefault" data-address-idx="${userAddress.address_idx}" style="background-color:#ffab40; color: #fff;">기본 배송지<br>설정</div>
+										</c:otherwise>
+									</c:choose>
+								</div>
 							</div>
 						</c:forEach>
 						
-						<input type="hidden" value="$('input[name=address]:checked').val()">
-						<input type="submit" value="선택 완료" id="changeBtn">
+						<input type="button" value="배송지 선택 완료" id="changeBtn">
 					</form>
 				</div>
    				<img alt="닫기" src="${pageContext.request.contextPath}/resources/image/close.png" class="close_btn">
@@ -217,10 +297,18 @@
 			$(document).on('click', '.deleteAddress', function() {
 				let address_idx = $(this).data("address-idx");
 				let infoWrapper = $(this).parent();
+				let parentInfoWrapper = $(this).parents(".modal.on").siblings(".inner").children(".con02").find(".addressWrapper");
+				
+				// `parentInfoWrapper` 중에서 `address_idx` 값을 가진 요소를 필터링하여 기존 목록에서도 삭제하도록 함
+				let targetElement = parentInfoWrapper.filter(function(){
+					return $(this).data("addresss_idx") === address_idx;
+				});
+				console.log(targetElement.html);
+				
 				
 				if(confirm("배송지를 삭제하시겠습니까?")){
 					$.ajax({
-						url: "DeleteAddress",
+						url: "StoreDeleteAddress",
 						type : "get",
 						async:false, // 이 한줄만 추가해주시면 됩니다.
 						data:{
@@ -238,6 +326,9 @@
 							} else if(response.result) { // 삭제 성공일 경우
 			                    // 삭제된 아이템 요소 제거
 			                    $(infoWrapper).remove(); 
+								
+								// 기존 목록에서도 삭제하도록 함
+								$(targetElement).remove();
 			                }
 						
 						}, error : function (response) {
@@ -247,9 +338,146 @@
 				}
 			});
 			
-			$(document).on('click', 'input:radio[name=address]', function(){
-			    console.log($("input:radio[name='address']:checked").val());
+			// 배송지 등록
+			$(document).on('click', '#addRegBtn', function(){
+				let isDefault = $("#address_is_default").is(":checked") ? "on" : "off";
+			    
+				console.log($("#address_is_default").val());
+				$.ajax({
+					url: "StoreRegistAddress",
+					type: "post",
+					data:{
+						"address_receiver_name": $("#address_receiver_name").val(),
+						"address_post_code": $("#address_post_code").val(),
+						"address_main": $("#address_main").val(),
+						"address_sub": $("#address_sub").val(),
+						"address_receiver_tel": $("#address_receiver_tel").val(),
+						"address_is_default": isDefault,
+						"address_mem_email": $("#address_mem_email").val()
+					},
+					dataType: "json",
+					success: function (response) {
+						// 받은 응답 데이터로 주소 리스트 업데이트
+						updateAddressList(response);
+						
+						location.reload();
+					}, error: function() {
+						alert("실패!");
+						
+						return false;
+					}
+				});
+			});
+			
+			// 주소 리스트 출력 및 주소 영역 초기화
+			function updateAddressList(addressList) {
+				console.log(addressList);
+				// 기존 리스트 초기화
+				$("#addressList").empty();
+			
+				// 서버로부터 받은 아이템 리스트를 사용하여 새로운 리스트 생성 
+				for(let address of addressList) {
+					console.log("address : " + address);
+					let listItem = 
+						'<div class="addressWrapper">'
+							+ '<div class="left">'
+							+ '<div>'
+							+ 	address.address_receiver_name
+							+	(address.address_is_default === "Y"
+									? '<span clas="default_symbol">기본 배송지</span>'
+									: '')
+							+	'</div>'
+							+	'<div>'
+							+		'[' + address.address_post_code + ']' + address.address_main
+							+	'</div>'
+							+	'<div>'
+							+	 address.address_sub
+							+	'</div>'
+							+	'<div>'
+							+	'<div class="changeAddressBtn">변경</div>'
+						+ '</div>';
+					$("#addressList").append(listItem);
+				}
+			}
+			
+			// 배송지 변경
+			$(document).on('click', '#changeBtn', function(){
+				let address_idx = $("input:radio[name='address_idx']:checked").val();
 				
+				$.ajax({
+					url: "StoreChangeAddress",
+					type: "post",
+					async: false, 
+					data:{
+						"address_idx": address_idx
+					},
+					dataType: "json",
+					success: function (response) {
+						console.log(JSON.stringify(response));
+						if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+							alert("잘못된 접근입니다!");
+						} else if(!response.result) { // 변경 실패일 경우
+							alert("배송지 변경에 실패하였습니다.");
+						} else if(response.result) { // 변경 성공일 경우 
+							// 페이지 리로드 
+							location.reload();
+							
+						}
+					}, error : function (response){
+						alert("실패! ");
+					}
+				});
+			});
+			
+			// 기본 배송지 변경 - 등록!
+			$(document).on('click', '.registDefault', function() {
+				let address_idx = $(this).data("address-idx");
+				
+				console.log("기본배송지 설정 눌렀을 떄 address_idx : " + +address_idx);
+				if(confirm("기본배송지로 설정하시겠습니까? \n기본배송지는 1개만 설정 가능합니다.")) {
+					$.ajax({
+						url: "StoreRegistDefaultAddress",
+						type: "post",
+						data:{
+							"address_idx" : address_idx,
+						},
+						dataType: "json",
+						success: function(response){
+							alert("정상 처리 되었습니다.");
+							location.reload();
+						}, error : function() {
+							alert("실패");
+							
+							return false;
+						}
+					});
+				}
+			});
+			
+			
+			// 기본 배송지 변경 -  해제!
+			$(document).on('click', '.cancleDefault', function() {
+				let address_mem_email = $(this).data("address_mem_email");
+				
+				console.log("기본배송지 해제 눌렀을 떄 address_mem_email : " +address_mem_email);
+				if(confirm("기본배송지를 해제하시겠습니까? \n기본배송지는 1개만 설정 가능합니다.")) {
+					$.ajax({
+						url: "StoreCancleDefaultAddress",
+						type: "post",
+						data:{
+							"addresss_mem_email" : address_mem_email,
+						},
+						dataType: "json",
+						success: function(){
+							alert("정상 처리 되었습니다.");
+							location.reload();
+						}, error : function(){
+							alert("실패");
+							
+							return false;
+						}
+					});
+				}
 			});
 			
 			// -------------------------------------------------------------------------
@@ -257,6 +485,38 @@
 			$(closeBtn).on('click', function() { 
 				$(modal).removeClass("on");
 			});
+			
+			// =========================================================================
+			// 결제 수단 목록
+			let payMethod = document.querySelectAll(".payMethod");
+			
+			// 결제 수단 변경 
+			$("#kakaoPay").click(function(){
+				payMethod[0].classList.remove("on");
+				payMethod[1].classList.remove("on");
+				
+				payMethod[0].classList.add("on");
+			});
+			
+			$("#creditCard").click(function(){
+				payMethod[0].classList.remove("on");
+				payMethod[1].classList.remove("on");
+				
+				payMethod[0].classList.add("on");
+			});
+			
+			
+			
+			// 결제 진행
+			$("#user_funding_complete").click(function(){
+
+				if($("input:checkbox[name=agreement]:checked").length > 1) {
+					$("#UserFundingPayForm").submit();
+				} else {
+					alert("필수 동의사항에 체크해주세요.");
+				}
+			});
+			
 			
 			
 		</script>

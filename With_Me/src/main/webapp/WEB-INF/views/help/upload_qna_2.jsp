@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>헬프센터 프로젝트올리기 질문</title>
+<title>With_Me</title>
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link
 	href="${pageContext.request.contextPath }/resources/css/default.css"
@@ -100,7 +100,7 @@ th {
 				 <a>
 				 프로젝트의 주요 일정을 미리 알면 펀딩을 더욱 구체적으로 계획할 수 있습니다.
 
-				 텀블벅 프로젝트의 주요 일정은 크게 <b>(공개예정 기간 - 펀딩 기간 - 결제 기간 - 정산일 - 선물 전달)</b>로 진행됩니다. 
+				 위드미 프로젝트의 주요 일정은 크게 <b>(공개예정 기간 - 펀딩 기간 - 결제 기간 - 정산일 - 선물 전달)</b>로 진행됩니다. 
 				 아래에서 프로젝트의 주요 일정의 설정 가능 기간을 확인해 주세요. 
 				 </a>
 				 </span>
