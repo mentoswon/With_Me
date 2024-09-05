@@ -8,6 +8,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>With_Me</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/fund_in_progress.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -384,7 +385,7 @@
 			// 배송지 삭제
 			$(document).on('click', '.deleteAddress', function() {
 				let address_idx = $(this).data("address-idx");
-				let infoWrapper = $(this).parent();
+				let infoWrapper = $(this).parent().parent();
 				let parentInfoWrapper = $(this).parents(".modal.on").siblings(".inner").children(".con02").find(".addressWrapper");
 				
 				// `parentInfoWrapper` 중에서 `address_idx` 값을 가진 요소를 필터링하여 기존 목록에서도 삭제하도록 함
@@ -393,37 +394,68 @@
 			    });
 				
 // 				console.log(targetElement.html());
+	
+// 				console.log(infoWrapper.html());
+// 				console.log("이미 선택된 배송지" + infoWrapper.children().find($("input:radio[name=address_idx]:checked")).val());
+// 				console.log("내가 삭제할 배송지" + address_idx);
+
+				// 선택된 배송지를 삭제하는 경우는 따로 분리해야함 0905
+				let selectedAddress = infoWrapper.children().find($("input:radio[name=address_idx]:checked"));
 				
-				if(confirm("배송지를 삭제하시겠습니까?")){
-					$.ajax({
-						url: "DeleteAddress",
-						type : "get",
-						async:false, // 이 한줄만 추가해주시면 됩니다.
-						data:{
-							"address_idx": address_idx
-						},
-						dataType: "json",
-						success: function (response) {
+				if(address_idx != selectedAddress.val()) { // 선택된 배송지 말고 다른거 지울 때 
+					if(confirm("배송지를 삭제하시겠습니까?")){
+						$.ajax({
+							url: "DeleteAddress",
+							type : "get",
+							async:false,
+							data:{
+								"address_idx": address_idx
+							},
+							dataType: "json",
+							success: function (response) {
+								
+								console.log(JSON.stringify(response));
+								
+								if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+									alert("잘못된 접근입니다!");
+								} else if(!response.result) { // 삭제 실패일 경우
+				                    alert("배송지 삭제에 실패하였습니다.");
+								} else if(response.result) { // 삭제 성공일 경우
+				                    // 삭제된 아이템 요소 제거
+				                    $(infoWrapper).remove(); 
+								
+									// 기존 목록에서도 삭제하도록 함
+				                    $(targetElement).remove(); 
+								
+				                }
 							
-							console.log(JSON.stringify(response));
+							}, error : function (response) {
+								alert("실패! ");
+							}
+						});
+					}
+				} else { // 선택된 배송지를 지우면 그 배송지 말고 다른 배송지를 selected 로 바꿔줘야함 -_-
+					if(confirm("배송지를 삭제하시겠습니까?")){
+						$.ajax({
+							url: "DeleteAddress2",
+							type : "get",
+							async:false,
+							data:{
+								"address_idx": address_idx
+							},
+							dataType: "json",
+							success: function (response) {
+								
+								// 받은 응답 데이터로 주소 리스트 업데이트
+								updateAddressList(response);
+								
+								location.reload();
 							
-							if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
-								alert("잘못된 접근입니다!");
-							} else if(!response.result) { // 삭제 실패일 경우
-			                    alert("배송지 삭제에 실패하였습니다.");
-							} else if(response.result) { // 삭제 성공일 경우
-			                    // 삭제된 아이템 요소 제거
-			                    $(infoWrapper).remove(); 
-							
-								// 기존 목록에서도 삭제하도록 함
-			                    $(targetElement).remove(); 
-							
-			                }
-						
-						}, error : function (response) {
-							alert("실패! ");
-						}
-					});
+							}, error : function (response) {
+								alert("실패! ");
+							}
+						});
+					}
 				}
 			});
 			

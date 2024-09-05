@@ -459,3 +459,96 @@ h4 {
 	cursor: pointer;
 }
 
+/* Mobile Responsive CSS */
+@media screen and (max-width: 768px) {
+	
+	.inner h2 {
+		font-size: 18px;
+	}
+	
+	section {
+	    margin: 60px auto;
+	    width: 85%;
+	}
+	
+	h4 {
+		font-size: 16px;
+	}
+	
+	.modal .modal_popup {
+		width: 75%;
+	}
+	
+	.inner .con01 .userInfo .infoWrapper > div {
+	    font-size: 15px;
+	}
+	
+	.inner .con01 .userInfo .infoWrapper span {
+	    font-size: 11px;
+	}
+	
+	.inner .con04 .rewardInfo .infoWrapper .title {
+	    font-size: 16px;
+	}
+	
+	#totalAmt {
+	    font-size: 20px;
+	}
+	
+	.inner .con03 .moreFundAmt .infoWrapper > div {
+	    font-size: 15px;
+	}
+	
+	.inner .con03 .moreFundAmt .infoWrapper div > div:first-child {
+		margin: 0;
+	}
+	
+	.inner .con02 .addressInfo .AddAddressBtn img {
+	    left: 30%;
+	}
+	.modal .modal_popup .content.change .infoWrapper .addressWrapper {
+		font-size: 13px;		
+	}
+	
+	.inner .con02 .addressInfo .infoWrapper .addressWrapper .left {
+	    width: 75%;
+	    font-size: 13px;
+	}
+	
+	.inner .con02 .addressInfo .infoWrapper .addressWrapper .changeAddressBtn {
+		padding: 7px;
+	    font-size: 13px;
+	}
+	
+	.modal .modal_popup .content.change .infoWrapper label input {
+	    margin-right: 15px;
+	}
+	.modal .modal_popup .content.change .infoWrapper .cancleDefault, .registDefault, .deleteAddress {
+	    font-size: 12px;
+	}
+	
+	.inner .con05 .payInfo .infoWrapper {
+	    padding-top: 30px;
+	}
+	
+	.inner .con05 .payInfo .warnInfo {
+	    font-size: 13px;
+	}
+	
+	.inner .con05 .payInfo .agreementInfo {
+   		font-size: 13px;
+	    padding-left: 30px;
+	}
+	
+	.inner .con05 .payInfo .agreementInfo input[type="checkbox"] + label::before {
+	    width: 15px;
+	    height: 15px;
+	    margin: 0;
+	}
+	
+	#user_funding_complete {
+	    padding: 10px 0;
+	    font-size: 16px;
+	}
+}
+

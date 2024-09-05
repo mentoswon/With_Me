@@ -300,3 +300,18 @@ section {
 	margin-bottom: 15px;
 }
 
+
+/* Mobile Responsive CSS */
+@media screen and (max-width: 768px) {
+	.sec01 {
+		display: block;
+	}
+	
+	.sec01 .mainWrapper {
+		width: 100%;
+	}
+	
+	.sec01 .popularList {
+		display: none;
+	}
+}

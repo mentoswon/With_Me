@@ -441,3 +441,31 @@ color: #fff;
 .modal .modal_popup .content button:hover {
 	border: 2px solid #ffab40;
 }
+
+/* Mobile Responsive CSS */
+@media screen and (max-width: 768px) {
+	.itemWrapper {
+		display: block;
+	}
+
+	.con02 {
+		display: block;
+	}
+	
+	.itemWrapper #imgArea {
+		width: 100%;
+	}
+	
+	.itemWrapper #infoArea {
+		width: 100%;
+	}
+	
+	.con02 .left {
+		width: 100%;
+	}
+	
+	.con02 .right {
+	    width: 100%;
+	}
+}
+			

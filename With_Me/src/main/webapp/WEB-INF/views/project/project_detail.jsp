@@ -8,6 +8,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>With_Me</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/report_form.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/project_detail.css" rel="stylesheet" type="text/css">
@@ -154,7 +155,6 @@
 			
 			<section class="con02">
 				<div class="left">
-					<%-- 임시로 넣어둠 --%>
 					<img alt="상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_introduce}" class="detailImg">
 				</div>
 				
@@ -178,26 +178,29 @@
 									</ul>
 								</div>
 							</div>
-							<div class="btns">
-							
-								<%-- 팔로우 여부 판단 --%>
-								<c:set var="isFollowing" value="false" />
-								<c:forEach var="follower" items="${project_detail.followerList}">
-								    <c:if test="${follower.follow_mem_email eq sId and follower.follow_status eq 'Y'}">
-								        <c:set var="isFollowing" value="true" />
-								    </c:if>
-								</c:forEach>
-								
-								<c:choose>
-								    <c:when test="${isFollowing}"> <%-- 팔로우 중일 경우 --%>
-								        <button type="button" class="unFollow" onclick="unfollow('${sId}','${project_detail.creator_email}')">팔로우 취소</button>
-								    </c:when>
-								    <c:otherwise>
-								        <button type="button" class="follow" onclick="confirmFollow('${project_detail.creator_name}', '${project_detail.creator_email}')">팔로우</button>
-								    </c:otherwise>
-								</c:choose>
-								<button type="button"  class="ask" onclick="chat('${project_detail.creator_email}')">문의</button>
-							</div>
+							<c:if test="${project_detail.creator_email ne sId}">
+								<div class="btns">
+									<%-- 팔로우 여부 판단 --%>
+									<c:set var="isFollowing" value="false" />
+									<c:forEach var="follower" items="${project_detail.followerList}">
+										<c:choose>
+										    <c:when test="${follower.follow_mem_email eq sId and follower.follow_status eq 'Y'}">
+										        <c:set var="isFollowing" value="true" />
+										    </c:when>
+									    </c:choose>
+									</c:forEach>
+									
+									<c:choose>
+									    <c:when test="${isFollowing}"> <%-- 팔로우 중일 경우 --%>
+									        <button type="button" class="unFollow" onclick="unfollow('${sId}','${project_detail.creator_email}')">팔로우 취소</button>
+									    </c:when>
+									    <c:otherwise>
+									        <button type="button" class="follow" onclick="confirmFollow('${project_detail.creator_name}', '${project_detail.creator_email}')">팔로우</button>
+									    </c:otherwise>
+									</c:choose>
+									<button type="button"  class="ask" onclick="chat('${project_detail.creator_email}')">문의</button>
+								</div>
+							</c:if>
 						</div>
 					</div>
 					
@@ -613,10 +616,12 @@
 // 				console.log(type); // 오케이 .. 뜬다..
 				$.ajax({
 					url: "ReportForm",
-					type : "POST",
+					type : "get",
 					async:false, // 이 한줄만 추가해주시면 됩니다.
 					data:{
-						"type": type
+						"type": type,
+						"project_title": title,
+						"project_code": project_code
 					},
 					dataType: "json",
 					success: function (response) {
@@ -624,6 +629,8 @@
 						content.html("<div id='resultArea'></div>");
 						
 						writeReportForm(response.type, response.project_title, response.project_code);
+						
+						console.log(response.project_title);
 					}, error : function (response) {
 						alert("실패! ");
 					}

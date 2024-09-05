@@ -7,7 +7,8 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>index</title>
+		<title>with_me</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -99,6 +100,24 @@
 			.progress.end::-webkit-progress-value {
 				background-color: #ffab40;
 				border-radius: 3px;
+			}
+			
+			/* Mobile Responsive CSS */
+			@media screen and (max-width: 768px) {
+				.sec02 .itemList .itemWrapper {
+					display: grid;
+					grid-template-columns: repeat(2, 1fr);
+					gap: 2rem;
+				}
+				
+				.sec02 .itemList .itemWrapper .item .fund_info {
+					font-size: 13px;
+				}
+				
+				.sec02 .itemList .itemWrapper .item .item_image .like {
+					width: 20px;
+					height: 20px;
+				}
 			}
 		</style>
 		

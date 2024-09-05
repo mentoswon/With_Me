@@ -45,6 +45,7 @@
 	}
 	.profile.on {display: block;}
 </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script type="text/javascript">
 	function confirmLogout() {
@@ -115,6 +116,9 @@
 				</c:otherwise>
 			</c:choose>
 		</div>
+		<%-- 모바일 화면 시 클릭 하면 메뉴 뜸 --%>
+		<img src="${pageContext.request.contextPath}/resources/image/menu.png" class="menuBtn">
+		<img src="${pageContext.request.contextPath}/resources/image/close.png" class="menuCloseBtn">
 	</div>
 	
 	<%-- 회원명 클릭시 출력되는 팝업 --%>
@@ -583,7 +587,30 @@
 			// JSON.stringify() 메서드 호출하여 객체 -> JSON 문자열로 변환
 			return JSON.stringify(data);
 		}
+		
+		
 	</script>
 </c:if>
 
-
+<script>
+	//=========================================================================
+	// 반응형
+	$(function (){
+		let menuBtn = document.querySelector('.menuBtn');
+		let menuCloseBtn = document.querySelector('.menuCloseBtn');
+		let menu = document.querySelector('nav>ul');
+		
+		menuBtn.onclick = function () {
+			menuBtn.classList.add('on');
+			menuCloseBtn.classList.add('on');
+			menu.classList.add('on');
+		}
+		
+		menuCloseBtn.onclick = function () {
+			menuBtn.classList.remove('on');
+			menuCloseBtn.classList.remove('on');
+			menu.classList.remove('on');
+		}
+		
+	});
+</script>

@@ -2,6 +2,8 @@ package com.itwillbs.with_me.controller;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -371,12 +373,25 @@ public class UserFundingController {
 	}
 	
 	// ================================================================================================================
-	@Scheduled(cron = "0 52 20 * * ?")
+	@Scheduled(cron = "0 53 12 * * ?")
 	public void sche () {
 //		 오전 10시마다 결제 진행
 		System.out.println("스케줄 확인");
+		// ----------------------------------------------------------
+		// DB 가서 결제일이 오늘인 후원 내역 찾기
+		
+		// 1) 오늘 날짜 구하기
+		// 현재 날짜 구하기        
+		LocalDate now = LocalDate.now();
+		
+		System.out.println(now);
+		
+		List<Map<String, Object>> payList = service.getTodayPayFunding(now);
+		
+		System.out.println(payList);
 	}
 	
+
 	// =================================================================================================================
 	
 	// 배송지 등록
@@ -485,6 +500,34 @@ public class UserFundingController {
 		
 		return jo.toString();
 		
+	}
+	
+	// 선택된 배송지 삭제하는 경우 - 추가 0905
+	@ResponseBody
+	@GetMapping("DeleteAddress2")
+	public List<AddressVO> deleteAddress2(AddressVO address, HttpSession session, MemberVO member) {
+		System.out.println("address : " + address);
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int deleteCount = service.removeAddress(address); // 일단 delete 하고
+		
+		String id = (String) session.getAttribute("sId");
+		
+		member.setMem_email(id);
+		
+		// 아이디로 회원 정보 가져오기
+		member = memberService.getMember(member);
+		
+		List<AddressVO> addressList = null;
+		
+		if(deleteCount > 0) {
+			service.modifySelectedAddressToY2(id); // 그 사람의 배송지 주소 중에 제일 큰걸 selected 로 바꾸기
+			
+			addressList = service.getUserAddress(member);
+		}
+		
+		return addressList;
 	}
 	
 	// 배송지 변경
@@ -621,7 +664,7 @@ public class UserFundingController {
 	@GetMapping("ReportWriteForm")
 	public String reportWriteForm(@RequestParam(defaultValue = "") String type, @RequestParam(defaultValue = "")String project_title,@RequestParam(defaultValue = "")String project_code ,Model model, HttpSession session, MemberVO member) {
 		System.out.println("type2222 : " + type);
-		
+		System.out.println(project_title + ", " + project_code);
 		String id = (String) session.getAttribute("sId");
 		
 		if(id == null) {

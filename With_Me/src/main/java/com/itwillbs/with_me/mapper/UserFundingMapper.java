@@ -1,5 +1,6 @@
 package com.itwillbs.with_me.mapper;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +66,9 @@ public interface UserFundingMapper {
 	// 배송지 삭제
 	int deleteAddress(AddressVO address);
 
+	// 선택된 배송지 삭제하는 경우
+	void updateSelectedAddressToY2(String id);
+	
 	// 선택된 배송지 있는지 확인
 	int selectAddressIsSelected(String id);
 	
@@ -119,6 +123,13 @@ public interface UserFundingMapper {
 
 	// 결제 정보 db 저장
 	void insertPaymentInfo(Map<String, Object> map);
+
+	// ==============================================================================
+	// 오늘 결제하는 펀딩 리스트
+	List<Map<String, Object>> selectTodayPayFunding(LocalDate now);
+
+
+
 
 
 

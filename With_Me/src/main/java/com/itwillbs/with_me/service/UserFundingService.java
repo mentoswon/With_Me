@@ -1,5 +1,6 @@
 package com.itwillbs.with_me.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -97,6 +98,11 @@ public class UserFundingService {
 		
 		return mapper.deleteAddress(address);
 	}
+	
+	// 선택된 배송지 삭제하는 경우
+	public void modifySelectedAddressToY2(String id) {
+		mapper.updateSelectedAddressToY2(id);
+	}
 
 	// 선택된 배송지 있는지 확인
 	public int getAddressIsSelected(String id) {
@@ -193,6 +199,14 @@ public class UserFundingService {
 	public void registPaymentInfo(Map<String, Object> map) {
 		mapper.insertPaymentInfo(map);
 	}
+
+	// ===========================================================================
+	// 펀딩 결제해야하는 리스트
+	public List<Map<String, Object>> getTodayPayFunding(LocalDate now) {
+		return mapper.selectTodayPayFunding(now);
+	}
+
+	
 
 
 
