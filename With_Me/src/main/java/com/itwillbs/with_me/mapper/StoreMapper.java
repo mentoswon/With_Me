@@ -52,19 +52,25 @@ public interface StoreMapper {
 	// 배송지 삭제
 	int deleteAddress(AddressVO address);
 
+	// 선택된 배송지 삭제하는 경우
+	void updateSelectedAddressToY2(String id);
 
-
+	// 선택된 배송지 있는지 확인
 	int selectAddressIsSelected(String id);
 
-
+	// 원래 선택된 배송지였던걸 N으로 변경 
 	int updateSelectedAddressToN(String id);
 
-
+	// 배송지 변경
 	int updateSelectedAddressToY(int address_idx);
 
-
+	// 기본 배송지 변경
 	int updateDefaultAddressToY(int address_idx);
 
+	// 신고 접수
+	int insertReport(Map<String, Object> map);
+	
+	
 // ===========================================================
 	// 좋아요 했는지 판단 후에 가져가기 
 	LikeVO selectIsLike(
@@ -82,6 +88,10 @@ public interface StoreMapper {
 	
 	// 좋아요 취소
 	int cancleLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
+
+
+
+
 	
 
 }

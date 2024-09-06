@@ -91,8 +91,16 @@ public class StoreService {
 		return mapper.updateDefaultAddressToY(address_idx);
 	}	
 	
+	// 선택된 배송지 삭제하는 경우
+	public void modifySelectedAddressToY2(String id) {
+		mapper.updateSelectedAddressToY2(id);
+	}
 	
-	
+	// 신고 접수
+	public int registReport(Map<String, Object> map) {
+		
+		return mapper.insertReport(map);
+	}
 	
 // ==============================================================================
 	
@@ -122,6 +130,10 @@ public class StoreService {
 		return mapper.cancleLike(like_product_code, like_mem_email);
 	}
 // ===============================================================================
+	
+
+	
+
 	
 
 	

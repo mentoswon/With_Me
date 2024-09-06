@@ -334,7 +334,34 @@ public class StoreController {
 		return jo.toString();
 	}
 
-
+	// 선택된 배송지 삭제하는 경우 - 추가 0905
+	@ResponseBody
+	@GetMapping("StoreDeleteAddress2")
+	public List<AddressVO> deleteAddress2(AddressVO address, HttpSession session, MemberVO member) {
+		System.out.println("address : " + address);
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int deleteCount = service.removeAddress(address); // 일단 delete 하고
+		
+		String id = (String) session.getAttribute("sId");
+		
+		member.setMem_email(id);
+		
+		// 아이디로 회원 정보 가져오기
+		member = memberService.getMember(member);
+		
+		List<AddressVO> addressList = null;
+		
+		if(deleteCount > 0) {
+			service.modifySelectedAddressToY2(id); // 그 사람의 배송지 주소 중에 제일 큰걸 selected 로 바꾸기
+			
+			addressList = service.getUserAddress(member);
+		}
+		
+		return addressList;
+	}
+	
 	// 배송지 변경
 	@ResponseBody
 	@PostMapping("StoreChangeAddress")
@@ -446,5 +473,99 @@ public class StoreController {
 		JSONObject jo = new JSONObject(resultMap);
 		return jo.toString();
 	}
+	
+	// ------------------------------------------------------------------------------------
+	// 신고하기 1
+	@ResponseBody
+	@GetMapping("StoreReportForm")
+	public String storeReportForm(@RequestParam(defaultValue = "") String type, @RequestParam(defaultValue ="") String product_name, @RequestParam(defaultValue = "")String product_code) {
+		System.out.println("type : " + type);
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("result", true);
+		resultMap.put("type", type);
+		resultMap.put("product_name", product_name);
+		resultMap.put("product_code", product_code);
+		
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 : " + jo.toString());
+		return jo.toString();
+	}
+	
+	// 신고하기 작성 폼
+	@GetMapping("StoreReportWriteForm")
+	public String storeReportWriteForm(@RequestParam(defaultValue = "") String type, @RequestParam(defaultValue ="") String product_name, @RequestParam(defaultValue = "")String product_code, Model model, HttpSession session, MemberVO member) {
+		System.out.println("type2222 : " + type);
+		System.out.println(product_name + ", " + product_code);
+		String id = (String) session.getAttribute("sId");
+		if(id == null) {
+			model.addAttribute("msg", "로그인 후 이용가능합니다.\\n로그인 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberLogin");
+//			session.setAttribute("prevURL", "");
+			return "result/fail";
+		}
+		
+		member.setMem_email(id);
+		
+		// 아이디로 회원 정보 가져오기 
+		member = memberService.getMember(member);
+		
+		model.addAttribute("type", type);
+		model.addAttribute("product_name", product_name);
+		model.addAttribute("member", member);
+		model.addAttribute("product_code", product_code);
+		
+		return "store/store_report_form";
+	}
+	
+	// 신고 접수
+	@PostMapping("StoreReportSubmit")
+	public String storeReportSubmit(@RequestParam Map<String, Object> map, Model model) {
+		System.out.println("map : " + map);
+		int insertCount = service.registReport(map);
+		
+		if(insertCount > 0) {
+			model.addAttribute("msg", "신고가 접수되었습니다.");
+			
+			return "result/success";
+		} else {
+			model.addAttribute("msg", " 신고 접수 중 오류가 발생하였습니다. \n 다시 시도해주세요.");
+			
+			return "result/fail";
+		}
+		
+	}
 
+	// =============================================================================================
+	
+	// 주문 등록
+	@GetMapping("StoreUserOrderPro")
+	public String storeUserOrderProView() {
+		
+		return "store/store_success";
+	}
+	
+	@PostMapping("StoreUserOrderPro")
+	public String storeUserOrderPro(@RequestParam Map<String, Object> map, Model model) {
+		System.out.println("주문할 내용 : " + map);
+		
+		
+		
+		return "";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
