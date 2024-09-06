@@ -115,7 +115,6 @@
 		WHERE
 			email = #{email}
 	</delete>
-	
 
 	
 	<!-- 마이페이지(기본정보 수정) -->

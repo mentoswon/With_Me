@@ -80,6 +80,11 @@ a {
     background-color: #fff;
 }
 
+#LikeMenu {
+    display: flex;
+    background-color: #fff;
+}
+
 #MypageMenuList {
     list-style: none;
     margin: 0;
@@ -110,10 +115,6 @@ a {
     border-bottom: 3px solid #FFAB40;
 }
 
-#LikeMenuList li.active {
-    font-weight: bold;
-    border-bottom: 3px solid #FFAB40;
-}
 
 #MypageMenuList li span {
     display: block;

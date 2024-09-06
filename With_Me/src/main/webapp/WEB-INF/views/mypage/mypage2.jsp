@@ -140,15 +140,21 @@ $(document).ready(function() {
         let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
         $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
     });
-    
-    $("#LikeMenuList li").click(function() {
-        $(".writeContainer").hide();	// 모든 .writeContainer 숨기기
-        $("#LikeMenuList li").removeClass("active");
-        $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
-        let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
-        $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
-    });
 	
+	// 임시) 초기 상태로 두 번째 메뉴와 콘텐츠가 보이도록 설정
+    $("#MypageMenuList li:eq(0)").click();
+    
+    // 상태 메뉴의 각 버튼 클릭 이벤트
+    $("#statusMenu li").on("click", function() {
+        // 모든 항목에서 'selected' 클래스 제거
+        $("#statusMenu li").removeClass("selected");
+        // 클릭된 항목에 'selected' 클래스 추가
+        $(this).addClass("selected");
+		
+    });
+    
+    
+    
 });	// ready 이벤트 끝
 
 </script>
@@ -225,7 +231,7 @@ $(document).ready(function() {
 			<div id="writeContainer2" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<div id="LikeMenu">
+						<div id="statusMenu">
 							<ul id="LikeMenuList">
 								<li class="writeList active" data-index="1">
 									<span>내가 좋아요한 프로젝트</span>
@@ -238,36 +244,75 @@ $(document).ready(function() {
 					</div>
 				</div>
 			</div>
-				<article>
-					<div id="writeContainer2-1" class="writeContainer">
-						<div class="MypageWriteWrap">
-							<div class="MypageExplanationWrap">
-							    <c:choose>
-							        <c:when test="${not empty creatorInfo and not empty creatorInfo.creator_introduce}">
-							            <p>${creatorInfo.creator_introduce}</p>
-							        </c:when>
-							        <c:otherwise>
-							            <p>창작자 되어서 자신을 소개해보세요!</p>
-							        </c:otherwise>
-							    </c:choose>
-							</div>
-						</div>
-					</div>
-					<div id="writeContainer2-1" class="writeContainer">
-						<div class="MypageWriteWrap">
-							<div class="MypageExplanationWrap">
-							    <c:choose>
-							        <c:when test="${not empty creatorInfo and not empty creatorInfo.creator_introduce}">
-							            <p>${creatorInfo.creator_introduce}</p>
-							        </c:when>
-							        <c:otherwise>
-							            <p>창작자 되어서 자신을 소개해보세요!2222222</p>
-							        </c:otherwise>
-							    </c:choose>
-							</div>
-						</div>
-					</div>
-				</article>
+				<c:forEach var="like" items="${likeList}">
+				    <c:if test="${not empty like.project_idx}">
+				        <div class="itemList">
+				            <div class="itemWrapper">
+				                <!-- 오늘 날짜 추출 -->
+				                <c:set var="now" value="<%=new java.util.Date()%>" />
+				                <c:set var="today" value="${now}" />
+				
+				                <c:forEach var="likeItem" items="${likeList}">
+				                    <c:choose>
+				                        <c:when test="${likeItem.creator_idx eq creatorInfo.creator_idx && likeItem.funding_end_date.time > today.time}">
+				                            <c:set var="hasValidProject" value="true" />
+				                            <div class="item">
+				                                <!-- 프로젝트 정보 표시 -->
+				                                <div class="item_image">
+				                                    <a href="ProjectDetail?project_title=${likeItem.project_title}&project_code=${likeItem.project_code}">
+				                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+				                                    </a>
+				                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+				                                    <!-- 나중에 쓸 채워진 하트 -->
+				                                    <%-- <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
+				                                </div>
+				                                <div class="item_info">
+				                                    <h4><a href="MemberInfoTest?mem_email=${likeItem.creator_email}">${likeItem.creator_name}</a></h4>
+				                                    <h3><a href="ProjectDetail?project_title=${likeItem.project_title}&project_code=${likeItem.project_code}">${likeItem.project_title}</a></h3>
+				                                </div>
+				                                <div class="fund_info">
+				                                    <div class="fund_leftWrap">
+				                                        <fmt:parseNumber var="funding_amt" value="${likeItem.funding_amt*1.0}" />
+				                                        <fmt:parseNumber var="target_price" value="${likeItem.target_price}" />
+				                                        <c:set var="fund_rate" value="${funding_amt / target_price * 100}" />
+				                                        <c:choose>
+				                                            <c:when test="${fund_rate eq 0.0}">
+				                                                <div class="fund_rate">0%</div>
+				                                            </c:when>
+				                                            <c:otherwise>
+				                                                <div class="fund_rate">${fund_rate}%</div>
+				                                            </c:otherwise>
+				                                        </c:choose>
+				                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${likeItem.funding_amt}</fmt:formatNumber> 원</div> 
+				                                    </div>
+				                                    <div class="fund_etc">
+				                                        <c:choose>
+				                                            <c:when test="${leftDay eq 0}">
+				                                                오늘 마감
+				                                            </c:when>
+				                                            <c:otherwise>
+				                                                <fmt:parseNumber value="${now.time / (1000 * 60 * 60 * 24)}" integerOnly="true" var="strDate" />
+				                                                <fmt:parseNumber value="${likeItem.funding_end_date.time / (1000 * 60 * 60 * 24)}" integerOnly="true" var="endDate" />
+				                                                <c:set value="${endDate - strDate}" var="leftDay" />
+				                                                <c:out value="${leftDay}" />일 남음
+				                                            </c:otherwise>
+				                                        </c:choose>
+				                                    </div>
+				                                </div>
+				                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+				                            </div>
+				                        </c:when>
+				                    </c:choose>
+				                </c:forEach>
+				            </div>
+				        </div>
+				    </c:if>
+				</c:forEach>
+				
+				<!-- 조건을 만족하는 프로젝트가 하나도 없을 때 메시지 표시 -->
+				<c:if test="${!hasValidProject}">
+				    <p>등록된 프로젝트가 없습니다.</p>
+				</c:if>
 			<div id="writeContainer3" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
@@ -379,108 +424,9 @@ $(document).ready(function() {
 			<div id="writeContainer4" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<div class="inner">
-						<section class="sec02">
-						    <!-- 프로젝트가 존재하는지 먼저 확인 -->
-						    <c:if test="${not empty DonationProjectList}">
-						        <c:set var="hasValidProject" value="false" />
-						
-						        <div class="itemList">
-						            <div class="itemWrapper">
-						            	<!-- 오늘 날짜 추출 -->
-						                <c:set var="now" value="<%=new java.util.Date()%>" />
-						                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
-						
-						                <c:forEach var="dp" items="${DonationProjectList}">
-						                    <c:choose>
-						                        <c:when test="${dp.creator_idx eq creatorInfo.creator_idx && dp.funding_end_date > today}">
-						                            <c:set var="hasValidProject" value="true" />
-						                            <div class="item">
-						                                <div class="item_image">
-						                                    <a href="ProjectDetail?project_title=${dp.project_title}&project_code=${dp.project_code}">
-						                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-						                                    </a>
-						                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-						                                    <!-- 나중에 쓸 채워진 하트 -->
-								<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
-						                                </div>
-						                                <div class="item_info">
-						                                    <h4><a href="MemberInfoTest?mem_email=${dp.creator_email}">${dp.creator_name}</a></h4>
-						                                    <h3><a href="ProjectDetail?project_title=${dp.project_title}&project_code=${dp.project_code}">${dp.project_title}</a></h3>
-						                                </div>
-						                                <div class="fund_info">
-						                                    <div class="fund_leftWrap">
-						                                        <fmt:parseNumber var="funding_amt" value="${dp.funding_amt*1.0}" ></fmt:parseNumber>
-						                                        <fmt:parseNumber var="target_price" value="${dp.target_price}" ></fmt:parseNumber>
-						                                        <c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
-						                                        <c:choose>
-						                                            <c:when test="${fund_rate eq 0.0}">
-						                                                <div class="fund_rate">0%</div>
-						                                            </c:when>
-						                                            <c:otherwise>
-						                                                <div class="fund_rate">${fund_rate}%</div>
-						                                            </c:otherwise>
-						                                        </c:choose>
-						                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${dp.funding_amt}</fmt:formatNumber> 원</div> 
-						                                    </div>
-						                                    <div class="fund_etc">
-						                                        <c:choose>
-						                                            <c:when test="${leftDay eq 0}">
-						                                                오늘 마감
-						                                            </c:when>
-						                                            <c:otherwise>
-						                                                <fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
-						                                                <fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-						                                                <c:set value="${endDate - strDate}" var="leftDay"/>
-						                                                <c:out value="${leftDay}" />일 남음
-						                                            </c:otherwise>
-						                                        </c:choose>
-						                                    </div>
-						                                </div>
-						                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
-						                            </div>
-						                        </c:when>
-						                    </c:choose>
-						                </c:forEach>
-						            </div>
-						        </div>
-						
-						        <!-- 조건을 만족하는 프로젝트가 하나도 없을 때 메시지 표시 -->
-						        <c:if test="${!hasValidProject}">
-						            <p>등록된 프로젝트가 없습니다.</p>
-						        </c:if>
-						    </c:if>
-						
-						    <!-- projectList 자체가 비어 있을 때 메시지 표시 -->
-						    <c:if test="${empty DonationProjectList}">
-						        <p>등록된 프로젝트가 없습니다.</p>
-						    </c:if>
-						</section>
-							
-							<section id="pageList">
-								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-								<input type="button" value="이전" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if> >
-								
-								<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
-								<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-									
-									<c:choose>
-										<c:when test="${pageNum eq i}">
-											<b>${i}</b>
-										</c:when>
-										<c:otherwise>
-											<a href="MemberInfo?pageNum=${i}">${i}</a>
-										</c:otherwise>
-									</c:choose>
-								
-						<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
-								</c:forEach>
-								
-								<input type="button" value="다음" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-							</section>
-						</div>
+						<p>
+							후원한 프로젝트가 없습니다.
+						</p>
 					</div>
 				</div>
 			</div>

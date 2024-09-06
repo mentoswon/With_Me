@@ -551,9 +551,9 @@ public class MemberController {
 		
 //		System.out.println("projectList : " + projectList);
 		System.out.println("DonationProjectList : " + DonationProjectList);
-//		System.out.println("followList : " + followList);
-//		System.out.println("followingList : " + followingList);
-//		System.out.println("likeList : " + likeList);
+		System.out.println("followList : " + followList);
+		System.out.println("followingList : " + followingList);
+		System.out.println("likeList : " + likeList);
 //		System.out.println("followerCount : " + followerCount);
 		
 		// --------------------------------------------------------------------
