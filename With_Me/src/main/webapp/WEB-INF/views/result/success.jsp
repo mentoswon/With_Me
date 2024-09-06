@@ -17,17 +17,14 @@
 		//    실제로는 서버에서 해당 코드가 정상적으로 처리된다!
 		// => 또한, 주석 처리 과정에서 자동 주석 처리 시 자바스크립트 주석으로 처리되지만
 		//    서버에서 실행되지 않도록 하기 위해서는 강제로 JSP 주석으로 처리해야한다!
-		<%-- 
-		<c:choose>
-			<c:when test="${empty targetURL}">
-				history.back();
-			</c:when>
-			<c:otherwise>
-				location.href = "${targetURL}";
-			</c:otherwise>
-		</c:choose>
-		--%>
 		
+		// "isClose" 속성값이 "ture" 일 경우 (또는 비어있지 않을 경우) 현재 창 닫기
+		// "${isCLose}" == true 대신 "${isCLose}"만 지정해도 됨 
+		if("${isClose}") { // 자바스크립트는 문자열이 비어있으면 false임
+			// 부모창 새로고침 후 자식창 닫기
+			window.opener.location.reload(); // 부모창 제어하려면 window.opener를 앞에 붙여줘야함
+			window.close();
+		}
 		// 2) 자바스크립트의 조건문으로 판별
 		// => EL 을 통해 targetURL 속성값을 가져와서 자바스크립트 if 문으로 판별
 		//    (전달받은 속성값이 없을 경우 널스트링 값이 출력되므로 자바스크립트 "" 값과 비교)

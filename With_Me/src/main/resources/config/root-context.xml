@@ -40,5 +40,5 @@
 	
 	<!-- 4. MyBatis 연동에 사용될 객체(클래스)들의 패키지 위치 지정(기본 루트 패키지 지정) -->
 	
-	<mybatis-spring:scan base-package="com.itwillbs.with_me"/>	
+	<mybatis-spring:scan base-package="com.itwillbs.with_me"/>
 </beans>

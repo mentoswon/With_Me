@@ -47,9 +47,9 @@
 		}
 		
 		// Auto slide every 5 seconds
-		setInterval(function() {
-			plusSlides(1); // Move to the next slide
-		}, 5000); // 5000 milliseconds = 5 seconds
+// 		setInterval(function() {
+// 			plusSlides(1); // Move to the next slide
+// 		}, 5000); // 5000 milliseconds = 5 seconds
 	});
 </script>
 </head>

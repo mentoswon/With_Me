@@ -23,5 +23,6 @@
 		<typeAlias type="com.itwillbs.with_me.vo.ChatRoom" alias="chatRoom"/>
   		<typeAlias type="com.itwillbs.with_me.vo.ChatMessage2" alias="chatMessage"/>
   		<typeAlias type="com.itwillbs.with_me.vo.SmsAuthInfo" alias="smsAuth"/>
+  		<typeAlias type="com.itwillbs.with_me.vo.BankToken" alias="bankToken"/>
 	</typeAliases>
  </configuration>

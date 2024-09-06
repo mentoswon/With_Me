@@ -41,7 +41,56 @@
 // 			        }
 // 			    }).open();
 // 			});
+			function linkAccount() {
+				// 새 창을 열어서 사용자 인증 서비스 요청
+				// => 금융결제원 오픈API - 2.1.1. 사용자인증 API (3-legged) 서비스
+				// ----------------------------------------------------------------
+				// 빈 창으로 새 창 띄운 후 해당 창에 사용자 인증 페이지 표시
+				let authWindow = window.open("about:blank", "authWindow", "width=500,height=700");
+				authWindow.location = "https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
+										+ "response_type=code"
+										+ "&client_id=4066d795-aa6e-4720-9383-931d1f60d1a9"
+										+ "&redirect_uri=http://localhost:8081/with_me/callback"
+										+ "&scope=login inquiry transfer"
+										+ "&state=12345678901234567890123456789012"
+										+ "&auth_type=0";
+				
+				// 창이 닫혔는지 감지하는 함수
+				let timer = setInterval(function() {
+					if (authWindow.closed) {
+						clearInterval(timer); // 타이머 중지
+						updateAccountList(); // 계좌 리스트 새로고침
+					}
+				}, 1000); // 1초마다 창 상태 확인
+			}
 			
+			function updateAccountList(){
+// 				console.log("계좌 리스트 새로고침 실행");
+				$.ajax({
+					url: "BankAccountList",
+					type : "get",
+					async:false,
+					data:{
+						
+					},
+					dataType: "json",
+					success: function (response) {
+						
+						console.log(JSON.stringify(response));
+						
+						if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+							alert("잘못된 접근입니다!");
+						} else if(!response.result) { // 삭제 실패일 경우
+		                    alert("배송지 삭제에 실패하였습니다.");
+						} else if(response.result) { // 삭제 성공일 경우
+						
+		                }
+					
+					}, error : function (response) {
+						alert("실패! ");
+					}
+				});
+			}
 		</script>
 	</head>
 	<body>
@@ -186,37 +235,37 @@
 				</section>
 				
 				<section class="con06">
-						<!-- // 후원은 후결제라서 필요 없음. 스토어만 사용. -->
-<!-- 					<div class="pay"> -->
-<!-- 						<div class="payWrap"> -->
-<!-- 							<h4>결제 수단 </h4> -->
-<!-- 							<div class="payMethod on"> -->
-<!-- 								카카오페이를 선택하셨습니다.  -->
-<!-- 								즉시할인 신용카드 적용이 불가합니다. -->
-<!-- 							</div> -->
-<!-- 							<div class="payMethod"> -->
-<!-- 								신용/체크카드를 선택하셨습니다.  -->
-<!-- 								즉시할인 신용카드 적용이 가능합니다. -->
-<!-- 							</div> -->
-<!-- 							<div class="payMethod"> -->
-								
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						<div class="infoWrapper"> -->
-<!-- 							<div> -->
-<!-- 								<input type="radio" id="kakaoPay" name="payMethod" value="1" required checked> -->
-<!-- 								<label for="kakaoPay"> 카카오페이</label> -->
-<!-- 							</div> -->
-<!-- 							<div> -->
-<!-- 								<input type="radio" id="creditCard" name="payMethod" value="2" required> -->
-<!-- 								<label for="creditCard"> 카드결제</label> -->
-<!-- 							</div> -->
-<!-- 							<div> -->
-<!-- 								<input type="radio" id="accountTransfer" name="payMethod" value="3"  required> -->
-<!-- 								<label for="accountTransfer"> 계좌이체</label> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 					</div> -->
+					<div class="pay">
+						<div class="payWrap">
+							<h4>결제 수단 </h4>
+							<div class="payMethod on">
+								카카오페이를 선택하셨습니다. 
+								즉시할인 신용카드 적용이 불가합니다.
+							</div>
+							<div class="payMethod">
+								신용/체크카드를 선택하셨습니다. 
+								즉시할인 신용카드 적용이 가능합니다.
+							</div>
+							<div class="payMethod">
+								<button type="button" id="addAccountBtn" onclick="linkAccount()">계좌 등록</button>
+								<span>계좌 등록이 필요합니다.</span>
+							</div>
+						</div>
+						<div class="infoWrapper">
+							<div>
+								<input type="radio" id="kakaoPay" name="payMethod" value="1" required checked>
+								<label for="kakaoPay"> 카카오페이</label>
+							</div>
+							<div>
+								<input type="radio" id="creditCard" name="payMethod" value="2" required>
+								<label for="creditCard"> 카드결제</label>
+							</div>
+							<div>
+								<input type="radio" id="accountTransfer" name="payMethod" value="3"  required>
+								<label for="accountTransfer"> 계좌이체</label>
+							</div>
+						</div>
+					</div>
 				
 					<input type="hidden" name="user_funding_email" id="user_funding_email" value="">					<!-- 완) 후원자 email -->
 					<input type="hidden" name="user_funding_project_idx" id="user_funding_project_idx" value="">			<!-- 프로젝트 번호 -->
@@ -651,113 +700,117 @@
 			
 			
 			// ==================================================================================
-			// 후원은 후결제라서 필요 없음. 스토어만 사용.
 // 			//결제 수단 목록
-// 			let payMethod = document.querySelectorAll(".payMethod");
+			let payMethod = document.querySelectorAll(".payMethod");
 			
 // 			// 결제 수단 변경
-// 			$("#kakaoPay").click(function() {
-// 				payMethod[0].classList.remove("on");
-// 				payMethod[1].classList.remove("on");
-// 				payMethod[2].classList.remove("on");
+			$("#kakaoPay").click(function() {
+				payMethod[0].classList.remove("on");
+				payMethod[1].classList.remove("on");
+				payMethod[2].classList.remove("on");
 				
-// 				payMethod[0].classList.add("on");
-// 				$("#user_funding_pay_method").val($(this).val());
-// 			});
+				payMethod[0].classList.add("on");
+				$("#user_funding_pay_method").val($(this).val());
+			});
 			
-// 			$("#creditCard").click(function() {
-// 				payMethod[0].classList.remove("on");
-// 				payMethod[1].classList.remove("on");
-// 				payMethod[2].classList.remove("on");
+			$("#creditCard").click(function() {
+				payMethod[0].classList.remove("on");
+				payMethod[1].classList.remove("on");
+				payMethod[2].classList.remove("on");
 				
-// 				payMethod[1].classList.add("on");
-// 				$("#user_funding_pay_method").val($(this).val());
-// 			});
+				payMethod[1].classList.add("on");
+				$("#user_funding_pay_method").val($(this).val());
+			});
 			
-// 			$("#accountTransfer").click(function() {
-// 				payMethod[0].classList.remove("on");
-// 				payMethod[1].classList.remove("on");
-// 				payMethod[2].classList.remove("on");
+			$("#accountTransfer").click(function() {
+				payMethod[0].classList.remove("on");
+				payMethod[1].classList.remove("on");
+				payMethod[2].classList.remove("on");
 				
-// 				payMethod[2].classList.add("on");
-// 				$("#user_funding_pay_method").val($(this).val());
-// 			});
+				payMethod[2].classList.add("on");
+				$("#user_funding_pay_method").val($(this).val());
+			});
 			
 			// 결제 진행
 			$("#user_funding_complete").click(function(){
 
 				if($("input:checkbox[name=agreement]:checked").length > 1) {
-					$("#UserFundingPayForm").submit();
+					requestPay();
+// 					$("#UserFundingPayForm").submit();
 				} else {
 					alert("필수 동의사항에 체크해주세요.");
 				}
+				
+// 				if($("#user_funding_pay_method").val() == 3) {
+// 					alert("계좌를 등록해주세요.");
+// 				}
 			});
 			
-			// 후원은 후결제라서 필요 없음. 스토어만 사용.
+			var IMP = window.IMP;
+			IMP.init("imp61351081");
 			
-// 			var IMP = window.IMP;
-// 			IMP.init("imp61351081");
+			let today = new Date();
+			let hours = today.getHours(); // 시
+			let minutes = today.getMinutes();  // 분
+			let seconds = today.getSeconds();  // 초
+			let milliseconds = today.getMilliseconds();
+			let makeMerchantUid = "" + hours + minutes + seconds + milliseconds;
 			
-// 			let today = new Date();
-// 			let hours = today.getHours(); // 시
-// 			let minutes = today.getMinutes();  // 분
-// 			let seconds = today.getSeconds();  // 초
-// 			let milliseconds = today.getMilliseconds();
-// 			let makeMerchantUid = "" + hours + minutes + seconds + milliseconds;
-			
-// 			function requestPay() {
-// 				if($("input:radio[name=payMethod]:checked").val() == "1") {
-// 					IMP.request_pay({
-// 						// 파라미터 값 설정
-// 						pg : "kakaopay.TC0ONETIME", // PG사 코드표에서 선택
-// 						pay_method : "card", // 결제 방식
-// 						merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호
-// 						name : "${selectedReward.reward_title}", // 프로젝트명 -> 필수
-// 						amount : $("#user_funding_pay_amt").val(), // 결제 금액 -> 필수
-// 						//구매자 정보 ↓
-// 						buyer_email : "${sId}",
-// 						buyer_name : "${member.mem_name}",
-// 						buyer_tel : "${member.mem_tel}",
+			// 포트원 예약 결제 https://developers.portone.io/opi/ko/integration/start/v2/billing/schedule?v=v2
+			// https://velog.io/@code_june/Code-CampTIL-29%EC%9D%BC%EC%B0%A8-%EA%B2%B0%EC%A0%9C-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4
+			function requestPay() {
+				if($("input:radio[name=payMethod]:checked").val() == "1") {
+					IMP.request_pay({
+						// 파라미터 값 설정
+						pg : "kakaopay.TC0ONETIME", // PG사 코드표에서 선택
+						pay_method : "card", // 결제 방식
+						merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호
+						name : "${selectedReward.reward_title}", // 프로젝트명 -> 필수
+						amount : $("#user_funding_pay_amt").val(), // 결제 금액 -> 필수
+						//구매자 정보 ↓
+						buyer_email : "${sId}",
+						buyer_name : "${member.mem_name}",
+						buyer_tel : "${member.mem_tel}",
 					
-// 					}, function(rsp){ // callback
-// 						if(rsp.success){
-// 							alert("결제되었습니다.");
-// 							$("#UserFundingPayForm").submit();
-// 						}else {
-// 							var msg = '결제에 실패하였습니다.';
-// 					        msg += '\n에러내용 : ' + rsp.error_msg;
-// 					        alert(msg);
-// 						}
+					}, function(rsp){ // callback
+						if(rsp.success){
+							alert("결제되었습니다.");
+							$("#UserFundingPayForm").submit();
+						}else {
+							var msg = '결제에 실패하였습니다.';
+					        msg += '\n에러내용 : ' + rsp.error_msg;
+					        alert(msg);
+						}
 					
-// 					});//IMP.request_pay End
-// 				} else if($("input:radio[name=payMethod]:checked").val() == "2"){
-// 					IMP.request_pay({
-// 						// 파라미터 값 설정
-// 						pg : "html5_inicis.INIpayTest", // PG사 코드표에서 선택
-// 						pay_method : "card", // 결제 방식
-// 						merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호
-// 						name : "${selectedReward.reward_title}", // 프로젝트명 -> 필수
-// 						amount : $("#user_funding_pay_amt").val(), // 결제 금액 -> 필수
-// 						//구매자 정보 ↓
-// 						buyer_email : "${sId}",
-// 						buyer_name : "${member.mem_name}",
-// 						buyer_tel : "${member.mem_tel}",
+					});//IMP.request_pay End
+				} else if($("input:radio[name=payMethod]:checked").val() == "2"){
+					IMP.request_pay({
+						// 파라미터 값 설정
+						pg : "html5_inicis.INIpayTest", // PG사 코드표에서 선택
+						pay_method : "card", // 결제 방식
+						merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호
+						name : "${selectedReward.reward_title}", // 프로젝트명 -> 필수
+						amount : $("#user_funding_pay_amt").val(), // 결제 금액 -> 필수
+						//구매자 정보 ↓
+						buyer_email : "${sId}",
+						buyer_name : "${member.mem_name}",
+						buyer_tel : "${member.mem_tel}",
 					
-// 					}, function(rsp){ // callback
-// 						if(rsp.success){
-// 							alert("결제되었습니다.");
-// 							$("#UserFundingPayForm").submit();
-// 						}else {
-// 							var msg = '결제에 실패하였습니다.';
-// 					        msg += '\n에러내용 : ' + rsp.error_msg;
-// 					        alert(msg);
-// 						}
+					}, function(rsp){ // callback
+						if(rsp.success){
+							alert("결제되었습니다.");
+							$("#UserFundingPayForm").submit();
+						}else {
+							var msg = '결제에 실패하였습니다.';
+					        msg += '\n에러내용 : ' + rsp.error_msg;
+					        alert(msg);
+						}
 					
-// 					});//IMP.request_pay End
+					});//IMP.request_pay End
 					
-// 				}
+				}
 				
-// 			};//requestPay function End
+			};//requestPay function End
 			
 		</script>
 	</body>

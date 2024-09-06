@@ -398,7 +398,7 @@
 			, #{user_funding_count}
 			, #{user_funding_address_idx}
 			, #{user_funding_plus_amt}
-			, #{user_funding_pay_date}
+			, now()
 			, #{user_funding_pay_amt}
 		)
 	</insert>
@@ -415,7 +415,7 @@
 			, #{user_funding_count}
 			, #{user_funding_address_idx}
 			, #{user_funding_plus_amt}
-			, #{user_funding_pay_date}
+			, now()
 			, #{user_funding_pay_amt}
 		)
 		

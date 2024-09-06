@@ -31,6 +31,11 @@
 		<!-- 한글 등의 파일명 처리를 위한 인코딩 방식 처리 -->
 		<beans:property name="defaultEncoding" value="UTF-8" />
 	</beans:bean>
+	<!--
+		애플리케이션 내에서 사용할 데이터들을 외부파일에 저장후 스프링 내에서 접근하기위해 
+		servlet_context.xml 에서 등록해줘야함
+	 -->
+	<context:property-placeholder location="classpath:/config/appdata.properties"/>
 	
 	<context:component-scan base-package="com.itwillbs.with_me" />
 	

@@ -14,11 +14,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoApi {
 	
-	@Value("${kakao.api_key}")
-	private String kakaoApiKey;
-	
-	@Value("${kakao.redirect_uri}")
-	private String kakaoRedirectUri;
+//	@Value("${kakao.api_key}")
+//	private String kakaoApiKey;
+//	
+//	@Value("${kakao.redirect_uri}")
+//	private String kakaoRedirectUri;
 	
 
 	//인가 코드를 받아서 accessToken을 반환
