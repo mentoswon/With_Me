@@ -29,6 +29,7 @@ import com.itwillbs.with_me.service.AdminService;
 import com.itwillbs.with_me.service.BoardService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.BoardVO;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
@@ -326,6 +327,35 @@ public class AdminController {
 		return "admin/admin_project_list";
 	}
 	
+	// 프로젝트 상세정보 조회
+	@GetMapping("AdminProjectDetail")
+	public String adminProjectDetail(HttpSession session, Model model, ProjectVO project) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		// 프로젝트 상세정보를 ProjectVO 객체에 저장
+		Map<String, Object> projectInfo = adminService.getProjectDetail(project);
+//		System.out.println("projectInfo : " + projectInfo);
+		
+		// 창작자 정보를 CreatorVO 객체에 저장
+		CreatorVO creator = adminService.getCreator(projectInfo);
+//		System.out.println("creator : " + creator);
+		
+		// 프로젝트 취소 신청여부 조회
+		ProjectCancelVO projectCancel = adminService.getProjectCancel(project);
+//		System.out.println("projectCancel : " + projectCancel);
+		
+		// 프로젝트 상세정보, 창작자 정보 Model 객체에 저장 -> admin_project_detail.jsp 로 전달
+		model.addAttribute("project", projectInfo);
+		model.addAttribute("creator", creator);
+		model.addAttribute("projectCancel", projectCancel);
+		
+		return "admin/admin_project_detail";
+	}
+	
 	// 프로젝트 등록 승인/거부
 	@GetMapping("AdminProjectRegistApproval")
 	public String adminProjectRegistApproval(HttpSession session, Model model, ProjectVO project, String isAuthorize) {
@@ -362,34 +392,6 @@ public class AdminController {
 			}
 			return "result/fail";
 		}
-	}
-	
-	// 프로잭트 취소 신청여부 확인
-	@ResponseBody
-	@PostMapping("IsCancelExists")
-	public String isCancelExists(@RequestParam int project_idx) {
-//		System.out.println("project_idx : " + project_idx);
-		
-		// 프로젝트 취소 신청여부 조회
-		ProjectCancelVO projectCancel = adminService.getProjectCancel(project_idx);
-//		System.out.println("projectCancel : " + projectCancel);
-		
-		// 프로젝트 취소 신청여부 판별
-		boolean isCancelExists = false; // 취소신청 여부를 저장할 변수 선언(true : 신청함, false : 신청하지 않음)
-		if(projectCancel != null) { // 취소신청을 했을 경우 isCancelExists 값을 true로 변경
-			isCancelExists = true;
-		}
-		// 리턴 데이터를 Map 객체에 저장
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("isCancelExists", isCancelExists);
-		
-		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
-		// => org.json.JSONObject 클래스 활용
-		JSONObject jo = new JSONObject(map);
-		System.out.println("응답 JSON 데이터 " + jo.toString());
-		
-		// JSON 객체를 문자열로 변환하여 리턴(@ResponseBody 어노테이션 필수!)
-		return jo.toString();
 	}
 	
 	// 프로젝트 취소 승인/거부

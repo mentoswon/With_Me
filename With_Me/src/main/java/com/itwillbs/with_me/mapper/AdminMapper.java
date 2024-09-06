@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.BoardVO;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -45,14 +46,20 @@ public interface AdminMapper {
 	List<Map<String, Object>> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
 												@Param("searchKeyword") String searchKeyword, @Param("projectStatus") String projectStatus);
 	
+	// 프로젝트 상세정보 조회
+	Map<String, Object> selectProjectDetail(ProjectVO project);
+	
+	// 창작자 정보 조회
+	CreatorVO selectCreator(Map<String, Object> projectInfo);
+	
 	// 프로젝트 상태 변경
 	int updateProjectStatus(@Param("project") ProjectVO project, @Param("status") String status);
 	
 	// 프로젝트 취소 신청여부 조회
-	ProjectCancelVO selectProjectCancel(int project_idx);
+	ProjectCancelVO selectProjectCancel(ProjectVO project);
 	
 	// 프로젝트 취소 승인여부 변경
-	int updateProjectCancelStatus(@Param("project") ProjectVO project);
+	int updateProjectCancelStatus(ProjectVO project);
 	
 	// 공지사항 개수 조회
 	int selectNoticeListCount(String searchKeyword);
@@ -60,6 +67,7 @@ public interface AdminMapper {
 	// 공지사항 목록 조회
 	List<BoardVO> selectNoticeList(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
 								@Param("searchKeyword") String searchKeyword);
+	
 	// 공지사항 등록
 	int insertNotice(BoardVO notice);
 	

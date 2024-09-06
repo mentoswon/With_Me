@@ -188,10 +188,7 @@
 		SELECT * ,
 			(SELECT IFNULL(SUM(funding_pay_amt),0)
 			FROM funding_user
-			WHERE funding_project_idx = p.project_idx) AS funding_amt,
-			IFNULL((SELECT project_cancel_status
-			FROM project_cancel
-			WHERE project_idx = p.project_idx),'') AS project_cancel_status
+			WHERE funding_project_idx = p.project_idx) AS funding_amt
 		FROM project_info p
 		WHERE 
 		<choose>
@@ -225,6 +222,23 @@
 			, #{listLimit}
 	</select>
 	
+	<!-- 프로젝트 상세정보 조회 -->
+	<select id="selectProjectDetail" resultType="Map">
+		SELECT * ,
+			(SELECT IFNULL(SUM(funding_pay_amt),0)
+			FROM funding_user
+			WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p
+		WHERE project_idx = #{project_idx}
+	</select>
+	
+	<!-- 창작자 정보 조회 -->
+	<select id="selectCreator" resultType="creator">
+		SELECT * 
+		FROM creator_info
+		WHERE creator_idx = #{creator_idx}
+	</select>
+	
 	<!-- 프로젝트 상태 변경 -->
 	<update id="updateProjectStatus">
 		UPDATE project_info
@@ -253,7 +267,7 @@
 	<update id="updateProjectCancelStatus">
 		UPDATE project_cancel
 		SET project_cancel_status = '취소승인'
-		WHERE project_idx = #{project.project_idx}
+		WHERE project_idx = #{project_idx}
 	</update>
 	
 	<!-- 공지사항 개수 조회 -->

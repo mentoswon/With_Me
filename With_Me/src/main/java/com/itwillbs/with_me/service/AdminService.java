@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.with_me.mapper.AdminMapper;
 import com.itwillbs.with_me.vo.BoardVO;
+import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -62,14 +63,24 @@ public class AdminService {
 		return mapper.selectProjectList(startRow, listLimit, searchKeyword, projectStatus);
 	}
 	
+	// 프로젝트 상세정보 조회
+	public Map<String, Object> getProjectDetail(ProjectVO project) {
+		return mapper.selectProjectDetail(project);
+	}
+	
+	// 창작자 정보 조회
+	public CreatorVO getCreator(Map<String, Object> projectInfo) {
+		return mapper.selectCreator(projectInfo);
+	}
+	
 	// 프로젝트 상태 변경
 	public int changeProjectStatus(ProjectVO project, String status) {
 		return mapper.updateProjectStatus(project, status);
 	}
 	
 	// 프로젝트 취소 신청여부 조회
-	public ProjectCancelVO getProjectCancel(int project_idx) {
-		return mapper.selectProjectCancel(project_idx);
+	public ProjectCancelVO getProjectCancel(ProjectVO project) {
+		return mapper.selectProjectCancel(project);
 	}
 	
 	// 프로젝트 취소 승인여부 변경

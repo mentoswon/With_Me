@@ -53,55 +53,12 @@
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
 	// 페이지당 목록 개수 변경
-	function showListLimit(limit){
+	function showListLimit(limit) {
 		location.href="AdminProjectList?status=${param.status}&listLimit=" + limit;
 	}
-	// 프로젝트 등록 승인/거부
-	function projectRegistApproval(isAuthorize, project_idx){
-		let msg = "";
-		
-		if(isAuthorize == 'YES') {
-			msg = "승인";
-		} else if(isAuthorize == 'NO') {
-			msg = "거부";
-		}
-		
-		if(confirm("프로젝트 등록을 " + msg + "하시겠습니까?")){
-			location.href="AdminProjectRegistApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
-		}
-	}
-	// 프로젝트 취소 승인/거부
-	function projectCancelApproval(isAuthorize, project_idx){
-		let msg = "";
-		
-		if(isAuthorize == 'YES') {
-			msg = "승인";
-		} else if(isAuthorize == 'NO') {
-			msg = "거부";
-		}
-		// AJAX 활용하여 프로젝트 취소 신청여부 확인 - IsCancelExists
-		$.ajax({
-			type : "POST",
-			url : "IsCancelExists",
-			data : {
-				"project_idx" : project_idx
-			},
-			dataType : "json",
-			success : function(response) {
-				console.log(JSON.stringify(response));
-				if(!response.isCancelExists) {
-					alert("이 프로젝트는 취소신청을 하지 않았습니다.");
-					return;
-				} else if(response.isCancelExists) {
-					if(confirm("프로젝트 취소를 " + msg + "하시겠습니까?")){
-						location.href = "AdminProjectCancelApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
-					}
-				}
-			},
-			error : function() {
-				alert("프로젝트 취소 처리 과정에서 오류 발생!");
-			}
-		});
+	// 프로젝트 상세
+	function projectDetail(project_idx) {
+		location.href = "AdminProjectDetail?status=${param.status}&project_idx=" + project_idx;
 	}
 </script>
 </head>
@@ -155,17 +112,17 @@
 								<c:when test="${param.status eq '등록대기'}">
 									<th>목표 후원 금액</th>
 									<th>프로젝트 기간</th>
-									<th>프로젝트 등록</th>
+									<th>프로젝트 심사</th>
 								</c:when>
 								<c:when test="${param.status eq '진행중'}">
 									<th>누적 후원 금액</th>
 									<th>남은 기간</th>
-									<th>프로젝트 취소</th>
+									<th>프로젝트 상세</th>
 								</c:when>
 								<c:when test="${param.status eq '종료'}">
 									<th>최종 달성한 후원 금액</th>
-									<th>종료일</th>
 									<th>비고</th>
+									<th>프로젝트 상세</th>
 								</c:when>
 							</c:choose>
 						</tr>
@@ -190,10 +147,7 @@
 									<c:when test="${param.status eq '등록대기'}">
 										<td><fmt:formatNumber value="${PL.target_price}" pattern="#,###"/>원</td>
 										<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
-										<td>
-											<input type="button" value="승인" onclick="projectRegistApproval('YES', ${PL.project_idx})">
-											<input type="button" value="거부" onclick="projectRegistApproval('NO', ${PL.project_idx})">
-										</td>
+										<td><input type="button" value="프로젝트 심사" onclick="projectDetail(${PL.project_idx})"></td>
 									</c:when>
 									<c:when test="${param.status eq '진행중'}">
 										<td><fmt:formatNumber value="${PL.funding_amt}" pattern="#,###"/>원</td>
@@ -203,20 +157,17 @@
 										<c:set var="leftDay" value="${endDate - strDate}"/>
 										<%-- 남은 날짜 계산 end --%>
 										<td>${leftDay}일 후에 종료</td>
-										<td>
-											<input type="button" value="승인" onclick="projectCancelApproval('YES', ${PL.project_idx})" <c:if test="${PL.project_cancel_status eq ''}">disabled</c:if>>
-											<input type="button" value="거부" onclick="projectCancelApproval('NO', ${PL.project_idx})" <c:if test="${PL.project_cancel_status eq ''}">disabled</c:if>>
-										</td>
+										<td><input type="button" value="프로젝트 상세" onclick="projectDetail(${PL.project_idx})"></td>
 									</c:when>
 									<c:when test="${param.status eq '종료'}">
 										<td><fmt:formatNumber value="${PL.funding_amt}" pattern="#,###"/>원</td>
-										<td>${PL.funding_end_date}</td>
 										<td>
 											<c:choose>
 												<c:when test="${PL.funding_amt < PL.target_price}">목표 금액 달성 실패</c:when>
 												<c:otherwise>특이사항 없음</c:otherwise>
 											</c:choose>
 										</td>
+										<td><input type="button" value="프로젝트 상세" onclick="projectDetail(${PL.project_idx})"></td>
 									</c:when>
 								</c:choose>
 							</tr>
