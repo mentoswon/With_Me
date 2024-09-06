@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>With_Me</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
@@ -111,6 +112,15 @@ label b {
 
 #start:disabled {
 	background-color: #F0F0F0;
+}
+
+/* ======================================================== */
+/* Mobile Responsive CSS */
+@media screen and (max-width: 768px) {
+	#projecWrap {
+			width: 95%;
+		    margin: 0 auto;
+	}
 }
 </style>
 <script type="text/javascript">

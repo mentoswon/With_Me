@@ -699,4 +699,14 @@ input[type="radio"] {
 	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
-/* --------------------------------------- */
+/* ======================================================== */
+/* Mobile Responsive CSS */
+@media screen and (max-width: 768px) {
+	#popupWrap {
+	    height: auto;
+	    width: 95%;
+	    margin: 0 auto;
+	    top: 90px;
+        transform: translate(-50%, 0%);
+	}
+}

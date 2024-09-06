@@ -137,6 +137,9 @@ label.selected {
 /* ======================================================== */
 /* Mobile Responsive CSS */
 @media screen and (max-width: 768px) {
+	article>div {
+		width: 100%;
+	}
 	/* 이어서 작성하기 영역 */
 	.importanceImg {margin-left: 15px;}
 	#updateProjectWrap {
@@ -149,13 +152,26 @@ label.selected {
 		text-align: center;
 	}
 	#updateProjectWrap img {
-	    width: 400px;
-	    height: 250px;
+        width: 100%;
+        height: 230px;
 	    margin: 5px auto;
 	}
 	#create {
 		width: 90%;
-		margin: 0 auto;
+		text-align: center;
+		background-color: #FFAB40;
+		color: #fff;
+		margin-top: 10px;
+	}
+	
+	/* 카테고리 선택 영역 */
+	#projectCategoryWrap, #projectTitleWrap {
+		width: 95%;
+	    margin: 0 auto;
+	}
+	
+	#title {
+		width: 93%;
 	}
 }
 
