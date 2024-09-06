@@ -21,10 +21,13 @@ import com.itwillbs.with_me.handler.RsaKeyGenerator;
 import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.CreatorVO;
+import com.itwillbs.with_me.vo.FundingVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
+
+import retrofit2.http.GET;
 
 @Controller
 public class MemberController {
@@ -483,16 +486,13 @@ public class MemberController {
 		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
 		int listCount = service.getProjectListCount();
-		int followListCount = service.getFollowListCount(member.getMem_email());
 		int likeListCount = service.getFollowListCount(member.getMem_email());
 		
 		System.out.println("listCount : " + listCount);
-		System.out.println("followListCount : " + followListCount);
 		
 		int pageListLimit = 3;
 		
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
-		int followListMaxPage = followListCount / listLimit + (followListCount % listLimit > 0 ? 1 : 0);
 		
 		int startPage = (pageNum -1) / pageListLimit * pageListLimit + 1;
 		
@@ -509,14 +509,6 @@ public class MemberController {
 		}
 		
 		// ------------------------------------
-		if(followListMaxPage == 0) {
-			followListMaxPage = 1;
-		}
-		
-		if(endPage > followListMaxPage) {
-			endPage = followListMaxPage;
-		}
-		
 		
 		// 전달받은 페이지 번호가 1보다 작거나 최대 번호보다 클 경우
 		// "해당 페이지는 존재하지 않습니다!" 출력 및 1페이지로 이동
@@ -526,18 +518,10 @@ public class MemberController {
 			
 			return "result/fail";
 		}
-		// ---------------------------------------------------------
-		if(pageNum < 1 || pageNum > followListMaxPage) {
-			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "MemberInfo");
-			
-			return "result/fail";
-		}
-		
 		
 		// --------------------------------------------------------------------
 		// 프로젝트 목록 표출하기
-		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
+		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit,member.getMem_email());
 		// 후원한 프로젝트 목록 나타내기
 		List<Map<String, Object>> DonationProjectList = service.getDonationProjectList(startRow, listLimit, member.getMem_email());
 		// 팔로우 목록 나타내기
@@ -546,27 +530,29 @@ public class MemberController {
 		List<Map<String, Object>> followingList = service.getFollowingtList(startRow, listLimit, member.getMem_email());
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //		List<FollowVO> followerCount = service.getFollowerCount(followerCount);
-		// 좋아요 목록 나타내기
-		List<Map<String, Object>> likeList = service.getLikeList(startRow, listLimit, member.getMem_email());
+		// 내가 좋아요한 프로젝트 목록 나타내기
+		List<Map<String, Object>> likeProjectList = service.getLikeProjectList(startRow, listLimit, member.getMem_email());
+		// 내가 좋아요한 상품 목록 나타내기
+		List<Map<String, Object>> likeProductList = service.getLikeProductList(startRow, listLimit, member.getMem_email());
 		
-//		System.out.println("projectList : " + projectList);
+		System.out.println("projectList : " + projectList);
 		System.out.println("DonationProjectList : " + DonationProjectList);
 		System.out.println("followList : " + followList);
 		System.out.println("followingList : " + followingList);
-		System.out.println("likeList : " + likeList);
+		System.out.println("likeProjectList : " + likeProjectList);
+		System.out.println("likeProductList : " + likeProductList);
 //		System.out.println("followerCount : " + followerCount);
 		
 		// --------------------------------------------------------------------
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
-		PageInfo followPageInfo = new PageInfo(listCount, pageListLimit, followListMaxPage, startPage, endPage);
 		// --------------------------------------------------------------------
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("DonationProjectList", DonationProjectList);
 		model.addAttribute("followList", followList);
 		model.addAttribute("followingList", followingList);
-		model.addAttribute("likeList", likeList);
-		model.addAttribute("followPageInfo", followPageInfo);
+		model.addAttribute("likeProjectList", likeProjectList);
+		model.addAttribute("likeProductList", likeProductList);
 //		model.addAttribute("followerCount", followerCount);
 		
 		// 나의 마이페이지 들어갈 때 필요한 크리에이터 정보 세션 아이디로 들어감
@@ -655,11 +641,12 @@ public class MemberController {
 //		}
 		
 		// --------------------------------------------------------------------
-		// 프로젝트 목록 표출하기
-		List<Map<String, Object>> projectList = service.getProjectList(startRow, listLimit);
-		System.out.println("projectList : " + projectList);
-		
 		String creatorEmail = creator.getCreator_email();
+		
+		// 프로젝트 목록 표출하기
+		List<Map<String, Object>> OtherprojectList = service.getOtherProjectList(startRow, listLimit, creatorEmail);
+		System.out.println("OtherprojectList : " + OtherprojectList);
+		
 //		System.out.println("creatorEmail : !!!!!!!!!!!! " + creatorEmail);
 		
 		// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
@@ -681,7 +668,7 @@ public class MemberController {
 //		PageInfo followPageInfo = new PageInfo(listCount, pageListLimit, followListMaxPage, startPage, endPage);
 		// --------------------------------------------------------------------
 		model.addAttribute("pageInfo", pageInfo);
-		model.addAttribute("projectList", projectList);
+		model.addAttribute("OtherprojectList", OtherprojectList);
 //		model.addAttribute("followPageInfo", followPageInfo);
 		
 
@@ -738,6 +725,21 @@ public class MemberController {
 	    
 		return "mypage/other_mypage";
 	}
+	
+	// 내가 후원한 프로젝트 디테일정보
+	@GetMapping("DonationProjectDetail")
+	public String donationProjectDetail(FundingVO funding, Model model, HttpSession session) {
+		
+		System.out.println("funding.getFunding_idx() : " + funding.getFunding_idx());
+		
+		// 후원한 프로젝트 목록 나타내기
+		Map<String, Object> DonationProjectDetail = service.getDonationProjectDetail(funding.getFunding_idx());
+		System.out.println("DonationProjectDetail!!!!!!!! : " + DonationProjectDetail);
+		model.addAttribute("DonationProjectDetail", DonationProjectDetail);
+		
+		return "mypage/donationProject_detail";
+	}
+		
 	
 	// 마이페이지(개인정보)
 	@GetMapping("MypageInfo")

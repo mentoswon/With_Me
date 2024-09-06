@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.FollowVO;
+import com.itwillbs.with_me.vo.FundingVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -64,8 +65,17 @@ public interface MemberMapper {
 	// 좋아요 리스트 개수 조회
 	int selectLikeListCount();
 	
-	// 프로젝트 리스트
-	List<Map<String, Object>> selectProjectList(@Param("startRow") int startRow, @Param("listLimit") int listLimit);
+	// 내 마이페이지 프로젝트 리스트
+	List<Map<String, Object>> selectProjectList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("mem_email") String mem_email);
+	
+	// 상대방 마이페이지 프로젝트 리스트
+	List<Map<String, Object>> selectOtherProjectList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("creatorEmail") String creatorEmail);
 	
 	// 내 마이페이지에서 후원한 프로젝트 가져오기
 	List<Map<String, Object>> selectDonationProjectList(
@@ -73,6 +83,9 @@ public interface MemberMapper {
 								@Param("listLimit") int listLimit,
 								@Param("mem_email") String mem_email);
 
+	// 후원한 프로젝트 세부정보
+	Map<String, Object> selectDonationProjectDetail(int funding_idx);
+	
 	// 내 마이페이지에서 팔로우 리스트 조회
 	List<Map<String, Object>> selectFollowList(
 								@Param("startRow") int startRow,
@@ -85,8 +98,13 @@ public interface MemberMapper {
 								@Param("listLimit") int listLimit,
 								@Param("mem_email") String mem_email);
 	
-	// 내 마이페이지에서 좋아요 리스트 조회
-	List<Map<String, Object>> selectLikeList(
+	// 내 마이페이지에서 좋아요 프로젝트 리스트 조회
+	List<Map<String, Object>> selectLikeProjectList(
+								@Param("startRow") int startRow,
+								@Param("listLimit") int listLimit,
+								@Param("mem_email") String mem_email);
+	// 내 마이페이지에서 좋아요 상품 리스트 조회
+	List<Map<String, Object>> selectLikeProductList(
 								@Param("startRow") int startRow,
 								@Param("listLimit") int listLimit,
 								@Param("mem_email") String mem_email);
@@ -161,6 +179,8 @@ public interface MemberMapper {
 
 	// creator_email 들고와서 mem_email값 가져오기
 	String selectMemEmail(String creatorEmail);
+
+
 
 
 

@@ -157,7 +157,7 @@
 		FROM project_info
 	</select>
 	
-	<!-- 프로젝트 리스트 -->
+	<!-- 내 마이페이지 프로젝트 리스트 -->
 	<select id="selectProjectList" resultType="hashmap">
 		SELECT * 
 			, (SELECT IFNULL(SUM(funding_pay_amt),0) 
@@ -166,6 +166,22 @@
 		FROM project_info p 
 		JOIN creator_info c
 		ON p.creator_idx = c.creator_idx
+		WHERE creator_email = #{mem_email}
+		limit 
+			#{startRow}             -- Mapper 내의 메서드에서 @Param("startRow")
+			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
+	</select>
+	
+	<!-- 상대방 마이페이지 프로젝트 리스트 -->
+	<select id="selectOtherProjectList" resultType="hashmap">
+		SELECT * 
+			, (SELECT IFNULL(SUM(funding_pay_amt),0) 
+				FROM funding_user 
+				WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p 
+		JOIN creator_info c
+		ON p.creator_idx = c.creator_idx
+		WHERE creator_email = #{creatorEmail}
 		limit 
 			#{startRow}             -- Mapper 내의 메서드에서 @Param("startRow")
 			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
@@ -174,7 +190,13 @@
 	<!-- 내 마이페이지에서 후원한 프로젝트 가져오기 -->
 	<select id="selectDonationProjectList" resultType="hashmap">
 		SELECT *
-		FROM funding_user f JOIN project_info p
+			, (SELECT IFNULL(SUM(funding_pay_amt),0)
+				FROM funding_user
+				WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p
+		JOIN creator_info c
+		ON p.creator_idx = c.creator_idx
+		JOIN funding_user f
 		ON f.funding_project_idx = p.project_idx
 		WHERE f.funding_mem_email = #{mem_email}
 		limit 
@@ -182,13 +204,19 @@
 			, #{listLimit}			-- Mapper 내의 메서드에서 @Param("listLimit")
 	</select>
 	
-	<!-- 팔로워 값 가져오기(조회) -->
-<!-- 	<select id="selectFollower" resultType="hashmap"> -->
-<!-- 		SELECT f.follow_idx, f.follow_mem_email, f.follow_creator -->
-<!-- 		FROM follow f JOIN member m -->
-<!-- 		ON m.mem_email = f.follow_mem_email -->
-<!-- 		WHERE mem_email = #{mem_email} -->
-<!-- 	</select> -->
+	<!-- 후원한 프로젝트 세부정보 -->
+	<select id="selectDonationProjectDetail" resultType="hashmap">
+		SELECT *
+			, (SELECT IFNULL(SUM(funding_pay_amt),0)
+				FROM funding_user
+				WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p
+		JOIN funding_user f
+		ON f.funding_project_idx = p.project_idx
+		LEFT join reward_info r
+		ON r.reward_idx = f.funding_reward_idx
+		WHERE f.funding_idx = 16;
+	</select>
 	
 	<!-- 팔로워 전체 리스트 개수 조회 -->
 	<select id="selectFollowListCount" resultType="int">
@@ -235,13 +263,29 @@
 			, #{listLimit}  
 	</select>
 	
-	<!-- 내 마이페이지에서 좋아요 리스트 조회 -->
-	<select id="selectLikeList" resultType="hashmap">
-		SELECT l.like_idx, l.like_mem_email, p.*, s.*
-		FROM like_ l left JOIN project_info p
+	<!-- 내 마이페이지에서 좋아요 프로젝트 리스트 조회 -->
+	<select id="selectLikeProjectList" resultType="hashmap">
+		SELECT *
+			, (SELECT IFNULL(SUM(funding_pay_amt),0)
+				FROM funding_user
+				WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p
+		JOIN creator_info c
+		ON p.creator_idx = c.creator_idx
+		JOIN like_ l
 		ON l.like_project_code = p.project_code
-		LEFT join product_info s
-		ON l.like_product_code = s.product_code
+		WHERE l.like_mem_email = #{mem_email}
+		LIMIT
+			#{startRow}     
+			, #{listLimit}  
+	</select>
+	
+	<!-- 내 마이페이지에서 좋아요 상품 리스트 조회 -->
+	<select id="selectLikeProductList" resultType="hashmap">
+		SELECT *
+		FROM product_info p
+		JOIN like_ l
+		ON l.like_product_code = p.product_code
 		WHERE l.like_mem_email = #{mem_email}
 		LIMIT
 			#{startRow}     
@@ -334,7 +378,13 @@
 	<!-- 창작작인 상대방 마이페이지에서 후원한 프로젝트 가져오기 -->
 	<select id="selectOtherCreatorDonationProjectList" resultType="hashmap">
 		SELECT *
-		FROM funding_user f JOIN project_info p
+			, (SELECT IFNULL(SUM(funding_pay_amt),0)
+				FROM funding_user
+				WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p
+		JOIN creator_info c
+		ON p.creator_idx = c.creator_idx
+		JOIN funding_user f
 		ON f.funding_project_idx = p.project_idx
 		WHERE f.funding_mem_email = #{creatorEmail}
 		limit 

@@ -128,6 +128,11 @@
 		color: #fff;
 	}
 	
+	.content {
+    display: none;
+}
+
+	
 </style>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -150,6 +155,8 @@ $(document).ready(function() {
     });
 	
 });	// ready 이벤트 끝
+
+
 
 </script>
 
@@ -187,9 +194,18 @@ $(document).ready(function() {
 						<li class="writeList active" data-index="1">
 							<span>프로필</span>
 						</li>
-						<li class="writeList" data-index="2">
-							<span>좋아요</span>
-						</li>
+		                <li class="writeList" data-index="2">
+		                    <span>좋아요</span>
+		                    <!-- 좋아요 하위 메뉴 -->
+		                    <ul class="subMenu" id="LikeSubMenu" style="display: none;">
+		                        <li class="subList" data-subindex="1">
+		                            <span>내가 좋아요한 프로젝트</span>
+		                        </li>
+		                        <li class="subList" data-subindex="2">
+		                            <span>내가 좋아요한 상품</span>
+		                        </li>
+		                    </ul>
+		                </li>
 						<li class="writeList" data-index="3">
 							<span>올린 프로젝트</span>
 						</li>
@@ -205,6 +221,12 @@ $(document).ready(function() {
 					</ul>
 				</div>
 			</div>
+			<div id="content2_1" class="content">
+		        <p>내가 좋아요한 프로젝트 리스트</p>
+		    </div>
+		    <div id="content2_2" class="content">
+		        <p>내가 좋아요한 상품 리스트</p>
+		    </div>
 		</section>
 		
 		<article>
@@ -222,58 +244,12 @@ $(document).ready(function() {
 					</div>
 				</div>
 			</div>
-			<div id="writeContainer2" class="writeContainer">
-				<div class="MypageWriteWrap">
-					<div class="MypageExplanationWrap">
-						<div id="LikeMenu">
-							<ul id="LikeMenuList">
-								<li class="writeList active" data-index="1">
-									<span>내가 좋아요한 프로젝트</span>
-								</li>
-								<li class="writeList" data-index="2">
-									<span>내가 좋아요한 상품</span>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-				<article>
-					<div id="writeContainer2-1" class="writeContainer">
-						<div class="MypageWriteWrap">
-							<div class="MypageExplanationWrap">
-							    <c:choose>
-							        <c:when test="${not empty creatorInfo and not empty creatorInfo.creator_introduce}">
-							            <p>${creatorInfo.creator_introduce}</p>
-							        </c:when>
-							        <c:otherwise>
-							            <p>창작자 되어서 자신을 소개해보세요!</p>
-							        </c:otherwise>
-							    </c:choose>
-							</div>
-						</div>
-					</div>
-					<div id="writeContainer2-1" class="writeContainer">
-						<div class="MypageWriteWrap">
-							<div class="MypageExplanationWrap">
-							    <c:choose>
-							        <c:when test="${not empty creatorInfo and not empty creatorInfo.creator_introduce}">
-							            <p>${creatorInfo.creator_introduce}</p>
-							        </c:when>
-							        <c:otherwise>
-							            <p>창작자 되어서 자신을 소개해보세요!2222222</p>
-							        </c:otherwise>
-							    </c:choose>
-							</div>
-						</div>
-					</div>
-				</article>
 			<div id="writeContainer3" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
 						<div class="inner">
 						<section class="sec02">
-						    <!-- 프로젝트가 존재하는지 먼저 확인 -->
+						    <!-- 내 프로젝트가 존재하는지 먼저 확인 -->
 						    <c:if test="${not empty projectList}">
 						        <c:set var="hasValidProject" value="false" />
 						
@@ -310,7 +286,7 @@ $(document).ready(function() {
 						                                                <div class="fund_rate">0%</div>
 						                                            </c:when>
 						                                            <c:otherwise>
-						                                                <div class="fund_rate">${fund_rate}%</div>
+						                                                <div class="fund_rate"><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>%</div>
 						                                            </c:otherwise>
 						                                        </c:choose>
 						                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
@@ -380,83 +356,82 @@ $(document).ready(function() {
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
 						<div class="inner">
-						<section class="sec02">
-						    <!-- 프로젝트가 존재하는지 먼저 확인 -->
-						    <c:if test="${not empty DonationProjectList}">
-						        <c:set var="hasValidProject" value="false" />
-						
-						        <div class="itemList">
-						            <div class="itemWrapper">
-						            	<!-- 오늘 날짜 추출 -->
-						                <c:set var="now" value="<%=new java.util.Date()%>" />
-						                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
-						
-						                <c:forEach var="dp" items="${DonationProjectList}">
-						                    <c:choose>
-						                        <c:when test="${dp.creator_idx eq creatorInfo.creator_idx && dp.funding_end_date > today}">
-						                            <c:set var="hasValidProject" value="true" />
-						                            <div class="item">
-						                                <div class="item_image">
-						                                    <a href="ProjectDetail?project_title=${dp.project_title}&project_code=${dp.project_code}">
-						                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
-						                                    </a>
-						                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-						                                    <!-- 나중에 쓸 채워진 하트 -->
-								<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
-						                                </div>
-						                                <div class="item_info">
-						                                    <h4><a href="MemberInfoTest?mem_email=${dp.creator_email}">${dp.creator_name}</a></h4>
-						                                    <h3><a href="ProjectDetail?project_title=${dp.project_title}&project_code=${dp.project_code}">${dp.project_title}</a></h3>
-						                                </div>
-						                                <div class="fund_info">
-						                                    <div class="fund_leftWrap">
-						                                        <fmt:parseNumber var="funding_amt" value="${dp.funding_amt*1.0}" ></fmt:parseNumber>
-						                                        <fmt:parseNumber var="target_price" value="${dp.target_price}" ></fmt:parseNumber>
-						                                        <c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
-						                                        <c:choose>
-						                                            <c:when test="${fund_rate eq 0.0}">
-						                                                <div class="fund_rate">0%</div>
-						                                            </c:when>
-						                                            <c:otherwise>
-						                                                <div class="fund_rate">${fund_rate}%</div>
-						                                            </c:otherwise>
-						                                        </c:choose>
-						                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${dp.funding_amt}</fmt:formatNumber> 원</div> 
-						                                    </div>
-						                                    <div class="fund_etc">
-						                                        <c:choose>
-						                                            <c:when test="${leftDay eq 0}">
-						                                                오늘 마감
-						                                            </c:when>
-						                                            <c:otherwise>
-						                                                <fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
-						                                                <fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-						                                                <c:set value="${endDate - strDate}" var="leftDay"/>
-						                                                <c:out value="${leftDay}" />일 남음
-						                                            </c:otherwise>
-						                                        </c:choose>
-						                                    </div>
-						                                </div>
-						                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
-						                            </div>
-						                        </c:when>
-						                    </c:choose>
-						                </c:forEach>
-						            </div>
-						        </div>
-						
-						        <!-- 조건을 만족하는 프로젝트가 하나도 없을 때 메시지 표시 -->
-						        <c:if test="${!hasValidProject}">
-						            <p>등록된 프로젝트가 없습니다.</p>
-						        </c:if>
-						    </c:if>
-						
-						    <!-- projectList 자체가 비어 있을 때 메시지 표시 -->
-						    <c:if test="${empty DonationProjectList}">
-						        <p>등록된 프로젝트가 없습니다.</p>
-						    </c:if>
-						</section>
+							<section class="sec02">
+							    <!-- 후원하는 프로젝트가 존재하는지 먼저 확인 -->
+							    <c:if test="${not empty DonationProjectList}">
+							        <c:set var="hasValidProject" value="false" />
 							
+							        <div class="itemList">
+							            <div class="itemWrapper">
+							            	<!-- 오늘 날짜 추출 -->
+							                <c:set var="now" value="<%=new java.util.Date()%>" />
+							                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+							
+							                <c:forEach var="dp" items="${DonationProjectList}">
+							                    <c:choose>
+							                        <c:when test="${dp.funding_end_date > today}">
+							                            <c:set var="hasValidProject" value="true" />
+							                            <div class="item">
+							                                <div class="item_image">
+							                                    <a href="DonationProjectDetail?funding_idx=${dp.funding_idx}">
+							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+							                                    </a>
+							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+							                                    <!-- 나중에 쓸 채워진 하트 -->
+									<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
+							                                </div>
+							                                <div class="item_info">
+							                                    <h4><a href="OtherMemberInfo?creator_email=${dp.creator_email}">${dp.creator_name}</a></h4>
+							                                    <h3><a href="DonationProjectDetail?funding_idx=${dp.funding_idx}">${dp.project_title}</a></h3>
+							                                </div>
+							                                <div class="fund_info">
+							                                    <div class="fund_leftWrap">
+							                                        <fmt:parseNumber var="funding_amt" value="${dp.funding_amt*1.0}" ></fmt:parseNumber>
+							                                        <fmt:parseNumber var="target_price" value="${dp.target_price}" ></fmt:parseNumber>
+							                                        <c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
+							                                        <c:choose>
+							                                            <c:when test="${fund_rate eq 0.0}">
+							                                                <div class="fund_rate">0%</div>
+							                                            </c:when>
+							                                            <c:otherwise>
+							                                                <div class="fund_rate"><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>%</div>
+							                                            </c:otherwise>
+							                                        </c:choose>
+							                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${dp.funding_amt}</fmt:formatNumber> 원</div> 
+							                                    </div>
+							                                    <div class="fund_etc">
+							                                        <c:choose>
+							                                            <c:when test="${leftDay eq 0}">
+							                                                오늘 마감
+							                                            </c:when>
+							                                            <c:otherwise>
+							                                                <fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+							                                                <fmt:parseNumber value="${dp.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
+							                                                <c:set value="${endDate - strDate}" var="leftDay"/>
+							                                                <c:out value="${leftDay}" />일 남음
+							                                            </c:otherwise>
+							                                        </c:choose>
+							                                    </div>
+							                                </div>
+							                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+							                            </div>
+							                        </c:when>
+							                    </c:choose>
+							                </c:forEach>
+							            </div>
+							        </div>
+							
+							        <!-- 조건을 만족하는 프로젝트가 하나도 없을 때 메시지 표시 -->
+							        <c:if test="${!hasValidProject}">
+							            <p>등록된 프로젝트가 없습니다.</p>
+							        </c:if>
+							    </c:if>
+							
+							    <!-- projectList 자체가 비어 있을 때 메시지 표시 -->
+							    <c:if test="${empty DonationProjectList}">
+							        <p>등록된 프로젝트가 없습니다.</p>
+							    </c:if>
+							</section>
 							<section id="pageList">
 								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
 								<input type="button" value="이전" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
@@ -490,48 +465,46 @@ $(document).ready(function() {
 						<section id="articleForm">
 							<div align="center">
 								<section id="listForm">
-									<c:if test="${not empty followList}">
-										<table border="1">
-											<tr id="tr_top">
-												<td>창작자 이름</td>
-												<td>해당창작자 정보</td>
-											</tr>
-					
-											<c:set var="pageNum" value="1" />
-											<c:if test="${not empty param.pageNum}">
-												<c:set var="pageNum" value="${param.pageNum}" />
-											</c:if>
-											<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
-											<c:choose>
-											    <c:when test="${empty followList}">
-											        <p>팔로우한 사용자가 없습니다.</p>
-											    </c:when>
-											    <c:otherwise>
-											        <!-- Display follow list items -->
-											        <c:forEach var="follow" items="${followList}">
-											            <tr>
-											                <td>
-											                    <c:choose>
-											                        <c:when test="${not empty follow.creator_name}">
-											                            <input type="button" value="${follow.creator_name}" 
-											                                   onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
-											                        </c:when>
-											                        <c:otherwise>
-											                            <input type="button" value="${follow.mem_name}" 
-											                                   onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
-											                        </c:otherwise>
-											                    </c:choose>
-											                </td>
-											                <td>
-											                    <input type="button" value="답변" 
-											                           onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
-											                </td>
-											            </tr>
-											        </c:forEach>
-											    </c:otherwise>
-											</c:choose>
-										</table>
-									</c:if>	
+								    <!-- followList가 비어있을 때 팔로우한 사용자가 없다는 메시지 표시 -->
+								    <c:if test="${empty followList}">
+								        <p>팔로우한 사용자가 없습니다.</p>
+								    </c:if>
+								
+								    <!-- followList가 비어있지 않을 때 목록을 표시 -->
+								    <c:if test="${not empty followList}">
+								        <table border="1">
+								            <tr id="tr_top">
+								                <td>창작자 이름</td>
+								                <td>해당창작자 정보</td>
+								            </tr>
+								
+								            <c:set var="pageNum" value="1" />
+								            <c:if test="${not empty param.pageNum}">
+								                <c:set var="pageNum" value="${param.pageNum}" />
+								            </c:if>
+								
+								            <c:forEach var="follow" items="${followList}">
+								                <tr>
+								                    <td>
+								                        <c:choose>
+								                            <c:when test="${not empty follow.creator_name}">
+								                                <input type="button" value="${follow.creator_name}" 
+								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+								                            </c:when>
+								                            <c:otherwise>
+								                                <input type="button" value="${follow.mem_name}" 
+								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+								                            </c:otherwise>
+								                        </c:choose>
+								                    </td>
+								                    <td>
+								                        <input type="button" value="답변" 
+								                               onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+								                    </td>
+								                </tr>
+								            </c:forEach>
+								        </table>
+								    </c:if>
 								</section>
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>
@@ -569,48 +542,42 @@ $(document).ready(function() {
 						<section id="articleForm">
 							<div align="center">
 								<section id="listForm">
-									<c:if test="${not empty followingList}">
-										<table border="1">
-											<tr id="tr_top">
-												<td>창작자 이름</td>
-												<td>해당창작자 정보</td>
-											</tr>
-					
-											<c:set var="pageNum" value="1" />
-											<c:if test="${not empty param.pageNum}">
-												<c:set var="pageNum" value="${param.pageNum}" />
-											</c:if>
-											<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(followList 객체 활용) --%>
-											<c:choose>
-											    <c:when test="${empty followingList}">
-											        <p>팔로우한 사용자가 없습니다.</p>
-											    </c:when>
-											    <c:otherwise>
-											        <!-- Display follow list items -->
-											        <c:forEach var="follow" items="${followingList}">
-											            <tr>
-											                <td>
-											                    <c:choose>
-											                        <c:when test="${not empty follow.creator_name}">
-											                            <input type="button" value="${follow.creator_name}" 
-											                                   onclick="location.href='MemberInfo?creator_name=${follow.creator_name}'">
-											                        </c:when>
-											                        <c:otherwise>
-											                            <input type="button" value="${follow.mem_name}" 
-											                                   onclick="location.href='MemberInfo?mem_name=${follow.mem_name}'">
-											                        </c:otherwise>
-											                    </c:choose>
-											                </td>
-											                <td>
-											                    <input type="button" value="답변" 
-											                           onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
-											                </td>
-											            </tr>
-											        </c:forEach>
-											    </c:otherwise>
-											</c:choose>
-										</table>
-									</c:if>	
+								    <!-- followList가 비어있을 때 팔로우한 사용자가 없다는 메시지 표시 -->
+								    <c:if test="${empty followingList}">
+								        <p>팔로우한 사용자가 없습니다.</p>
+								    </c:if>
+								
+								    <!-- followList가 비어있지 않을 때 목록을 표시 -->
+								    <c:if test="${not empty followingList}">
+								        <table border="1">
+								            <tr id="tr_top">
+								                <td>창작자 이름</td>
+								                <td>해당창작자 정보</td>
+								            </tr>
+								
+								            <c:set var="pageNum" value="1" />
+								            <c:if test="${not empty param.pageNum}">
+								                <c:set var="pageNum" value="${param.pageNum}" />
+								            </c:if>
+								
+								            <c:forEach var="follow" items="${followingList}">
+								                <tr>
+								                    <td>
+								                        <c:choose>
+								                            <c:when test="${not empty follow.creator_name}">
+								                                <input type="button" value="${follow.creator_name}" 
+								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+								                            </c:when>
+								                            <c:otherwise>
+								                                <input type="button" value="${follow.mem_name}" 
+								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+								                            </c:otherwise>
+								                        </c:choose>
+								                    </td>
+								                </tr>
+								            </c:forEach>
+								        </table>
+								    </c:if>
 								</section>
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>

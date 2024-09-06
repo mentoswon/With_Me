@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.itwillbs.with_me.mapper.MemberMapper;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.FollowVO;
+import com.itwillbs.with_me.vo.FundingVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -111,14 +112,24 @@ public class MemberService {
 		return mapper.selectProjectListCount();
 	}
 
-	// 프로젝트 리스트 가져오기
-	public List<Map<String, Object>> getProjectList(int startRow, int listLimit) {
-		return mapper.selectProjectList(startRow, listLimit);
+	// 내 마이페이지에서 프로젝트 리스트 가져오기
+	public List<Map<String, Object>> getProjectList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectProjectList(startRow, listLimit, mem_email);
+	}
+	
+	// 상대방 마이페이지에서 프로젝트 리스트 가져오기
+	public List<Map<String, Object>> getOtherProjectList(int startRow, int listLimit, String creatorEmail) {
+		return mapper.selectOtherProjectList(startRow, listLimit, creatorEmail);
 	}
 	
 	// 내 마이페이지에서 후원한 프로젝트 가져오기
 	public List<Map<String, Object>> getDonationProjectList(int startRow, int listLimit, String mem_email) {
 		return mapper.selectDonationProjectList(startRow, listLimit, mem_email);
+	}
+	
+	// 후원한 프로젝트 세부정보
+	public Map<String, Object> getDonationProjectDetail(int funding_idx) {
+		return mapper.selectDonationProjectDetail(funding_idx);
 	}
 
 	// 팔로우 리스트 개수 가져오기
@@ -141,9 +152,14 @@ public class MemberService {
 		return mapper.selectFollowingList(startRow, listLimit, mem_email);
 	}
 	
-	// 좋아요 리스트 목록 나타내기
-	public List<Map<String, Object>> getLikeList(int startRow, int listLimit, String mem_email) {
-		return mapper.selectLikeList(startRow, listLimit, mem_email);
+	// 좋아요 프로젝트 리스트 나타내기
+	public List<Map<String, Object>> getLikeProjectList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectLikeProjectList(startRow, listLimit, mem_email);
+	}
+	
+	// 좋아요 상품 리스트 나타내기
+	public List<Map<String, Object>> getLikeProductList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectLikeProductList(startRow, listLimit, mem_email);
 	}
 	
 	// 크리에이터 이메일 들고와서 mem_email 들고오기
@@ -224,6 +240,7 @@ public class MemberService {
 			String address_main, String address_sub, String address_receiver_tel) {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 	}
+
 
 
 
