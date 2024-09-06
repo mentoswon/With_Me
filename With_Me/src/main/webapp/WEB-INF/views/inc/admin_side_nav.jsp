@@ -24,6 +24,14 @@
 			</ul>
 		</li>
 		<li class="depth01">
+			<a href="AdminAccountList?status=출금대기">정산관리</a>
+			<ul class="depth02">
+				<li><a href="AdminAccountList?status=출금대기">출금이체 대기중인 프로젝트</a></li>
+				<li><a href="AdminProjectList?status=입금대기">입금이체 대기중인 프로젝트</a></li>
+				<li><a href="AdminProjectList?status=입금완료">정산완료된 프로젝트</a></li>
+			</ul>
+		</li>
+		<li class="depth01">
 			<a href="AdminNotice">게시판관리</a>
 			<ul class="depth02">
 				<li><a href="AdminNotice">공지사항</a></li>

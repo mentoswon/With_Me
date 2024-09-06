@@ -8,6 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <title>With_Me</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/project_create.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
@@ -1175,16 +1176,7 @@ $(function() {
 	        }
 	    });
 	});
-	// -----------------------------------------------
-
-    
-    
-    
-    
-    
-    
-    
-    
+	// ----- coolsms api 끝 -----
     // =====================================================================================
     // [ 심사요청 ]
     // -- 필수항목 모두 조건에 맞게 입력 시 심사요청 버튼 활성화됨
@@ -1226,6 +1218,7 @@ $(function() {
 		let isCreatorIntroduceFilled = $("#creator_introduce").val() !== '';
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// ---- 본인인증, 입금계좌는 나중에 -----
+		// => 본인인증되야 입금계좌 선택 가능하므로 입금계좌만 확인해도 될듯
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		
@@ -1301,14 +1294,9 @@ $(function() {
 		}
     });
 
-    
-    
 });	// ready 이벤트 끝
 
-
-
-
-
+// -----------------------
 // 입금 계좌 등록
 function linkAccount() {
 	// 새 창을 열어서 사용자 인증 서비스 요청
@@ -1319,10 +1307,10 @@ function linkAccount() {
 	authWindow.location = "https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
 							+ "response_type=code"
 							+ "&client_id=4066d795-aa6e-4720-9383-931d1f60d1a9"
-							+ "&redirect_uri=http://localhost:8081/mvc_board/callback"
+							+ "&redirect_uri=http://localhost:8081/with_me/callback"
 							+ "&scope=login inquiry transfer"
 							+ "&state=12345678901234567890123456789012"
-								+ "&auth_type=0";
+							+ "&auth_type=0";
 }
 
 </script>
