@@ -217,7 +217,18 @@
 		DELETE FROM user_address
 		WHERE address_idx = #{address_idx}
 	</delete>
-
+	
+	<!-- 선택된 배송지 삭제하는 경우, 새로 selected 배송지 해줘야함 -->
+	<update id="updateSelectedAddressToY2" parameterType="address">
+		UPDATE user_address ua
+		JOIN (
+			SELECT MAX(address_idx) as max_address_idx
+			FROM user_address
+			WHERE address_mem_email = #{id}
+		) AS subquery
+		ON ua.address_idx = subquery.max_address_idx
+		SET ua.address_selected = 'Y'
+	</update>
 	<!-- 선택 배송지 여부 확인 -->
 	<select id="selectAddressIsSelected" resultType="int">
 		SELECT COUNT(*)
@@ -226,7 +237,7 @@
 		WHERE 
 			address_mem_email = #{id}
 			AND address_selected = 'Y'
-			AND m.mem_status = 1;;
+			AND m.mem_status = 1
 	</select>
 	
 	<!-- 원래 선택배송지였던 걸 N으로 변경 -->
@@ -244,7 +255,26 @@
 		WHERE address_idx = #{address_idx}
 	</update>
 
-
+	<!-- 신고 접수 -->
+	<insert id="insertReport">
+		INSERT INTO report
+		VALUES (
+			null
+			, #{report_mem_email}
+			, null
+			, #{report_product_code}
+			, #{report_category}
+			, #{report_reason}
+			, #{report_file1}
+			, #{report_file2}
+			, #{report_file3}
+			, #{report_ref_url1}
+			, #{report_ref_url2}
+			, #{report_ref_url3}
+			, now()
+			, '접수완료'
+		)
+	</insert>
 
 
 

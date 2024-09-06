@@ -8,8 +8,10 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>index</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/store_detail.css" rel="stylesheet" type="text/css">
+		<link href="${pageContext.request.contextPath}/resources/css/report_form.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 	</head>
 	
@@ -36,7 +38,8 @@
 				<div class="itemWrapper">
 <%-- 				<c:set var="product_detail" value="${product_detail}"/> --%>
 					<div id="imgArea">
-						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
+<%-- 						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg"> --%>
+						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}">
 					</div>
 					<div id="infoArea">
 						<span class="category">${product_detail.product_category} > ${product_detail.product_category_detail}</span>
@@ -170,12 +173,12 @@
 			</section>
 		</div>
 		
-		<div class="modal"> <!-- 신고 -->
+<div class="modal"> <!-- 신고 -->
 		    <div class="modal_popup">
 		        <h3>신고하기</h3>
 	        	<span>어떤 문제가 있나요?</span><br>
 		        <div class="content">
-		        	<button value="지식재산권 침해" onclick="reportType(this.value)">
+		        	<button value="지식재산권 침해" onclick="reportType(this.value, '${product_detail.product_name}', '${product_detail.product_code}')">
 		        		<span class="repTitle">지식재산권 침해</span>
 		        		<span class="repContent">
 		        			타인의 지식재산권을 허락없이 사용했어요. <br>
@@ -183,14 +186,14 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="상세설명 내 허위사실" onclick="reportType(this.value)">
+		        	<button value="상세설명 내 허위사실" onclick="reportType(this.value, '${product_detail.product_name}', '${product_detail.product_code}')">
 		        		<span class="repTitle">상세설명 내 허위사실</span>
 		        		<span class="repContent">
 		        			상품을 받아보니 상세설명과 다른 부분이 있어요.
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="동일 제품의 타 채널 유통" onclick="reportType(this.value)">
+		        	<button value="동일 제품의 타 채널 유통" onclick="reportType(this.value, '${product_detail.product_name}', '${product_detail.product_code}')">
 		        		<span class="repTitle">동일 제품의 타 채널 유통</span>
 		        		<span class="repContent">
 		        			프로젝트 진행 전에 이미 판매한 적이 있는 제품이에요. <br>
@@ -198,7 +201,7 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="부적절한 콘텐츠" onclick="reportType(this.value)">
+		        	<button value="부적절한 콘텐츠" onclick="reportType(this.value, '${product_detail.product_name}', '${product_detail.product_code}')">
 		        		<span class="repTitle">부적절한 콘텐츠</span>
 		        		<span class="repContent">
 		        			- 타인을 모욕, 명예훼손하는 콘텐츠 <br>
@@ -208,7 +211,7 @@
 		        		</span>
 		        	</button>
 		        	
-		        	<button value="기타" onclick="reportType(this.value)">
+		        	<button value="기타" onclick="reportType(this.value, '${product_detail.product_name}', '${product_detail.product_code}')">
 		        		<span class="repTitle">기타</span>
 		        		<span class="repContent">
 		        			- 리워드가 불량이라 교환/수리 신청하고 싶어요. <br>
@@ -267,31 +270,7 @@
 		</footer>
 		<script type="text/javascript">
 		
-			let modal = document.querySelectorAll('.modal');
-			let report = document.querySelector('#report');
-			let closeBtn = document.querySelector('.close_btn');
-			// -------------------------------------------------------------------------
-			// 신고하기
-			// 팝업 오픈
-			report.onclick = function(){
-				modal[0].classList.add('on'); 
-			}
 			
-			// -------------------------------------------------------------------------
-			// 닫기 버튼
-			closeBtn.onclick = function(){
-				modal[0].classList.remove('on');
-			}
-			// -------------------------------------------------------------------------
-			// 신고 폼
-			function reportType(type){
-// 				console.log(type); // 오케이 .. 뜬다..
-
-				
-			}
-							
-			
-			// 신고하기 end
 			// ==========================================================================
 			// 교환/환불 정책 
 			let policy = document.querySelectorAll('.policy');
@@ -363,6 +342,75 @@
 				});
 			}
 			
+			let modal = document.querySelectorAll('.modal');
+			let report = document.querySelector('#report');
+			let closeBtn = document.querySelectorAll('.close_btn');
+			// ==========================================================================
+			// 신고하기
+			// 팝업 오픈
+			
+			$(report).on('click', function() { 
+				$(modal).addClass("on");
+			});
+			
+			// -------------------------------------------------------------------------
+			// 닫기 버튼
+			$(closeBtn).on('click', function() { 
+				$(modal).removeClass("on");
+			});
+			// -------------------------------------------------------------------------
+			// 신고 폼
+			function reportType(type, title, product_code){
+// 				console.log(type); // 오케이 .. 뜬다..
+				$.ajax({
+					url: "StoreReportForm",
+					type : "get",
+					async:false, // 이 한줄만 추가해주시면 됩니다.
+					data:{
+						"type": type,
+						"product_name": title,
+						"product_code": product_code
+					},
+					dataType: "json",
+					success: function (response) {
+						let content = $(".modal.on").find($(".modal_popup")).find($(".content"));
+						content.html("<div id='resultArea'></div>");
+						
+						writeReportForm(response.type, response.product_name, response.product_code);
+						
+						console.log(response.product_name);
+					}, error : function (response) {
+						alert("실패! ");
+					}
+				});
+				
+			}
+			
+			function writeReportForm(type, title, product_code){
+				$.ajax({
+					url: "StoreReportWriteForm",
+					type : "get",
+					async:false, // 이 한줄만 추가해주시면 됩니다.
+					data:{
+						"type": type,
+						"product_name": title,
+						"product_code": product_code
+					},
+					success: function (response) {
+						$("#resultArea").html(response);
+					}, error : function (response) {
+						alert("실패! ");
+					}
+				});
+			}
+			
+			// 신고하기 end
+			
+			document.addEventListener('keydown', function(event) {
+			  if (event.keyCode === 13) {
+			    event.preventDefault();
+			  };
+			}, true);			
 		</script>
 	</body>
 </html>
