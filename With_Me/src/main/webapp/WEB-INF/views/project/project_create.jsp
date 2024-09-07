@@ -2158,7 +2158,7 @@ function linkAccount() {
 									<table style="border: 1px solid #ccc;">
 										<tr>
 											<td>
-												<input type="text" name="phone_number" id="phone_number" placeholder="휴대번호를 숫자로만 입력해주세요." maxlength="13" style="border: none; text-align: left; width: 420px;">
+												<input type="text" name="phone_number" id="phone_number" placeholder="휴대번호를 입력해주세요.(-없이 입력)" maxlength="13" style="border: none; text-align: left; width: 420px;">
 											</td>
 											<td style="text-align: center; padding-bottom: 2px;" width="40px">
 												<input type="button" value="본인인증하기" id="smsBtn" disabled>
