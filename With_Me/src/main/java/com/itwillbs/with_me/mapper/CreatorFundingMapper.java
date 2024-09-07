@@ -7,11 +7,12 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.itwillbs.with_me.vo.BankToken;
 import com.itwillbs.with_me.vo.CommonCodeVO;
+import com.itwillbs.with_me.vo.CreatorAccountVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
-import com.itwillbs.with_me.vo.RewardVO;
 
 @Mapper
 public interface CreatorFundingMapper {
@@ -56,6 +57,12 @@ public interface CreatorFundingMapper {
 	// 삭제하려는 아이템이 포함되어 있는 후원구성 개수 조회
 	List<Integer> selectRewardIdxList(String item_idx);
 
+	// 프로젝트에 해당하는 creator_account 정보 조회
+	CreatorAccountVO selectCreatorAccount(String project_idx);
+
+	// 핀테크 사용자 정보 조회
+	BankToken selectBankUserInfo(String id);
+
 	// 아이템 삭제
 	int deleteItem(String item_idx);
 
@@ -70,6 +77,9 @@ public interface CreatorFundingMapper {
 
 	// 후원 구성 삭제
 	int deleteReward(String reward_idx);
+
+	// 계좌 정보 테이블에 저장
+	int insertCreatorAccount(Map<String, Object> accountInfo);
 
 	// 프로젝트 임시저장
 	int updateProject(ProjectVO project);
@@ -86,6 +96,8 @@ public interface CreatorFundingMapper {
 
 	// 프로젝트 취소 요청한 프로젝트 조회
 	List<Map<String, String>> selectDeleteRequestList(String id);
+
+
 
 
 

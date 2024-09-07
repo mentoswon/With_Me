@@ -16,7 +16,7 @@ public class BankToken {
 	private String user_ci;
 	private String fintech_use_num;
 	// -------------------------------
-	private String client_use_code;
-	// -------------------------------
-	private String name;
+	private String client_use_code; // 관리자 토큰용
+	// -----------------------------
+	private String name; // 관리자 토큰용
 }

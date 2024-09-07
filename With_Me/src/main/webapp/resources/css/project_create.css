@@ -165,7 +165,6 @@ article {	/* 가운데 정렬 */
 	padding: 8px 10px;
 	width: 550px;
 	border: 1px solid #ccc;
-/* 	border-color: #ccc; */
 	box-sizing: border-box;
 	outline-style: none;	/* 포커스시 발생하는 효과 제거 */
 }

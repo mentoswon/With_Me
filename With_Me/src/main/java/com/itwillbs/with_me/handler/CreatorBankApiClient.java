@@ -24,7 +24,7 @@ import com.itwillbs.with_me.vo.BankToken;
 
 @Component
 // => 특별한 용도 없이 사용할때는 해당 어노테이션 사용 (통합적으로 사용하는 어노테이션임)
-public class BankApiClient {
+public class CreatorBankApiClient {
 	// 오픈뱅킹 API 요청 시 사용할 데이터를 직접 변수에 저장하지 않고
 	// 별도의 외부 파일로 분리하여 관리 -> 필요 시 가져다 사용
 	// src/main/resources/config 에 만듦. -> servlet_context.xml 파일 내에 설정 필수
@@ -58,85 +58,15 @@ public class BankApiClient {
 	
 	// ----------------------------------------------------------
 	// 로깅을 위한 Logger 타입 객체 생성 ! (현재 클래스를 파라미터로 전달해야함 -_-^)
-	private static final Logger logger = LoggerFactory.getLogger(BankApiClient.class);
+	private static final Logger logger = LoggerFactory.getLogger(CreatorBankApiClient.class);
 	// ----------------------------------------------------------
 	// 2.1.2. 토큰발급 API - 사용자 토큰발급 요청 수행
 	// => 요청 url 은 base_url 변수에 저장되어있는 기본주소 + 상세주소를 결합하여 사용
 	//	  https://testapi.openbanking.or.kr  +  /oauth/2.0/token
 	// 요청 파라미터 : code, client_id, client_secret, redirect_uri, grant_type
 	
-	public BankToken requestAccessToken(Map<String, String> authResponse) {
-		// 금융결제원 오픈API 토큰 발급 API 요청 작업 수행 및 결과 처리
-		// 클래스 내에서 HTTP 요청을 수행하는 여러 라이브러리 중
-		// RESTful API 요청을 처리할 RestTemplate 객체 활용 !!
-		
-		// 1) POST 방식 요청을 수행할 URL 정보를 URI 타입 객체로 생성
-		URI uri = UriComponentsBuilder
-					.fromUriString(base_url + "/oauth/2.0/token") // 요청 주소 설정
-					.encode() // 주소 인코딩
-					.build() // UriComponents 타입 객체 생성
-					.toUri(); // URI 타입 객체로 변환
-		
-		// 2) POST 방식 요청 수행 시 파라미터를 URL에 결합하지 않고 body에 별도로 포함시켜야함
-		// 	  따라서, 해당 파라미터 데이터를 별도의 객체를 통해 전달 필요
-		// 	  => LinkedMultiValueMap 타입 객체 활용 -> 그냥 Map써도 되는데 이거 쓰면 데이터가 안전하게 감
-		// 2-1) 객체 생성 !
-		LinkedMultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-		
-		// 2-2) 이 객체의 add() 메서드 호출하여 Map 처럼 "키, 값" 형식으로 파라미터 저장
-		parameters.add("code", authResponse.get("code")); // code는 authResponse에 저장되어 있으므로 가져다 씀
-		parameters.add("client_id", client_id);
-		parameters.add("client_secret", client_secret);
-		parameters.add("redirect_uri", redirect_uri);
-		parameters.add("grant_type", "authorization_code");
-		
-		// 3. 요청 정보로 사용할 헤더와 바디 정보를 관리하는 HttpEntity 타입 객체 생성
-		// => 제네릭타입으로 파라미터를 관리하는 객체 타입을 줄 것임.
-		//	  생성자에 해당 제네릭 타입에 대한 객체 전달 (POST 방식 요청에 대한 설정)
-		// => 헤더 정보는 별도의 추가 작업이 불필요하므로 설정 생략 !
-		HttpEntity<LinkedMultiValueMap<String, String>> httpEntity = new HttpEntity<LinkedMultiValueMap<String,String>>(parameters);
-		// => 요청할 수 있는 데이터의 모양이 만들어짐 !
-		
-		// 4. REST API(RESTful API) 요청을 위해 RestTemplate 객체 활용
-		// 4-1) 객체 생성
-		RestTemplate restTemplate = new RestTemplate();
-		
-		// 중요 !!!! 
-		// 4-2) RestTemplate의 exchange() 메서드 호출하여 요청 수행
-		// => 파라미터 : 요청 URL 관리하는 객체 (URI), 
-		// 				 요청 메서드(POST 방식이므로 HttpMethod.POST 상수 활용), 
-		//				 정보를 관리하는 HttpEntity 객체,
-		//				 요청에 대한 응답 전달되면 응답 데이터를 파싱하여 관리할 클래스
-		
-		// 응답데이터를 VO 클래스 타입으로 파싱할 경우
-		// => 응답데이터를 저장할 클래스를 지정해야함 ! 
-		ResponseEntity<BankToken> responseEntity =  restTemplate.exchange(
-				uri, // 요청 URL 관리하는 URI 타입 객체 (문자열로 된 URL도 전달 가능)
-				HttpMethod.POST,  // 요청 메서드(HttpMethod.xxx)
-				httpEntity,  // 요청 정보를 관리하는 httpEntity 객체
-				BankToken.class); //응답 데이터를 파싱하여 관리할 클래스 자체를 지정해야함.
-		
-		// 주의 ! 응답 데이터인 JSON 타입 데이터를 BankToken 타입으로 자동 파싱하려면
-		// Gson 또는 Jackson 라이브러리가 필요한데 이 라이브러리가 없을 경우 예외 발생함 !
-		// org.springframework.web.client.UnknownContentTypeException: Could not extract response: no suitable HttpMessageConverter found for response type
-		
-		// => 따라서 라이브러리가 필요함 우리는 Gson 사용할거임
-		
-		// 임시) 응답 정보 확인을 위해 ResponseEntity 객체의 메서드 활용
-		logger.info("응답 코드 : " + responseEntity.getStatusCode());
-		logger.info("응답 헤더 : " + responseEntity.getHeaders());
-		logger.info("응답 본문 : " + responseEntity.getBody());
-		
-		// 5. 응답 정보 리턴
-		// => ResponseEntity 객체를 직접 리턴하지 않고 getBody() 메서드 호출 결과인 파싱 정보를 관리하는 객체를 리턴
-		
-		return responseEntity.getBody();
-		
-	}
-
-	// ---------------------------------------------------------------------------
 	// 핀테크 사용자 정보 조회(API)
-	public Map<String, Object> requestAccountInfo(BankToken token) {
+	public Map<String, Object> requestUserInfo(BankToken token) {
 		
 		// 1. HTTP 방식 요청에 필요한 URI 정보를 관리할 URI 객체 생성
 		URI uri = UriComponentsBuilder

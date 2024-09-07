@@ -152,6 +152,23 @@
 	AND FIND_IN_SET(#{item_idx}, REPLACE(r.reward_item_idx, '|', ',')) > 0
 </select>
 
+<!-- 프로젝트에 해당하는 creator_account 정보 조회 - SELECT -->
+<select id="selectCreatorAccount" resultType="creatorAccount">
+	SELECT *
+	FROM creator_account
+	WHERE project_idx = #{project_idx}
+</select>
+
+<!-- 핀테크 사용자 정보 조회 - SELECT -->
+<!-- member 테이블 정보도 함께 조회하여 이름을 가져오기 -->
+<select id="selectBankUserInfo" resultType="bankToken">
+	SELECT *
+	FROM fintech_user_info f
+	LEFT JOIN member m
+	ON f.fin_mem_email = m.mem_email
+	WHERE f.fin_mem_email = #{id}
+</select>
+
 <!-- 아이템 삭제 - DELETE -->
 <delete id="deleteItem">
 	DELETE FROM item_info
@@ -211,6 +228,18 @@
 	DELETE FROM reward_info
 	WHERE reward_idx = #{reward_idx}
 </delete>
+
+<!-- 계좌 정보 테이블에 저장 - INSERT -->
+<insert id="insertCreatorAccount">
+	INSERT INTO creator_account
+	VALUES(
+		#{project_idx}
+		, #{creator_email}
+		, #{account_holder_name}
+		, #{fintech_use_num}
+		, '입금대기'	-- status
+	)
+</insert>
 
 <!-- 프로젝트 임시저장 - UPDATE -->
 <update id="updateProject">

@@ -7,18 +7,23 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.itwillbs.with_me.handler.CreatorBankApiClient;
 import com.itwillbs.with_me.mapper.CreatorFundingMapper;
+import com.itwillbs.with_me.vo.BankToken;
 import com.itwillbs.with_me.vo.CommonCodeVO;
+import com.itwillbs.with_me.vo.CreatorAccountVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
-import com.itwillbs.with_me.vo.RewardVO;
 
 @Service
 public class CreatorFundingService {
 	@Autowired
 	private CreatorFundingMapper mapper;
 
+	@Autowired
+	private CreatorBankApiClient bankApiClient;
+	
 	// 프로젝트 목록 조회 요청
 	public List<ProjectVO> getProjectList(String id, String status) {
 		return mapper.selectProjectList(id, status);
@@ -85,7 +90,18 @@ public class CreatorFundingService {
 	public List<Integer> getRewardIdxList(String item_idx) {
 		return mapper.selectRewardIdxList(item_idx);
 	}
+	
+	// 프로젝트에 해당하는 creator_account 정보 조회 요청
+	public CreatorAccountVO getCreatorAccount(String project_idx) {
+		return mapper.selectCreatorAccount(project_idx);
+	}
 
+	// 핀테크 사용자 정보 조회(DB)
+	public BankToken getBankUserInfo(String id) {
+		// BankMapper - selectBankUserInfo()
+		return mapper.selectBankUserInfo(id);
+	}
+	
 	// 아이템 삭제 요청
 	public int deleteItem(String item_idx) {
 		return mapper.deleteItem(item_idx);
@@ -109,6 +125,17 @@ public class CreatorFundingService {
 	// 후원 구성 삭제 요청
 	public int deleteReward(String reward_idx) {
 		return mapper.deleteReward(reward_idx);
+	}
+
+	// 핀테크 사용자 정보 조회(API)
+	public Map<String, Object> getBankUserInfoFromApi(BankToken token) {
+		// BankApiClient - requestUserInfo() 메서드 호출
+		return bankApiClient.requestUserInfo(token);
+	}
+
+	// 계좌 정보 테이블에 저장 요청
+	public int registCreatorAccount(Map<String, Object> accountInfo) {
+		return mapper.insertCreatorAccount(accountInfo);
 	}
 
 	// 프로젝트 임시저장 요청
@@ -135,6 +162,10 @@ public class CreatorFundingService {
 	public List<Map<String, String>> getDeleteRequestList(String id) {
 		return mapper.selectDeleteRequestList(id);
 	}
+
+
+
+
 
 
 

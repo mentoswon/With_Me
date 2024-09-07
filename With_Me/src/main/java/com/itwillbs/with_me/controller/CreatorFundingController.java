@@ -12,6 +12,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,20 +23,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.itwillbs.with_me.handler.CreatorBankApiClient;
 import com.itwillbs.with_me.service.CreatorFundingService;
+import com.itwillbs.with_me.vo.BankToken;
 import com.itwillbs.with_me.vo.CommonCodeVO;
+import com.itwillbs.with_me.vo.CreatorAccountVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
 import com.itwillbs.with_me.vo.ProjectVO;
-import com.itwillbs.with_me.vo.RewardVO;
 
 @Controller
 public class CreatorFundingController {
 	@Autowired
 	private CreatorFundingService service;
 	
+	@Autowired
+	private CreatorBankApiClient bankApiClient;
+	
 	// 가상의 경로명 저장(이클립스 프로젝트 상의 경로)
 	private String uploadPath = "/resources/upload"; 
+	
+	// 로그 출력을 위한 기본 라이브러리(org.slf4j.Logger 타입) 변수 선언
+	private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 	
 	// 프로젝트 만들기 페이지
 	@GetMapping("ProjectStart")
@@ -158,6 +168,21 @@ public class CreatorFundingController {
 	    // 후원 구성 리스트 조회
 		List<HashMap<String, String>> rewardList = service.getRewardList(project_idx);
 
+		// 프로젝트에 해당하는 창작자 계좌 정보가 있는지 조회
+	    CreatorAccountVO creatorAccount = service.getCreatorAccount(project_idx);
+	    // 창작자 계좌 정보 있을 경우 핀테크 사용자 정보 조회
+	    if (creatorAccount != null) {
+	        // 핀테크 사용자 관련 정보 조회(엑세스토큰 조회 위함)
+	        BankToken token = service.getBankUserInfo(id);
+            // 핀테크 사용자 정보 조회 API 호출
+            Map<String, Object> bankUserInfo = service.getBankUserInfoFromApi(token);
+
+            // 조회된 핀테크 사용자 정보를 모델에 추가
+            System.out.println("bankUserInfo : " + bankUserInfo);
+            model.addAttribute("bankUserInfo", bankUserInfo);
+	    }
+
+		
 	    model.addAttribute("category_detail", category_detail);
 	    model.addAttribute("itemList", itemList);
 	    model.addAttribute("rewardList", rewardList);
@@ -295,6 +320,55 @@ public class CreatorFundingController {
 		return jo.toString();
 	}
 
+	// 계좌정보 가져오기
+	@ResponseBody
+	@GetMapping("SelectAccountInfo")
+	public String selectAccountInfo(@RequestParam Map<String, String> map, Model model, HttpSession session, @RequestParam("project_idx") String project_idx) {
+		// 엑세스토큰 관련 정보가 저장된 BankToken 객체(token)를 세션에서 꺼내기
+		BankToken token = (BankToken)session.getAttribute("token");
+		String id = (String) session.getAttribute("sId");
+		System.out.println("token : " + token + ", project_idx" + project_idx);
+		
+		// 로그인 및 토큰 유효성 확인
+		if(id == null) {
+			model.addAttribute("msg", "로그인 필수!");
+			model.addAttribute("targetURL", "MemberLogin");
+			return "result/fail";
+		} else if(token == null || token.getAccess_token() == null) {
+			model.addAttribute("msg", "계좌 인증 필수!");
+			return "result/fail";
+		}
+		
+		// 핀테크 사용자 정보 조회(창작자) - API 사용
+		// => 주의! 응답데이터 중 res_list 값이 리스트 형태이므로 String, String 대신 String, Object 타입 지정
+		Map<String, Object> bankCreatorInfo = service.getBankUserInfoFromApi(token);
+		logger.info(">>>>>> bankCreatorInfo : " + bankCreatorInfo);
+		
+		// res_list 값이 리스트 형태로 넘어옴
+	    List<Map<String, Object>> accountList = (List<Map<String, Object>>) bankCreatorInfo.get("res_list");
+	    
+	    // 각 계좌 정보 테이블에 저장
+	    int insertCount = 0;
+	    for (Map<String, Object> accountInfo : accountList) {
+	    	// 계좌 정보에 추가적으로 전달할 정보를 넣음
+	    	accountInfo.put("project_idx", project_idx);	// 프로젝트번호
+	        accountInfo.put("creator_email", id);	// 창작자 아이디
+
+	        // Map을 서비스로 넘겨서 한꺼번에 처리
+	        insertCount += service.registCreatorAccount(accountInfo);
+	    }
+
+	    // 결과 출력
+	    logger.info(">>>>>>>>> insertCount " + insertCount);
+		
+	    // JSON 객체로 응답 데이터 생성
+		JSONObject jo = new JSONObject(bankCreatorInfo);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	
 	// 프로젝트 저장하기
 	@ResponseBody
 	@PostMapping("SaveProject")

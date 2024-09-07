@@ -1311,6 +1311,47 @@ function linkAccount() {
 							+ "&scope=login inquiry transfer"
 							+ "&state=12345678901234567890123456789012"
 							+ "&auth_type=0";
+	
+	// 인증 창이 닫혔는지 확인하기 위한 인터벌 설정
+    let checkAuthWindowClosed = setInterval(function() {
+        if (authWindow.closed) {
+            clearInterval(checkAuthWindowClosed);
+            // 인증 창이 닫히면 AJAX 요청 실행
+            token = "${sessionScope.token}";
+            project_idx = "${project.project_idx}";
+            selectAccountInfo(token, project_idx);
+        }
+    }, 1000); // 1초마다 확인
+}
+
+function selectAccountInfo(token, project_idx) {
+	$.ajax({
+		type: "GET",
+		url: "SelectAccountInfo",
+		data: {
+			"project_idx": project_idx,
+			"token": token
+		},
+		dataType: "json",
+		success: function(data) {
+			console.log(data);
+			let infoList = data.res_list;
+			$("#creatorAccountInfo").empty();
+			infoList.forEach(function(info) {
+				console.log(info);
+				let str = 
+					'<div class="accountInfo" style="display: flex; padding: 8px 10px; width: 550px; border: 1px solid #ccc; box-sizing: border-box; outline-style: none;">'
+					+ 	'<img alt="동전아이콘" src="${pageContext.request.contextPath}/resources/image/coin_icon.png" style="width:22px; height:22px; margin-top: 27px;">'
+					+ 	'<p><b>&nbsp;' + info.account_holder_name + '</b>'
+					+	'&emsp;' + info.bank_name + '&emsp;' + info.account_num_masked + '</p>'
+					+ '</div>';
+				$("#creatorAccountInfo").append(str);
+			});
+		},
+		error:function(request, status, error){
+			console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+	});//ajax끝
 }
 
 </script>
@@ -2192,15 +2233,28 @@ function linkAccount() {
 						</p>
 						<br>
 					</div>
-					<div class="projectContentWrap">
-						<input type="button" value="계좌등록하기" id="accountRegist" class="button" onclick="linkAccount()" <c:if test="${creator.phone_auth_status eq 'N'}">disabled</c:if>>
-						
-						<p id="BeforePhoneAuth">
-							<span class="importanceImg">
-								<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
-							</span>
-							본인인증 후 계좌등록이 가능합니다.
-						</p>
+					<div class="projectContentWrap" id="creatorAccountInfo">
+						<c:choose>
+						<c:when test="${not empty bankUserInfo.res_list}">
+						    <c:forEach var="info" items="${bankUserInfo.res_list}">
+								<div class="accountInfo" style="display: flex; padding: 8px 10px; width: 550px; border: 1px solid #ccc; box-sizing: border-box; outline-style: none;">
+									<img alt="동전아이콘" src="${pageContext.request.contextPath}/resources/image/coin_icon.png" style="width:22px; height:22px; margin-top: 27px;">
+									<p><b>&nbsp;${info.account_holder_name}</b>&emsp;${info.bank_name}&emsp;${info.account_num_masked}</p>
+								</div>
+						    </c:forEach>
+						</c:when>
+						<c:otherwise>
+							<input type="button" value="계좌등록하기" id="accountRegist" class="button" onclick="linkAccount()" <c:if test="${creator.phone_auth_status eq 'N'}">disabled</c:if>>
+							<c:if test="${creator.phone_auth_status eq 'N'}">
+								<p id="BeforePhoneAuth">
+									<span class="importanceImg">
+										<img alt="주의사항 아이콘" src="${pageContext.request.contextPath}/resources/image/importance_icon.png">
+									</span>
+									본인인증 후 계좌등록이 가능합니다.
+								</p>
+							</c:if>
+						</c:otherwise>
+						</c:choose>
 						<br><br> 
 					</div>
 				</div>
