@@ -54,7 +54,7 @@
 #writeForm input[type="submit"],
 #writeForm input[type="button"],
 #writeForm input[type="reset"] {
-    background-color: #59b9a9; /* 버튼 배경색 */
+    background-color: #FFAB40; /* 버튼 배경색 */
     color: #fff; /* 버튼 텍스트 색상 */
     border: none;
     padding: 10px 20px;
@@ -65,7 +65,7 @@
 
 #writeForm input[type="submit"]:hover,
 #writeForm input[type="button"]:hover {
-    background-color: #498f7f; /* 버튼 호버 배경색 */
+    background-color: #d07601; /* 버튼 호버 배경색 */
 }
 </style>
 </head>

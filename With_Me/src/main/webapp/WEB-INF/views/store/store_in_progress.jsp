@@ -45,7 +45,7 @@
 		
 		<div class="inner">
 			<h2>${member.mem_name} 후원자님! 다시 한 번 확인해주세요.</h2>
-			<form action="UserPayingPro" name="goFundForm" method="post">
+			<form action="StoreUserOrderPro" name="goFundForm" method="post">
 				<section class="con01">
 					<div class="userInfo">
 						<h4>후원자 정보</h4>
@@ -69,21 +69,21 @@
 					<div class="rewardInfo">
 						<h4>결제 정보</h4>
 						<div class="infoWrapper">
-							<div>${selectedReward.reward_title}</div>
+							<div>${selectedProduct.productName}</div>
 							<div>
-								<c:if test="${optionMap ne null}">
-									<c:forEach var="optionMap" items="${optionMap}">
+<%-- 								<c:if test="${member ne null}"> --%>
+<%-- 									<c:forEach var="selectedProduct" items="${selectedProduct}"> --%>
 										<%-- foreach --%>
 										<div>제품 구성</div>
-										<div>&nbsp;&nbsp;&nbsp; -옵션 : ${optionMap.value}</div>
-									</c:forEach>
-								</c:if>
+										<div>&nbsp;&nbsp;&nbsp; - 옵션 : ${selectedProduct.productOption}</div>
+<%-- 									</c:forEach> --%>
+<%-- 								</c:if> --%>
 							</div>
 							<div id="amtWrapper">
-								<div><fmt:formatNumber pattern="#,###">${selectedReward.reward_price}</fmt:formatNumber>&nbsp;원</div>
-								<div class="">추가 후원금 : </div>
+								<div><fmt:formatNumber pattern="#,###">${selectedProduct.productPrice}</fmt:formatNumber>&nbsp;원</div>
+								<input type="hidden" name="user_funding_reward_idx" id="user_funding_reward_idx" value="${selectedProduct.funding_reward_idx}">
 							</div>
-							<span id="totalAmt">총액 : <fmt:formatNumber pattern="#,###">${selectedReward.reward_price}</fmt:formatNumber>원</span>
+							<span id="totalAmt">총액 : <fmt:formatNumber pattern="#,###">${selectedProduct.productPrice}</fmt:formatNumber>원</span>
 						</div>
 					</div>
 				</section>

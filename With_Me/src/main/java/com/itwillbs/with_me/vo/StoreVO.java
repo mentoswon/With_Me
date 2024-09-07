@@ -23,6 +23,7 @@ public class StoreVO {
 	private String product_description;
 	private String product_category;
 	private String product_category_detail;
+	private String product_item_option;
 	private int product_price;
 	private int product_stock;
 	private int product_status;
@@ -30,6 +31,6 @@ public class StoreVO {
 	// MultipartFile 타입으로 지정할 변수는 업로드되는 실제 파일을 다룰 용도로 사용
 	private MultipartFile[] product_img_file;
 	private MultipartFile product_img_file1;
-	
+	private String splited_product_option;
 	private Timestamp product_created;            // 상품등록일
 }

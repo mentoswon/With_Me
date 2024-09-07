@@ -37,8 +37,15 @@
 	
 	<!-- 상품 목록 표출 -->
 	<select id="selectStoreList" resultType="hashmap">
-		SELECT *
-		FROM product_info 
+		SELECT p.*
+		<if test="id">
+			,l.*
+		</if>
+			FROM product_info p 
+		<if test="id">
+			LEFT JOIN like_ l
+			ON p.product_code = l.like_product_code AND l.like_mem_email = #{id}
+		</if>
 		WHERE
 		<choose>
 			<when test="!searchKeyword.equals('')">
@@ -65,8 +72,6 @@
 		limit
 			#{startRow}
 			, #{listLimit}
-	
-	
 	</select>
 	
 	<select id="selectStoreListAll" resultType="hashmap">
@@ -91,6 +96,23 @@
 		WHERE product_code = #{product_code}
 		
 	</select>
+	
+	<!-- 상품별 옵션 리스트 -->
+	<select id="selectProductOptionList" resultType="hashmap">
+		SELECT *, SUBSTRING_INDEX(SUBSTRING_INDEX(product_item_option, "|", numbers.n), "|", -1) AS splited_product_option
+		FROM (
+			SELECT 1 AS n UNION ALL
+			SELECT 2 UNION ALL
+			SELECT 3 UNION ALL
+			SELECT 4 UNION ALL
+			SELECT 5) AS numbers
+		INNER JOIN product_info
+		ON CHAR_LENGTH(product_item_option) - CHAR_LENGTH(REPLACE(product_item_option, "|", "")) >= numbers.n - 1
+		WHERE product_idx = #{product_idx}
+	</select>
+	
+	
+	
 	
 	
 <!-- ============================================================ -->	

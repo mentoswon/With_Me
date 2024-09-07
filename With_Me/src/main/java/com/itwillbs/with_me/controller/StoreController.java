@@ -1,5 +1,7 @@
 package com.itwillbs.with_me.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,8 @@ public class StoreController {
 	@GetMapping("StoreList")
 	public String store(StoreVO store, Model model,
 			@RequestParam(defaultValue = "1") int pageNum,
-			@RequestParam(defaultValue = "") String searchKeyword) {
+			@RequestParam(defaultValue = "") String searchKeyword,
+			HttpSession session) {
 		System.out.println("searchKeyword : " + searchKeyword);
 		String productCategory = store.getProduct_category();
 		String productCategory_detail = store.getProduct_category_detail();
@@ -85,7 +88,8 @@ public class StoreController {
 		// --------------------------------------------------------------------------------------
 
 		// 목록 표출
-		List<Map<String, Object>> StoreList = service.getStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit);
+		String id = (String)session.getAttribute("sId");
+		List<Map<String, Object>> StoreList = service.getStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit, id);
 		System.out.println("StoreList : " + StoreList);
 		// --------------------------------------------------------------------
 
@@ -121,79 +125,38 @@ public class StoreController {
 		System.out.println("product_detail : " + product_detail);
 
 		// =================================================================
+		// 상품별 옵션 정보 가져오기 
+		int product_idx = (int) product_detail.get("product_idx");
+//		System.out.println("product_idx : " + product_idx);
+//		List<StoreVO> ProductOptionList = service.getProductOptionList(product_idx);
+		List<Map<String, Object>> productOptions = new ArrayList<Map<String,Object>>(product_idx);
+//		Map<String, Object> productOptionsMap = new HashMap<String, Object>();
+		
+//		System.out.println("ProductOptionList2222 : " + ProductOptionList);
+		
+//		product_idx = (Integer) product_detail.get("product_idx");
+		productOptions = service.getProductOptionList(product_idx);
+//		productOptionsMap.put(product_idx.toString(), productOptions);
+		
+		
+		//확인
+		System.out.println("productOptions : " + productOptions);
+		
+		
+		// =================================================================
 		model.addAttribute("product_detail", product_detail);
-
+//		model.addAttribute("ProductOptionList", ProductOptionList);
+		model.addAttribute("productOptions", productOptions);
+		
 		return "store/store_detail";
 	}
 
 	// --------------------------------------------------------------------------------------------------------------
 
-	// 좋아요 등록
-	@ResponseBody
-	@PostMapping("RegistLikeProduct")
-	public String registLike(@RequestParam(defaultValue = "") String like_product_code, @RequestParam(defaultValue = "") String like_mem_email, HttpSession session) {
-		System.out.println("좋아요 : " + like_product_code + ", " + like_mem_email);
-		String id = (String) session.getAttribute("sId");
-
-		// 결과 담을 Map
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-
-		if(id == null) {
-			resultMap.put("result", false);
-
-		} else {
-			// 내가 이 프로젝트를 좋아요 한 적 있는지 먼저 확인
-			int likeCount = service.getLikeCount(like_product_code, like_mem_email);
-			int updateCount = 0;
-			int insertCount = 0;
-
-			if(likeCount > 0) { // 좋아요 한 흔적이 있음
-				updateCount = service.modifyLike(like_product_code, like_mem_email); // 좋아요 한 흔적은 있는데 N이니까 Y로 변경
-			} else { // 좋아요 한 흔적 없음
-				insertCount = service.registLike(like_product_code, like_mem_email);
-			}
-
-			if(insertCount > 0 || updateCount > 0) {
-				resultMap.put("result", true);
-			} else {
-				resultMap.put("result", false);
-			}
-		}
-
-		JSONObject jo = new JSONObject(resultMap);
-		System.out.println("응답 데이터 : " + jo.toString());
-
-		return jo.toString();
-	}
-	// ========================================================================================================
-	// 상품 좋아요 취소
-	@ResponseBody
-	@PostMapping("CancleLikeProduct")
-	public String cancleLike(@RequestParam(defaultValue = "") String like_product_code, @RequestParam(defaultValue = "") String like_mem_email) {
-
-		// 결과 담을 Map
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-
-		int updateCount = service.cancleLike(like_product_code, like_mem_email);
-
-		if(updateCount > 0) {
-			resultMap.put("result", true);
-		} else {
-			resultMap.put("result", false);
-		}
-
-		JSONObject jo = new JSONObject(resultMap);
-		//		System.out.println("응답 데이터 : " + jo.toString());
-
-		return jo.toString();
-	}
 
 
-	// ------------------------------------------------------------------------------------------------------------------	
-
-
-	@PostMapping("StoreInProgress")
-	public String storeInProgress(@RequestParam Map<String,Object> map, HttpSession session, MemberVO member, Model model) {
+	@GetMapping("StoreInProgress")
+	public String storeInProgress(@RequestParam Map<String,Object> map, HttpSession session, MemberVO member, Model model, StoreVO store) {
 		System.out.println("map : " + map);
 
 		String id = (String)session.getAttribute("sId");
@@ -215,17 +178,104 @@ public class StoreController {
 		// 아이디로 주소 정보 가져오기 
 		List<AddressVO> userAddress = service.getUserAddress(member);
 		System.out.println("userAddress : " + userAddress);
+		
+		
+		// =========================================================================
+		// 선택한 상품 가격, 옵션 불러오기
+		map.get("productPrice");
+		map.get("productOption");
+		map.get("productName");
 
+			
+		
+		
+		
+		
+		
+		
+		
+		
 		// =========================================================================
 
 		model.addAttribute("member", member);
 		model.addAttribute("userAddress", userAddress);
+		model.addAttribute("selectedProduct", map);
 
 
 
 		return "store/store_in_progress";
 	}
 
+// ===========================================================================================
+	
+	
+	// 좋아요 등록
+	@ResponseBody
+	@PostMapping("RegistLikeProduct")
+	public String registLike(@RequestParam(defaultValue = "") String like_product_code, @RequestParam(defaultValue = "") String like_mem_email, HttpSession session) {
+		System.out.println("좋아요 : " + like_product_code + ", " + like_mem_email);
+		String id = (String) session.getAttribute("sId");
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		if(id == null) {
+			resultMap.put("result", false);
+			System.out.println("resultMap2222222221 : " + resultMap);
+			
+		} else {
+			// 내가 이 프로젝트를 좋아요 한 적 있는지 먼저 확인
+			int likeCount = service.getLikeCount(like_product_code, like_mem_email);
+			int updateCount = 0;
+			int insertCount = 0;
+			
+			if(likeCount > 0) { // 좋아요 한 흔적이 있음
+				updateCount = service.modifyLike(like_product_code, like_mem_email); // 좋아요 한 흔적은 있는데 N이니까 Y로 변경
+			} else { // 좋아요 한 흔적 없음
+				insertCount = service.registLike(like_product_code, like_mem_email);
+			}
+			System.out.println("삽입카운트 : " + insertCount);
+			System.out.println("갱신카운트 : " + updateCount);
+			if(insertCount > 0 || updateCount > 0) {
+				resultMap.put("result", true);
+			} else {
+				resultMap.put("result", false);
+			}
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+//		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	// ========================================================================================================
+	// 상품 좋아요 취소
+	@ResponseBody
+	@PostMapping("CancleLikeProduct")
+	public String cancleLike(@RequestParam(defaultValue = "") String like_product_code, @RequestParam(defaultValue = "") String like_mem_email) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int updateCount = service.cancleLike(like_product_code, like_mem_email);
+		
+		if(updateCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		System.out.println("갱신카운트22222 : " + updateCount);
+		
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	
+	// ------------------------------------------------------------------------------------------------------------------	
+	
+	
 	// 배송지 등록
 	@ResponseBody
 	@PostMapping("StoreRegistAddress")
@@ -556,6 +606,7 @@ public class StoreController {
 	
 	
 	
+	// =============================================================================================
 	
 	
 	

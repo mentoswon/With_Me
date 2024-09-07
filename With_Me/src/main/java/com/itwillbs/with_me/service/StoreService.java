@@ -10,6 +10,7 @@ import com.itwillbs.with_me.mapper.StoreMapper;
 import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.StoreVO;
 
 @Service
 public class StoreService {
@@ -25,9 +26,9 @@ public class StoreService {
 	
 	// 리스트 가져오기
 	public List<Map<String, Object>> getStoreList(String searchKeyword, String productCategory,
-			String productCategory_detail, int startRow, int listLimit) {
+			String productCategory_detail, int startRow, int listLimit, String id) {
 		
-		return mapper.selectStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit);
+		return mapper.selectStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit, id);
 	}
 
 	// 상품 상세정보 가져오기
@@ -130,6 +131,13 @@ public class StoreService {
 		return mapper.cancleLike(like_product_code, like_mem_email);
 	}
 // ===============================================================================
+	
+	// 상품별 옵션정보 리스트 가져오기
+	public List<Map<String, Object>> getProductOptionList(Integer product_idx) {
+		return mapper.selectProductOptionList(product_idx);
+	}
+
+
 	
 
 	

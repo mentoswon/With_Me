@@ -24,5 +24,7 @@
   		<typeAlias type="com.itwillbs.with_me.vo.ChatMessage2" alias="chatMessage"/>
   		<typeAlias type="com.itwillbs.with_me.vo.SmsAuthInfo" alias="smsAuth"/>
   		<typeAlias type="com.itwillbs.with_me.vo.BankToken" alias="bankToken"/>
+  		<typeAlias type="com.itwillbs.with_me.vo.StoreVO" alias="StoreVO"/>
+  		<typeAlias type="com.itwillbs.with_me.vo.CreatorAccountVO" alias="creatorAccount"/>
 	</typeAliases>
  </configuration>

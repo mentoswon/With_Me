@@ -60,22 +60,22 @@
 								<dd><b>평일 16시 전 주문하면 오늘 출발  </b>(무료배송)</dd> <!-- 마감일 다음날 결제 예정일 -->
 							</dl>
 						</div>
-						<form action="StoreInProgress" method="post">
+						<form action="StoreInProgress" method="get">
 							
 							<div class="productInfo3">
-<%-- 								<c:choose> --%>
-<%-- 									<c:when test="${rewardItemList.item_condition eq '객관식'}"> --%>
+								<c:choose>
+									<c:when test="${product_detail.product_status eq '1'}"> <!-- 판매중일 때 -->
 										<select class="reward_item_option_select option">
-											<option>옵션을 선택해주세요.</option>
-											<c:forEach var="itemOptions" items="${itemOptions}">
-												<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
+											<option disabled  selected value="">옵션을 선택해주세요.</option>
+											<c:forEach var="productOptions" items="${productOptions}">
+												<option value="${productOptions.splited_product_option}" >${productOptions.splited_product_option}</option>
 											</c:forEach>
 										</select>
-<%-- 									</c:when> --%>
-<%-- 									<c:otherwise> --%>
-<!-- 										<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write option" > -->
-<%-- 									</c:otherwise> --%>
-<%-- 								</c:choose> --%>
+									</c:when>
+									<c:otherwise>
+										<input type="text" placeholder="현재 구매 불가한 상품 입니다." class="reward_item_option_write option" >
+									</c:otherwise>
+								</c:choose>
 							</div>
 							<div class="productInfo4">
 							<c:choose>
@@ -91,6 +91,9 @@
 								</c:otherwise>
 							</c:choose>
 <!-- 								<button class="goStore Btn">상품문의하기</button> -->
+								<input type="hidden" id="productOption" name="productOption" value="">
+								<input type="hidden" id="productPrice" name="productPrice" value="${product_detail.product_price}">
+								<input type="hidden" id="productName" name="productName" value="${product_detail.product_name}">
 								<input type="submit" class="goStore Btn" value="구매하기">
 							</div>
 						</form>
@@ -100,7 +103,7 @@
 			
 			<section class="con02">
 				<div class="left">
-					<img alt="상세 이미지" src="http://c3d2306t1.itwillbs.com/soneson/resources/upload/2023/12/17/bal_img_content.png" class="detailImg">
+					<img alt="상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}" class="detailImg">
 				</div>
 				
 				<div class="right">
@@ -112,16 +115,6 @@
 									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
 									<span>위드미</span>
 								</div>
-<!-- 								<div> -->
-<!-- 									<ul> -->
-<!-- 										<li>누적펀딩액</li> -->
-<!-- 										<li> 원</li> -->
-<!-- 									</ul> -->
-<!-- 									<ul> -->
-<!-- 										<li>팔로워</li> -->
-<!-- 										<li>2 명</li> -->
-<!-- 									</ul> -->
-<!-- 								</div> -->
 							</div>
 							<div class="btns">
 								<button class="follow" onclick="StoreList('푸드', '')">다른상품 보러가기</button>
@@ -139,16 +132,6 @@
 						<img alt="이동" src="${pageContext.request.contextPath}/resources/image/right-arrow.png">
 					</div>
 
-					
-					<!-- 후원자가 고른 후원 아이템 -->
-					<!-- display: none 해두고 추가되면 뜨게 할 것 -->
-<!-- 					<div id="choosenFunding"> -->
-<!-- 						<h4>후원 선택</h4> -->
-<!-- 						<div class="wrap"> -->
-						
-<!-- 						</div> -->
-<!-- 					</div> -->
-					
 					<div class="productAside">
 						<h4>구매 전 반드시 확인하세요!</h4>
 						<div class="wrap">
@@ -269,7 +252,9 @@
 			<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 		</footer>
 		<script type="text/javascript">
-		
+			$(".reward_item_option_select").on('change', function(){
+				$("#productOption").val($(".reward_item_option_select").val());
+			});
 			
 			// ==========================================================================
 			// 교환/환불 정책 

@@ -44,7 +44,7 @@
 	}
 
 	th {
-		background-color: #59b9a9;
+		background-color: #FFAB40;
 		color: white;
 	}
 
@@ -73,7 +73,7 @@
 	}
 
 	#commandCell input[type="button"] {
-		background-color: #59b9a9;
+		background-color: #FFAB40;
 		color: white;
 		border: none;
 		padding: 10px 20px;
@@ -83,7 +83,7 @@
 	}
 
 	#commandCell input[type="button"]:hover {
-		background-color: #45a089;
+		background-color: #d07601;
 	}
 </style>
 <script type="text/javascript">

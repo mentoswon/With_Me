@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.itwillbs.with_me.vo.AddressVO;
 import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.StoreVO;
 
 @Mapper
 public interface StoreMapper {
@@ -24,7 +25,8 @@ public interface StoreMapper {
 							@Param("productCategory")	String productCategory,
 							@Param("productCategory_detail")String productCategory_detail, 
 							@Param("startRow")int startRow, 
-							@Param("listLimit")int listLimit);
+							@Param("listLimit")int listLimit,
+							@Param("id")String id);
 
 	// 상품 상세정보 가져오기
 	Map<String, Object> selectProduct(String product_detail);
@@ -88,6 +90,9 @@ public interface StoreMapper {
 	
 	// 좋아요 취소
 	int cancleLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
+
+	// 상품 옵션 리스트
+	List<Map<String, Object>> selectProductOptionList(Integer product_idx);
 
 
 
