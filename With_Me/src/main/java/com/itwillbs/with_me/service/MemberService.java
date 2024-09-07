@@ -10,6 +10,7 @@ import com.itwillbs.with_me.mapper.MemberMapper;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.FundingVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -131,6 +132,11 @@ public class MemberService {
 	public Map<String, Object> getDonationProjectDetail(int funding_idx) {
 		return mapper.selectDonationProjectDetail(funding_idx);
 	}
+	
+	// 후원 수정(취소)
+	public int modifyDonationProject(FundingVO funding) {
+		return mapper.updateDonationProject(funding);
+	}
 
 	// 팔로우 리스트 개수 가져오기
 	public int getFollowListCount(String mem_email) {
@@ -160,6 +166,16 @@ public class MemberService {
 	// 좋아요 상품 리스트 나타내기
 	public List<Map<String, Object>> getLikeProductList(int startRow, int listLimit, String mem_email) {
 		return mapper.selectLikeProductList(startRow, listLimit, mem_email);
+	}
+	
+	// 프로젝트 상세정보 가져오기(프로젝트 하나만)
+	public Map<String, Object> getProject(String mem_email) {
+		return mapper.selectProject(mem_email);
+	}
+	
+	// 좋아요 취소
+	public int cancleLike(String like_project_code, String like_mem_email) {
+		return mapper.cancleLike(like_project_code, like_mem_email);
 	}
 	
 	// 크리에이터 이메일 들고와서 mem_email 들고오기
@@ -240,6 +256,14 @@ public class MemberService {
 			String address_main, String address_sub, String address_receiver_tel) {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 	}
+
+
+
+
+
+
+
+
 
 
 

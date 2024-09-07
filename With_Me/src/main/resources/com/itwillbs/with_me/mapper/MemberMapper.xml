@@ -215,8 +215,17 @@
 		ON f.funding_project_idx = p.project_idx
 		LEFT join reward_info r
 		ON r.reward_idx = f.funding_reward_idx
-		WHERE f.funding_idx = 16;
+		WHERE f.funding_idx = #{funding_idx}
 	</select>
+	
+	<!-- 후원프로젝트 수정-->
+	<update id="updateDonationProject">
+		UPDATE funding_user
+		SET
+			funding_status = '후원 취소'
+		WHERE
+			funding_idx = #{funding_idx}	
+	</update>
 	
 	<!-- 팔로워 전체 리스트 개수 조회 -->
 	<select id="selectFollowListCount" resultType="int">
@@ -275,6 +284,7 @@
 		JOIN like_ l
 		ON l.like_project_code = p.project_code
 		WHERE l.like_mem_email = #{mem_email}
+		AND l.like_status = 'Y'
 		LIMIT
 			#{startRow}     
 			, #{listLimit}  
@@ -287,10 +297,21 @@
 		JOIN like_ l
 		ON l.like_product_code = p.product_code
 		WHERE l.like_mem_email = #{mem_email}
+		AND l.like_status = 'Y'
 		LIMIT
 			#{startRow}     
 			, #{listLimit}  
 	</select>
+	
+	<!--  좋아요 취소 -->
+	<update id="cancleLike">
+		UPDATE like_
+		SET like_status = 'N'
+		WHERE 
+			like_project_code = #{like_project_code}
+			AND like_mem_email = #{like_mem_email}
+			AND like_status = 'Y'
+	</update>
 	
 		<!-- 내가 팔로우한 사람이 팔로우한 수 -->
 <!-- 	<select id="selectFollowerCount" resultType="hashmap"> -->

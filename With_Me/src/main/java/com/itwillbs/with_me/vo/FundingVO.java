@@ -21,6 +21,7 @@ public class FundingVO {
 	private int funding_plus;
 	private Timestamp funding_date;
 	private int funding_pay_amt;
+	private String funding_status;
 	
 	
 }

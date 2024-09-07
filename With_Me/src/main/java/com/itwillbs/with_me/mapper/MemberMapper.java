@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.FundingVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
@@ -86,6 +87,9 @@ public interface MemberMapper {
 	// 후원한 프로젝트 세부정보
 	Map<String, Object> selectDonationProjectDetail(int funding_idx);
 	
+	// 후원 상태 변경(취소)
+	int updateDonationProject(FundingVO funding);
+	
 	// 내 마이페이지에서 팔로우 리스트 조회
 	List<Map<String, Object>> selectFollowList(
 								@Param("startRow") int startRow,
@@ -108,6 +112,12 @@ public interface MemberMapper {
 								@Param("startRow") int startRow,
 								@Param("listLimit") int listLimit,
 								@Param("mem_email") String mem_email);
+	
+	// 프로젝트 상세정보 가져오기(프로젝트 하나만 들오고기)
+	Map<String, Object> selectProject(String mem_email);
+	
+	// 좋아요 취소
+	int cancleLike(@Param("like_project_code")String like_project_code, @Param("like_mem_email")String like_mem_email);
 	
 	// 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 가져오기
 	List<Map<String, Object>> selectOtherNoCreatorFollowList(
@@ -179,6 +189,14 @@ public interface MemberMapper {
 
 	// creator_email 들고와서 mem_email값 가져오기
 	String selectMemEmail(String creatorEmail);
+
+
+
+
+
+
+
+
 
 
 

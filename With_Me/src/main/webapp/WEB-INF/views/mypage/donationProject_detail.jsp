@@ -130,8 +130,9 @@
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
 	<article>
-		<form action="MyPageInfoModify" name="joinForm" method="post">
+		<form action="DonationProjectCancel" name="joinForm" method="post">
 		    <section class="profile-form">
+		    	<input type="hidden" name="funding_idx" id="funding_idx" value="${DonationProjectDetail.funding_idx}">
 		        <div class="form-group top" style="border: 1px solid #ccc;">
 		            <div>
 		                <div class="image">
@@ -150,25 +151,23 @@
 		                <h4>후원 정보</h4>
 		            </div>
 		            <div>
-		                <!-- 펀딩 날짜 비교 -->
-		                <fmt:parseDate var="fundingStartDate" value="${DonationProjectDetail.funding_start_date}" pattern="yyyy-MM-dd" />
-		                <fmt:parseDate var="fundingEndDate" value="${DonationProjectDetail.funding_end_date}" pattern="yyyy-MM-dd" />
-		                <fmt:formatDate var="currentDate" value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd" />
+		                <fmt:formatDate var="today" value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd" />
+						<fmt:formatDate var="startDate" value="${DonationProjectDetail.funding_start_date}" pattern="yyyy-MM-dd" />
+						<fmt:formatDate var="endDate" value="${DonationProjectDetail.funding_end_date}" pattern="yyyy-MM-dd" />
+						
+						<!-- 펀딩 진행 상태 표시 -->
+						<c:choose>
+						    <c:when test="${today >= startDate && today <= endDate}">
+						        펀딩 진행중
+						    </c:when>
+						    <c:when test="${today > endDate}">
+						        펀딩 종료됨
+						    </c:when>
+						</c:choose>
+						<p>${DonationProjectDetail.funding_status}</p>
 		
-		                <c:choose>
-		                    <c:when test="${currentDate >= fundingStartDate && currentDate <= fundingEndDate}">
-		                        <p>펀딩 진행중</p>
-		                    </c:when>
-		                    <c:when test="${currentDate > fundingEndDate}">
-		                        <p>펀딩 종료</p>
-		                    </c:when>
-		                    <c:otherwise>
-		                        <p>펀딩 시작 전</p>
-		                    </c:otherwise>
-		                </c:choose>
-		
-		                <p><fmt:formatDate value="${DonationProjectDetail.funding_pay_date}" pattern="yyyy-MM-dd" /></p>
-		                <p><fmt:formatDate value="${DonationProjectDetail.funding_end_date}" pattern="yyyy-MM-dd" /></p>
+                		<p><fmt:formatDate value="${fundingPayDate}" pattern="yyyy.MM.dd" /></p>
+		                <p><fmt:formatDate value="${DonationProjectDetail.funding_end_date}" pattern="yyyy.MM.dd" /></p>
 		            </div>
 		        </div>
 		
@@ -182,10 +181,10 @@
 		                        <p>선물은 선택하지 않고 후원만 합니다.</p>
 		                    </c:when>
 		                    <c:otherwise>
-		                        <p>${DonationProjectDetail.reward_title}</p>
+		                        <p>${DonationProjectDetail.reward_title}(${DonationProjectDetail.funding_item_option})</p>
 		                    </c:otherwise>
 		                </c:choose>
-		                <p><fmt:formatNumber value="${DonationProjectDetail.funding_pay_amt - DonationProjectDetail.funding_plus}" type="number" groupingUsed="true"/>원</p>
+		                <p><fmt:formatNumber value="${DonationProjectDetail.funding_pay_amt - DonationProjectDetail.funding_plus}" type="number" groupingUsed="true"/>원</<p>
 		            </div>
 		        </div>
 		
@@ -198,10 +197,13 @@
 		            </div>
 		        </div>
 		
-		        <div class="form-actions">
-		            <input type="submit" value="정보 수정">
-		            <button type="button" onclick="history.back()">돌아가기</button>
-		        </div>
+				<div class="form-actions">
+				    <c:if test="${DonationProjectDetail.funding_status != '후원 취소'}">
+				        <input type="submit" value="후원 취소" onclick="return confirm('후원을 취소하시겠습니까?');">
+				    </c:if>
+				
+				    <button type="button" onclick="history.back()">돌아가기</button>
+				</div>
 		    </section>
 		</form>
 		</article>

@@ -1,13 +1,19 @@
 package com.itwillbs.with_me.controller;
 
 import java.security.PrivateKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -22,6 +28,7 @@ import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.FundingVO;
+import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
@@ -103,7 +110,7 @@ public class MemberController {
 	}
 	
 	
-	// 회원가입 폼
+	// 회원가입
 	@PostMapping("MemberJoinPro")
 	public String memberJoinPro(MemberVO member, Model model, BCryptPasswordEncoder passwordEncoder, HttpSession session) {
 		System.out.println(member);
@@ -486,7 +493,6 @@ public class MemberController {
 		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
 		int listCount = service.getProjectListCount();
-		int likeListCount = service.getFollowListCount(member.getMem_email());
 		
 		System.out.println("listCount : " + listCount);
 		
@@ -534,6 +540,7 @@ public class MemberController {
 		List<Map<String, Object>> likeProjectList = service.getLikeProjectList(startRow, listLimit, member.getMem_email());
 		// 내가 좋아요한 상품 목록 나타내기
 		List<Map<String, Object>> likeProductList = service.getLikeProductList(startRow, listLimit, member.getMem_email());
+		
 		
 		System.out.println("projectList : " + projectList);
 		System.out.println("DonationProjectList : " + DonationProjectList);
@@ -728,16 +735,50 @@ public class MemberController {
 	
 	// 내가 후원한 프로젝트 디테일정보
 	@GetMapping("DonationProjectDetail")
-	public String donationProjectDetail(FundingVO funding, Model model, HttpSession session) {
+	public String donationProjectDetail(FundingVO funding, Model model, HttpSession session, HttpServletRequest request) {
 		
 		System.out.println("funding.getFunding_idx() : " + funding.getFunding_idx());
+		
+		// 미 로그인 처리
+		String id = (String)session.getAttribute("sId");
+		if(id == null) {
+			model.addAttribute("msg", "로그인 필수!");
+			model.addAttribute("targetURL", "MemberLogin");
+			return "result/fail";
+		}
 		
 		// 후원한 프로젝트 목록 나타내기
 		Map<String, Object> DonationProjectDetail = service.getDonationProjectDetail(funding.getFunding_idx());
 		System.out.println("DonationProjectDetail!!!!!!!! : " + DonationProjectDetail);
 		model.addAttribute("DonationProjectDetail", DonationProjectDetail);
 		
+//		LocalDateTime localDateTime = DonationProjectDetail.get(""));
+		LocalDateTime fundingPayDate = (LocalDateTime) DonationProjectDetail.get("funding_pay_date");
+		Date date = Date.from(fundingPayDate.atZone(ZoneId.systemDefault()).toInstant());
+		request.setAttribute("fundingPayDate", date);
+		
+		
 		return "mypage/donationProject_detail";
+	}
+	
+	// 후원 변경(취소)
+	@PostMapping("DonationProjectCancel")
+	public String donationProjectCancel(@RequestParam Map<String, String> map, HttpSession session, Model model, FundingVO funding) {
+		
+		System.out.println("map : " + map);
+		System.out.println("funding : " + funding);
+		
+		int updateCount = service.modifyDonationProject(funding);
+		
+		System.out.println("updateCount : " + updateCount);
+		
+		if(updateCount > 0) {
+			model.addAttribute("msg", "후원 취소 성공!");
+			return "redirect:/DonationProjectDetail?funding_idx=" + funding.getFunding_idx();
+		} else {
+			model.addAttribute("msg", "후원 취소 실패!");
+			return "result/fail";
+		}
 	}
 		
 	
@@ -793,6 +834,29 @@ public class MemberController {
 			return "result/fail";
 		}
 	}
+	
+	// 마이페이지에서 좋아요 취소
+	@ResponseBody
+	@PostMapping("MypageCancelLike")
+	public String mypageCancelLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int updateCount = service.cancleLike(like_project_code, like_mem_email);
+		
+		if(updateCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+			System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
 	
 }
 

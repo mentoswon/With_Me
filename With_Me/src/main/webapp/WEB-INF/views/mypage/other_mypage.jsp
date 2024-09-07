@@ -146,9 +146,6 @@ $(function() {
 						<li class="writeList active" data-index="1">
 							<span>프로필</span>
 						</li>
-						<li class="writeList" data-index="2">
-							<span>좋아요</span>
-						</li>
 						<li class="writeList" data-index="3">
 							<span>올린 프로젝트</span>
 						</li>
@@ -178,15 +175,6 @@ $(function() {
 						            <p>등록된 소개가 없습니다.</p>
 						        </c:otherwise>
 						    </c:choose>
-					</div>
-				</div>
-			</div>
-			<div id="writeContainer2" class="writeContainer">
-				<div class="MypageWriteWrap">
-					<div class="MypageExplanationWrap">
-						<p>
-							좋아요가 없습니다.
-						</p>
 					</div>
 				</div>
 			</div>

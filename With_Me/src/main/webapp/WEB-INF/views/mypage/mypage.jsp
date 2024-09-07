@@ -96,67 +96,51 @@
 		border-radius: 3px;
 	}
 	
-	
-	/* ----- 진행상태 필터버튼 ----- */
-	#statusMenu ul {
-		list-style-type: none;
-		padding: 0;
-		margin: 0;
-		display: flex;
-		gap: 10px;	/* 항목 사이 간격 */
+	.item_image {
+		width: 230px;
+		height: 230px;
 	}
 	
-	#statusMenu li {
-		width: 180px;
-		padding: 10px 15px;
-		background-color: #fff;
-		border: 2px solid #ccc;
-		border-radius: 10px;
-		cursor: pointer;
-		text-align: center;
-		caret-color: transparent;	/* 커서 깜빡임 없애기 */
+	.item_image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
-	
-	#statusMenu li:hover {
-		background-color: #FFAB40;
-		border-color: #FFAB40;
-		color: #fff;
-	}
-	#statusMenu li.selected  {
-		background-color: #FFAB40;
-		border-color: #FFAB40;
-		color: #fff;
-	}
-	
-	.content {
-    display: none;
-}
-
 	
 </style>
 <script type="text/javascript">
-$(document).ready(function() {
-
-    // 메뉴 항목 클릭 시 활성화 처리
-    $("#MypageMenuList li").click(function() {
-        $(".writeContainer").hide();	// 모든 .writeContainer 숨기기
-        $("#MypageMenuList li").removeClass("active");
-        $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
-        let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
-        $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
-    });
-    
-    $("#LikeMenuList li").click(function() {
-        $(".writeContainer").hide();	// 모든 .writeContainer 숨기기
-        $("#LikeMenuList li").removeClass("active");
-        $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
-        let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
-        $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
-    });
+	$(document).ready(function() {
 	
-});	// ready 이벤트 끝
+	    // 메뉴 항목 클릭 시 활성화 처리
+	    $("#MypageMenuList li").click(function() {
+	        $(".writeContainer").hide();	// 모든 .writeContainer 숨기기
+	        $("#MypageMenuList li").removeClass("active");
+	        $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
+	        let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
+	        $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
+	    });
+	    
+	//     $("#LikeMenuList li").click(function() {
+	//         $(".writeContainer").hide();	// 모든 .writeContainer 숨기기
+	//         $("#LikeMenuList li").removeClass("active");
+	//         $(this).addClass("active");	// 클릭된 항목에 active 클래스 추가
+	//         let index = $(this).data("index");	// 클릭된 메뉴 항목의 인덱스
+	//         $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
+	//     });
+	    document.getElementById('showProjectsBtn').addEventListener('click', function() {
+	        document.getElementById('projectsList').style.display = 'block';
+	        document.getElementById('productsList').style.display = 'none';
+	    });
+	
+	    document.getElementById('showProductsBtn').addEventListener('click', function() {
+	        document.getElementById('projectsList').style.display = 'none';
+	        document.getElementById('productsList').style.display = 'block';
+	    });
+	    
+		
 
-
+		
+	});	// ready 이벤트 끝
 
 </script>
 
@@ -196,15 +180,6 @@ $(document).ready(function() {
 						</li>
 		                <li class="writeList" data-index="2">
 		                    <span>좋아요</span>
-		                    <!-- 좋아요 하위 메뉴 -->
-		                    <ul class="subMenu" id="LikeSubMenu" style="display: none;">
-		                        <li class="subList" data-subindex="1">
-		                            <span>내가 좋아요한 프로젝트</span>
-		                        </li>
-		                        <li class="subList" data-subindex="2">
-		                            <span>내가 좋아요한 상품</span>
-		                        </li>
-		                    </ul>
 		                </li>
 						<li class="writeList" data-index="3">
 							<span>올린 프로젝트</span>
@@ -221,12 +196,6 @@ $(document).ready(function() {
 					</ul>
 				</div>
 			</div>
-			<div id="content2_1" class="content">
-		        <p>내가 좋아요한 프로젝트 리스트</p>
-		    </div>
-		    <div id="content2_2" class="content">
-		        <p>내가 좋아요한 상품 리스트</p>
-		    </div>
 		</section>
 		
 		<article>
@@ -244,6 +213,88 @@ $(document).ready(function() {
 					</div>
 				</div>
 			</div>
+		    <div id="writeContainer2" class="writeContainer">
+		        <div class="MypageWriteWrap">
+		            <div class="MypageExplanationWrap">
+		            
+		                <button id="showProjectsBtn">프로젝트 좋아요</button>
+		                <button id="showProductsBtn">상품 좋아요</button>
+		
+		                <!-- Container to hold the lists -->
+		                <div id="likeContent">
+		                	<div id="projectsList" class="likeList" style="display:none;">
+	                            <c:if test="${not empty likeProjectList}">
+	                            	<c:set var="hasValidProject" value="false" />
+	                            	
+                            		<c:set var="now" value="<%=new java.util.Date()%>" />
+					                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set>
+					                
+		                        	<c:forEach var="project" items="${likeProjectList}">
+					                    <c:choose>
+					                        <c:when test="${project.funding_end_date > today}">
+					                            <c:set var="hasValidProject" value="true" />
+					                            <div class="item">
+					                                <div class="item_image">
+					                                    <a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
+					                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+					                                    </a>
+<%-- 															<c:if test="${not empty likeProjectList.like_status and likeProjectList.like_status eq 'Y'}"> --%>
+														<button class="like Btn" type="button" onclick="MypageCancelLike('${project.project_code}', '${sId}')">
+															<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
+														</button>
+<%-- 															</c:if> --%>
+					                                </div>
+					                                <div class="item_info">
+					                                    <h4><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
+					                                    <h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
+					                                </div>
+					                                <div class="fund_info">
+					                                    <div class="fund_leftWrap">
+					                                        <fmt:parseNumber var="funding_amt" value="${project.funding_amt*1.0}" ></fmt:parseNumber>
+					                                        <fmt:parseNumber var="target_price" value="${project.target_price}" ></fmt:parseNumber>
+					                                        <c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
+					                                        <c:choose>
+					                                            <c:when test="${fund_rate eq 0.0}">
+					                                                <div class="fund_rate">0%</div>
+					                                            </c:when>
+					                                            <c:otherwise>
+					                                                <div class="fund_rate"><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>%</div>
+					                                            </c:otherwise>
+					                                        </c:choose>
+					                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
+					                                    </div>
+					                                    <div class="fund_etc">
+					                                        <c:choose>
+					                                            <c:when test="${leftDay eq 0}">
+					                                                오늘 마감
+					                                            </c:when>
+					                                            <c:otherwise>
+					                                                <fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+					                                                <fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
+					                                                <c:set value="${endDate - strDate}" var="leftDay"/>
+					                                                <c:out value="${leftDay}" />일 남음
+					                                            </c:otherwise>
+					                                        </c:choose>
+					                                    </div>
+					                                </div>
+					                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+					                            </div>
+					                        </c:when>
+					                    </c:choose>
+					                </c:forEach>
+	                            </c:if>
+		                    </div>
+		
+		                    <!-- 내가 좋아요한 상품 -->
+		                    <div id="productsList" class="likeList" style="display:none;">
+		                        <c:forEach items="${likeProductList}" var="product">
+		                            <p>${product.name}</p>
+		                        </c:forEach>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
 			<div id="writeContainer3" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
@@ -382,7 +433,10 @@ $(document).ready(function() {
 							                                </div>
 							                                <div class="item_info">
 							                                    <h4><a href="OtherMemberInfo?creator_email=${dp.creator_email}">${dp.creator_name}</a></h4>
-							                                    <h3><a href="DonationProjectDetail?funding_idx=${dp.funding_idx}">${dp.project_title}</a></h3>
+							                                    <div>
+								                                    <b><a href="DonationProjectDetail?funding_idx=${dp.funding_idx}">${dp.project_title}</a></b>
+								                                    <p>(<fmt:formatNumber value="${dp.funding_pay_amt}" type="number" groupingUsed="true"/>원)</p>
+							                                    </div>
 							                                </div>
 							                                <div class="fund_info">
 							                                    <div class="fund_leftWrap">
@@ -615,4 +669,32 @@ $(document).ready(function() {
 		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 	</footer>
 </body>
+<script type="text/javascript">
+
+// 프로젝트 좋아요 취소
+function MypageCancelLike(project_code, sId) {
+	console.log("project_code : " + project_code + ", sId : " + sId);
+	$.ajax({
+		url: "MypageCancelLike",
+		type : "POST",
+		async:false, // 이 한줄만 추가해주시면 됩니다.
+		data:{
+			"like_project_code": project_code,
+			"like_mem_email": sId
+		},
+		dataType: "json",
+		success: function (response) {
+			if(response.result){
+				alert("좋아요가 취소되었습니다.");
+// 				$(item).remove();
+				location.reload();
+			} else if(!response.result) {
+				alert("좋아요 취소가 실패가 되었습니다!!");
+// 					location.href="MemberInfo";
+			}
+		}
+	});
+}
+
+</script>
 </html>
