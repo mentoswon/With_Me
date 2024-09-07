@@ -3,6 +3,7 @@ package com.itwillbs.with_me.controller;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -26,9 +29,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.itwillbs.with_me.service.BankService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.service.UserFundingService;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.BankToken;
 import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
@@ -331,8 +336,13 @@ public class UserFundingController {
 	}
 	
 	@PostMapping ("UserFundingPro")
-	public String userFundingPro(@RequestParam Map<String, Object> map, Model model) {
+	public String userFundingPro(@RequestParam Map<String, Object> map, Model model, HttpSession session, MemberVO member) {
 		System.out.println("후원할 내용 : " + map);
+		
+		String id = (String) session.getAttribute("sId");
+		member.setMem_email(id);
+		
+		Integer payMethod = Integer.parseInt(String.valueOf( map.get("payMethod"))); //결제 방법
 		
 		// 몇 번째 후원자인지
 		int FundMemCount = 0;
@@ -351,6 +361,28 @@ public class UserFundingController {
 				
 				// 구매 내역 project_payment 테이블에 저장
 				service.registPaymentInfo(map);
+				
+				if(payMethod == 3) { // 금융결제원일 때만
+					// 계좌 정보 DB에 저장 (map 에 fintech_use_num, tranDtime 담아왔음)
+					// 추가로 필요) mem_name 가져오기
+					
+					member.setMem_email(id);
+					member = memberService.getMember(member);
+					String mem_name = member.getMem_name();
+					
+					map.put("mem_name", mem_name);
+					
+					// tranDtime 변형
+					String tran_dtime = (String) map.get("tranDtime"); 
+					
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+					LocalDate tranDtime = LocalDate.parse(tran_dtime, formatter);
+					
+					map.put("tranDtime", tranDtime);
+					
+					// user_account 테이블에 저장하러 갑시다
+					service.registAccountInfo(map);
+				}
 			}
 			
 		} else {
@@ -365,6 +397,27 @@ public class UserFundingController {
 				
 				// 구매 내역 project_payment 테이블에 저장
 				service.registPaymentInfo(map);
+				
+				if(payMethod == 3) { // 금융결제원일 때만
+					// 계좌 정보 DB에 저장 (map 에 fintech_use_num, tranDtime 담아왔음)
+					// 추가로 필요) mem_name 가져오기
+					
+					member = memberService.getMember(member);
+					String mem_name = member.getMem_name();
+					
+					map.put("mem_name", mem_name);
+					
+					// tranDtime 변형
+					String tran_dtime = (String) map.get("tranDtime"); 
+					
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+					LocalDate tranDtime = LocalDate.parse(tran_dtime, formatter);
+					
+					map.put("tranDtime", tranDtime);
+					
+					// user_account 테이블에 저장하러 갑시다
+					service.registAccountInfo(map);
+				}
 			}
 		}
 		
@@ -810,6 +863,37 @@ public class UserFundingController {
 		return jo.toString();
 	}
 		
+	
+	// ========================================================================================
+	// 로그 출력을 위한 기본 라이브러리(org.slf4j.Logger 타입) 변수 선언
+	private static final Logger logger = LoggerFactory.getLogger(BankController.class);
+	
+	// --------------------------------------------------------------------------------
+	// 계좌 목록 조회
+	//https://testapi.openbanking.or.kr/v2.0/account/list
+	@ResponseBody
+	@GetMapping("UserBankAccountList")
+	public Map<String, Object> bankAccountList(HttpSession session, Model model) {
+		
+		// 엑세스토큰 관련 정보가 저장된 BankToken(token) 객체를 세션에서 꺼내기
+		BankToken token = (BankToken) session.getAttribute("token"); // -> 다운캐스팅임
+		
+		// -----------------------------------------------------------------------------
+		// BankService - getBankUserInfoFromApi() 메서드 호출하여 핀테크 사용자 정보 조회
+		// => 파라미터 : 토큰 관련 정보(BankToken 객체)   리턴타입 : Map<String, Object>(bankUserInfo)
+		// => 주의! 응답데이터 중 res_list 값이 리스트 형태이므로 String, String 대신 String, Object 타입 지정
+		Map<String, Object> bankUserInfo = service.getBankUserInfoFromApi(token);
+		logger.info(">>>>>> bankUserInfo : " + bankUserInfo);
+		
+		// fintech_user_info 테이블에 핀테크 use_num 저장
+		String fin_use_num = (String) bankUserInfo.get("fintech_use_num");  /// !!!!!!!!!!!!!!! res_list 에서 다시 빼야됌 !!!!!!!!!!!!!!!!!!!!!!
+		String user_ci = (String) bankUserInfo.get("user_ci");
+		String id = (String) session.getAttribute("sId");
+		
+		service.registFintechInfo(fin_use_num, user_ci, id); // regist 인데 update 할거임
+		
+		return bankUserInfo;
+	}
 }
 
 

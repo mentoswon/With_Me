@@ -100,39 +100,20 @@ public class BankController {
 	//https://testapi.openbanking.or.kr/v2.0/account/list
 	@ResponseBody
 	@GetMapping("BankAccountList")
-	public String bankAccountList(HttpSession session, Model model) {
+	public Map<String, Object> bankAccountList(HttpSession session, Model model) {
 		
 		// 엑세스토큰 관련 정보가 저장된 BankToken(token) 객체를 세션에서 꺼내기
 		BankToken token = (BankToken) session.getAttribute("token"); // -> 다운캐스팅임
 		
-		// 세션체크
-		// 1) 세션 아이디가 없을 경우 fail
-		if(session.getAttribute("sId") == null) {
-			model.addAttribute("msg", "로그인 필수!");
-			model.addAttribute("targetURL", "MemberLogin");
-			
-			session.setAttribute("prevURL", "BankUserInfo");
-			// -> 로그인 후 현재 작업으로 돌아오기 위해 세션에 prevURL 속성값 저장 (MemberController에 있음)
-			
-			return "result/fail";
-			
-		// 2) 엑세스토큰 정보가 없을 경우 / "계좌 인증 필수!" , "BankMain" 전달
-		} else if(token == null || token.getAccess_token() == null) {
-			model.addAttribute("msg", "계좌 인증 필수!");
-			model.addAttribute("targetURL", "BankMain");
-			
-			return "result/fail";
-		}
-
 		// -----------------------------------------------------------------------------
 		// BankService - getBankAccountList() 메서드 호출하여 핀테크 계좌 목록 조회
 		Map<String, Object> bankAccountList = service.getBankAccountList(token);
 		logger.info(">>>> bankAccountList : " + bankAccountList);
 		
 		// Model 객체에 Map 객체 저장해서 뷰페이지로 가져가기
-		model.addAttribute("bankAccountList", bankAccountList); 
+//		model.addAttribute("bankAccountList", bankAccountList); 
 		
-		return "bank/bank_account_list";
+		return bankAccountList;
 	}
 	
 }

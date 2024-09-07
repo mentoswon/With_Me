@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.BankToken;
 import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
@@ -128,6 +129,24 @@ public interface UserFundingMapper {
 	// 오늘 결제하는 펀딩 리스트
 	List<Map<String, Object>> selectTodayPayFunding(LocalDate now);
 
+	// ==============================================================================
+	// 토큰 정보 조회 -> 아이디 리턴
+	String selectId(Map<String, Object> map);
+
+	// 엑세스토큰 정보 추가 
+	void insertAccessToken(Map<String, Object> map);
+
+	// 엑세스토큰 정보 갱신 
+	void updateAccessToken(Map<String, Object> map);
+
+	// 로그인 시 엑세스 정보 조회하여 저장하도록 처리해야하니까 일단 조회부터
+	BankToken selectBankUserInfo(String id);
+
+	// fintech_user_info 테이블에 핀테크 use_num 저장
+	void updateFintechInfo(@Param("fin_use_num")String fin_use_num, @Param("user_ci")String user_ci, @Param("id")String id);
+	
+	// user_account 에 저장
+	void insertAccountInfo(Map<String, Object> map);
 
 
 

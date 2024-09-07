@@ -85,6 +85,12 @@
 						</a>
 					</div>
 					<div class="itemWrapper">
+					
+						<!-- 오늘 날짜 추출 -->
+						<c:set var="now" value="<%=new java.util.Date()%>" />
+						<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+						<!-- 오늘 날짜 추출 end -->
+						
 						<c:set var="limit" value="0"/>
 						<c:forEach items="${projectList}" varStatus="status">
 							<c:if test="${projectList[status.index] != null and limit < 4}">

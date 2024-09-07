@@ -1,40 +1,80 @@
 package com.itwillbs.with_me.controller;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.itwillbs.with_me.service.UserFundingService;
+import com.itwillbs.with_me.vo.BankToken;
 
-//@Controller // 2번 실행
-//@Configuration // 2번 실행
-@Component // 2번 실행 // => 이것들이 있어야 스케줄러가 작동을 하는데 2번씩 실행됨. *-context.xml에는 추가된거 없음 ..
-
-//@EnableScheduling // 필수
+@Component 
+@EnableScheduling // 필수
 public class UserFundingPay{
 	
 	@Autowired
 	private UserFundingService service;
-	// ================================================================================================================
 	
-//	@Scheduled(cron = "0/5 * * * * ?") // 이거 안 되면 다른 방법 써야지 .... Quartz 찾아보기
+	private static final Logger logger = LoggerFactory.getLogger(BankController.class);
+	
+	// ================================================================================================================
+	@Scheduled(cron = "0 36 20 * * ?")  //0 12 10 * * ?매일 10시 12분에 실행
 	public void sche () throws Exception {
-//		 오전 10시마다 결제 진행
-//		System.out.println("스케줄 확인222");
+		
 		// ----------------------------------------------------------
 		// DB 가서 결제일이 오늘인 후원 내역 찾기
 		
 		// 1) 오늘 날짜 구하기
 		// 현재 날짜 구하기        
-//		LocalDate now = LocalDate.now();
-//		System.out.println(now);
+		LocalDate now = LocalDate.now();
+		System.out.println(now);
 		
 		// 2) funding_user 테이블에 funding_pay_date (결제 예정일) 가 저장되어있음. 
 		//	  오늘 날짜와 동일한 거 들고오기
-//		List<Map<String, Object>> payList = service.getTodayPayFunding(now);
+		List<Map<String, Object>> payList = service.getTodayPayFunding(now);
 		
-//		System.out.println(payList);
+		
+		// -------------------------------------------------------------------------------
+		// 해당 펀딩의 funding_idx 에 맞는 사람이 결제돼야함. (출금처리)
+		
+		// 2.5. 계좌이체 서비스 - 2.5.1. 출금이체 API
+		// https://testapi.openbanking.or.kr/v2.0/transfer/withdraw/fin_num
+		String id = "";
+		
+		for(Map<String, Object> list : payList) {
+			id = (String)list.get("funding_mem_email");
+			
+			// 엑세스토큰 관련 정보가 저장된 BankToken 객체(token)를 가져오기
+			BankToken token = service.getBankUserInfo(id);	
+			
+			Map<String, Object> map = new HashMap<String, Object>();
+			
+			map.put("token", token);
+			map.put("id", id);
+			
+			// 핀테크 이용번호 꺼내서 map에 저장
+			
+			
+			
+			logger.info("출금이체 요청 파라미터 : " + map);
+			
+			// BankService - requestWithdraw() 메서드 호출하여 출금이체 요청
+			// => 파라미터 : Map 객체    리턴타입 : Map<String, String>(withdrawResult)
+			Map<String, String> withdrawResult = service.requestWithdraw(map);
+			logger.info(">>>>>>> 출금이체 요청 결과 : " + withdrawResult);
+			
+			
+			
+		}
+		
+		
 	}
 	
 	

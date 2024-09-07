@@ -264,7 +264,7 @@ h4 {
 
 /* con06 */
 .inner .con06 .pay {
-	margin-bottom: 60px;	
+	margin-bottom: 20px;	
 }
 
 .inner .con06 .pay .infoWrapper {
@@ -309,6 +309,7 @@ h4 {
 #user_funding_complete{
 	width: 100%;
 	padding: 15px 0;
+	margin-top: 20px;
 	border: none;
 	border-radius: 10px;
 	background-color: #ffab40;
@@ -318,8 +319,6 @@ h4 {
 	text-align: center;
 	cursor: pointer;
 }
-
-
 
 /* 모달 팝업 */
 .modal_btn {

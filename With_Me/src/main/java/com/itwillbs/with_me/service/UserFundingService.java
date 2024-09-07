@@ -7,8 +7,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.itwillbs.with_me.handler.BankApiClient;
+import com.itwillbs.with_me.handler.UserBankApiClient;
+import com.itwillbs.with_me.mapper.BankMapper;
 import com.itwillbs.with_me.mapper.UserFundingMapper;
 import com.itwillbs.with_me.vo.AddressVO;
+import com.itwillbs.with_me.vo.BankToken;
 import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
@@ -20,6 +24,9 @@ public class UserFundingService {
 	
 	@Autowired
 	private UserFundingMapper mapper;
+	
+	@Autowired
+	private UserBankApiClient bankApiClient;
 	
 	// 리스트 목록 개수 가져오기
 	public int getBoardListCount(String searchKeyword, String category, String category_detail) {
@@ -206,9 +213,64 @@ public class UserFundingService {
 		return mapper.selectTodayPayFunding(now);
 	}
 
+	//============================================================================
+
 	
+	// 엑세스토큰 발급 요청
+	public BankToken getAccessToken(Map<String, String> authResponse) {
+		// BankApiClient - requestAccessToken() 메서드 호출하여 엑세스토큰 발급 요청 수행
+		
+		return bankApiClient.requestAccessToken(authResponse);
+	}
 
+	// 엑세스토큰 정보 저장 요청
+	public void registAccessToken(Map<String, Object> map) {
+		// BankMapper - selectTokenInfo() 메서드 호출하여 아이디에 해당하는 토큰 정보 조회
+		// 파라미터: Map 객체     리턴 : String(id)
+		String id = mapper.selectId(map);
+		
+		System.out.println("토큰 아이디 정보 : " + id);
+		
+		// 조회된 아이디가 없을 경우 (= 엑세스토큰 정보 없음) 토큰 정보 추가 (INSERT)
+		// 조회된 아이디가 있을 경우 (= 엑세스토큰 정보 있음) 토큰 정보 갱신 (UPDATE)
+		if(id == null) {
+			mapper.insertAccessToken(map);
+		} else {
+			mapper.updateAccessToken(map);
+		}
+	}
 
+	// 로그인 시 엑세스 정보 조회하여 저장하도록 처리해야하니까 일단 조회부터 (DB)
+	public BankToken getBankUserInfo(String id) {
+		return mapper.selectBankUserInfo(id);
+	}
+
+	// 핀테크 사용자 정보 조회(API)
+	public Map<String, Object> getBankUserInfoFromApi(BankToken token) {
+		// BankApiClient - requestUserInfo() 메서드 호출
+		return bankApiClient.requestUserInfo(token);
+	}
+	
+	// 핀테크 계좌 목록 조회
+	public Map<String, Object> getBankAccountList(BankToken token) {
+		return bankApiClient.requestBankAccountList(token);
+	}
+
+	// user_account 테이블에 저장
+	public void registAccountInfo(Map<String, Object> map) {
+		mapper.insertAccountInfo(map);
+	}
+
+	// fintech_user_info 테이블에 핀테크 use_num 저장
+	public void registFintechInfo(String fin_use_num, String user_ci, String id) {
+		mapper.updateFintechInfo(fin_use_num, user_ci, id);
+	}
+	
+	// 출금이체 요청
+	public Map<String, String> requestWithdraw(Map<String, Object> map) {
+		// BankApiClient - requestWithdraw() 메서드 호출
+		return bankApiClient.requestWithdraw(map);
+	}
 
 
 	

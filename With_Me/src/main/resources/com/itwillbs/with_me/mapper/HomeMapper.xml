@@ -14,7 +14,10 @@
 		<if test="sId">
 			LEFT JOIN like_ l
 			ON p.project_code = l.like_project_code AND l.like_mem_email = #{sId}
-		</if> 
+		</if>
+		<![CDATA[
+			WHERE p.funding_start_date < now() && p.funding_end_date > now() && p.project_status = '승인'
+		]]>
 		ORDER BY funding_amt DESC
 	</select>
 	

@@ -41,56 +41,7 @@
 // 			        }
 // 			    }).open();
 // 			});
-			function linkAccount() {
-				// 새 창을 열어서 사용자 인증 서비스 요청
-				// => 금융결제원 오픈API - 2.1.1. 사용자인증 API (3-legged) 서비스
-				// ----------------------------------------------------------------
-				// 빈 창으로 새 창 띄운 후 해당 창에 사용자 인증 페이지 표시
-				let authWindow = window.open("about:blank", "authWindow", "width=500,height=700");
-				authWindow.location = "https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
-										+ "response_type=code"
-										+ "&client_id=4066d795-aa6e-4720-9383-931d1f60d1a9"
-										+ "&redirect_uri=http://localhost:8081/with_me/callback"
-										+ "&scope=login inquiry transfer"
-										+ "&state=12345678901234567890123456789012"
-										+ "&auth_type=0";
-				
-				// 창이 닫혔는지 감지하는 함수
-				let timer = setInterval(function() {
-					if (authWindow.closed) {
-						clearInterval(timer); // 타이머 중지
-						updateAccountList(); // 계좌 리스트 새로고침
-					}
-				}, 1000); // 1초마다 창 상태 확인
-			}
 			
-			function updateAccountList(){
-// 				console.log("계좌 리스트 새로고침 실행");
-				$.ajax({
-					url: "BankAccountList",
-					type : "get",
-					async:false,
-					data:{
-						
-					},
-					dataType: "json",
-					success: function (response) {
-						
-						console.log(JSON.stringify(response));
-						
-						if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
-							alert("잘못된 접근입니다!");
-						} else if(!response.result) { // 삭제 실패일 경우
-		                    alert("배송지 삭제에 실패하였습니다.");
-						} else if(response.result) { // 삭제 성공일 경우
-						
-		                }
-					
-					}, error : function (response) {
-						alert("실패! ");
-					}
-				});
-			}
 		</script>
 	</head>
 	<body>
@@ -266,6 +217,7 @@
 							</div>
 						</div>
 					</div>
+					<div id="accountList"></div>
 				
 					<input type="hidden" name="user_funding_email" id="user_funding_email" value="">					<!-- 완) 후원자 email -->
 					<input type="hidden" name="user_funding_project_idx" id="user_funding_project_idx" value="">			<!-- 프로젝트 번호 -->
@@ -276,7 +228,11 @@
 					<input type="hidden" name="user_funding_plus_amt" id="user_funding_plus_amt" value="">				<!-- 추가 후원금 -->
 					<input type="hidden" name="user_funding_pay_amt" id="user_funding_pay_amt" value="">                  <!-- 총액 -->
 					<input type="hidden" name="user_funding_pay_method" id="user_funding_pay_method" value="">                  <!-- 결제 방법 -->
-					<input type="hidden" name="user_funding_pay_date" id="user_funding_pay_date" value="${selectedReward.project_payDate}">                  
+					<input type="hidden" name="user_funding_pay_date" id="user_funding_pay_date" value="${selectedReward.project_payDate}">
+					                  
+					<input type="hidden" name="fintech_use_num" id="fintech_use_num" value="">
+					<input type="hidden" name="tranDtime" id="tranDtime" value="">
+					
 					<input type="button" id="user_funding_complete" value="후원하기"> 
 				</section>
 			</form>
@@ -698,7 +654,6 @@
 				$(modal).removeClass("on");
 			});
 			
-			
 			// ==================================================================================
 // 			//결제 수단 목록
 			let payMethod = document.querySelectorAll(".payMethod");
@@ -733,18 +688,90 @@
 			
 			// 결제 진행
 			$("#user_funding_complete").click(function(){
-
-				if($("input:checkbox[name=agreement]:checked").length > 1) {
-					requestPay();
-// 					$("#UserFundingPayForm").submit();
-				} else {
-					alert("필수 동의사항에 체크해주세요.");
-				}
 				
-// 				if($("#user_funding_pay_method").val() == 3) {
-// 					alert("계좌를 등록해주세요.");
-// 				}
+				if($("#user_funding_pay_method").val() != 3){ // 포트원
+					// 동의사항 체크 여부 확인
+					if($("input:checkbox[name=agreement]:checked").length > 1) {
+						requestPay();
+					} else {
+						alert("필수 동의사항에 체크해주세요.");
+					}
+				} else { // 금융결제원
+					if($("input:checkbox[name=agreement]:checked").length > 1) {
+			            // 계좌가 등록되었는지 확인
+			            if ($("#fintech_use_num").val() != "" && $("#tranDtime").val() != "") {
+			                $("#UserFundingPayForm").submit();
+			            } else {
+			                alert("계좌를 등록해주세요.");
+			                return false; // 폼 제출을 방지
+			            }
+			        } else {
+			            alert("필수 동의사항에 체크해주세요.");
+			            return false; // 폼 제출을 방지
+			        }
+				}
 			});
+			
+			function linkAccount() {
+				// 새 창을 열어서 사용자 인증 서비스 요청
+				// => 금융결제원 오픈API - 2.1.1. 사용자인증 API (3-legged) 서비스
+				// ----------------------------------------------------------------
+				// 빈 창으로 새 창 띄운 후 해당 창에 사용자 인증 페이지 표시
+				let authWindow = window.open("about:blank", "authWindow", "width=500,height=700");
+				authWindow.location = "https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
+										+ "response_type=code"
+										+ "&client_id=4066d795-aa6e-4720-9383-931d1f60d1a9"
+										+ "&redirect_uri=http://localhost:8081/with_me/callback"
+										+ "&scope=login inquiry transfer"
+										+ "&state=12345678901234567890123456789012"
+										+ "&auth_type=0";
+				
+				// 창이 닫혔는지 감지하는 함수
+				let timer = setInterval(function() {
+					if (authWindow.closed) {
+						clearInterval(timer); // 타이머 중지
+						updateAccountList(); // 계좌 리스트 새로고침
+					}
+				}, 1000); // 1초마다 창 상태 확인
+			}
+			
+			function updateAccountList(){
+// 				console.log("계좌 리스트 새로고침 실행");
+				$.ajax({
+					url: "UserBankAccountList",
+					type : "get",
+					async: false,
+					dataType: "json",
+					success: function (response) {
+						let accountList = response.res_list;
+						
+						$("#accountList").empty(); // 기존 목록을 비웁니다.
+							
+						for(account of accountList) {
+							let list = 
+								"<div class='infoWrapper'>"
+								+	"<div>"
+					            +		account.account_holder_name
+					            +		"[" + account.bank_name + "]" + " "
+					            +		account.account_num_masked
+					            +	"</div>"
+					            +"</div>"
+					            
+							$("#accountList").append(list);
+					        $(".payMethod").text("");
+						}
+						
+				        $("#fintech_use_num").val(account.fintech_use_num);
+				        
+				        let originTime = response.api_tran_dtm;
+				        let tranDtime = originTime.substring(0,8);
+				        
+				        $("#tranDtime").val(tranDtime);
+					}, error : function (response) {
+						alert("실패! ");
+					}
+				});
+			}
 			
 			var IMP = window.IMP;
 			IMP.init("imp61351081");
@@ -807,9 +834,7 @@
 						}
 					
 					});//IMP.request_pay End
-					
 				}
-				
 			};//requestPay function End
 			
 		</script>
