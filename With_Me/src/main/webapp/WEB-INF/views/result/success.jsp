@@ -22,7 +22,7 @@
 		// "${isCLose}" == true 대신 "${isCLose}"만 지정해도 됨 
 		if("${isClose}") { // 자바스크립트는 문자열이 비어있으면 false임
 			// 부모창 새로고침 후 자식창 닫기
-			window.opener.location.reload(); // 부모창 제어하려면 window.opener를 앞에 붙여줘야함
+// 			window.opener.location.reload(); // 부모창 제어하려면 window.opener를 앞에 붙여줘야함
 			window.close();
 		}
 		// 2) 자바스크립트의 조건문으로 판별
