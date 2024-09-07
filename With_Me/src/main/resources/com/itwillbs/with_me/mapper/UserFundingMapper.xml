@@ -400,7 +400,7 @@
 			, #{user_funding_plus_amt}
 			, now()
 			, #{user_funding_pay_amt}
-			, '완료'
+			, '후원중'
 		)
 	</insert>
 	
