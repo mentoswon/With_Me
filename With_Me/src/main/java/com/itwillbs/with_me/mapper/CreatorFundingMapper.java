@@ -81,6 +81,9 @@ public interface CreatorFundingMapper {
 	// 계좌 정보 테이블에 저장
 	int insertCreatorAccount(Map<String, Object> accountInfo);
 
+	// 핀테크 정보에 사용자 식별번호, 핀테크번호 저장
+	int updateFintechInfo(Map<String, Object> accountInfo);
+
 	// 프로젝트 임시저장
 	int updateProject(ProjectVO project);
 
@@ -96,6 +99,7 @@ public interface CreatorFundingMapper {
 
 	// 프로젝트 취소 요청한 프로젝트 조회
 	List<Map<String, String>> selectDeleteRequestList(String id);
+
 
 
 

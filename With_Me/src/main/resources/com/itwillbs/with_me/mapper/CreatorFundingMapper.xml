@@ -165,8 +165,8 @@
 	SELECT *
 	FROM fintech_user_info f
 	LEFT JOIN member m
-	ON f.fin_mem_email = m.mem_email
-	WHERE f.fin_mem_email = #{id}
+	ON f.id = m.mem_email
+	WHERE f.id = #{id}
 </select>
 
 <!-- 아이템 삭제 - DELETE -->
@@ -240,6 +240,14 @@
 		, '입금대기'	-- status
 	)
 </insert>
+
+<!-- 핀테크 정보에 사용자 식별번호, 핀테크번호 저장 - UPDATE -->
+<update id="updateFintechInfo">
+	UPDATE fintech_user_info
+	SET user_ci = #{user_ci}
+		, fintech_use_num = #{fintech_use_num}
+	WHERE id = #{id}
+</update>
 
 <!-- 프로젝트 임시저장 - UPDATE -->
 <update id="updateProject">

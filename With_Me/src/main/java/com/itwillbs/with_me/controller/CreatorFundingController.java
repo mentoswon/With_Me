@@ -349,6 +349,7 @@ public class CreatorFundingController {
 	    
 	    // 각 계좌 정보 테이블에 저장
 	    int insertCount = 0;
+	    int updateCount = 0;
 	    for (Map<String, Object> accountInfo : accountList) {
 	    	// 계좌 정보에 추가적으로 전달할 정보를 넣음
 	    	accountInfo.put("project_idx", project_idx);	// 프로젝트번호
@@ -356,10 +357,12 @@ public class CreatorFundingController {
 
 	        // Map을 서비스로 넘겨서 한꺼번에 처리
 	        insertCount += service.registCreatorAccount(accountInfo);
+	        updateCount += service.registFintechInfo(accountInfo);
 	    }
 
 	    // 결과 출력
 	    logger.info(">>>>>>>>> insertCount " + insertCount);
+	    logger.info(">>>>>>>>> updateCount " + updateCount);
 		
 	    // JSON 객체로 응답 데이터 생성
 		JSONObject jo = new JSONObject(bankCreatorInfo);

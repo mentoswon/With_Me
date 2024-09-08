@@ -138,6 +138,11 @@ public class CreatorFundingService {
 		return mapper.insertCreatorAccount(accountInfo);
 	}
 
+	// 핀테크 정보에 사용자 식별번호, 핀테크번호 저장 요청(update)
+	public int registFintechInfo(Map<String, Object> accountInfo) {
+		return mapper.updateFintechInfo(accountInfo);
+	}
+
 	// 프로젝트 임시저장 요청
 	public int modifyProject(ProjectVO project) {
 		return mapper.updateProject(project);
@@ -162,6 +167,7 @@ public class CreatorFundingService {
 	public List<Map<String, String>> getDeleteRequestList(String id) {
 		return mapper.selectDeleteRequestList(id);
 	}
+
 
 
 
