@@ -13,5 +13,7 @@ public interface HomeMapper {
 	List<Map<String, Object>> selectProjectList(String sId);
 
 	List<Map<String, Object>> selectStoreList(String sId);
+
+	List<Map<String, Object>> selectPopularProList();
 	
 }

@@ -47,9 +47,9 @@
 		}
 		
 		// Auto slide every 5 seconds
-// 		setInterval(function() {
-// 			plusSlides(1); // Move to the next slide
-// 		}, 5000); // 5000 milliseconds = 5 seconds
+		setInterval(function() {
+			plusSlides(1); // Move to the next slide
+		}, 5000); // 5000 milliseconds = 5 seconds
 	});
 </script>
 </head>
@@ -152,72 +152,30 @@
 			
 			<!-- 펀딩 실시간 랭킹 -->
 			<div class="popularWrapper on">
-				<%-- 해원 ) 반복문 사용 예정. 임시로 여러개 넣어둠 --%>
-				<div class="popularItem">
-					<b>1</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-						<span>55% 달성</span>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/Sample3.jpg">
-						</a>
-					</div>
-				</div>
-				<div class="popularItem">
-					<b>2</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-						<span>55% 달성</span>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/Sample3.jpg">
-						</a>
-					</div>
-				</div>
-				<div class="popularItem">
-					<b>3</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-						<span>55% 달성</span>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/Sample3.jpg">
-						</a>
-					</div>
-				</div>
-				<div class="popularItem">
-					<b>4</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-						<span>55% 달성</span>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/Sample3.jpg">
-						</a>
-					</div>
-				</div>
-				<div class="popularItem">
-					<b>5</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-						<span>55% 달성</span>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/Sample3.jpg">
-						</a>
-					</div>
-				</div>
+				<c:forEach items="${popularProList}" varStatus="status">
+					<c:if test="${popularProList[status.index] != null and limit < 5}">
+						<div class="popularItem">
+							<b>${status.index + 1}</b>
+							<div class="popTitle">
+								<span><a href="OtherMemberInfo?creator_email=${popularProList[status.index].creator_email}">${popularProList[status.index].creator_name}</a></span>
+								<h3><a href="ProjectDetail?project_title=${popularProList[status.index].project_title}&project_code=${popularProList[status.index].project_code}">${popularProList[status.index].project_title}</a></h3>
+								
+								<%-- 펀딩률 --%>
+								<fmt:parseNumber var="funding_amt" value="${popularProList[status.index].funding_amt*1.0}" ></fmt:parseNumber>
+								<fmt:parseNumber var="target_price" value="${popularProList[status.index].target_price}" ></fmt:parseNumber>
+								
+								<c:set var="fund_rate" value="${funding_amt/target_price*100}"/>
+								
+								<span><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>% 달성</span>
+							</div>
+							<div class="popular_image">
+								<a href="ProjectDetail?project_title=${popularProList[status.index].project_title}&project_code=${popularProList[status.index].project_code}">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${popularProList[status.index].project_image}">
+								</a>
+							</div>
+						</div>
+					</c:if>
+				</c:forEach>
 			</div>
 			
 			<!-- 스토어 실시간 랭킹 -->

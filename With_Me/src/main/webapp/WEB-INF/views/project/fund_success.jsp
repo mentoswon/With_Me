@@ -45,7 +45,7 @@
 				<h2>축하합니다 ! </h2>
 				<h2><span>${param.FundMemCount}번째</span> 후원자가 돼셨습니다 !</h2>
 				
-				<p>후원내역은 <a href="">마이페이지</a> 에서 확인 가능합니다.
+				<p>후원내역은 <a href="MemberInfo">마이페이지</a> 에서 확인 가능합니다.
 			</section>
 		</div>
 		

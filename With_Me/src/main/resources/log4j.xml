@@ -10,14 +10,14 @@
 		</layout>
 	</appender>
 	
-	<!-- 로그 메세지를 파일로 출력 -->
-	<appender name="rollingFile" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="file" value="c:/log/test.log" />
-		<param name="DatePattern" value=".yyyy-MM-dd" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
-		</layout>
-	</appender>
+ 	<!-- 로그 메세지를 파일로 출력 --> 
+<!-- 	<appender name="rollingFile" class="org.apache.log4j.DailyRollingFileAppender"> -->
+<!-- 		<param name="file" value="System.out" /> -->
+<!-- 		<param name="DatePattern" value=".yyyy-MM-dd" /> -->
+<!-- 		<layout class="org.apache.log4j.PatternLayout"> -->
+<!-- 			<param name="ConversionPattern" value="%-5p: %c - %m%n" /> -->
+<!-- 		</layout> -->
+<!-- 	</appender> -->
 	
 	<!-- Application Loggers -->
 	<logger name="com.itwillbs.with_me">
@@ -47,7 +47,7 @@
 	<logger name="jdbc.sqltiming" additivity="false">
 		<level value="info" />
 		<appender-ref ref="console" />
-		<appender-ref ref="rollingFile" />
+<!-- 		<appender-ref ref="rollingFile" /> -->
 	</logger>
 	
 	
@@ -55,7 +55,7 @@
 	<logger name="jdbc.resultsettable" additivity="false">
 		<level value="info" />
 		<appender-ref ref="console" />
-		<appender-ref ref="rollingFile" />
+<!-- 		<appender-ref ref="rollingFile" /> -->
 	</logger>
 	<!-- 여기까지 항목 추가 -->
 

@@ -200,6 +200,9 @@ section {
 	margin-top: 5px;
 	margin-bottom: 20px;
 	word-wrap: break-word;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden; 
 }
 
 .sec01 .popularList .popularWrapper .popularItem .popTitle span:last-child {

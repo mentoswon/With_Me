@@ -1,5 +1,10 @@
 package com.itwillbs.with_me.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -28,6 +33,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.with_me.service.BankService;
 import com.itwillbs.with_me.service.MemberService;
@@ -39,6 +45,7 @@ import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.ReportVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
 @Controller
@@ -48,6 +55,8 @@ public class UserFundingController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	private String uploadPath = "/resources/upload"; 
 	
 	@GetMapping("ProjectList")
 	public String projectList(ProjectVO project, Model model, 
@@ -725,12 +734,62 @@ public class UserFundingController {
 	
 	// 신고 접수
 	@PostMapping("ReportSubmit")
-	public String reportSubmit(@RequestParam Map<String, Object> map, Model model) {
-		System.out.println("map : " + map);
-		int insertCount = service.registReport(map);
+	public String reportSubmit(ReportVO report, Model model, HttpSession session) {
+		
+		String realPath = session.getServletContext().getRealPath(uploadPath); // 가상의 경로 전달
+
+		String subDir = ""; // 하위 디렉토리명을 저장할 변수 선언
+		
+		LocalDate today = LocalDate.now();
+		String datePattern = "yyyyMMdd"; // 형식 변경에 사용할 패턴 문자열 지정
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern);
+		
+		String id = (String) session.getAttribute("sId");
+		
+		subDir = "REPORT" + "/" + today.format(dtf) + "/" + id;
+		
+		// 기존 실제 업로드 경로에 서브 디렉토리 결합 REPORT/20240907/id/파일명
+		realPath += "/" + subDir;
+		
+		try {
+			// 해당 디렉토리를 실제 경로에 생성(단, 존재하지 않을 경우에만 자동 생성)
+			Path path = Paths.get(realPath); // 파라미터로 실제 업로드 경로 전달
+			Files.createDirectories(path);	// 실제 경로 생성
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// [ 업로드 되는 실제 파일 처리 ]
+		// 실제 파일은 BoardVO 객체의 MultipartFile 타입 객체(멤버변수 fileX)가 관리함
+		MultipartFile mFile = report.getFile();
+//		System.out.println("원본파일명1 : " + mFile.getOriginalFilename());
+		
+		// 업로드 할 파일이 존재할 경우(원본 파일명이 널스트링이 아닐 경우)에만 
+		// BoardVO 객체에 서브디렉토리명과 함께 파일명 저장
+		// => 단, 업로드 파일이 선택되지 않은 파일은 파일명에 null 값이 저장되므로
+		//    파일명 저장 전 BoardVO 객체의 파일명에 해당하는 멤버변수값을 널스트링("") 으로 변경
+		report.setReport_file("");
+		
+		if(!mFile.getOriginalFilename().equals("")) {
+			report.setReport_file(subDir + "/" + mFile.getOriginalFilename());
+		}
+		
+		int insertCount = service.registReport(report);
 		
 		if(insertCount > 0) {
 			model.addAttribute("msg", "신고가 접수되었습니다.");
+			
+			try {
+				if(!mFile.getOriginalFilename().equals("")) {
+					// File 객체 생성 시 생성자에 업로드 경로명과 파일명 전달
+					mFile.transferTo(new File(realPath, mFile.getOriginalFilename()));
+				}
+				
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 			return "result/success";
 		} else {
@@ -873,7 +932,7 @@ public class UserFundingController {
 	//https://testapi.openbanking.or.kr/v2.0/account/list
 	@ResponseBody
 	@GetMapping("UserBankAccountList")
-	public Map<String, Object> bankAccountList(HttpSession session, Model model) {
+	public Map<String, Object> userbankAccountList(HttpSession session, Model model) {
 		
 		// 엑세스토큰 관련 정보가 저장된 BankToken(token) 객체를 세션에서 꺼내기
 		BankToken token = (BankToken) session.getAttribute("token"); // -> 다운캐스팅임
@@ -885,8 +944,9 @@ public class UserFundingController {
 		Map<String, Object> bankUserInfo = service.getBankUserInfoFromApi(token);
 		logger.info(">>>>>> bankUserInfo : " + bankUserInfo);
 		
-		// fintech_user_info 테이블에 핀테크 use_num 저장
-		String fin_use_num = (String) bankUserInfo.get("fintech_use_num");  /// !!!!!!!!!!!!!!! res_list 에서 다시 빼야됌 !!!!!!!!!!!!!!!!!!!!!!
+		// fintech_user_info 테이블에 fintech_use_num, user_ci 저장 -> bankToken 에 저장하기 ..?
+		List<Map<String, Object>> res_list = (List<Map<String, Object>>) bankUserInfo.get("res_list");
+		String fin_use_num = (String) res_list.get(0).get("fintech_use_num");  /// !!!!!!!!!!!!!!! res_list 에서 다시 빼야됌 !!!!!!!!!!!!!!!!!!!!!!
 		String user_ci = (String) bankUserInfo.get("user_ci");
 		String id = (String) session.getAttribute("sId");
 		

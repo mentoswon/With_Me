@@ -78,6 +78,11 @@ public class HomeController {
 		model.addAttribute("storeList", storeList);
 //		System.out.println(storeList);
 		
+		// 메인페이지 프로젝트 인기순위
+		List<Map<String, Object>> popularProList = homeService.getPopularProList();
+		model.addAttribute("popularProList", popularProList);
+		System.out.println(popularProList);
+		
 		return "index";
 	}
 	

@@ -17,6 +17,7 @@ import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.ReportVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
 @Service
@@ -133,8 +134,8 @@ public class UserFundingService {
 	
 
 	// 신고 접수
-	public int registReport(Map<String, Object> map) {
-		return mapper.insertReport(map);
+	public int registReport(ReportVO report) {
+		return mapper.insertReport(report);
 	}
 
 	
@@ -215,34 +216,9 @@ public class UserFundingService {
 
 	//============================================================================
 
-	
-	// 엑세스토큰 발급 요청
-	public BankToken getAccessToken(Map<String, String> authResponse) {
-		// BankApiClient - requestAccessToken() 메서드 호출하여 엑세스토큰 발급 요청 수행
-		
-		return bankApiClient.requestAccessToken(authResponse);
-	}
-
-	// 엑세스토큰 정보 저장 요청
-	public void registAccessToken(Map<String, Object> map) {
-		// BankMapper - selectTokenInfo() 메서드 호출하여 아이디에 해당하는 토큰 정보 조회
-		// 파라미터: Map 객체     리턴 : String(id)
-		String id = mapper.selectId(map);
-		
-		System.out.println("토큰 아이디 정보 : " + id);
-		
-		// 조회된 아이디가 없을 경우 (= 엑세스토큰 정보 없음) 토큰 정보 추가 (INSERT)
-		// 조회된 아이디가 있을 경우 (= 엑세스토큰 정보 있음) 토큰 정보 갱신 (UPDATE)
-		if(id == null) {
-			mapper.insertAccessToken(map);
-		} else {
-			mapper.updateAccessToken(map);
-		}
-	}
-
 	// 로그인 시 엑세스 정보 조회하여 저장하도록 처리해야하니까 일단 조회부터 (DB)
 	public BankToken getBankUserInfo(String id) {
-		return mapper.selectBankUserInfo(id);
+		return mapper.userSelectBankUserInfo(id);
 	}
 
 	// 핀테크 사용자 정보 조회(API)
@@ -258,18 +234,23 @@ public class UserFundingService {
 
 	// user_account 테이블에 저장
 	public void registAccountInfo(Map<String, Object> map) {
-		mapper.insertAccountInfo(map);
+		mapper.userInsertAccountInfo(map);
 	}
 
 	// fintech_user_info 테이블에 핀테크 use_num 저장
 	public void registFintechInfo(String fin_use_num, String user_ci, String id) {
-		mapper.updateFintechInfo(fin_use_num, user_ci, id);
+		mapper.userUpdateFintechInfo(fin_use_num, user_ci, id);
 	}
 	
 	// 출금이체 요청
 	public Map<String, String> requestWithdraw(Map<String, Object> map) {
 		// BankApiClient - requestWithdraw() 메서드 호출
 		return bankApiClient.requestWithdraw(map);
+	}
+
+	// project_payment 테이블에 오늘 날짜로 결제 날짜 업데이트 하기
+	public void updatePayDate(Map<String, Object> map) {
+		mapper.updatePayDate(map);
 	}
 
 

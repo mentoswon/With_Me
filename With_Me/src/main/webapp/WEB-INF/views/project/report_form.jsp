@@ -7,7 +7,7 @@
 	<div>${type}</div>
 </div>
 
-<form action="ReportSubmit" id="reportForm" method="POST">
+<form action="ReportSubmit" id="reportForm" method="POST" enctype="multipart/form-data">
 	<input type="hidden" name="report_category" value="${type}">
 	<input type="hidden" name="report_project_code" value="${project_code}">
 	<div id="repCon01">
@@ -19,16 +19,16 @@
 	<div id="repCon02">
 		<h4>증빙 자료 (선택)</h4>
 		<p>증빙 자료 첨부 시 침해 사실 확인 및 조치가 보다 신속하게 진행됩니다. <br>
-			최대 3개, 10 MB 이하의 jpg, jpeg, png, pdf  파일만 등록 가능
+			jpg, jpeg, png, pdf  파일만 등록 가능
 		</p>
-		<input type="file" value="파일 업로드">
+		<input type="file" value="파일 업로드" name="file">
 	</div>
 	
 	<div id="repCon03">
 		<h4>참고 URL (선택)</h4>
 		<p>신고 내용을 확인할 수 있는 URL을 입력하세요 (최대 3개)</p>
 		<div class="moreUrl">
-			<input type="text" placeholder="https://" size="70" name="report_ref_url1">
+			<input type="text" placeholder=" https://" size="70" name="report_ref_url1">
 			<button type="button" value="추가" class="moreUrlBtn">추가</button>
 		</div>
 	</div>
@@ -67,14 +67,9 @@
 	function cancleConfirm(){
 		if(confirm("작성을 취소하시겠습니까?")) {
 			$(modal).removeClass("on");
+			location.reload();
 		}
 	}
-	
-// 	function submitConfirm(){
-// 		if(confirm("신고를 접수하시겠습니까?")){
-// 			location.href="ReportSubmit";
-// 		}
-// 	}
 	
 	$(document).on('click','.moreUrlBtn', function (){
 		// 현재 .moreUrl 요소의 개수 확인

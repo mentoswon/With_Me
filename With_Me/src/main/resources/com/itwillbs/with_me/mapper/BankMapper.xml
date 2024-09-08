@@ -16,10 +16,10 @@ create table bank_user_info(
  -->
 <mapper namespace="com.itwillbs.with_me.mapper.BankMapper">
 	<select id="selectId" resultType="String">
-		SELECT fin_mem_email 
+		SELECT id 
 		FROM fintech_user_info
 		WHERE 
-			fin_mem_email = #{id} 
+			id = #{id} 
 	</select>
 
 
@@ -44,7 +44,7 @@ create table bank_user_info(
 			access_token = #{token.access_token}
 			, refresh_token = #{token.refresh_token}
 		WHERE 
-			fin_mem_email = #{id}
+			id = #{id}
 	</update>
 	
 	<!-- 로그인 시 엑세스 정보 조회하여 저장하도록 처리해야하니까 일단 조회부터 --> 

@@ -12,6 +12,7 @@ import com.itwillbs.with_me.vo.FollowVO;
 import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.ReportVO;
 import com.itwillbs.with_me.vo.RewardVO;
 
 public interface UserFundingMapper {
@@ -83,7 +84,7 @@ public interface UserFundingMapper {
 	int updateDefaultAddressToY(int address_idx);
 	
 	// 신고 접수
-	int insertReport(Map<String, Object> map);
+	int insertReport(ReportVO report);
 
 	// 팔로우 한 적 있는지 확인 부터
 	int selectFollowCount(@Param("id") String id, @Param("follow_creator") String follow_creator);
@@ -130,23 +131,18 @@ public interface UserFundingMapper {
 	List<Map<String, Object>> selectTodayPayFunding(LocalDate now);
 
 	// ==============================================================================
-	// 토큰 정보 조회 -> 아이디 리턴
-	String selectId(Map<String, Object> map);
-
-	// 엑세스토큰 정보 추가 
-	void insertAccessToken(Map<String, Object> map);
-
-	// 엑세스토큰 정보 갱신 
-	void updateAccessToken(Map<String, Object> map);
 
 	// 로그인 시 엑세스 정보 조회하여 저장하도록 처리해야하니까 일단 조회부터
-	BankToken selectBankUserInfo(String id);
+	BankToken userSelectBankUserInfo(String id);
 
 	// fintech_user_info 테이블에 핀테크 use_num 저장
-	void updateFintechInfo(@Param("fin_use_num")String fin_use_num, @Param("user_ci")String user_ci, @Param("id")String id);
+	void userUpdateFintechInfo(@Param("fin_use_num")String fin_use_num, @Param("user_ci")String user_ci, @Param("id")String id);
 	
 	// user_account 에 저장
-	void insertAccountInfo(Map<String, Object> map);
+	void userInsertAccountInfo(Map<String, Object> map);
+
+	// project_payment 테이블에 오늘 날짜로 결제 날짜 업데이트 하기
+	void updatePayDate(Map<String, Object> map);
 
 
 

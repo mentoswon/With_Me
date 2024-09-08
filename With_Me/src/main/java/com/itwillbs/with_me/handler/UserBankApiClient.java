@@ -60,79 +60,6 @@ public class UserBankApiClient {
 	// 로깅을 위한 Logger 타입 객체 생성 ! (현재 클래스를 파라미터로 전달해야함 -_-^)
 	private static final Logger logger = LoggerFactory.getLogger(UserBankApiClient.class);
 	// ----------------------------------------------------------
-	// 2.1.2. 토큰발급 API - 사용자 토큰발급 요청 수행
-	// => 요청 url 은 base_url 변수에 저장되어있는 기본주소 + 상세주소를 결합하여 사용
-	//	  https://testapi.openbanking.or.kr  +  /oauth/2.0/token
-	// 요청 파라미터 : code, client_id, client_secret, redirect_uri, grant_type
-	
-	public BankToken requestAccessToken(Map<String, String> authResponse) {
-		// 금융결제원 오픈API 토큰 발급 API 요청 작업 수행 및 결과 처리
-		// 클래스 내에서 HTTP 요청을 수행하는 여러 라이브러리 중
-		// RESTful API 요청을 처리할 RestTemplate 객체 활용 !!
-		
-		// 1) POST 방식 요청을 수행할 URL 정보를 URI 타입 객체로 생성
-		URI uri = UriComponentsBuilder
-					.fromUriString(base_url + "/oauth/2.0/token") // 요청 주소 설정
-					.encode() // 주소 인코딩
-					.build() // UriComponents 타입 객체 생성
-					.toUri(); // URI 타입 객체로 변환
-		
-		// 2) POST 방식 요청 수행 시 파라미터를 URL에 결합하지 않고 body에 별도로 포함시켜야함
-		// 	  따라서, 해당 파라미터 데이터를 별도의 객체를 통해 전달 필요
-		// 	  => LinkedMultiValueMap 타입 객체 활용 -> 그냥 Map써도 되는데 이거 쓰면 데이터가 안전하게 감
-		// 2-1) 객체 생성 !
-		LinkedMultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-		
-		// 2-2) 이 객체의 add() 메서드 호출하여 Map 처럼 "키, 값" 형식으로 파라미터 저장
-		parameters.add("code", authResponse.get("code")); // code는 authResponse에 저장되어 있으므로 가져다 씀
-		parameters.add("client_id", client_id);
-		parameters.add("client_secret", client_secret);
-		parameters.add("redirect_uri", redirect_uri);
-		parameters.add("grant_type", "authorization_code");
-		
-		// 3. 요청 정보로 사용할 헤더와 바디 정보를 관리하는 HttpEntity 타입 객체 생성
-		// => 제네릭타입으로 파라미터를 관리하는 객체 타입을 줄 것임.
-		//	  생성자에 해당 제네릭 타입에 대한 객체 전달 (POST 방식 요청에 대한 설정)
-		// => 헤더 정보는 별도의 추가 작업이 불필요하므로 설정 생략 !
-		HttpEntity<LinkedMultiValueMap<String, String>> httpEntity = new HttpEntity<LinkedMultiValueMap<String,String>>(parameters);
-		// => 요청할 수 있는 데이터의 모양이 만들어짐 !
-		
-		// 4. REST API(RESTful API) 요청을 위해 RestTemplate 객체 활용
-		// 4-1) 객체 생성
-		RestTemplate restTemplate = new RestTemplate();
-		
-		// 중요 !!!! 
-		// 4-2) RestTemplate의 exchange() 메서드 호출하여 요청 수행
-		// => 파라미터 : 요청 URL 관리하는 객체 (URI), 
-		// 				 요청 메서드(POST 방식이므로 HttpMethod.POST 상수 활용), 
-		//				 정보를 관리하는 HttpEntity 객체,
-		//				 요청에 대한 응답 전달되면 응답 데이터를 파싱하여 관리할 클래스
-		
-		// 응답데이터를 VO 클래스 타입으로 파싱할 경우
-		// => 응답데이터를 저장할 클래스를 지정해야함 ! 
-		ResponseEntity<BankToken> responseEntity =  restTemplate.exchange(
-				uri, // 요청 URL 관리하는 URI 타입 객체 (문자열로 된 URL도 전달 가능)
-				HttpMethod.POST,  // 요청 메서드(HttpMethod.xxx)
-				httpEntity,  // 요청 정보를 관리하는 httpEntity 객체
-				BankToken.class); //응답 데이터를 파싱하여 관리할 클래스 자체를 지정해야함.
-		
-		// 주의 ! 응답 데이터인 JSON 타입 데이터를 BankToken 타입으로 자동 파싱하려면
-		// Gson 또는 Jackson 라이브러리가 필요한데 이 라이브러리가 없을 경우 예외 발생함 !
-		// org.springframework.web.client.UnknownContentTypeException: Could not extract response: no suitable HttpMessageConverter found for response type
-		
-		// => 따라서 라이브러리가 필요함 우리는 Gson 사용할거임
-		
-		// 임시) 응답 정보 확인을 위해 ResponseEntity 객체의 메서드 활용
-		logger.info("응답 코드 : " + responseEntity.getStatusCode());
-		logger.info("응답 헤더 : " + responseEntity.getHeaders());
-		logger.info("응답 본문 : " + responseEntity.getBody());
-		
-		// 5. 응답 정보 리턴
-		// => ResponseEntity 객체를 직접 리턴하지 않고 getBody() 메서드 호출 결과인 파싱 정보를 관리하는 객체를 리턴
-		
-		return responseEntity.getBody();
-		
-	}
 
 	// ---------------------------------------------------------------------------
 	// 핀테크 사용자 정보 조회(API)
@@ -239,63 +166,6 @@ public class UserBankApiClient {
 		return responseEntity.getBody();
 		
 	}
-
-	
-	// 계좌 상세 조회
-	// => 잔액조회 테스트 데이터가 등록되어있을 경우에만 요청이 성공함 !!
-	public Map<String, String> requestAccountDetail(Map<String, Object> map) {
-		BankToken token = (BankToken) map.get("token"); // 맵에 들어있던 토큰 꺼내기
-		// ------------------------------------------------------------------------
-		// 요청에 사용될 값 생성 (bank_tran_id, tran_dtime) p228 참고
-		// BankValueGenerator - getBankTranId() 메서드 호출하여 거래 고유번호 (참가기관) 리턴받기
-		// => 파라미터 : 이용기관코드  리턴 : String
-		String bank_tran_id = bankValueGenerator.getBankTranId(client_use_code);
-		
-		String tran_dtime = bankValueGenerator.getTranDTime();
-		// ------------------------------------------------------------------------
-		// 1. Uri
-		URI uri = UriComponentsBuilder
-				.fromUriString(base_url) // 기본 요청 주소 설정
-				.path("/v2.0/account/balance/fin_num") // 작업 요청 상세 주소 설정 (path 는 여러개도 가능)
-				.queryParam("bank_tran_id", bank_tran_id) // get 방식에서 파라미터 줄 때 사용 (Post 는 안 씀)
-				.queryParam("fintech_use_num", map.get("fintech_use_num")) 
-				.queryParam("tran_dtime", tran_dtime) 
-				.encode() // 주소 인코딩
-				.build() // UriComponents 타입 객체 생성
-				.toUri(); // URI 타입 객체로 변환
-		
-		// 2. 헤더 정보를 관리할 HttpHeaders 객체 생성
-		HttpHeaders headers = new HttpHeaders(); // 추가할 헤더 정보가 1개이므로 기본 생성자 활용
-//				headers.add("Authorization", "Bearer " + token.getAccess_token());
-		headers.setBearerAuth(token.getAccess_token());
-		
-		// 3. 헤더와 바디를 묶어서 관리하는 HttpEntity 객체 생성
-		// => get 방식이므로 body는 없어도 되고(body 정보 없이 전달함), 문자열로 관리 가능하므로 String 지정
-		HttpEntity httpEntity = new HttpEntity<String>(headers);
-		
-		
-		// 4-1. RESTful API 요청을 위한 RestTemplate 객체 생성 후 
-		RestTemplate restTemplate = new RestTemplate();
-		
-		// 4-2. exchange() 메서드 호출해서 REST API 요청 수행 - GET
-		// => 파라미터 : 요청 URL 관리하는 객체 (URI), 
-		// 				 요청 메서드(POST 방식이므로 HttpMethod.GET 상수 활용), 
-		//				 정보를 관리하는 HttpEntity 객체,
-		//				 요청에 대한 응답 전달되면 응답 데이터를 파싱하여 관리할 클래스 (여기서는 Map)
-		
-		// => 응답데이터에 리스트객체가 있어서 String, String은 사용 불가합니다요.
-		ParameterizedTypeReference<Map<String, String>> responseType = 
-				new ParameterizedTypeReference<Map<String,String>>() {};
-				
-		// 이제 마지막 클래스 들어가는 자리에 responseType 적어주면 됨
-		ResponseEntity<Map<String, String>> responseEntity = 
-				restTemplate.exchange(uri, HttpMethod.GET, httpEntity, responseType);
-		
-		
-		// 5. 응답데이터를 관리하는 ResponseEntity 객체의 getBody() 메서드 호출
-		return responseEntity.getBody();
-	}
-
 	
 	// ==================================================================================
 	// 2.5 계좌이체 서비스 - 출금
@@ -352,19 +222,20 @@ public class UserBankApiClient {
 		jsonObject.addProperty("bank_tran_id", bank_tran_id);
 		jsonObject.addProperty("cntr_account_type", "N");
 		jsonObject.addProperty("cntr_account_num", cntr_account_num);
-		jsonObject.addProperty("dps_print_content", id); // 입금 계좌 인자 내역 - 입금되는 계좌에 출력할 메세지
+		jsonObject.addProperty("dps_print_content", id.substring(0, 10)); // 입금 계좌 인자 내역 - 입금되는 계좌에 출력할 메세지
 		
 		// ----------요청고객(출금계좌) 정보----------
-		jsonObject.addProperty("fintech_use_num", (String)map.get("withdraw_fintech_use_num")); //출금계좌핀테크이용번호
-		jsonObject.addProperty("wd_print_content", "아이티윌 입금"); // 출금계좌인자내역 
-		jsonObject.addProperty("tran_amt", (String)map.get("tran_amt")); // 거래금액
+		jsonObject.addProperty("fintech_use_num", (String)token.getFintech_use_num()); //출금계좌핀테크이용번호
+		jsonObject.addProperty("wd_print_content", "위드미 후원"); // 출금계좌인자내역 
+		jsonObject.addProperty("tran_amt", (int)map.get("tran_amt")); // 거래금액
 		jsonObject.addProperty("tran_dtime", tran_dtime); // 요청일시
-		jsonObject.addProperty("req_client_name", (String)map.get("withdraw_client_name")); // 고객 이름
-		jsonObject.addProperty("req_client_fintech_use_num", (String)map.get("withdraw_fintech_use_num")); // 요청고객핀테크이용번호 
+		jsonObject.addProperty("req_client_name", (String)map.get("withdraw_client_name")); // 고객 이름(출금계좌)
+		jsonObject.addProperty("req_client_fintech_use_num", (String)token.getFintech_use_num()); // 요청고객핀테크이용번호(출금계좌)
 		// -> 요청고객 계좌번호 미사용 시 핀테크 이용번호 사용하면 되고, 동시 설정 시 오류 발생함 ~!!!!!!!!
 		
-		jsonObject.addProperty("req_client_num", id.toUpperCase()); 
+		jsonObject.addProperty("req_client_num", id.split("@")[0].toUpperCase()); 
 		// 요청고객회원번호인데 고객번호가 따로 없으므로 id 사용. 근데 ! 다 대문자니까 toUpperCase()
+		// ++ 우리는 이메일이라서 일단 @ 앞부분 ..
 		
 		jsonObject.addProperty("transfer_purpose", "ST"); //이체용도 (결제: ST)
 		

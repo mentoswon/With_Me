@@ -282,9 +282,7 @@
 			, null
 			, #{report_category}
 			, #{report_reason}
-			, #{report_file1}
-			, #{report_file2}
-			, #{report_file3}
+			, #{report_file}
 			, #{report_ref_url1}
 			, #{report_ref_url2}
 			, #{report_ref_url3}
@@ -443,7 +441,7 @@
 			, #{user_funding_email}
 			, #{funding_idx}
 			, null
-			, 1
+			, '미결제'
 			, null
 			, #{user_funding_pay_amt}
 		)
@@ -451,51 +449,21 @@
 	
 	<!-- 오늘 결제하는 펀딩 리스트 -->
 	<select id="selectTodayPayFunding" resultType="hashmap">
-		SELECT * 
-		FROM funding_user
+		SELECT f.*, m.mem_name AS name
+		FROM funding_user f JOIN member m
+		ON f.funding_mem_email = m.mem_email 
 		WHERE (SELECT DATE_FORMAT(funding_pay_date, '%Y-%m-%d')) = #{now}
 	</select>
 	
 	<!-- ======================================================================= -->
-	<select id="selectId" resultType="String">
-		SELECT fin_mem_email 
-		FROM fintech_user_info
-		WHERE 
-			fin_mem_email = #{id} 
-	</select>
-
-	<!-- 엑세스 정보 추가 -->
-	<insert id="insertAccessToken">
-		INSERT INTO fintech_user_info
-		VALUES (
-			null
-			, #{id}
-			, #{token.access_token}
-			, #{token.refresh_token}
-			, #{token.user_seq_no}
-			, #{token.user_ci}
-			, #{token.fintech_use_num}       -- 임시: 사용자 계좌가 1개라는 전제하에 계좌번호 대신 사용자 번호 저장 (원래는 계좌별로 핀테크 이용번호가 여러개임)
-		)
-	</insert>
-	
-	<!-- 엑세스 정보 갱신 -->
-	<update id="updateAccessToken">
-		UPDATE fintech_user_info
-		SET 
-			access_token = #{token.access_token}
-			, refresh_token = #{token.refresh_token}
-		WHERE 
-			fin_mem_email = #{id}
-	</update>
-	
 	<!-- 로그인 시 엑세스 정보 조회하여 저장하도록 처리해야하니까 일단 조회부터 --> 
 	<!-- member 테이블도 조회하여 name 도 가져와야함 !~ --> 
-	<select id="selectBankUserInfo" resultType="bankToken">
+	<select id="userSelectBankUserInfo" resultType="bankToken">
 		SELECT * 
 		FROM fintech_user_info AS f
 		LEFT JOIN member AS m
-		ON f.fin_mem_email = m.mem_email
-		WHERE f.fin_mem_email = #{id}
+		ON f.id = m.mem_email
+		WHERE f.id = #{id}
 	</select>
 	
 	<!-- 관리자 엑세스 토큰 가져오기 -->
@@ -507,14 +475,14 @@
 	</select>
 	
 	<!-- fintech_user_info 테이블에 핀테크 use_num 저장 -->
-	<update id="updateFintechInfo">
+	<update id="userUpdateFintechInfo">
 		UPDATE fintech_user_info
-		SET fintech_use_num = #{fin_use_num} AND user_ci = #{user_ci}
-		WHERE fin_mem_email = #{id}
+		SET fintech_use_num = #{fin_use_num}, user_ci = #{user_ci}
+		WHERE id = #{id}
 	</update>
 	
 	<!-- user_account 테이블에 넣기 -->
-	<insert id="insertAccountInfo">
+	<insert id="userInsertAccountInfo">
 		<selectKey keyProperty="funding_idx" resultType="int" order="BEFORE">
 			SELECT IFNULL(MAX(funding_idx),0)
 			FROM funding_user
@@ -529,4 +497,11 @@
 			, #{tranDtime}
 		)
 	</insert>
+	
+	<!-- project_payment 테이블에 오늘 날짜로 결제 날짜 업데이트 하기 --> 
+	<update id="updatePayDate">
+		UPDATE project_payment
+		SET pro_pay_date = now(), pro_pay_status = '결제완료'
+		WHERE pro_mem_email = #{id} AND pro_pay_amt = #{tran_amt}
+	</update>
 </mapper>

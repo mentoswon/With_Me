@@ -23,24 +23,27 @@
 		<script type="text/javascript">
 			// 주소 검색 API 활용 기능 추가
 			// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
-// 			$("#address_search_btn").click(function() {
-// 				console.log("동작");
-// 				new daum.Postcode({
-// 			        oncomplete: function(data) { 
-// 			            $("#address_post_code").val(data.zonecode);
-			            
-// 						let address = data.address;
-						
-// 			            if(data.buildingName !== ''){
-// 			               address += "(" + data.buildingName + ")";
-// 			            }
-			            
-// 			            $("#address_main").val(address);
-			            
-// 			            $("#address_sub").focus();
-// 			        }
-// 			    }).open();
-// 			});
+			$(function(){
+				$("#address_search_btn").click(function() {
+					console.log("동작동작");
+					
+					new daum.Postcode({
+				        oncomplete: function(data) { 
+				            $("#address_post_code").val(data.zonecode);
+				            
+							let address = data.address;
+							
+				            if(data.buildingName !== ''){
+				               address += "(" + data.buildingName + ")";
+				            }
+				            
+				            $("#address_main").val(address);
+				            
+				            $("#address_sub").focus();
+				        }
+				    }).open();
+				});
+			});
 			
 		</script>
 	</head>
@@ -48,7 +51,9 @@
 		<header>
 			<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 		</header>
-		
+		<div id="postcode-layer" style="display:none; position:fixed; overflow:hidden; z-index:9999; -webkit-overflow-scrolling:touch;">
+		    <!-- 여기에 Daum Postcode API 팝업이 렌더링됩니다. -->
+		</div>
 		<div class="inner">
 			<h2>${member.mem_name} 후원자님! 다시 한 번 확인해주세요.</h2>
 			<%-- 후원 처리할 때 가져갈 form --%>
@@ -254,7 +259,7 @@
 			        		<span>주소</span>
 							<br>
 			        		<input type="text" name="address_post_code" id="address_post_code" placeholder="&nbsp;&nbsp;우편번호" required>
-<!-- 			        		<button id="address_search_btn">주소 검색</button> -->
+			        		<button id="address_search_btn" type="button">주소 검색</button>
 							<br>
 							<input type="text" name="address_main" id="address_main" placeholder="&nbsp;&nbsp;기본주소" required>
 							<br>

@@ -25,7 +25,7 @@ public class UserFundingPay{
 	private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 	
 	// ================================================================================================================
-	@Scheduled(cron = "0 36 20 * * ?")  //0 12 10 * * ?매일 10시 12분에 실행
+	@Scheduled(cron = "0 15 15 * * ?")  //0 12 10 * * ?매일 지정 시간에 진행 (오전 10시 설정 예정)
 	public void sche () throws Exception {
 		
 		// ----------------------------------------------------------
@@ -39,7 +39,6 @@ public class UserFundingPay{
 		// 2) funding_user 테이블에 funding_pay_date (결제 예정일) 가 저장되어있음. 
 		//	  오늘 날짜와 동일한 거 들고오기
 		List<Map<String, Object>> payList = service.getTodayPayFunding(now);
-		
 		
 		// -------------------------------------------------------------------------------
 		// 해당 펀딩의 funding_idx 에 맞는 사람이 결제돼야함. (출금처리)
@@ -59,9 +58,9 @@ public class UserFundingPay{
 			map.put("token", token);
 			map.put("id", id);
 			
-			// 핀테크 이용번호 꺼내서 map에 저장
-			
-			
+			// withdraw_fintech_use_num(token 에 들어있음), withdraw_client_name, tran_amt(funding_pay_amt) 추가 필요
+			map.put("withdraw_client_name", list.get("name"));
+			map.put("tran_amt", list.get("funding_pay_amt"));
 			
 			logger.info("출금이체 요청 파라미터 : " + map);
 			
@@ -70,7 +69,8 @@ public class UserFundingPay{
 			Map<String, String> withdrawResult = service.requestWithdraw(map);
 			logger.info(">>>>>>> 출금이체 요청 결과 : " + withdrawResult);
 			
-			
+			// project_payment 테이블에 오늘 날짜로 결제 날짜 업데이트 하기
+			service.updatePayDate(map);
 			
 		}
 		
