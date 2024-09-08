@@ -379,6 +379,11 @@ function confirmDelete() {
 										src="${pageContext.request.contextPath}/resources/upload/${product.product_img}"
 										id="img1" class="car_image" selected>
 								</div>
+								<div>
+									<img
+										src="${pageContext.request.contextPath}/resources/upload/${product.product_img2}"
+										id="img1" class="car_image" selected>
+								</div>
 							</td>
 						</tr>
 						<tr><td width="70">파일</td>

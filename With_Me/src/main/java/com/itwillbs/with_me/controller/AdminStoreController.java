@@ -143,28 +143,37 @@ public class AdminStoreController {
 		}
 		// ----------------------------------
 		// 업로드 되는 실제 파일 처리
-		// 실제 파일은 BoardVO 객체의 MultipartFile 타입 객체(멤버변수 fileX)가 관리함
+		// 실제 파일은 StoreVO 객체의 MultipartFile 타입 객체(멤버변수 fileX)가 관리함
 		MultipartFile pImg1 = store.getProduct_img_file1();
+		MultipartFile pImg2 = store.getProduct_img_file2();
 		
 		// MultipartFile 객체의 getOriginalFile() 메서드 호출 시 업로드 한 원본 파일명 리턴
 		// => 주의! 업로드 파일이 존재하지 않으면 파일명에 null 값이 아닌 널스트링값 저장됨
 		System.out.println("원본파일명1 : " + pImg1.getOriginalFilename());
+		System.out.println("원본파일명2 : " + pImg2.getOriginalFilename());
 		
 		// 파일명 중복 방지 대책
 		// 자신의 업로드하는 파일명끼리도 중복을 방지하려면 UUID 를 매번 생성하여 결합
 		String pImgName1 = UUID.randomUUID().toString().substring(0, 8) + "_" + pImg1.getOriginalFilename();
+		String pImgName2 = UUID.randomUUID().toString().substring(0, 8) + "_" + pImg2.getOriginalFilename();
 		
 		// 업로드 할 파일이 존재할 경우(원본 파일명이 널스트링이 아닐 경우)에만 
 		// StoreVO 객체에 서브디렉토리명과 함께 파일명 저장
 		// => 단, 업로드 파일이 선택되지 않은 파일은 파일명에 null 값이 저장되므로
 		//    파일명 저장 전 StoreVO 객체의 파일명에 해당하는 멤버변수값을 널스트링("") 으로 변경
 		store.setProduct_img("");
+		store.setProduct_img2("");
 		
 		if(!pImg1.getOriginalFilename().equals("")) {
 			store.setProduct_img(subDir + "/" + pImgName1);
 		}
 		
+		if(!pImg2.getOriginalFilename().equals("")) {
+			store.setProduct_img2(subDir + "/" + pImgName2);
+		}
+		
 		System.out.println("DB 에 저장될 파일명 : " + store.getProduct_img());
+		System.out.println("DB 에 저장될 파일명2 : " + store.getProduct_img2());
 		
 		
 		// 아이템 옵션(여러개 일 시 | 이렇게 처리)
@@ -193,6 +202,11 @@ public class AdminStoreController {
 				if(!pImg1.getOriginalFilename().equals("")) {
 					// File 객체 생성 시 생성자에 업로드 경로명과 파일명 전달
 					pImg1.transferTo(new File(realPath, pImgName1));
+				}
+				
+				if(!pImg2.getOriginalFilename().equals("")) {
+					// File 객체 생성 시 생성자에 업로드 경로명과 파일명 전달
+					pImg2.transferTo(new File(realPath, pImgName2));
 				}
 				
 			} catch (IllegalStateException e) {
@@ -242,6 +256,7 @@ public class AdminStoreController {
 		// 뷰페이지에서 파일 목록의 효율적 처리를 위해 파일명만 별도로 List 객체에 저장
 		List<String> fileList = new ArrayList<String>();
 		fileList.add(product.getProduct_img());
+		fileList.add(product.getProduct_img2());
 		
 		System.out.println("fileList : " + fileList);
 		
@@ -289,7 +304,8 @@ public class AdminStoreController {
 			
 			// 파일 삭제에 사용될 파일명(최대 3개)를 List 또는 배열에 저장하여 처리 코드 중복 제거
 			String[] arrFileNames = {
-				store.getProduct_img()
+				store.getProduct_img(),
+				store.getProduct_img2()
 			};
 //			System.out.println("삭제할 파일 목록 : " + Arrays.toString(arrFileNames));
 			
@@ -335,6 +351,7 @@ public class AdminStoreController {
 		// 뷰페이지에서 파일 목록의 효율적 처리를 위해 파일명만 별도로 List 객체에 저장
 		List<String> fileList = new ArrayList<String>();
 		fileList.add(store.getProduct_img());
+		fileList.add(store.getProduct_img2());
 		
 		// List 객체를 반복하면서 파일명에서 원본 파일명을 추출
 		List<String> originalFileList = new ArrayList<String>();
@@ -403,24 +420,43 @@ public class AdminStoreController {
 		Files.createDirectories(path);
 		
 		// 파일명 중복 방지
-		MultipartFile pImg = store.getProduct_img_file1();
-		String imgName = UUID.randomUUID().toString().substring(0, 8) + "_" + pImg.getOriginalFilename();
+		MultipartFile pImg1 = store.getProduct_img_file1();
+		MultipartFile pImg2 = store.getProduct_img_file2();
+		
+		System.out.println("원본파일명1 : " + pImg1.getOriginalFilename());
+		System.out.println("원본파일명2 : " + pImg2.getOriginalFilename());
+		
+		String imgName = UUID.randomUUID().toString().substring(0, 8) + "_" + pImg1.getOriginalFilename();
+		String imgName2 = UUID.randomUUID().toString().substring(0, 8) + "_" + pImg2.getOriginalFilename();
 		
 //		System.out.println("imgName : " + imgName);
 		
 		store.setProduct_img("");
+		store.setProduct_img2("");
 		
-		if(!pImg.getOriginalFilename().equals("")) {
+		if(!pImg1.getOriginalFilename().equals("")) {
 			store.setProduct_img(subDir + "/" + imgName);
 		}
+		
+		if(!pImg2.getOriginalFilename().equals("")) {
+			store.setProduct_img2(subDir + "/" + imgName2);
+		}
+		
+		System.out.println("DB 에 저장될 파일명 : " + store.getProduct_img());
+		System.out.println("DB 에 저장될 파일명2 : " + store.getProduct_img2());
 		
 		// 수정 작업 요청
 		int updateCount = service.modifyProduct(store);
 		
 		if(updateCount > 0) {
-			if(!pImg.getOriginalFilename().equals("")) {
+			if(!pImg1.getOriginalFilename().equals("")) {
 				// File 객체 생성 시 생성자에 업로드 경로명과 파일명 전달
-				pImg.transferTo(new File(realPath, imgName));
+				pImg1.transferTo(new File(realPath, imgName));
+			}
+			
+			if(!pImg2.getOriginalFilename().equals("")) {
+				// File 객체 생성 시 생성자에 업로드 경로명과 파일명 전달
+				pImg2.transferTo(new File(realPath, imgName2));
 			}
 			
 			// 글 상세정보 조회 페이지 리다이렉트(파라미터 : 글번호, 페이지번호)

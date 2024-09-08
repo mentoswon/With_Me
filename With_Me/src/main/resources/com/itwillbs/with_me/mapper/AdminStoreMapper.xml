@@ -82,6 +82,7 @@
 			, #{product_stock}
 			, 1                       -- 1 : 판매중, 2: 판매 중지, 3 : 품절
 			, #{product_img}
+			, #{product_img2}
 			, now()
 		)
 	</insert>
@@ -116,6 +117,9 @@
 			<if test="!product_img.equals('')">
 				, product_img = #{product_img} -- product_img 존재할 경우 UPDATE 항목 추가
 			</if>
+			<if test="!product_img2.equals('')">
+				, product_img2 = #{product_img2} -- product_img2 존재할 경우 UPDATE 항목 추가
+			</if>
 		WHERE
 			product_idx = #{product_idx}	
 	</update>
@@ -124,7 +128,8 @@
 	<update id="deleteProductImg">
 		UPDATE product_info
 		SET
-			product_img = CASE WHEN product_img = #{product_img} THEN '' ELSE product_img END
+			product_img = CASE WHEN product_img = #{product_img} THEN '' ELSE product_img END,
+			product_img2 = CASE WHEN product_img2 = #{product_img} THEN '' ELSE product_img2 END
 		WHERE 
 			product_idx = #{product_idx}
 	</update>

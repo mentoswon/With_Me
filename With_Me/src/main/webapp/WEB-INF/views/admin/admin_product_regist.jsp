@@ -162,6 +162,7 @@ window.onload = function() {
 								<%-- 주의! 파일 업로드를 위해 form 태그 속성에 enctype 속성 필수!  --%>
 								<%-- 1) 한번에 하나의 파일(단일 파일) 선택 가능하게 할 경우 --%>
 								<input type="file" name="product_img_file1">
+								<input type="file" name="product_img_file2">
 							</td>
 						</tr>
 						<tr>
