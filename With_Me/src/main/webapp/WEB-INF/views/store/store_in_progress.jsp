@@ -14,6 +14,28 @@
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 		<%-- 다음 우편번호 API --%>
 		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+		
+		<%-- 포트원 결제 --%>
+		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+		<%-- iamport.payment.js --%>
+		<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+		<style>
+		
+		#user_store_payment {
+			width: 100%;
+		    padding: 15px 0;
+		    margin-top: 20px;
+		    border: none;
+		    border-radius: 10px;
+		    background-color: #ffab40;
+		    color: #fff;
+		    font-weight: bold;
+		    font-size: 20px;
+		    text-align: center;
+		    cursor: pointer;
+		}
+		
+		</style>
 		<script type="text/javascript">
 			// 주소 검색 API 활용 기능 추가
 			// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
@@ -45,7 +67,7 @@
 		
 		<div class="inner">
 			<h2>${member.mem_name} 후원자님! 다시 한 번 확인해주세요.</h2>
-			<form action="StoreUserOrderPro" name="goFundForm" method="post">
+			<form action="StoreUserOrderPro"  id="UserStorePayForm" name="goFundForm" method="post">
 				<section class="con01">
 					<div class="userInfo">
 						<h4>후원자 정보</h4>
@@ -81,7 +103,7 @@
 							</div>
 							<div id="amtWrapper">
 								<div><fmt:formatNumber pattern="#,###">${selectedProduct.productPrice}</fmt:formatNumber>&nbsp;원</div>
-								<input type="hidden" name="user_funding_reward_idx" id="user_funding_reward_idx" value="${selectedProduct.funding_reward_idx}">
+								<input type="hidden" name="user_store_product_idx" id="user_store_product_idx" value="${selectedProduct.productIdx}">
 							</div>
 							<span id="totalAmt">총액 : <fmt:formatNumber pattern="#,###">${selectedProduct.productPrice}</fmt:formatNumber>원</span>
 						</div>
@@ -154,16 +176,12 @@
 						</div>
 						<div class="infoWrapper">
 							<div>
-								<input type="radio" id="kakaoPay" name="payMethod" required checked>
+								<input type="radio" id="kakaoPay" name="payMethod" value="1" required checked>
 								<label for="kakaoPay"> 카카오페이</label>
 							</div>
 							<div>
-								<input type="radio" id="creditCard" name="payMethod" required>
+								<input type="radio" id="creditCard" name="payMethod" value="2" required>
 								<label for="creditCard"> 카드결제</label>
-							</div>
-							<div>
-								<input type="radio" id="accountTransfer" name="payMethod" required>
-								<label for="accountTransfer"> 계좌이체</label>
 							</div>
 						</div>
 						<div>
@@ -179,7 +197,18 @@
 					<input type="hidden" name="user_funding_address_idx" id="user_funding_address_idx" value="">			<!-- 배송지 번호 -->
 					<input type="hidden" name="user_funding_plus_amt" id="user_funding_plus_amt" value="">				<!-- 추가 후원금 -->
 					<input type="hidden" name="user_funding_pay_amt" id="user_funding_pay_amt" value="">                  <!-- 총액 -->
-					<input type="submit" id="user_funding_payment" value="결제하기"> 
+					
+					
+					<input type="hidden" name="user_store_email" id="user_store_email" value="">					<!-- 완) 후원자 email -->
+<!-- 					<input type="hidden" name="user_store_product_idx" id="user_store_product_idx" value="">			프로젝트 번호 -->
+					<input type="hidden" name="user_store_product_option" id="user_store_product_option" value="">			<!-- 아이템 옵션 | 로 구분-->
+					<input type="hidden" name="user_order_count" id="user_order_count" value="">					<!-- 후원 개수 => 우리는 1개 고정 -->
+					<input type="hidden" name="user_store_address_idx" id="user_store_address_idx" value="">			<!-- 배송지 번호 -->
+					<input type="hidden" name="user_store_pay_amt" id="user_store_pay_amt" value="">                  <!-- 총액 -->
+					
+					
+					<input type="hidden" name="user_store_pay_method" id="user_store_pay_method" value="">                  <!-- 총액 -->
+					<input type="submit" id="user_store_payment" value="결제하기"> 
 				</section>
 			</form>
 		</div>
@@ -280,6 +309,47 @@
 		</footer>
 		
 		<script type="text/javascript">
+			// =================================================================================
+			// 페이지 로딩 시 결제 할 때 넘어갈 hidden 태그에 value 넣기
+			// mem_email, product_code, order_idx, product_item_option, order_count
+			$(function (){
+				// 받아오면 바로 넣을 수 있는 것 
+				
+				// 주문자 email
+				$("#user_store_email").val('${member.mem_email}');
+				
+				// product_idx
+				$("#user_store_product_idx").val('${selectedProduct.productIdx}');
+				
+				// product_item_option
+				$("#user_store_product_option").val("${selectedProduct.productOption}");
+				
+				// order_count
+				$("#user_order_count").val(1);
+				
+				// order_idx
+				$("#user_order_idx").val($("#order_idx").val()); // 위에서 넣음
+				
+				// address_idx
+				let addressIdx = $(".addressWrapper").data("address-idx");
+				$("#user_store_address_idx").val(addressIdx);
+				
+				$("#user_store_pay_amt").val('${selectedProduct.productPrice}');
+				
+				$("#user_store_pay_method").val($("input:radio[name=payMethod]:checked").val());
+				
+				// --------------------------------------------------------------------------------
+			});
+				
+				
+				
+				
+				
+		
+		
+		
+		
+			// =================================================================================
 			let modal = document.querySelectorAll('.modal');
 			let AddAddressBtn = document.querySelectorAll('.AddAddressBtn');
 			let changeAddressBtn = document.querySelectorAll('.changeAddressBtn');
@@ -517,35 +587,108 @@
 			
 			// =========================================================================
 			// 결제 수단 목록
-			let payMethod = document.querySelectAll(".payMethod");
+			let payMethod = document.querySelectorAll(".payMethod");
 			
-			// 결제 수단 변경 
+			// 결제 수단 변경 - 카카오페이
 			$("#kakaoPay").click(function(){
 				payMethod[0].classList.remove("on");
 				payMethod[1].classList.remove("on");
+// 				payMethod[2].classList.remove("on");
+				
 				
 				payMethod[0].classList.add("on");
+				$("#user_store_pay_method").val($(this).val());
 			});
 			
+			// 결제수단 변경 - 신용카드
 			$("#creditCard").click(function(){
 				payMethod[0].classList.remove("on");
 				payMethod[1].classList.remove("on");
+// 				payMethod[2].classList.remove("on");
 				
-				payMethod[0].classList.add("on");
+				payMethod[1].classList.add("on");
+				$("#user_store_pay_method").val($(this).val());
 			});
 			
 			
 			
 			// 결제 진행
-			$("#user_funding_complete").click(function(){
-
-				if($("input:checkbox[name=agreement]:checked").length > 1) {
-					$("#UserFundingPayForm").submit();
-				} else {
-					alert("필수 동의사항에 체크해주세요.");
+			$("#user_store_complete").click(function(){
+				if(("#user_store_pay_method").val() != 3) { // 포트원
+					// 동의사항 체크 여부 확인
+					if($("input:checkbox[name=agreement]:checked").length > 1) {
+						requestPay();
+					} else {
+						alert("필수 동의사항에 체크해주세요.");
+					}
 				}
 			});
 			
+			
+			
+			var IMP = window.IMP;
+			IMP.init("imp61351081");
+			
+			let today =new Date();
+			let hours = today.getHours(); // 시
+			let minutes = today.getMinutes(); // 분
+			let seconds = today.getSeconds(); // 초
+			let milliseconds = today.getMilliseconds();
+			let makeMerchanUid = "" + hours + minutes + seconds + milliseconds;
+
+			// 포트원 예약 결제 https://developers.portone.io/opi/ko/integration/start/v2/billing/schedule?v=v2
+			// https://velog.io/@code_june/Code-CampTIL-29%EC%9D%BC%EC%B0%A8-%EA%B2%B0%EC%A0%9C-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4			
+			function requestPay() {
+				if($("input:radio[name=payMethod]:checked").val() == "1") {
+					IMP.request_pay() ({
+						// 파라미터 값 설정
+						pg : "kakaopay.TC0ONETIME", // PG사 코드표에서 선택
+						pay_method : "card", // 결제 방식
+						merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호  
+						name : "${selectedProduct.productName}", // 상품명 -> 필수
+						amount : "${selectedProduct.productPrice}", // 결제 금액 -> 필수
+						// 구매자 정보 
+						buyer_email : "${sId}",
+						buyer_name : "${member.mem_name}",
+						buyer_tel :  "${member.mem_tel}",
+										
+					}, function(rsp){// callback
+						 if(rsp.success) {
+							 alert("결제되었습니다.");
+							 $("UserStorePayForm").submit();
+						 } else {
+							 var msg = '결제에 실패하였습니다.';
+							 msg += '\n에러내용 : ' + rsp.error_msg;
+							 alert(msg);
+						 }
+					 });// IMP.request_pay End
+					
+				} else if($("input:radio[name=payMethod]:checked").val() == "2") {
+					IMP.request_pay({
+						// 파라미터 값 설정
+						pg : "html5_inicis.INIpayTest", // PG사 코드표에서 선택
+						pay_method : "card", // 결제방식
+						merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호 
+						name : "${selectedProduct.productName}", // 상품명 -> 필수
+						amount : "${selectedProduct.productPrice}", // 결제 금액 -> 필수
+						// 구매자 정보 
+						buyer_email : "${sId}",
+						buyer_name : "${member.mem_name}",
+						buyer_tel : "${member.mem_tel}",
+						
+					}, function(rsp) {
+						if(rsp.success) {
+							alert("결제되었습니다.");
+							$("#UserStorePayForm").submit();
+						} else {
+							var msg = '결제에 실패하였습니다.';
+							msg += '\n에러내용 : ' + rsp.error_msg;
+							alert(msg);
+						}
+						
+					}); // IMP.request_pay End
+				}
+			}; // requestPay function End
 			
 			
 		</script>

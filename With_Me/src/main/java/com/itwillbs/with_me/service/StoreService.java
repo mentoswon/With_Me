@@ -136,6 +136,17 @@ public class StoreService {
 	public List<Map<String, Object>> getProductOptionList(Integer product_idx) {
 		return mapper.selectProductOptionList(product_idx);
 	}
+	
+	// 사용자 주문 등록
+	public int registUserOrder(Map<String, Object> map) {
+		return mapper.insertUserOrder(map);
+	}
+	
+	// 스토어 결제 정보 db 저장
+	public void registStorePaymentInfo(Map<String, Object> map) {
+		mapper.insertStorePaymentInfo(map);
+		
+	}
 
 
 	

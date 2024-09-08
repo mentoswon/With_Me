@@ -185,6 +185,7 @@ public class StoreController {
 		map.get("productPrice");
 		map.get("productOption");
 		map.get("productName");
+		map.get("productIdx");
 
 			
 		
@@ -596,12 +597,26 @@ public class StoreController {
 	}
 	
 	@PostMapping("StoreUserOrderPro")
-	public String storeUserOrderPro(@RequestParam Map<String, Object> map, Model model) {
+	public String storeUserOrderPro(@RequestParam Map<String, Object> map, Model model, HttpSession session, MemberVO member) {
 		System.out.println("주문할 내용 : " + map);
 		
+		String id = (String)session.getAttribute("sId");
+		member.setMem_email(id);
 		
+		Integer payMethod = Integer.parseInt(String.valueOf(map.get("payMethod"))); // 결제방법
 		
-		return "";
+		int user_store_product_idx = 0;
+		
+		int insertCount = service.registUserOrder(map); // 사용자 주문 정보 등록
+		
+		user_store_product_idx = Integer.parseInt(String.valueOf(map.get("user_store_product_idx")));
+		
+		if(insertCount > 0) {
+			// 스토어 상품 구매 내역 product_payment 테이블에 저장
+			service.registStorePaymentInfo(map);
+		}
+		
+		return "redirect:/StoreUserOrderPro";
 	}
 	
 	

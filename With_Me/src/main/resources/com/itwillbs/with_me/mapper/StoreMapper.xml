@@ -111,8 +111,21 @@
 		WHERE product_idx = #{product_idx}
 	</select>
 	
+	<!-- 스토어 사용자 주문 등록 -->
+	<insert id="insertUserOrder">
+		INSERT INTO store_user
+		VALUES (
+			null
+			, #{
+		)
+	
+	</insert>
+	
+	<!-- 스토어 결제 정보 db저장 -->
+	<insert id="insertStorePaymentInfo">
 	
 	
+	</insert>
 	
 	
 <!-- ============================================================ -->	

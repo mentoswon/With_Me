@@ -94,6 +94,12 @@ public interface StoreMapper {
 	// 상품 옵션 리스트
 	List<Map<String, Object>> selectProductOptionList(Integer product_idx);
 
+	// 사용자 주문 등록
+	int insertUserOrder(Map<String, Object> map);
+
+	// 스토어 결제 정보 db 저장
+	void insertStorePaymentInfo(Map<String, Object> map);
+
 
 
 

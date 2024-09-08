@@ -94,6 +94,7 @@
 								<input type="hidden" id="productOption" name="productOption" value="">
 								<input type="hidden" id="productPrice" name="productPrice" value="${product_detail.product_price}">
 								<input type="hidden" id="productName" name="productName" value="${product_detail.product_name}">
+								<input type="hidden" id="productIdx" name="productIdx" value="${product_detail.product_idx}">
 								<input type="submit" class="goStore Btn" value="구매하기">
 							</div>
 						</form>
