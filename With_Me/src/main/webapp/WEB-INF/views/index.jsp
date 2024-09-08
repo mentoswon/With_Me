@@ -101,7 +101,7 @@
 										</a>
 										<c:choose>
 											<c:when test="${projectList[status.index].like_mem_email eq sId and projectList[status.index].like_status eq 'Y'}">
-												<button class="like Btn" type="button" onclick="cancleLike('${projectList[status.index].project_code}', '${sId}')">
+												<button class="like Btn" type="button" onclick="cancelLike('${projectList[status.index].project_code}', '${sId}')">
 													<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 												</button>
 											</c:when>
@@ -152,6 +152,7 @@
 			
 			<!-- 펀딩 실시간 랭킹 -->
 			<div class="popularWrapper on">
+				<c:set var="limit" value="0"/>
 				<c:forEach items="${popularProList}" varStatus="status">
 					<c:if test="${popularProList[status.index] != null and limit < 5}">
 						<div class="popularItem">
@@ -174,73 +175,31 @@
 								</a>
 							</div>
 						</div>
+						 <c:set var="limit" value="${limit + 1}" />
 					</c:if>
 				</c:forEach>
 			</div>
 			
 			<!-- 스토어 실시간 랭킹 -->
 			<div class="popularWrapper">
-				<%-- 해원 ) 반복문 사용 예정. 임시로 여러개 넣어둠 --%>
-				<div class="popularItem">
-					<b>1</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample2.jpg">
-						</a>
-					</div>
-				</div>
-				<div class="popularItem">
-					<b>2</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample2.jpg">
-						</a>
-					</div>
-				</div>
-				<div class="popularItem">
-					<b>3</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample2.jpg">
-						</a>
-					</div>
-				</div>
-				<div class="popularItem">
-					<b>4</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample2.jpg">
-						</a>
-					</div>
-				</div>
-				<div class="popularItem">
-					<b>5</b>
-					<div class="popTitle">
-						<span><a href="#">창작자명</a></span>
-						<h3><a href="#">제목</a></h3>
-					</div>
-					<div class="popular_image">
-						<a href="#">
-							<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/catSample2.jpg">
-						</a>
-					</div>
-				</div>
+				<c:set var="limit" value="0"/>
+				<c:forEach items="${popularProduct}" varStatus="status">
+					<c:if test="${popularProduct[status.index] != null and limit < 5}">
+						<div class="popularItem">
+							<b>${status.index + 1}</b>
+							<div class="popTitle">
+								<h3><a href="StoreDetail?product_name=${popularProduct[status.index].product_name}&product_code=${popularProduct[status.index].product_code}">${popularProduct[status.index].product_name}</a></h3>
+								<span>${popularProduct[status.index].product_price} 원</span>
+							</div>
+							<div class="popular_image">
+								<a href="StoreDetail?product_name=${popularProduct[status.index].product_name}&product_code=${popularProduct[status.index].product_code}">
+									<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${popularProduct[status.index].product_img}">
+								</a>
+							</div>
+						</div>
+						 <c:set var="limit" value="${limit + 1}" />
+					</c:if>
+				</c:forEach>
 			</div>
 		</div>
 	</section>
@@ -259,7 +218,7 @@
 								</a>
 								<c:choose>
 									<c:when test="${storeList[status.index].like_mem_email eq sId and storeList[status.index].like_status eq 'Y'}">
-										<button class="like Btn" type="button" onclick="CancleLikeProduct('${storeList[status.index].product_code}', '${sId}')">
+										<button class="like Btn" type="button" onclick="CancelLikeProduct('${storeList[status.index].product_code}', '${sId}')">
 											<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 										</button>
 									</c:when>
@@ -307,7 +266,7 @@
 		
 		// 프로젝트 좋아요
 		function registLike(project_code, sId) {
-				console.log("project_code : " + project_code + ", sId : " + sId);
+// 				console.log("project_code : " + project_code + ", sId : " + sId);
 			if(confirm("프로젝트를 좋아요 하시겠습니까?")){
 				$.ajax({
 					url: "RegistLike",
@@ -332,10 +291,10 @@
 		}
 		
 		// 프로젝트 좋아요 취소
-		function cancleLike(project_code, sId) {
-				console.log("project_code : " + project_code + ", sId : " + sId);
+		function cancelLike(project_code, sId) {
+// 				console.log("project_code : " + project_code + ", sId : " + sId);
 			$.ajax({
-				url: "CancleLike",
+				url: "CancelLike",
 				type : "POST",
 				async:false, // 이 한줄만 추가해주시면 됩니다.
 				data:{
@@ -384,9 +343,9 @@
 		}
 			
 		// 상품 좋아요 취소 
-		function CancleLikeProduct(product_code, sId) {
+		function CancelLikeProduct(product_code, sId) {
 			$.ajax({
-				url : "CancleLikeProduct",
+				url : "CancelLikeProduct",
 				type : "POST",
 //					async:false,
 				data :{

@@ -100,13 +100,19 @@
 								<!-- 남은 날짜 계산 -->
 								<fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
 								<fmt:parseNumber value="${project_detail.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-								<c:set value="${endDate - strDate}" var="leftDay"/>
+								<c:set value="${endDate - strDate + 1}" var="leftDay"/>
 								<!-- 남은 날짜 계산 end -->
 								
 								<dd id="leftDay" style="<c:if test="${leftDay eq 0}">background-color:#ffab40; color:#ffffff;font-weight: bold;</c:if>">
 									<c:choose>
 										<c:when test="${leftDay eq 0}">
 											오늘 마감이에요 !
+										</c:when>
+										<c:when test="${leftDay < 0}">
+											마감
+										</c:when>
+										<c:when test="${project_detail.funding_start_date > today}">
+											공개 예정
 										</c:when>
 										<c:otherwise>
 											<c:out value="${leftDay}"></c:out>일 남았어요 !
@@ -123,7 +129,7 @@
 						<div class="fundInfo3">
 							<c:choose>
 								<c:when test="${project_detail.isLike.like_mem_email eq sId and project_detail.isLike.like_status eq 'Y'}">
-									<button class="like Btn" type="button" onclick="cancleLike('${project_detail.project_code}', '${sId}')">
+									<button class="like Btn" type="button" onclick="cancelLike('${project_detail.project_code}', '${sId}')">
 										<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 									</button>
 								</c:when>
@@ -215,7 +221,7 @@
 							<div class="wrap">
 								<%-- 일반후원은 클릭하면 바로 결제페이지로 이동 --%>
 	<!-- 							<div class="reward" id="reward_default" onclick="location.href='FundInProgress?reward_amt=1000&reward_title=일반후원하기'"> -->
-								<div class="reward" id="reward_default" style="<c:if test='${project_detail.funding_end_date < today}'>pointer-events: none; opacity: 0.5; cursor: not-allowed;</c:if>">
+								<div class="reward" id="reward_default" style="<c:if test='${project_detail.funding_end_date < today or project_detail.creator_email eq sId}'>pointer-events: none; opacity: 0.5; cursor: not-allowed;</c:if>">
 									<div class="reward_price"><fmt:formatNumber pattern="#,###">1000</fmt:formatNumber>원
 										<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
 									</div>
@@ -232,7 +238,7 @@
 								</div>
 								
 								<c:forEach var="rewardList" items="${rewardList}">
-									<div class="reward">
+									<div class="reward" style="<c:if test='${project_detail.funding_end_date < today or project_detail.creator_email eq sId}'>pointer-events: none; opacity: 0.5; cursor: not-allowed;</c:if>">
 										<div class="reward_price"><fmt:formatNumber pattern="#,###">${rewardList.reward_price}</fmt:formatNumber>원
 											<img class="more" alt="추가" src="${pageContext.request.contextPath}/resources/image/plus.png">
 										</div> 
@@ -517,10 +523,10 @@
 			}
 			
 			// 프로젝트 좋아요 취소
-			function cancleLike(project_code, sId) {
+			function cancelLike((project_code, sId) {
 // 				console.log("project_code : " + project_code + ", sId : " + sId);
 				$.ajax({
-					url: "CancleLike",
+					url: "CancelLike",
 					type : "POST",
 					async:false, // 이 한줄만 추가해주시면 됩니다.
 					data:{

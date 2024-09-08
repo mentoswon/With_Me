@@ -25,8 +25,6 @@
 			// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
 			$(function(){
 				$("#address_search_btn").click(function() {
-					console.log("동작동작");
-					
 					new daum.Postcode({
 				        oncomplete: function(data) { 
 				            $("#address_post_code").val(data.zonecode);

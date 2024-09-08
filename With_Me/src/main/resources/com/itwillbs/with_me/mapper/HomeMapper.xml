@@ -53,4 +53,13 @@
 		ORDER BY people_per_day_ratio DESC;
 	</select>
 
+	<!-- 스토어 인기순위 -->
+	<select id="selectPopularProductList" resultType="hashmap">
+		SELECT * ,
+			(SELECT COUNT(d.product_idx) 
+			FROM product_payment d
+			WHERE d.product_idx = p.product_idx) / DATEDIFF(CURDATE(), p.product_created) AS ratio
+		FROM product_info p
+		ORDER BY ratio DESC;
+	</select>
 </mapper>

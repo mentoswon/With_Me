@@ -177,8 +177,8 @@ public class UserFundingService {
 	}
 
 	// 좋아요 취소
-	public int cancleLike(String like_project_code, String like_mem_email) {
-		return mapper.cancleLike(like_project_code, like_mem_email);
+	public int cancelLike(String like_project_code, String like_mem_email) {
+		return mapper.cancelLike(like_project_code, like_mem_email);
 	}
 
 	
@@ -201,6 +201,11 @@ public class UserFundingService {
 	// 몇 번째 후원자인지 카운트
 	public int getFundCount(int user_funding_project_idx) {
 		return mapper.selectFundCount(user_funding_project_idx);
+	}
+	
+	// funding_idx 가져가기
+	public int getNowFundingIdx(String id) {
+		return mapper.selectNowFundingIdx(id);
 	}
 
 	// 결제 정보 db 저장
@@ -252,6 +257,7 @@ public class UserFundingService {
 	public void updatePayDate(Map<String, Object> map) {
 		mapper.updatePayDate(map);
 	}
+
 
 
 	

@@ -166,7 +166,7 @@
 										</a>
 										<c:choose>
 											<c:when test="${project.like_mem_email eq sId and project.like_status eq 'Y'}">
-												<button class="like Btn" type="button" onclick="cancleLike('${project.project_code}', '${sId}')">
+												<button class="like Btn" type="button" onclick="cancelLike('${project.project_code}', '${sId}')">
 													<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 												</button>
 											</c:when>
@@ -218,7 +218,7 @@
 													<!-- 남은 날짜 계산 -->
 													<fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
 													<fmt:parseNumber value="${project.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-													<c:set value="${endDate - strDate}" var="leftDay"/>
+													<c:set value="${endDate - strDate + 1}" var="leftDay"/>
 													<!-- 남은 날짜 계산 end -->
 													
 													<c:out value="${leftDay}" />일 남음
@@ -275,7 +275,7 @@
 	<script type="text/javascript">
 		// 프로젝트 좋아요
 		function registLike(project_code, sId) {
-				console.log("project_code : " + project_code + ", sId : " + sId);
+// 				console.log("project_code : " + project_code + ", sId : " + sId);
 			if(confirm("프로젝트를 좋아요 하시겠습니까?")){
 				$.ajax({
 					url: "RegistLike",
@@ -300,10 +300,10 @@
 		}
 		
 		// 프로젝트 좋아요 취소
-		function cancleLike(project_code, sId) {
-				console.log("project_code : " + project_code + ", sId : " + sId);
+		function cancelLike(project_code, sId) {
+// 				console.log("project_code : " + project_code + ", sId : " + sId);
 			$.ajax({
-				url: "CancleLike",
+				url: "CancelLike",
 				type : "POST",
 				async:false, // 이 한줄만 추가해주시면 됩니다.
 				data:{

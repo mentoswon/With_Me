@@ -357,6 +357,10 @@ public class UserFundingController {
 		int FundMemCount = 0;
 		int user_funding_project_idx = 0;
 		
+		// 0908 funding_idx 빼내서 가져가기
+		int funding_idx = 0;
+		
+		
 		// 일반후원과 리워드 후원 메서드 구분 필요.. !
 		// 일반후원
 		if(Integer.parseInt(String.valueOf(map.get("user_funding_reward_idx"))) == 0) {
@@ -367,6 +371,8 @@ public class UserFundingController {
 			if(insertCount > 0) {
 				FundMemCount = service.getFundCount(user_funding_project_idx);
 //				System.out.println("FundMemCount : " + FundMemCount);
+				
+				funding_idx = service.getNowFundingIdx(id);
 				
 				// 구매 내역 project_payment 테이블에 저장
 				service.registPaymentInfo(map);
@@ -404,6 +410,8 @@ public class UserFundingController {
 				FundMemCount = service.getFundCount(user_funding_project_idx);
 //				System.out.println("FundMemCount : " + FundMemCount);
 				
+				funding_idx = service.getNowFundingIdx(id);
+				
 				// 구매 내역 project_payment 테이블에 저장
 				service.registPaymentInfo(map);
 				
@@ -431,6 +439,8 @@ public class UserFundingController {
 		}
 		
 		model.addAttribute("FundMemCount", FundMemCount); // 몇 번째 후원자인지 전달
+		
+		model.addAttribute("funding_idx", funding_idx); // 몇 번째 후원자인지 전달
 		
 		return "redirect:/UserFundingPro";
 	}
@@ -902,13 +912,13 @@ public class UserFundingController {
 	}
 	
 	@ResponseBody
-	@PostMapping("CancleLike")
-	public String cancleLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
+	@PostMapping("CancelLike")
+	public String cancelLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
 		
 		// 결과 담을 Map
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
-		int updateCount = service.cancleLike(like_project_code, like_mem_email);
+		int updateCount = service.cancelLike(like_project_code, like_mem_email);
 		
 		if(updateCount > 0) {
 			resultMap.put("result", true);
@@ -946,7 +956,8 @@ public class UserFundingController {
 		
 		// fintech_user_info 테이블에 fintech_use_num, user_ci 저장 -> bankToken 에 저장하기 ..?
 		List<Map<String, Object>> res_list = (List<Map<String, Object>>) bankUserInfo.get("res_list");
-		String fin_use_num = (String) res_list.get(0).get("fintech_use_num");  /// !!!!!!!!!!!!!!! res_list 에서 다시 빼야됌 !!!!!!!!!!!!!!!!!!!!!!
+
+		String fin_use_num = (String) res_list.get(0).get("fintech_use_num");
 		String user_ci = (String) bankUserInfo.get("user_ci");
 		String id = (String) session.getAttribute("sId");
 		

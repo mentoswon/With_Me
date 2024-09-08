@@ -57,14 +57,14 @@
 	    </span>
     </div>
     
-	<input type="button" id="cancleBtn" onclick="cancleConfirm()" value="취소하기">
+	<input type="button" id="cancelBtn" onclick="cancelConfirm()" value="취소하기">
     <input type="submit" value="접수하기" id="submitReport">
 </form> 
 
 <script>
 	
 	// 취소 버튼
-	function cancleConfirm(){
+	function cancelConfirm(){
 		if(confirm("작성을 취소하시겠습니까?")) {
 			$(modal).removeClass("on");
 			location.reload();

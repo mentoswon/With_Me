@@ -363,7 +363,7 @@
 	</insert>
 	
 	<!--  좋아요 취소 -->
-	<update id="cancleLike">
+	<update id="cancelLike">
 		UPDATE like_
 		SET like_status = 'N'
 		WHERE 
@@ -425,7 +425,14 @@
 	<select id="selectFundCount" resultType="int">
 		SELECT COUNT(funding_project_idx)
 		FROM funding_user
-		WHERE funding_project_idx =#{user_funding_project_idx};	
+		WHERE funding_project_idx = #{user_funding_project_idx};	
+	</select>
+	
+	<!-- 방금 후원한 펀딩 idx 가져가기 -->
+	<select id="selectNowFundingIdx" resultType="int">
+		SELECT MAX(funding_idx)
+		FROM funding_user
+		WHERE funding_mem_email = #{id}
 	</select>
 	
 	<!-- 결제 정보 db 저장 -->

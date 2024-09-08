@@ -108,7 +108,7 @@ public interface UserFundingMapper {
 	int insertLike(@Param("like_project_code")String like_project_code, @Param("like_mem_email")String like_mem_email);
 
 	// 좋아요 취소
-	int cancleLike(@Param("like_project_code")String like_project_code, @Param("like_mem_email")String like_mem_email);
+	int cancelLike(@Param("like_project_code")String like_project_code, @Param("like_mem_email")String like_mem_email);
 
 	// 창작자의 누적 펀딩액
 	int selectTotalFundAmtOfCreator(String creator_email);
@@ -122,6 +122,9 @@ public interface UserFundingMapper {
 
 	// 몇 번째 후원자인지 카운트
 	int selectFundCount(int user_funding_project_idx);
+
+	// 지금 후원한 funding_idx 가져가기 
+	int selectNowFundingIdx(String id);
 
 	// 결제 정보 db 저장
 	void insertPaymentInfo(Map<String, Object> map);
@@ -143,6 +146,8 @@ public interface UserFundingMapper {
 
 	// project_payment 테이블에 오늘 날짜로 결제 날짜 업데이트 하기
 	void updatePayDate(Map<String, Object> map);
+
+
 
 
 

@@ -25,7 +25,7 @@ public class UserFundingPay{
 	private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 	
 	// ================================================================================================================
-	@Scheduled(cron = "0 15 15 * * ?")  //0 12 10 * * ?매일 지정 시간에 진행 (오전 10시 설정 예정)
+	@Scheduled(cron = "0 10 21 * * ?")  //0 12 10 * * ?매일 지정 시간에 진행 (오전 10시 설정 예정)
 	public void sche () throws Exception {
 		
 		// ----------------------------------------------------------
@@ -72,6 +72,8 @@ public class UserFundingPay{
 			// project_payment 테이블에 오늘 날짜로 결제 날짜 업데이트 하기
 			service.updatePayDate(map);
 			
+			// funding_user 테이블에 funding_status 후원 완료로 업데이트
+//			service.updateFundingStatus(map);
 		}
 		
 		

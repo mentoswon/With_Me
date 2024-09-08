@@ -26,6 +26,11 @@ public class HomeService {
 	public List<Map<String, Object>> getPopularProList() {
 		return mapper.selectPopularProList();
 	}
+
+	// 메인페이지 스토어 인기 순위
+	public List<Map<String, Object>> getPopularProductList() {
+		return mapper.selectPopularProductList();
+	}
 	
 	
 }
