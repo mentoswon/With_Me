@@ -19,7 +19,7 @@ $(function() {
 	$("#save").on('click', function() {
 		// FormData 객체 생성
 		let formData = new FormData();
-		
+		let contextPath = "${pageContext.request.contextPath}";
 		// [ 기본정보 ]
 		formData.append("project_idx", $("input[name='project_idx']").val());
 		formData.append("project_code", $("input[name='project_code']").val());
@@ -139,6 +139,30 @@ $(function() {
                     alert("프로젝트 저장에 실패하였습니다.");
 				} else if(response.result) {
 					alert('프로젝트가 저장되었습니다.');
+					
+					// UI 업데이트
+	                // 대표 이미지 업데이트
+					let projectImage = $("#project_image")[0].files[0];
+	                let imageUrl = projectImage ? URL.createObjectURL(projectImage) : `${contextPath}/resources/upload/$("#projectImg").val()`;
+	                $("#representImage").attr("src", imageUrl);
+	                
+	                // 프로젝트 제목 업데이트
+		            $("#projectTitle").text($("#project_title").val());
+	                
+	                // 프로젝트 카테고리 업데이트
+	                let category = $("#project_category").val();
+	                if(category == 'FO') {
+			            $("#projectCategory").text("푸드");
+	                } else if(category == 'FA') {
+			            $("#projectCategory").text("패션/위생");
+	                } else if(category == 'CL') {
+			            $("#projectCategory").text("식기/급수기");
+	                } else if(category == 'TR') {
+			            $("#projectCategory").text("장난감/훈련");
+	                } else if(category == 'SA') {
+			            $("#projectCategory").text("하우스/안전");
+	                }
+					
 // 					location.reload(); // 현재 페이지 갱신(새로고침)
 // 					$("#popupWrap").hide();
 // 			        $("#overlay").hide();
@@ -1381,15 +1405,15 @@ function selectAccountInfo(token, project_idx) {
 				<div id="projectMenuTop">
 					<c:choose>
 						<c:when test="${empty project.project_image}">
-							<img alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
+							<img id="representImage" alt="기본이미지" src="${pageContext.request.contextPath}/resources/image/image.png">
 						</c:when>
 						<c:otherwise>
-							<img alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+							<img id="representImage" alt="프로젝트대표이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 						</c:otherwise>
 					</c:choose>
 					<div>
-						<h2>${project.project_title}</h2>
-						<p style="line-height: 200%;">${project.project_category}</p>
+						<h2 id="projectTitle">${project.project_title}</h2>
+						<p id="projectCategory" style="line-height: 200%;">${project.project_category}</p>
 					</div>
 				</div>
 			</div>
