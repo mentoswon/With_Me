@@ -80,7 +80,7 @@
 							<div class="productInfo4">
 							<c:choose>
 								<c:when test="${product_detail.isLike.like_mem_email eq sId and product_detail.isLike.like_status eq 'Y'}">
-									<button class="like Btn" type="button" onclick="CancleLikeProduct('${product_detail.product_code}', '${sId}')">
+									<button class="like Btn" type="button" onclick="CancelLikeProduct('${product_detail.product_code}', '${sId}')">
 										<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 									</button>
 								</c:when>
@@ -306,9 +306,9 @@
 			}
 				
 			// 상품 좋아요 취소 
-			function CancleLikeProduct(product_code, sId) {
+			function CancelLikeProduct(product_code, sId) {
 				$.ajax({
-					url : "CancleLikeProduct",
+					url : "CancelLikeProduct",
 					type : "POST",
 // 					async:false,
 					data :{

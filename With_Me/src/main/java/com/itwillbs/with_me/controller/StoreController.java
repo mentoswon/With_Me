@@ -252,13 +252,13 @@ public class StoreController {
 	// ========================================================================================================
 	// 상품 좋아요 취소
 	@ResponseBody
-	@PostMapping("CancleLikeProduct")
-	public String cancleLike(@RequestParam(defaultValue = "") String like_product_code, @RequestParam(defaultValue = "") String like_mem_email) {
+	@PostMapping("CancelLikeProduct")
+	public String cancelLike(@RequestParam(defaultValue = "") String like_product_code, @RequestParam(defaultValue = "") String like_mem_email) {
 		
 		// 결과 담을 Map
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
-		int updateCount = service.cancleLike(like_product_code, like_mem_email);
+		int updateCount = service.cancelLike(like_product_code, like_mem_email);
 		
 		if(updateCount > 0) {
 			resultMap.put("result", true);
@@ -506,8 +506,8 @@ public class StoreController {
 
 	// 기본 배송지 변경 - 해제
 	@ResponseBody
-	@PostMapping("StoreCancleDefaultAddress")
-	public String cancleDefaultAddress(@RequestParam(defaultValue = "")String address_mem_email, HttpSession session) {
+	@PostMapping("StoreCancelDefaultAddress")
+	public String cancelDefaultAddress(@RequestParam(defaultValue = "")String address_mem_email, HttpSession session) {
 
 		// 변경 요청 처리 결과 판별
 		// => 성공 시 resultMap 객체의 "result" 속성값을 true, 실패 시 false 로 저장
@@ -603,13 +603,13 @@ public class StoreController {
 		String id = (String)session.getAttribute("sId");
 		member.setMem_email(id);
 		
-		Integer payMethod = Integer.parseInt(String.valueOf(map.get("payMethod"))); // 결제방법
+//		Integer payMethod = Integer.parseInt(String.valueOf(map.get("payMethod"))); // 결제방법
 		
-		int user_store_product_idx = 0;
+//		int user_store_product_idx = 0;
 		
 		int insertCount = service.registUserOrder(map); // 사용자 주문 정보 등록
 		
-		user_store_product_idx = Integer.parseInt(String.valueOf(map.get("user_store_product_idx")));
+//		int user_store_product_idx = Integer.parseInt(String.valueOf(map.get("user_store_product_idx")));
 		
 		if(insertCount > 0) {
 			// 스토어 상품 구매 내역 product_payment 테이블에 저장

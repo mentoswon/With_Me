@@ -89,7 +89,7 @@ public interface StoreMapper {
 	int insertLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
 	
 	// 좋아요 취소
-	int cancleLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
+	int cancelLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
 
 	// 상품 옵션 리스트
 	List<Map<String, Object>> selectProductOptionList(Integer product_idx);

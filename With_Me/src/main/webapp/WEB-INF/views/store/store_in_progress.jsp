@@ -21,7 +21,7 @@
 		<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 		<style>
 		
-		#user_store_payment {
+		#user_store_complete {
 			width: 100%;
 		    padding: 15px 0;
 		    margin-top: 20px;
@@ -37,26 +37,28 @@
 		
 		</style>
 		<script type="text/javascript">
-			// 주소 검색 API 활용 기능 추가
-			// "t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
-// 			$("#address_search_btn").click(function() {
-// 				console.log("동작");
-// 				new daum.Postcode({
-// 			        oncomplete: function(data) { 
-// 			            $("#address_post_code").val(data.zonecode);
-			            
-// 						let address = data.address;
-						
-// 			            if(data.buildingName !== ''){
-// 			               address += "(" + data.buildingName + ")";
-// 			            }
-			            
-// 			            $("#address_main").val(address);
-			            
-// 			            $("#address_sub").focus();
-// 			        }
-// 			    }).open();
-// 			});
+// 			주소 검색 API 활용 기능 추가
+// 			"t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" 스크립트 파일 로딩 필수!
+			$(function(){
+				$("#address_search_btn").click(function() {
+					console.log("동작");
+					new daum.Postcode({
+				        oncomplete: function(data) { 
+				            $("#address_post_code").val(data.zonecode);
+				            
+							let address = data.address;
+							
+				            if(data.buildingName !== ''){
+				               address += "(" + data.buildingName + ")";
+				            }
+				            
+				            $("#address_main").val(address);
+				            
+				            $("#address_sub").focus();
+				        }
+				    }).open();
+				});
+			});
 			
 		</script>
 	</head>
@@ -64,10 +66,12 @@
 		<header>
 			<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 		</header>
-		
+		<div id="postcode-layer" style="display:none; position:fixed; overflow:hidden; z-index:9999; -webkit-overflow-scrolling:touch;">
+		    <!-- 여기에 Daum Postcode API 팝업이 렌더링됩니다. -->
+		</div>
 		<div class="inner">
 			<h2>${member.mem_name} 후원자님! 다시 한 번 확인해주세요.</h2>
-			<form action="StoreUserOrderPro"  id="UserStorePayForm" name="goFundForm" method="post">
+			<form action="StoreUserOrderPro" id="UserStorePayForm" method="post">
 				<section class="con01">
 					<div class="userInfo">
 						<h4>후원자 정보</h4>
@@ -189,26 +193,19 @@
 						</div>
 					</div>
 				
-					<input type="hidden" name="user_funding_email" id="user_funding_email" value="">					<!-- 완) 후원자 email -->
-					<input type="hidden" name="user_funding_project_idx" id="user_funding_project_idx" value="">			<!-- 프로젝트 번호 -->
-					<input type="hidden" name="user_funding_itemOption" id="user_funding_itemOption" value="">			<!-- 아이템 옵션 | 로 구분-->
-					<input type="hidden" name="user_funding_count" id="user_funding_count" value="">					<!-- 후원 개수 => 우리는 1개 고정 -->
-		<!-- 			<input type="hidden" name="user_funding_reward_idx" id="user_funding_reward_idx" value=""> -->    <!-- 리워드 번호 => 위에서 넣음 -->
-					<input type="hidden" name="user_funding_address_idx" id="user_funding_address_idx" value="">			<!-- 배송지 번호 -->
-					<input type="hidden" name="user_funding_plus_amt" id="user_funding_plus_amt" value="">				<!-- 추가 후원금 -->
-					<input type="hidden" name="user_funding_pay_amt" id="user_funding_pay_amt" value="">                  <!-- 총액 -->
 					
 					
-					<input type="hidden" name="user_store_email" id="user_store_email" value="">					<!-- 완) 후원자 email -->
+					<input type="hidden" name="user_store_product_idx" id="user_store_product_idx" value="${selectedProduct.productIdx}">					<!-- 완) 후원자 email -->
+					<input type="hidden" name="user_store_email" id="user_store_email" value="${member.mem_email}">					<!-- 완) 후원자 email -->
 <!-- 					<input type="hidden" name="user_store_product_idx" id="user_store_product_idx" value="">			프로젝트 번호 -->
-					<input type="hidden" name="user_store_product_option" id="user_store_product_option" value="">			<!-- 아이템 옵션 | 로 구분-->
-					<input type="hidden" name="user_order_count" id="user_order_count" value="">					<!-- 후원 개수 => 우리는 1개 고정 -->
+					<input type="hidden" name="user_store_product_option" id="user_store_product_option" value="${selectedProduct.productOption}">			<!-- 아이템 옵션 | 로 구분-->
+					<input type="hidden" name="user_order_count" id="user_order_count" value="1">					<!-- 후원 개수 => 우리는 1개 고정 -->
 					<input type="hidden" name="user_store_address_idx" id="user_store_address_idx" value="">			<!-- 배송지 번호 -->
-					<input type="hidden" name="user_store_pay_amt" id="user_store_pay_amt" value="">                  <!-- 총액 -->
+					<input type="hidden" name="user_store_pay_amt" id="user_store_pay_amt" value="${selectedProduct.productPrice}">                  <!-- 총액 -->
 					
 					
 					<input type="hidden" name="user_store_pay_method" id="user_store_pay_method" value="">                  <!-- 총액 -->
-					<input type="submit" id="user_store_payment" value="결제하기"> 
+					<input type="button" id="user_store_complete" value="결제하기"> 
 				</section>
 			</form>
 		</div>
@@ -228,7 +225,7 @@
 			        		<span>주소</span>
 							<br>
 			        		<input type="text" name="address_post_code" id="address_post_code" placeholder="&nbsp;&nbsp;우편번호" required>
-<!-- 			        		<button id="address_search_btn">주소 검색</button> -->
+			        		<button type="button" id="address_search_btn">주소 검색</button>
 							<br>
 							<input type="text" name="address_main" id="address_main" placeholder="&nbsp;&nbsp;기본주소" required>
 							<br>
@@ -286,7 +283,7 @@
 									<div class="deleteAddress" data-address-idx="${userAddress.address_idx}">삭제</div>
 									<c:choose>
 										<c:when test="${userAddress.address_is_default eq 'Y'}">
-											<div class="cancleDefault" data-address-mem-email="${sId}">기본 배송지<br> 해제</div>
+											<div class="cancelDefault" data-address-mem-email="${sId}">기본 배송지<br> 해제</div>
 										</c:when>
 										<c:otherwise>
 											<div class="registDefault" data-address-idx="${userAddress.address_idx}" style="background-color:#ffab40; color: #fff;">기본 배송지<br>설정</div>
@@ -315,26 +312,11 @@
 			$(function (){
 				// 받아오면 바로 넣을 수 있는 것 
 				
-				// 주문자 email
-				$("#user_store_email").val('${member.mem_email}');
-				
-				// product_idx
-				$("#user_store_product_idx").val('${selectedProduct.productIdx}');
-				
-				// product_item_option
-				$("#user_store_product_option").val("${selectedProduct.productOption}");
-				
-				// order_count
-				$("#user_order_count").val(1);
-				
-				// order_idx
-				$("#user_order_idx").val($("#order_idx").val()); // 위에서 넣음
 				
 				// address_idx
 				let addressIdx = $(".addressWrapper").data("address-idx");
 				$("#user_store_address_idx").val(addressIdx);
 				
-				$("#user_store_pay_amt").val('${selectedProduct.productPrice}');
 				
 				$("#user_store_pay_method").val($("input:radio[name=payMethod]:checked").val());
 				
@@ -555,13 +537,13 @@
 			
 			
 			// 기본 배송지 변경 -  해제!
-			$(document).on('click', '.cancleDefault', function() {
+			$(document).on('click', '.cancelDefault', function() {
 				let address_mem_email = $(this).data("address_mem_email");
 				
 				console.log("기본배송지 해제 눌렀을 떄 address_mem_email : " +address_mem_email);
 				if(confirm("기본배송지를 해제하시겠습니까? \n기본배송지는 1개만 설정 가능합니다.")) {
 					$.ajax({
-						url: "StoreCancleDefaultAddress",
+						url: "StoreCancelDefaultAddress",
 						type: "post",
 						data:{
 							"addresss_mem_email" : address_mem_email,
@@ -614,13 +596,11 @@
 			
 			// 결제 진행
 			$("#user_store_complete").click(function(){
-				if(("#user_store_pay_method").val() != 3) { // 포트원
-					// 동의사항 체크 여부 확인
-					if($("input:checkbox[name=agreement]:checked").length > 1) {
-						requestPay();
-					} else {
-						alert("필수 동의사항에 체크해주세요.");
-					}
+				// 동의사항 체크 여부 확인
+				if($("input:checkbox[name=agreement]:checked").length > 1) {
+					requestPay();
+				} else {
+					alert("필수 동의사항에 체크해주세요.");
 				}
 			});
 			
@@ -634,13 +614,13 @@
 			let minutes = today.getMinutes(); // 분
 			let seconds = today.getSeconds(); // 초
 			let milliseconds = today.getMilliseconds();
-			let makeMerchanUid = "" + hours + minutes + seconds + milliseconds;
+			let makeMerchantUid = "" + hours + minutes + seconds + milliseconds;
 
 			// 포트원 예약 결제 https://developers.portone.io/opi/ko/integration/start/v2/billing/schedule?v=v2
 			// https://velog.io/@code_june/Code-CampTIL-29%EC%9D%BC%EC%B0%A8-%EA%B2%B0%EC%A0%9C-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4			
 			function requestPay() {
 				if($("input:radio[name=payMethod]:checked").val() == "1") {
-					IMP.request_pay() ({
+					IMP.request_pay ({
 						// 파라미터 값 설정
 						pg : "kakaopay.TC0ONETIME", // PG사 코드표에서 선택
 						pay_method : "card", // 결제 방식
@@ -655,7 +635,7 @@
 					}, function(rsp){// callback
 						 if(rsp.success) {
 							 alert("결제되었습니다.");
-							 $("UserStorePayForm").submit();
+							 $("#UserStorePayForm").submit();
 						 } else {
 							 var msg = '결제에 실패하였습니다.';
 							 msg += '\n에러내용 : ' + rsp.error_msg;
@@ -664,7 +644,7 @@
 					 });// IMP.request_pay End
 					
 				} else if($("input:radio[name=payMethod]:checked").val() == "2") {
-					IMP.request_pay({
+					IMP.request_pay ({
 						// 파라미터 값 설정
 						pg : "html5_inicis.INIpayTest", // PG사 코드표에서 선택
 						pay_method : "card", // 결제방식

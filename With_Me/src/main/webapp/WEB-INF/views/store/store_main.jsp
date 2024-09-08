@@ -262,7 +262,7 @@
 												</a>
 												<c:choose>
 													<c:when test="${product.like_mem_email eq sId and product.like_status eq 'Y'}">
-														<button class="like Btn" type="button" onclick="CancleLikeProduct('${product.product_code}', '${sId}')">
+														<button class="like Btn" type="button" onclick="CancelLikeProduct('${product.product_code}', '${sId}')">
 															<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 														</button>
 													</c:when>
@@ -354,10 +354,10 @@
 	}
 		
 	// 상품 좋아요 취소 
-	function CancleLikeProduct(product_code, sId) {
+	function CancelLikeProduct(product_code, sId) {
 		console.log("product_code : " + product_code + ", sId : " + sId);
 		$.ajax({
-			url : "CancleLikeProduct",
+			url : "CancelLikeProduct",
 			type : "POST",
 			async: false,
 			data :{

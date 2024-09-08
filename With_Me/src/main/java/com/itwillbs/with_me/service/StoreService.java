@@ -127,8 +127,8 @@ public class StoreService {
 	}
 
 	// 좋아요 취소
-	public int cancleLike(String like_product_code, String like_mem_email) {
-		return mapper.cancleLike(like_product_code, like_mem_email);
+	public int cancelLike(String like_product_code, String like_mem_email) {
+		return mapper.cancelLike(like_product_code, like_mem_email);
 	}
 // ===============================================================================
 	

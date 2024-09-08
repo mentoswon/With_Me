@@ -116,14 +116,36 @@
 		INSERT INTO store_user
 		VALUES (
 			null
-			, #{
+			, #{user_store_email}
+			, #{user_store_product_idx}
+			, #{user_store_product_option}
+			, #{user_store_address_idx}
+			, default
+			, now()
+			, #{user_store_pay_amt}
+			, default
 		)
 	
 	</insert>
 	
 	<!-- 스토어 결제 정보 db저장 -->
 	<insert id="insertStorePaymentInfo">
-	
+		<selectKey keyProperty="order_idx" resultType="int" order="BEFORE"> 
+			SELECT IFNULL(MAX(order_idx),0)
+			FROM store_user
+			WHERE product_mem_email = #{user_store_email}
+		</selectKey>
+		INSERT INTO product_payment
+		VALUES (
+			NULL
+			, #{user_store_email}
+			, #{user_store_product_idx}
+			, #{user_store_pay_amt}
+			, #{user_store_pay_method}
+			, '결제완료'
+			, now()
+		
+		);				
 	
 	</insert>
 	
@@ -172,7 +194,7 @@
 	</insert>
 	
 	<!--  좋아요 취소 -->
-	<update id="cancleLike">
+	<update id="cancelLike">
 		UPDATE like_
 		SET like_status = 'N'
 		WHERE 
