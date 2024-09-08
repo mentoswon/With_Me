@@ -11,6 +11,98 @@
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <style type="text/css">
+.product_img {
+	width: 300px;
+	height: 215px;
+}
+.product_img img{
+	width: 25%;
+	object-fit: cover;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+#articleForm {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* 셀 간격 조정 */
+}
+
+td {
+    padding: 10px;
+    vertical-align: top;
+}
+
+td:first-child {
+    width: 25%;
+    font-weight: bold;
+    padding-right: 120px; /* 오른쪽 여백 추가 */
+}
+
+td:last-child {
+    width: 30%;
+}
+
+input[type="text"], select {
+    width: 40%;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-top: 5px; /* 필드와 레이블 간격 */
+}
+
+.item-option {
+    width: calc(20% - 10px); /* 아이템 옵션의 너비 조정 */
+    margin-right: 10px; /* 아이템 옵션 간격 조정 */
+    display: inline-block;
+}
+
+.product-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.button-container {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.button {
+    background-color: #FFAB40;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #e6952d;
+}
+
 </style>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script type="text/javascript">
@@ -194,8 +286,6 @@ function confirmDelete() {
 					<input type="hidden" name="product_idx">
 					<table id="tb01">
 						<tr>
-						</tr>
-						<tr>
 							<td>상품코드</td>
 						</tr>
 						<tr>
@@ -274,14 +364,16 @@ function confirmDelete() {
 								<c:when test="${product.product_status eq 2}">
 									<td>판매중지</td>
 								</c:when>
-								<c:when test="${product.product_status eq 2}">
+								<c:when test="${product.product_status eq 3}">
 									<td>품절</td>
 								</c:when>
 							</c:choose>
 						</tr>
 						<tr>
-							<th>상품사진</th>
-							<td class="write_td_right" colspan="2">
+							<td>상품사진</td>
+						</tr>
+						<tr>
+							<td class="product_img" colspan="2">
 								<div>
 									<img
 										src="${pageContext.request.contextPath}/resources/upload/${product.product_img}"
@@ -289,7 +381,9 @@ function confirmDelete() {
 								</div>
 							</td>
 						</tr>
-						<tr><th width="70">파일</th>
+						<tr><td width="70">파일</td>
+						</tr>
+						<tr>	
 							<td colspan="3" id="product_img">
 								<%-- List 객체("fileList") 크기만큼 반복문을 통해 파일명 출력 --%>
 								<c:forEach var="file" items="${fileList}">
@@ -314,7 +408,7 @@ function confirmDelete() {
 									</c:if>
 								</c:forEach> 
 							</td>
-						</tr>	
+						</tr>
 						<tr>
 							<td align="center"><br>
 								<input type="button" value="목록" onclick="location.href='AdminStore?pageNum=${param.pageNum}'">
