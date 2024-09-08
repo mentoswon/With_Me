@@ -8,9 +8,11 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -163,6 +165,19 @@ public class AdminStoreController {
 		}
 		
 		System.out.println("DB 에 저장될 파일명 : " + store.getProduct_img());
+		
+		
+		// 아이템 옵션(여러개 일 시 | 이렇게 처리)
+		String[] options = request.getParameterValues("product_item_option");
+
+		// 값이 있는 옵션만 필터링하여 |로 결합
+		if (options != null) {
+		    // 빈 값(널스트링)을 제외한 값만 모아서 결합
+		    String optionString = Arrays.stream(options)
+		                                .filter(option -> option != null && !option.trim().isEmpty())  // 빈 문자열이나 null 값 제거
+		                                .collect(Collectors.joining("|"));
+		    store.setProduct_item_option(optionString);  // 필터링된 옵션을 저장
+		}
 		
 		// 상품등록 작업 요청
 		int insertCount = service.registProduct(store);
@@ -367,11 +382,10 @@ public class AdminStoreController {
 	@PostMapping("ProductModify")
 	public String productModifyPro(
 			StoreVO store, @RequestParam(defaultValue = "1") String pageNum,
-			HttpSession session, Model model, int product_idx) throws Exception {
+			HttpSession session, Model model) throws Exception {
 		
-//		StoreVO pu = service.getProduct(product_idx);
 		
-		System.out.println("store : " + store);
+		System.out.println("store 수정 : " + store);
 		
 		// 실제 업로드 경로 알아내기
 		String realPath = session.getServletContext().getRealPath(uploadPath);
@@ -392,7 +406,7 @@ public class AdminStoreController {
 		MultipartFile pImg = store.getProduct_img_file1();
 		String imgName = UUID.randomUUID().toString().substring(0, 8) + "_" + pImg.getOriginalFilename();
 		
-		System.out.println("imgName : " + imgName);
+//		System.out.println("imgName : " + imgName);
 		
 		store.setProduct_img("");
 		
@@ -410,14 +424,12 @@ public class AdminStoreController {
 			}
 			
 			// 글 상세정보 조회 페이지 리다이렉트(파라미터 : 글번호, 페이지번호)
-			return "redirect:/AdminStore?product_idx=" + store.getProduct_idx() + "&pageNum=" + pageNum;
+			return "redirect:/ProductDetail?product_idx=" + store.getProduct_idx() + "&pageNum=" + pageNum;
 		} else {
 			model.addAttribute("msg", "상품 수정 실패!");
 			return "result/fail";
 		}
-		
 	}
-	
 }
 
 

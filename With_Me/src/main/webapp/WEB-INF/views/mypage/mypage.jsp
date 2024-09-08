@@ -107,6 +107,80 @@
 		object-fit: cover;
 	}
 	
+	.item_image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	
+	.product {
+	width: 115%; /* 4열 그리드 설정 */
+	height: 211px; /* 박스의 전체 높이를 300px로 제한 */
+	margin-bottom: 20px; /* 아래쪽 여백 */
+	border: 1px solid #eee; /* 경계선 설정 */
+	border-radius: 8px; /* 모서리를 둥글게 설정 */
+	overflow: hidden; /* 내용이 박스를 넘치지 않도록 설정 */
+	background-color: #fff; /* 배경색 설정 */
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 박스 그림자 설정 */
+	transition: box-shadow 0.3s ease-in-out; /* 마우스 오버 시 그림자 변화 애니메이션 */
+	position: relative; /* 위치 조정을 위해 상대 위치 설정 */
+	display: flex; /* 박스 내의 내용 정렬을 위해 플렉스 사용 */
+	flex-direction: column; /* 내용을 위아래로 배치 */
+	justify-content: space-between; /* 내용이 박스 내에서 균등하게 배치되도록 설정 */
+	padding: 10px; /* 내부 여백을 줄여 깔끔하게 */
+}
+
+/* ------------------------------------------------------- */
+/* 제품 박스에 마우스를 올렸을 때 스타일 */
+.product:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 더 진한 그림자 */
+}
+
+.product_image {
+	height: 80%;
+	overflow: hidden;
+}
+
+/* 제품 이미지 스타일 */
+.product_image img {
+	width: 100%; /* 이미지의 너비를 부모 요소에 맞춤 */
+	height: 24px; /* 높이를 자동으로 설정하여 이미지 비율을 유지 */
+	object-fit: cover; /* 이미지가 박스에 맞게 크롭되도록 설정 */
+	margin-bottom: 10px; /* 이미지와 제품명 사이에 적당한 간격 추가 */
+}
+
+/* 제품 정보 스타일 */
+.product_info {
+	text-align: left; /* 텍스트 가운데 정렬 */
+	padding: 10px 0 0 0; /* 아래쪽 패딩을 제거하여 텍스트와 이미지 간격 줄이기 */
+}
+
+/* 제품 가격 스타일 */
+.product_info h4 {
+	font-size: 16px; /* 글꼴 크기 설정 */
+	font-weight: bold; /* 글꼴 굵게 설정 */
+	margin-bottom: 5px; /* 제품명과 가격 사이의 간격을 줄이기 */
+	color: #333; /* 글꼴 색상 설정 */
+}
+
+/* 제품명 링크 스타일 */
+.product_info a {
+	display: block; /* 블록 요소로 설정 */
+	font-size: 14px; /* 글꼴 크기 설정 */
+	color: #666; /* 글꼴 색상 설정 */
+	text-decoration: none; /* 밑줄 제거 */
+}
+
+/* 제품명 링크에 마우스를 올렸을 때 스타일 */
+.product_info a:hover {
+	color: #333; /* 글꼴 색상 진하게 변경 */
+}
+
+.like Btn {
+	width: 30px;
+}
+
+	
 </style>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -216,6 +290,7 @@
 		    <div id="writeContainer2" class="writeContainer">
 		        <div class="MypageWriteWrap">
 		            <div class="MypageExplanationWrap">
+		            <section class="sec02">
 		            
 		                <button id="showProjectsBtn">프로젝트 좋아요</button>
 		                <button id="showProductsBtn">상품 좋아요</button>
@@ -287,11 +362,38 @@
 		
 		                    <!-- 내가 좋아요한 상품 -->
 		                    <div id="productsList" class="likeList" style="display:none;">
-		                        <c:forEach items="${likeProductList}" var="product">
-		                            <p>${product.name}</p>
-		                        </c:forEach>
+		                    	<c:if test="${not empty likeProjectList}">
+		                    	<c:set var="hasValidProject" value="false" />
+									<c:forEach var="product" items="${likeProductList}">
+										<div class="product">
+											<div class="product_image">
+												<a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
+<%-- 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG"> --%>
+													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
+												</a>
+												<c:choose>
+													<c:when test="${product.like_mem_email eq sId and product.like_status eq 'Y'}">
+														<button class="like Btn" type="button" onclick="CancleLikeProduct('${product.product_code}', '${sId}')">
+															<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
+														</button>
+													</c:when>
+													<c:otherwise>
+														<button class="like Btn" type="button" onclick="RegistLikeProduct('${product.product_code}', '${sId}')">
+															<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+														</button>
+													</c:otherwise>
+												</c:choose>												
+											</div>
+											<div class="product_info">
+												<h4><a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}"><fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원</a></h4>
+												<span><a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">${product.product_name}</a></span>
+											</div>
+										</div>	
+									</c:forEach>
+			                    </c:if>
 		                    </div>
 		                </div>
+		            </section>
 		            </div>
 		        </div>
 		    </div>

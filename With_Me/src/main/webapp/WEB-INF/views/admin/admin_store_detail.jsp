@@ -238,6 +238,18 @@ function confirmDelete() {
 			                </td>
 						</tr>	
 						<tr>
+							<td>상품 옵션</td>
+						</tr>
+						<tr>
+			                <td>
+								<input type="text" name="item_option_name" class="itemText" placeholder="예) 230mm">
+								<input type="text" name="item_option_name" class="itemText" placeholder="예) 240mm">
+								<input type="text" name="item_option_name" class="itemText" placeholder="예) 250mm">
+								<input type="text" name="item_option_name" class="itemText" placeholder="예) 260mm">
+								<input type="text" name="item_option_name" class="itemText" placeholder="예) 270mm">
+			                </td>
+						</tr>	
+						<tr>
 							<td>상품가격</td>
 						</tr>
 						<tr>

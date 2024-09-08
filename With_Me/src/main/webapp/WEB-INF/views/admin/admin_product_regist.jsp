@@ -59,6 +59,8 @@ window.onload = function() {
     }
   }
 }
+
+
 </script>
 </head>
 <body>
@@ -120,6 +122,18 @@ window.onload = function() {
 								    <option value="" selected="selected">세부 카테고리</option>
 							   </select>
 							</td>
+						</tr>
+						<tr>
+							<td>상품 옵션</td>
+						</tr>
+						<tr>
+			                <td>
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 230mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 240mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 250mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 260mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 270mm">
+			                </td>
 						</tr>	
 						<tr>
 							<td>상품가격</td>
@@ -151,7 +165,7 @@ window.onload = function() {
 							</td>
 						</tr>
 						<tr>
-							<td align="center"><br><input type="submit" value="가입"></td>
+							<td align="center"><br><input type="submit" value="등록"></td>
 						</tr>
 					</table>
 				</section>

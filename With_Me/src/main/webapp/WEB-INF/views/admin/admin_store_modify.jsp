@@ -63,12 +63,11 @@ window.onload = function() {
     };
 }
 
-function confirmDelete() {
-	// 삭제 버튼 클릭 시 확인창(confirm dialog)을 통해 "삭제하시겠습니까?" 출력 후
-	// 다이얼로그의 확인 버튼 클릭 시 "BoardDelete.bo" 서블릿 요청
-	// => 파라미터 : 글번호, 페이지번호
-	if(confirm("삭제하시겠습니까?")) {
-		location.href = "ProductDelete?product_idx=${product.product_idx}&pageNum=${param.pageNum}";
+function deleteFile(product_idx, fileName, index) {
+	
+	if(confirm(index + "번 파일을 삭제하시겠습니까?")) {
+		// BoardDeleteFile 서블릿 주소 요청(글번호(board_num), 파일명(board_file) 파라미터 전달)
+		location.href = "ProductDeleteFile?product_idx=" + product_idx + "&product_img=" + fileName + "&pageNum=" + ${param.pageNum} + "&index=" + index;
 	}
 }
 
@@ -89,7 +88,7 @@ function confirmDelete() {
 	<!-- 게시판 상세내용 보기 -->
 	<article id="articleForm">
 		<h2 align="center">상품 수정</h2>
-			<form action="ProductModify" name="ProductForm" method="post">
+			<form action="ProductModify" name="ProductForm" method="post" enctype="multipart/form-data">
 				<section class="ProductForm1">
 					<input type="hidden" name="product_idx" id="product_idx" value="${store.product_idx}">
 					<input type="hidden" name="product_status" id="product_status" value="${store.product_status}">
@@ -194,10 +193,6 @@ function confirmDelete() {
 											<c:when test="${not empty fileName}">
 												<%-- 파일명 존재할 경우 원본 파일명 출력 --%>
 												${originalFileList[status.index]}
-												<%-- 파일 다운로드 링크(버튼) 생성 --%>
-												<a href="${pageContext.request.contextPath}/resources/upload/${fileName}" download="${originalFileList[status.index]}">
-													<input type="button" value="다운로드">
-												</a>
 												<%-- 파일 삭제 링크(이미지) 생성(개별 삭제 위함) --%>
 												<%-- 삭제 아이콘 클릭 시 deleteFile() 함수 호출(파라미터 : 글번호, 파일명, 카운팅번호) --%>
 												<a href="javascript:deleteFile(${store.product_idx}, '${fileName}', ${status.count})">
@@ -205,7 +200,7 @@ function confirmDelete() {
 												</a>
 												<%-- 파일명만 표시하는 경우에도 파일업로드 요소 생성하여 파라미터는 전달되도록 하기 --%>
 												<%-- 단, 사용자에게 보이지 않도록 숨김 처리를 위해 hidden 속성 적용 --%>
-												<input type="file" name="file${status.count}" hidden>
+												<input type="file" name="product_img_file${status.count}" hidden>
 											</c:when>
 											<c:otherwise>
 												<%-- 
@@ -215,7 +210,7 @@ function confirmDelete() {
 												   (ex. "file" + 1 = "file1") 
 												--%>
 												<%--  --%>
-												<input type="file" name="file${status.count}">
+												<input type="file" name="product_img_file${status.count}">
 											</c:otherwise>
 										</c:choose>
 									</div>
