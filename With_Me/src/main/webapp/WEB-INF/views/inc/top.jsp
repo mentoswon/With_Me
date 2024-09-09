@@ -44,6 +44,35 @@
 		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 	}
 	.profile.on {display: block;}
+	
+	
+	/* 채팅 알림 */
+	.name {
+		position: relative;
+	}
+	
+	.message {
+		position: relative;
+	}
+	
+	.alarm {
+		position: absolute;
+	    top: -6px;
+	    right: -9px;
+	    font-size: 12px;
+	    background-color: #ffab40;
+	    width: 14px;
+	    height: 14px;
+	    border-radius: 50%;
+	    color: #fff;
+	    text-align: center;
+	    display: none;
+	}
+	
+	.chatRoomList {
+		position: relative;
+	}
+	
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -107,7 +136,7 @@
 						<%-- 관리자가 아닐 경우(=일반 회원일 경우) 프로필 팝업 출력 --%>
 						<c:otherwise>
 							<%-- 하이퍼링크 상에서 자바스크립트 함수 호출 시 "javascript:함수명()" 형태로 호출 --%>
-							<a href="javascript:ProfilePopupOpen()" class="loged">${sessionScope.sName}님</a>
+							<a href="javascript:ProfilePopupOpen()" class="loged name">${sessionScope.sName}님<div class="alarm"></div></a>
 						</c:otherwise>
 					</c:choose>
 					<a href="javascript:confirmLogout()" class="loged">로그아웃 </a>
@@ -115,6 +144,7 @@
 					<button class="btn" onclick="location.href='ProjectStart'">프로젝트 만들기</button>
 				</c:otherwise>
 			</c:choose>
+		
 		</div>
 		<%-- 모바일 화면 시 클릭 하면 메뉴 뜸 --%>
 		<img src="${pageContext.request.contextPath}/resources/image/menu.png" class="menuBtn">
@@ -128,7 +158,7 @@
 				<%-- 각 메뉴에 맞는 서블릿 주소 매핑 --%>
 				<li class="depth01"><a href="MemberInfo">프로필</a></li>
 				<li class="depth01"><a href="MyProject">내가 만든 프로젝트</a></li>
-				<li class="depth01"><a href="MyChat">메시지</a></li>
+				<li class="depth01"><a href="MyChat" class="message">메시지<div class="alarm"></div></a></li>
 			</ul>
 			<div class="btnArea" style="text-align : center">
 	        	<input type="button" class="close_btn" value="닫기" onclick="ProfilePopupClose()">
@@ -215,6 +245,7 @@
 <c:if test="${not empty sId}">
 	<script>
 		let ws; // WebSocket 객체가 저장될 변수 선언 
+		let messageCount = 0; // 초기 메시지 카운트
 		// -----------------------------------------------------------------------------------
 		$(function() {
 			// 페이지 로딩 완료 시 채팅방 입장을 위해 웹소켓 연결을 수행할 connect() 함수 호출
@@ -268,6 +299,7 @@
 				// => 복수개의 채팅방 목록이 배열 형태로 전달되므로 반복을 통해 객체 접근
 				for(let room of JSON.parse(data.message)) {
 					// appendChatRoomToRoomList() 함수 호출하여 채팅방 목록 표시
+					
 					appendChatRoomToRoomList(room);
 				}
 				
@@ -296,17 +328,37 @@
 					appendMessageToTargetRoom(message.type, message.sender_id, message.receiver_id, message.room_id, message.message, message.send_time);
 				}
 			} else if(data.type == "TALK") { // 채팅 메세지 수신
+				// 메세지 알람
+				messageCount++;
+				createAlarm(messageCount);
+				
 				// 채팅방 생성(표시) 및 채팅방 목록 표시
 				appendChatRoomToRoomList(data);
 				createChatRoom(data);
 				
 				// appendMessageToTargetRoom() 함수 호출하여 수신된 메세지를 채팅방에 표시
 				appendMessageToTargetRoom(data.type, data.sender_id, data.receiver_id, data.room_id, data.message, data.send_time);
+				
+				
 			} else if(data.type == "LEAVE") { // 채팅 종료 메세지 수신
 				appendMessageToTargetRoom(data.type, data.sender_id, data.receiver_id, data.room_id, data.message, data.send_time);
 				disableRoom(data);
 			}
 		}
+		// ======================================================================
+		// 메세지 알람
+		function createAlarm(messageCount){
+			console.log("숫자 : " + messageCount);
+			let alarm = 				
+					"<span class='alarmCont'>"
+					+ messageCount
+					+ "</span>";
+					
+			$(".alarm").css("display", "block");
+			$(".alarm").html(alarm);
+		}
+			
+			
 		// ======================================================================
 		// 상대방이 종료한 채팅방을 비활성화하는 함수
 		function disableRoom(room) {
@@ -464,7 +516,7 @@
 		}
 		// ======================================================================
 		// 채팅창에 메세지를 출력하는 함수
-		function appendMessageToTargetRoom(type, sender_id, receiver_id, room_id, message, send_time) {
+		function appendMessageToTargetRoom(type, sender_id, receiver_id, room_id, message, send_time, read_status) {
 			// --------------------- 채팅 메세지 날짜 변환하기 ----------------------
 			// send_time 값이 비어있을 경우(undefined) 현재 시스템 날짜 설정하고
 			// 아니면, 전송받은 날짜를 Date 객체로 변환
@@ -520,10 +572,6 @@
 		// ======================================================================
 		// 채팅방 목록 영역에 1개 채팅방 정보를 추가하는 함수
 		function appendChatRoomToRoomList(room) {
-			console.log("room : " + room);
-// 			console.log("room_id : " + room.room_id);
-// 			console.log($(".chatRoomList"));
-// 			console.log($(".chatRoomList").hasClass(room.room_id));
 			
 			// 클래스 선택자 중 "chatRoomList" 클래스를 갖는 요소를 찾아
 			// 해당 요소의 클래스에 룸아이디가 포함되어 있지 않을 경우
@@ -532,9 +580,13 @@
 				// 채팅방 제목과 채팅방 상태가 전달되지 않았을 경우 기본값 설정
 				// => 제목은 상대방 아이디 + " 님과의 대화" 로 설정하고
 				//    채팅방 상태는 1로 설정
-				console.log("room.title : " + room.title + ", room.status : " + room.status);
+				console.log("room.title : " + room.title + ", room.status: " + room.status);
+				
 				let title = room.title == undefined ? room.sender_id + " 님과의 대화" : room.title;
 				let status = room.status == undefined ? 1 : room.status;
+				
+				// 안 읽은 메세지 개수
+// 				let unreadMessage = room.unread_count;
 					
 				// 채팅방 상태(status) 가 2일 경우 채팅방 목록의 제목에 (종료) 추가
 				if(status == 2) {
@@ -555,7 +607,7 @@
 					// => 파라미터 : 채팅방 1개 정보가 저장된 room 객체
 					createChatRoom(room);
 				});
-			} 
+			}
 		}
 		
 		// ======================================================================

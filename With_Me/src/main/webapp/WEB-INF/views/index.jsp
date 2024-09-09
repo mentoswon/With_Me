@@ -97,7 +97,7 @@
 								<div class="item">
 									<div class="item_image">
 										<a href="ProjectDetail?project_title=${projectList[status.index].project_title}&project_code=${projectList[status.index].project_code}">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${projectList[status.index].project_image}">
+											<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${projectList[status.index].project_image}">
 										</a>
 										<c:choose>
 											<c:when test="${projectList[status.index].like_mem_email eq sId and projectList[status.index].like_status eq 'Y'}">
@@ -171,7 +171,7 @@
 							</div>
 							<div class="popular_image">
 								<a href="ProjectDetail?project_title=${popularProList[status.index].project_title}&project_code=${popularProList[status.index].project_code}">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${popularProList[status.index].project_image}">
+									<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${popularProList[status.index].project_image}">
 								</a>
 							</div>
 						</div>
@@ -193,7 +193,7 @@
 							</div>
 							<div class="popular_image">
 								<a href="StoreDetail?product_name=${popularProduct[status.index].product_name}&product_code=${popularProduct[status.index].product_code}">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${popularProduct[status.index].product_img}">
+									<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${popularProduct[status.index].product_img}">
 								</a>
 							</div>
 						</div>
@@ -214,7 +214,7 @@
 						<div class="item">
 							<div class="item_image">
 								<a href="StoreDetail?product_name=${storeList[status.index].product_name}&product_code=${storeList[status.index].product_code}">
-									<img alt="이미지" src="${pageContext.request.contextPath}/resources/${storeList[status.index].product_img}">
+									<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/${storeList[status.index].product_img}">
 								</a>
 								<c:choose>
 									<c:when test="${storeList[status.index].like_mem_email eq sId and storeList[status.index].like_status eq 'Y'}">

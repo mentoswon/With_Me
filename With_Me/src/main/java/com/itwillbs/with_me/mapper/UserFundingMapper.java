@@ -147,6 +147,9 @@ public interface UserFundingMapper {
 	// project_payment 테이블에 오늘 날짜로 결제 날짜 업데이트 하기
 	void updatePayDate(Map<String, Object> map);
 
+	// funding_user status 바꾸기
+	void updateFundingStatus(Map<String, Object> user);
+
 
 
 

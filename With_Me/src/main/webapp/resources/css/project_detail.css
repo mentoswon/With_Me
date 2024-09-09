@@ -121,6 +121,10 @@ section {
 	color: #595959;
 }
 
+.itemWrapper #infoArea .fundInfo2 dl div dd:first-child {
+	margin-bottom: 10px;
+}
+
 .itemWrapper #infoArea .fundInfo2 #leftDay {
 	font-size: 13px;
 	padding: 3px 10px;

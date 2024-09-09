@@ -26,6 +26,13 @@
 					AND user_id != #{sender_id}
 			) AS receiver_id
 			, c.status
+			, (
+				SELECT COUNT(m.read_status) 
+			    FROM chat_message m 
+			    WHERE m.read_status = 0 
+			    AND m.receiver_id = #{sender_id} 
+			    AND m.room_id = c.room_id
+			) AS unread_count
 		FROM chat_room AS c
 		WHERE 
 			user_id = #{sender_id}
@@ -89,6 +96,7 @@
 			, #{message}
 			, #{type}
 			, #{send_time}
+			, 0             -- 0909 추가 ) 안 읽음: 0 읽음: 1
 		)
 	</insert>
 	
@@ -110,6 +118,12 @@
 			room_id = #{room_id} 
 	</update>
 	
+	<!-- 채팅 읽음 표시 -->
+	<update id="updateReadState">
+		UPDATE chat_message
+		SET read_status = 1
+		WHERE room_id = #{room_id} AND receiver_id = #{receiver_id}
+	</update>
 </mapper>
 
 

@@ -32,8 +32,6 @@
 			    } else {
 			        alert("팝업 창이 차단되었습니다. 팝업 차단을 해제해주세요.");
 			    }
-				
-				
 			}
 		</script>
 	</head>
@@ -122,7 +120,10 @@
 							</dl>
 							<dl>
 								<dt>결제</dt>
-								<dd>목표금액 달성 시 <b>${project_detail.pay_date}</b>에 결제 진행</dd> <!-- 마감일 다음날 결제 예정일 -->
+								<div>
+									<dd>(선결제) 카카오페이/카드결제 중 택 1</dd> 
+									<dd>(후결제) 목표금액 달성 시 <b>${project_detail.pay_date}</b>에 결제 진행</dd> <!-- 마감일 다음날 결제 예정일 -->
+								</div>
 							</dl>
 						</div>
 						
@@ -523,7 +524,7 @@
 			}
 			
 			// 프로젝트 좋아요 취소
-			function cancelLike((project_code, sId) {
+			function cancelLike(project_code, sId) {
 // 				console.log("project_code : " + project_code + ", sId : " + sId);
 				$.ajax({
 					url: "CancelLike",
@@ -673,9 +674,6 @@
 		</script>
 	</body>
 </html>
-
-
-
 
 
 

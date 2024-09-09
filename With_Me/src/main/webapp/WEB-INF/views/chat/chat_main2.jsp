@@ -42,6 +42,7 @@
 		cursor: pointer;
 		background-color: #e9e9e9;
 		transition: background-color 0.3s ease;
+		position: relative;
 	}
 
 	.chatRoomList:hover {

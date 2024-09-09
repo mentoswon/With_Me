@@ -156,7 +156,7 @@
 						<div class="infoWrapper">
 							<div class="warnInfo">
 								<p>
-									프로젝트 성공 시, 결제는 <b>${selectedReward.project_payDate}</b> 에 진행됩니다. <br><br>
+									프로젝트 성공 시, <b>후결제(계좌이체)</b>는 <b>${selectedReward.project_payDate}</b> 에 진행됩니다. <br><br>
 									프로젝트가 무산되거나 중단된 경우, 예약된 결제는 자동으로 취소됩니다.
 								</p>
 							</div>
@@ -372,6 +372,9 @@
 				$("#user_funding_pay_method").val($("input:radio[name=payMethod]:checked").val());
 				
 				// ------------------------------------------------------------------------------------
+				if($("#user_funding_reward_idx").val() == 0){
+					$(".con02").css("display", "none");
+				}
 			});
 		
 			// =========================================================================
@@ -648,6 +651,16 @@
 			    } else {
 			        // 비어 있을 경우 초기화
 			        $("#moreAmt").text("");
+			        
+			        let formattedRewardPrice = rewardPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			        $("#totalAmt").text("총액 : " + formattedRewardPrice + " 원");
+			        
+			        // 추가 후원금은 0
+			        let totalAmt = rewardPrice;
+
+			        // 결제 할 때 넘어갈 hidden 태그에 value 넣기
+			        $("#user_funding_plus_amt").val(0);
+			        $("#user_funding_pay_amt").val(totalAmt);
 			    }
 			});
 			
@@ -776,6 +789,8 @@
 				});
 			}
 			
+			
+			
 			var IMP = window.IMP;
 			IMP.init("imp61351081");
 			
@@ -786,8 +801,6 @@
 			let milliseconds = today.getMilliseconds();
 			let makeMerchantUid = "" + hours + minutes + seconds + milliseconds;
 			
-			// 포트원 예약 결제 https://developers.portone.io/opi/ko/integration/start/v2/billing/schedule?v=v2
-			// https://velog.io/@code_june/Code-CampTIL-29%EC%9D%BC%EC%B0%A8-%EA%B2%B0%EC%A0%9C-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4
 			function requestPay() {
 				if($("input:radio[name=payMethod]:checked").val() == "1") {
 					IMP.request_pay({

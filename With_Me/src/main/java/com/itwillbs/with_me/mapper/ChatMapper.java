@@ -29,6 +29,9 @@ public interface ChatMapper {
 	// 채팅방 종료
 	void updateChatRoomStatusForQuitRoom(@Param("room_id") String room_id, @Param("sender_id") String sender_id);
 
+	// 채팅 읽음 설정
+	int updateReadState(ChatMessage2 chatMessage2);
+
 
 
 }

@@ -143,8 +143,8 @@ public class MyWebSocketHandler2 extends TextWebSocketHandler {
 					List<ChatRoom> chatRoomList = new ArrayList<ChatRoom>();
 					// ChatRoom 객체 각각에 데이터 저장 시 sender_id 만 활용하지만 두 정보 모두 설정(송수신자 반대로하여 다른 하나도 설정)
 					// status 값은 정상적인 채팅방 표시로 1 전달
-					chatRoomList.add(new ChatRoom(chatMessage.getRoom_id(), receiver_id + " 님과의 대화", sender_id, receiver_id, 1));
-					chatRoomList.add(new ChatRoom(chatMessage.getRoom_id(), sender_id + " 님과의 대화", receiver_id, sender_id, 1));
+					chatRoomList.add(new ChatRoom(chatMessage.getRoom_id(), receiver_id + " 님과의 대화", sender_id, receiver_id, 1, 0));
+					chatRoomList.add(new ChatRoom(chatMessage.getRoom_id(), sender_id + " 님과의 대화", receiver_id, sender_id, 1, 0));
 					chatService.addChatRoom(chatRoomList);
 					// -------------------------------
 					// 3. 채팅 메세지 객체 정보 설정 
@@ -194,6 +194,7 @@ public class MyWebSocketHandler2 extends TextWebSocketHandler {
 			// ChatService - getChatMessageList() 메서드 호출하여 기존 채팅 내역 조회 요청
 			// => 파라미터 : room_id   리턴타입 : List<ChatMessage2>(chatMessageList)
 			List<ChatMessage2> chatMessageList = chatService.getChatMessageList(chatMessage.getRoom_id());
+			
 			
 			// 기존 채팅 내역 존재할 경우에만 클라이언트측으로 전송
 			if(chatMessageList.size() > 0) {

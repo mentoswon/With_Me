@@ -44,6 +44,11 @@ public class ChatService {
 		mapper.updateChatRoomStatusForQuitRoom(room_id, sender_id);
 	}
 
+	// 채팅 읽음 설정
+	public int updateReadState(ChatMessage2 chatMessage2) {
+		return mapper.updateReadState(chatMessage2);
+	}
+
 
 
 }

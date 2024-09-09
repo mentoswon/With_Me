@@ -14,6 +14,7 @@
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 		<style type="text/css">
 			.sec02 .itemList {
+				padding-top: 30px;
 				height: 100%;
 			}
 			
@@ -24,13 +25,29 @@
 			}
 			
 			.sec02 .itemList .itemWrapper .item {
-				width: 100%;
+   				width: 270px;
 			}
 			.sec02 .itemList .itemWrapper .item .item_image {
+				margin-bottom: 20px;
+				width: 100%;
+				height: 230px;
 				position: relative;
+				overflow: hidden;
 			}
 			
-			.sec02 .itemList .itemWrapper .item .item_image .like{
+			.sec02 .itemList .itemWrapper .item .item_image:hover .thumnail {
+				transform: scale(1.2);
+				transition: transform 0.3s;	
+			}
+			
+			.sec02 .itemList .itemWrapper .item .item_image .thumnail {
+				width: 100%;
+				object-fit: cover;
+				transform: scale(1.0);
+				transition: transform 0.3s;
+			}
+			
+			.sec02 .itemList .itemWrapper .item .item_image .like {
 				position: absolute;
 				top: 88%;
 				right: 2%;
@@ -41,12 +58,20 @@
 			    cursor: pointer;
 			}
 			
+			.sec02 .itemList .itemWrapper .item .item_image .like img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+			
 			.sec02 .itemList .itemWrapper .item .item_info h4 {
 				font-size: 13px;	
 				font-weight: normal;
 				color: #bbb;
+				margin-bottom: 15px;	
 			}
 			.sec02 .itemList .itemWrapper .item .item_info h3 {
+				margin-bottom: 15px;	
 				text-align: left;
 				font-size: 16px;
 			}
@@ -98,6 +123,20 @@
 			.progress.end::-webkit-progress-value {
 				background-color: #ffab40;
 				border-radius: 3px;
+			}
+			
+			.set_noti {
+				text-align: center;
+				width: 100%;
+				border: 0.5px solid #eee;
+				border-radius: 5px;
+				padding: 8px 0;
+				font-size: 14px;
+			}
+			
+			.set_noti:hover {
+				background-color: #ffab40;
+				color: #fff;
 			}
 			
 			/* Mobile Responsive CSS */
@@ -162,7 +201,7 @@
 								<div class="item">
 									<div class="item_image">
 										<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
-											<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+											<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 										</a>
 										<c:choose>
 											<c:when test="${project.like_mem_email eq sId and project.like_status eq 'Y'}">
@@ -213,6 +252,9 @@
 												<c:when test="${project.funding_end_date < today}">
 													펀딩 마감
 												</c:when>
+												<c:when test="${fund_rate >= 100}">
+													펀딩 성공
+												</c:when>
 												<c:otherwise>
 												
 													<!-- 남은 날짜 계산 -->
@@ -228,11 +270,18 @@
 									</div>
 <!-- 										<div class="fund_rate_var"></div> -->
 									<c:choose>
-										<c:when test="${project.funding_end_date < today}">
-											<progress class="progress end" value="${fund_rate}" min="0" max="100"></progress>
+										<c:when test="${project.funding_start_date > today}">
+											<div class="set_noti" onclick="setNotiProject('${project.project_idx}')">오픈하면 알려주세요 !</div>
 										</c:when>
 										<c:otherwise>
-											<progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+											<c:choose>
+												<c:when test="${project.funding_end_date < today}">
+													<progress class="progress end" value="${fund_rate}" min="0" max="100"></progress>
+												</c:when>
+												<c:otherwise>
+													<progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+												</c:otherwise>
+											</c:choose>
 										</c:otherwise>
 									</c:choose>
 								</div>
@@ -321,6 +370,11 @@
 					}
 				}
 			});
+		}
+		
+		// 프로젝트 오픈 알림 신청 0909 추가
+		function setNotiProject(project_idx) {
+			alert("알림 신청이 완료되었습니다.");
 		}
 	</script>
 </html>

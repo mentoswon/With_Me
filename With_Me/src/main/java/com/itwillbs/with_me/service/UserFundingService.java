@@ -258,6 +258,11 @@ public class UserFundingService {
 		mapper.updatePayDate(map);
 	}
 
+	// funding_user 에 후원 완료로 상태 바꿔주기
+	public void updateFundingStatus(Map<String, Object> user) {
+		mapper.updateFundingStatus(user);
+	}
+
 
 
 	

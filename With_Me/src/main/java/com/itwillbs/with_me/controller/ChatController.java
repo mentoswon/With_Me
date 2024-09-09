@@ -1,14 +1,25 @@
 package com.itwillbs.with_me.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.itwillbs.with_me.service.ChatService;
+import com.itwillbs.with_me.vo.ChatMessage2;
+
 @Controller
 public class ChatController {
+	
+	@Autowired
+	private ChatService service;
 	
 	@GetMapping("MyChat")
 	public String mychat() {
@@ -31,9 +42,23 @@ public class ChatController {
 			
 			return "result/fail";
 		}
-		
+	
 		return "chat/chat_main2";
 	}
 	
+	@GetMapping("ReadMessage")
+	public String changeReadState(ChatMessage2 chatMessage2) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		int updateCount = service.updateReadState(chatMessage2);
+		
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+	}
 
 }

@@ -25,8 +25,8 @@ public class UserFundingPay{
 	private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 	
 	// ================================================================================================================
-	@Scheduled(cron = "0 10 21 * * ?")  //0 12 10 * * ?매일 지정 시간에 진행 (오전 10시 설정 예정)
-	public void sche () throws Exception {
+	@Scheduled(cron = "0 23 10 * * ?")  //0 12 10 * * ?매일 지정 시간에 진행 (오전 10시 설정 예정)
+	public void transScheduler () throws Exception {
 		
 		// ----------------------------------------------------------
 		// DB 가서 결제일이 오늘인 후원 내역 찾기
@@ -47,8 +47,8 @@ public class UserFundingPay{
 		// https://testapi.openbanking.or.kr/v2.0/transfer/withdraw/fin_num
 		String id = "";
 		
-		for(Map<String, Object> list : payList) {
-			id = (String)list.get("funding_mem_email");
+		for(Map<String, Object> user : payList) {
+			id = (String)user.get("funding_mem_email");
 			
 			// 엑세스토큰 관련 정보가 저장된 BankToken 객체(token)를 가져오기
 			BankToken token = service.getBankUserInfo(id);	
@@ -59,8 +59,8 @@ public class UserFundingPay{
 			map.put("id", id);
 			
 			// withdraw_fintech_use_num(token 에 들어있음), withdraw_client_name, tran_amt(funding_pay_amt) 추가 필요
-			map.put("withdraw_client_name", list.get("name"));
-			map.put("tran_amt", list.get("funding_pay_amt"));
+			map.put("withdraw_client_name", user.get("name"));
+			map.put("tran_amt", user.get("funding_pay_amt"));
 			
 			logger.info("출금이체 요청 파라미터 : " + map);
 			
@@ -73,7 +73,7 @@ public class UserFundingPay{
 			service.updatePayDate(map);
 			
 			// funding_user 테이블에 funding_status 후원 완료로 업데이트
-//			service.updateFundingStatus(map);
+			service.updateFundingStatus(user);
 		}
 		
 		

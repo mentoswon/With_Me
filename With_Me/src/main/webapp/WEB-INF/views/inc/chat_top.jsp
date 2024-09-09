@@ -43,7 +43,23 @@
 	.profile .profile_popup .close_btn:hover {
 		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 	}
-	.profile.on {display: block;}
+	.profile.on {display: block;
+	
+	}
+	
+	.alarm {
+	    position: absolute;
+	    top: 50%;
+	    right: -8px;
+	    transform: translateY(-50%);
+	    font-size: 12px;
+	    background-color: #ffab40;
+	    width: 20px;
+	    height: 20px;
+	    border-radius: 50%;
+	    color: #fff;
+	    text-align: center;
+	}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -426,7 +442,8 @@
 				// 채팅방 제목과 채팅방 상태가 전달되지 않았을 경우 기본값 설정
 				// => 제목은 상대방 아이디 + " 님과의 대화" 로 설정하고
 				//    채팅방 상태는 1로 설정
-				console.log("room.title : " + room.title + ", room.status : " + room.status);
+				console.log("room.title : " + room.title + ", room.status : " + room.status + ", room.unread_count : " + room.unread_count);
+				console.log("room.sender_id : " + room.sender_id + ", room.receiver_id : " + room.receiver_id);
 				let title = room.title == undefined ? room.sender_id + " 님과의 대화" : room.title;
 				let status = room.status == undefined ? 1 : room.status;
 					
@@ -435,11 +452,26 @@
 					title += " (종료)"; 
 				}
 				
+				let divRoom = "";
 				// 새로 생성할 채팅방 목록 1개의 div 태그 작성
-				let divRoom = "<div class='chatRoomList " + room.room_id + " status_" + status + "'>"
-							+ title
-							+ "</div>";
+							
+				if(room.unread_count > 0) {
+					divRoom = "<div class='chatRoomList " + room.room_id + " status_" + status + "'>"
+					+ title
+					+ 	"<div class='alarm " + room.room_id + "'>"
+					+ 		"<span class='alarmCont'>"
+					+ 			room.unread_count
+					+ 		"</span>"
+					+	"</div>"
+					+ "</div>";
+				} else {
+					divRoom = "<div class='chatRoomList " + room.room_id + " status_" + status + "'>"
+								+ title
+								+ "</div>";
+				}
+				
 				$("#chatRoomListArea").append(divRoom);
+				
 				
 				// 해당 채팅방 목록 div 태그에 더블클릭 이벤트 핸들링
 				// => 복수개의 class 선택자 검색이므로 마침표로 연결
@@ -448,6 +480,24 @@
 					// 채팅방 1개 생성하도록 createChatRoom() 함수 호출
 					// => 파라미터 : 채팅방 1개 정보가 저장된 room 객체
 					createChatRoom(room);
+					
+					if($(".alarm").hasClass(room.room_id)) {
+						$(".alarm." + room.room_id).remove();
+						
+						$.ajax({
+							url: "ReadMessage",
+							type : "get",
+							async: false, // 이 한줄만 추가해주시면 됩니다.
+							data:{
+								"room_id" : room.room_id,
+								"receiver_id" : room.sender_id
+							},
+							dataType: "json",
+							success: function (response) {
+								console.log('완료');
+							}
+						});
+					}
 				});
 			} 
 		}

@@ -394,11 +394,20 @@
 			, null						-- 리워드
 			, null						-- 아이템 옵션
 			, #{user_funding_count}
-			, #{user_funding_address_idx}
+			, null
 			, #{user_funding_plus_amt}
-			, #{user_funding_pay_date}
-			, #{user_funding_pay_amt}
-			, '후원중'
+			<choose>
+				<when test="user_funding_pay_method == 1 || user_funding_pay_method == 2">
+					, now()
+					, #{user_funding_pay_amt}
+					, '후원완료'
+				</when>
+				<otherwise>
+					, #{user_funding_pay_date}
+					, #{user_funding_pay_amt}
+					, '후원중'
+				</otherwise>
+			</choose>
 		)
 	</insert>
 	
@@ -414,11 +423,19 @@
 			, #{user_funding_count}
 			, #{user_funding_address_idx}
 			, #{user_funding_plus_amt}
-			, #{user_funding_pay_date}
-			, #{user_funding_pay_amt}
-			, '후원중'
+			<choose>
+				<when test="user_funding_pay_method == 1 || user_funding_pay_method == 2">
+					, now()
+					, #{user_funding_pay_amt}
+					, '후원완료'
+				</when>
+				<otherwise>
+					, #{user_funding_pay_date}
+					, #{user_funding_pay_amt}
+					, '후원중'
+				</otherwise>
+			</choose>
 		)
-		
 	</insert>
 	
 	<!-- 몇 번째 후원자인지 카운트 -->
@@ -447,7 +464,7 @@
 			null
 			, #{user_funding_email}
 			, #{funding_idx}
-			, null
+			, #{user_funding_pay_method}
 			, '미결제'
 			, null
 			, #{user_funding_pay_amt}
@@ -510,5 +527,12 @@
 		UPDATE project_payment
 		SET pro_pay_date = now(), pro_pay_status = '결제완료'
 		WHERE pro_mem_email = #{id} AND pro_pay_amt = #{tran_amt}
+	</update>
+	
+	<!-- 결제 완료 되면 status 후원 완료로 변경 -->
+	<update id="updateFundingStatus">
+		UPDATE funding_user
+		SET funding_status = '후원완료'
+		WHERE funding_idx = #{funding_idx}
 	</update>
 </mapper>
