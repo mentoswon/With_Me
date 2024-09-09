@@ -33,6 +33,7 @@ import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.Store_userVO;
 
 import retrofit2.http.GET;
 
@@ -540,6 +541,8 @@ public class MemberController {
 		List<Map<String, Object>> likeProjectList = service.getLikeProjectList(startRow, listLimit, member.getMem_email());
 		// 내가 좋아요한 상품 목록 나타내기
 		List<Map<String, Object>> likeProductList = service.getLikeProductList(startRow, listLimit, member.getMem_email());
+		// 내가 구매한 상품 목록 나타내기
+		List<Map<String, Object>> BuyProductList = service.getBuyProductList(startRow, listLimit, member.getMem_email());
 		
 		
 		System.out.println("projectList : " + projectList);
@@ -548,6 +551,7 @@ public class MemberController {
 		System.out.println("followingList : " + followingList);
 		System.out.println("likeProjectList : " + likeProjectList);
 		System.out.println("likeProductList : " + likeProductList);
+		System.out.println("BuyProductList : " + BuyProductList);
 //		System.out.println("followerCount : " + followerCount);
 		
 		// --------------------------------------------------------------------
@@ -560,6 +564,7 @@ public class MemberController {
 		model.addAttribute("followingList", followingList);
 		model.addAttribute("likeProjectList", likeProjectList);
 		model.addAttribute("likeProductList", likeProductList);
+		model.addAttribute("BuyProductList", BuyProductList);
 //		model.addAttribute("followerCount", followerCount);
 		
 		// 나의 마이페이지 들어갈 때 필요한 크리에이터 정보 세션 아이디로 들어감
@@ -752,13 +757,13 @@ public class MemberController {
 		System.out.println("DonationProjectDetail!!!!!!!! : " + DonationProjectDetail);
 		model.addAttribute("DonationProjectDetail", DonationProjectDetail);
 		
-//		LocalDateTime localDateTime = DonationProjectDetail.get(""));
+		// funding_pay_date는 datetime 속성이라서 <fmt:>로 형변환이 안되기에 이렇게 변환시켜야함
 		LocalDateTime fundingPayDate = (LocalDateTime) DonationProjectDetail.get("funding_pay_date");
 		Date date = Date.from(fundingPayDate.atZone(ZoneId.systemDefault()).toInstant());
 		request.setAttribute("fundingPayDate", date);
 		
 		
-		return "mypage/donationProject_detail";
+		return "mypage/donation_project_detail";
 	}
 	
 	// 후원 변경(취소)
@@ -835,7 +840,7 @@ public class MemberController {
 		}
 	}
 	
-	// 마이페이지에서 좋아요 취소
+	// 마이페이지에서 프로젝트 좋아요 취소
 	@ResponseBody
 	@PostMapping("MypageCancelLike")
 	public String mypageCancelLike(@RequestParam(defaultValue = "") String like_project_code, @RequestParam(defaultValue = "") String like_mem_email) {
@@ -855,6 +860,76 @@ public class MemberController {
 			System.out.println("응답 데이터 : " + jo.toString());
 		
 		return jo.toString();
+	}
+	
+	// 마이페이지에서 상품 좋아요 취소
+	@ResponseBody
+	@PostMapping("CancleLikeProduct")
+	public String cancleLikeProduct(@RequestParam(defaultValue = "") String like_product_code, @RequestParam(defaultValue = "") String like_mem_email) {
+		
+		// 결과 담을 Map
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int updateCount = service.cancelProductLike(like_product_code, like_mem_email);
+		
+		if(updateCount > 0) {
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 데이터 : " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+	// 내가 구입한 상품정보 상세정보
+	@GetMapping("BuyProductDetail")
+	public String buyProductDetail(HttpSession session, Model model, Store_userVO store_user, HttpServletRequest request) {
+		
+		System.out.println("store_user.getOrder_idx() : " + store_user.getOrder_idx());
+		
+		// 미 로그인 처리
+		String id = (String)session.getAttribute("sId");
+		if(id == null) {
+			model.addAttribute("msg", "로그인 필수!");
+			model.addAttribute("targetURL", "MemberLogin");
+			return "result/fail";
+		}
+		
+		// 내가 구입한 상품 목록 나타내기
+		Map<String, Object> BuyProductDetail = service.getBuyProductDetail(store_user.getOrder_idx());
+		System.out.println("BuyProductDetail!!!!!!!! : " + BuyProductDetail);
+		model.addAttribute("BuyProductDetail", BuyProductDetail);
+		
+		// order_date는 datetime 속성이라서 <fmt:>로 형변환이 안되기에 이렇게 변환시켜야함
+		LocalDateTime orderDate = (LocalDateTime) BuyProductDetail.get("order_date");
+		Date date = Date.from(orderDate.atZone(ZoneId.systemDefault()).toInstant());
+		request.setAttribute("orderDate", date);
+		
+		
+		return "mypage/buy_product_detail";
+	}
+	
+	// 결제 변경(취소)
+	@PostMapping("BuyProductCancel")
+	public String buyProductCancel(@RequestParam Map<String, String> map, HttpSession session, Model model, Store_userVO store_user) {
+		
+		System.out.println("map : " + map);
+		System.out.println("store_user : " + store_user);
+		
+		int updateCount = service.modifyBuyProduct(store_user);
+		
+		System.out.println("updateCount : " + updateCount);
+		
+		if(updateCount > 0) {
+			model.addAttribute("msg", "결제 취소 성공!");
+			return "redirect:/BuyProductDetail?order_idx=" + store_user.getOrder_idx();
+		} else {
+			model.addAttribute("msg", "결제 취소 실패!");
+			return "result/fail";
+		}
 	}
 	
 	

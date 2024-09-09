@@ -244,12 +244,14 @@
 	<select id="selectFollowList" resultType="hashmap">
 		SELECT *,
 			(SELECT mem_name
-		 	FROM member m
-         	WHERE f.follow_mem_email = m.mem_email) AS mem_name,
-         	(SELECT creator_name
+			FROM member m
+			WHERE f.follow_mem_email = m.mem_email) AS mem_name,
+			(SELECT creator_name
 			 FROM creator_info c
-        	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
+			 WHERE f.follow_mem_email = c.creator_email) AS creator_name
 		FROM follow f
+		JOIN creator_info c
+		ON f.follow_mem_email = c.creator_email
 		WHERE follow_creator = #{mem_email}
 		LIMIT
 			#{startRow}     
@@ -260,12 +262,14 @@
 	<select id="selectFollowingList" resultType="hashmap">
 		SELECT *,
 			(SELECT mem_name
-		 	FROM member m
-         	WHERE f.follow_creator = m.mem_email) AS mem_name,
-         	(SELECT creator_name
+			FROM member m
+			WHERE f.follow_creator = m.mem_email) AS mem_name,
+			(SELECT creator_name
 			 FROM creator_info c
-        	 WHERE f.follow_creator = c.creator_email) AS creator_name
+			 WHERE f.follow_creator = c.creator_email) AS creator_name
 		FROM follow f
+		JOIN creator_info c
+		ON f.follow_creator = c.creator_email
 		WHERE follow_mem_email = #{mem_email}
 		LIMIT
 			#{startRow}     
@@ -313,14 +317,49 @@
 			AND like_status = 'Y'
 	</update>
 	
-		<!-- 내가 팔로우한 사람이 팔로우한 수 -->
-<!-- 	<select id="selectFollowerCount" resultType="hashmap"> -->
-<!-- 		SELECT COUNT(f.follow_creator) -->
-<!-- 		FROM follow f JOIN creator_info c -->
-<!-- 		ON f.follow_creator = c.creator_email -->
-<!-- 		WHERE f.follow_mem_email = #{follow_mem_email} -->
-<!-- 	</select> -->
-
+	<!--  좋아요 상품 취소 -->
+	<update id="cancelProductLike">
+		UPDATE like_
+		SET like_status = 'N'
+		WHERE 
+			like_product_code = #{like_product_code}
+			AND like_mem_email = #{like_mem_email}
+			AND like_status = 'Y'
+	</update>
+	
+	<!-- 내가 구입한 상품 목록 -->
+	<select id="selectBuyProductList" resultType="hashmap">
+		SELECT *
+		FROM product_info p
+		JOIN store_user s
+		ON p.product_idx = s.product_idx
+		WHERE s.product_mem_email = #{mem_email}
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
+	
+	<!-- 내가 구입한 상품 세부정보 -->
+	<select id="selectBuyProductDetail" resultType="hashmap">
+		SELECT s.*, u.*, p.product_name, p.product_description, p.product_category, p.product_category_detail,
+				p.product_price, p.product_img, p.product_img2
+		FROM store_user s
+		JOIN product_info p
+		ON s.product_idx = p.product_idx
+		JOIN user_address u
+		ON u.address_idx = s.product_address_idx
+		WHERE s.order_idx = #{order_idx}
+	</select>
+	
+	<!-- 결제한 상품 수정(결제 취소)-->
+	<update id="updateBuyProduct">
+		UPDATE store_user
+		SET
+			store_usuer_status = '결제 취소'
+		WHERE
+			order_idx = #{order_idx}
+	</update>
+	
 	<!-- 창작자가 아닌 상대방 마이페이지에서 팔로워 리스트 조회(나를 팔로우 한 사람) -->
 	<select id="selectOtherNoCreatorFollowList" resultType="hashmap">
 		SELECT *,

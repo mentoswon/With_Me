@@ -81,94 +81,67 @@
 				<h2>1:1문의</h2>
 				</div>
 			
-<!-- 				<div align="right"> -->
-<%-- 					============================================================================ --%>
-<%-- 					======================= [ 게시물 검색 기능 추가 ] ========================== --%>
-<%-- 					검색 기능을 위한 폼 생성 --%>
-<!-- 					<form action="QnaBoardList"> -->
-<%-- 						검색타입 목록(셀렉트박스), 검색어(텍스트박스) 추가(파라미터 있으면 해당 내용 표시) --%>
-<!-- 						<select name="searchType"> -->
-<!-- 							<option value="subject" -->
-<%-- 								<c:if test="${param.searchType eq 'subject'}">selected</c:if>>제목</option> --%>
-<!-- 							<option value="content" -->
-<%-- 								<c:if test="${param.searchType eq 'content'}">selected</c:if>>내용</option> --%>
-<!-- 							<option value="subject_content" -->
-<%-- 								<c:if test="${param.searchType eq 'subject_content'}">selected</c:if>>제목+내용</option> --%>
-<!-- 						</select> <input type="text" name="searchKeyword" -->
-<%-- 							value="${param.searchKeyword}"> <input type="submit" --%>
-<!-- 							value="검색"> -->
-<!-- 					</form> -->
-<%-- 					============================================================================ --%>
-<!-- 					<input type="button" value="글쓰기" onclick="location.href='QnaBoardWrite'"> -->
-<!-- 				</div> -->
 			</section>
 			<section id="listForm">
 				<br>
 				<div class="listWrapper">
 					<ul class="list">
-									<%-- ================================================ --%>
-						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
+						<%-- 페이지번호 설정 --%>
 						<c:set var="pageNum" value="1" />
-						<%-- pageNum 파라미터 존재할 경우(= 비어있지 않음) 판별 --%>
 						<c:if test="${not empty param.pageNum}">
-							<%-- pageNum 변수에 pageNum 파라미터값 저장 --%>
 							<c:set var="pageNum" value="${param.pageNum}" />
 						</c:if>
-						<%-- ================================================ --%>
+			
+						<%-- 게시글 리스트 출력 --%>
 						<c:forEach var="qnabo" items="${QnaBoardList}">
-							<%-- boardList 에서 꺼낸 BoardBean 객체(board)에 저장된 멤버변수값(데이터) 출력 --%>
-							<c:if test="${sessionScope.sId eq qnabo.mem_email}">
-								<li class="subject">
-									<a href="QnaBoardDetail?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}"> 
-										<span class="titleBox"> 
-											<span class="group">문의</span> 
-											<span class="subject">${qnabo.mem_name}</span> 
-											<c:if test="${qnabo.faq_re_lev > 0}">
-												<c:forEach begin="1" end="${qnabo.faq_re_lev}">
-													&nbsp;&nbsp;
-												</c:forEach>
-											</c:if>
-											<span class="subject">${qnabo.faq_subject}</span> 
-											<span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>
-	<%-- 										<span class="view">조회수 ${qnabo.faq_readcount}</span> --%>
-										</span>
-									</a>
-								</li>
-							</c:if>
+							<c:choose>
+								<c:when test="${not empty QnaBoardList}">
+									<%-- 세션에 저장된 사용자 ID와 작성자 이메일이 같은 경우만 출력 --%>
+									<c:if test="${sessionScope.sId eq qnabo.mem_email}">
+										<li class="subject">
+											<a href="QnaBoardDetail?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}">
+												<span class="titleBox">
+													<span class="group">문의</span>
+													<span class="subject">${qnabo.mem_name}</span>
+													<%-- 답변 레벨에 따른 들여쓰기 --%>
+													<c:if test="${qnabo.faq_re_lev > 0}">
+														<c:forEach begin="1" end="${qnabo.faq_re_lev}">
+															&nbsp;&nbsp;
+														</c:forEach>
+													</c:if>
+													<span class="subject">${qnabo.faq_subject}</span>
+													<span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>
+												</span>
+											</a>
+										</li>
+									</c:if>
+								</c:when>
+								<c:otherwise>
+									<span class="titleBox" id="noList">
+										<span class="group">게시물이 존재하지 않습니다.</span>
+									</span>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
+			
+						<%-- QnaBoardList가 비어있을 경우 처리 --%>
+<%-- 						<c:if test="${empty QnaBoardList}"> --%>
+<!-- 							<li class="subject"> -->
+<!-- 								<span class="titleBox" id="noList"> -->
+<!-- 									<span class="group">게시물이 존재하지 않습니다.</span> -->
+<!-- 								</span> -->
+<!-- 							</li> -->
+<%-- 						</c:if> --%>
 					</ul>
-					<c:if test="${empty QnaBoardList}">
-						<ul>
-							<li class="subject">
-								<span class="titleBox" id="noList">
-									<span class="group">게시물이 존재하지 않습니다.</span>
-								</span>
-							</li>
-						</ul>
-					</c:if>
 				</div>
-
+			
 				<table>
-					<%-- ================================================ --%>
-					<%-- JSTL 과 EL 활용하여 글목록 표시 작업 반복(boardList 객체 활용) --%>
-<%-- 					<c:forEach var="bo" items="${boardList}"> --%>
-<%-- 						boardList 에서 꺼낸 BoardBean 객체(board)에 저장된 멤버변수값(데이터) 출력 --%>
-<!-- 						<tr> -->
-<%-- 							<td>${bo.bo_idx}</td> --%>
-<!-- 							<td id="subject"> -->
-<%-- 								제목 클릭 시 하이퍼링크 설정(BoardDetail) 파라미터 : 글번호(board_num), 페이지번호(pageNum) --%>
-<%-- 								<a href="BoardDetail?bo_idx=${bo.bo_idx}&pageNum=${pageNum}">${bo.bo_subject}</a> --%>
-<!-- 							</td> -->
-<%-- 							<td><fmt:formatDate value="${bo.bo_sysdate}" --%>
-<%-- 									pattern="yyyy-MM-dd" /></td> --%>
-<%-- 							<td>${bo.bo_readcount}</td> --%>
-<!-- 						</tr> -->
-<%-- 					</c:forEach> --%>
-<%-- 					<c:if test="${empty boardList}"> --%>
-<!-- 						<tr> -->
-<!-- 							<td colspan="5">게시물이 존재하지 않습니다.</td> -->
-<!-- 						</tr> -->
-<%-- 					</c:if> --%>
+					<%-- 게시물이 없을 경우 테이블에 메시지 출력 --%>
+					<c:if test="${empty QnaBoardList}">
+						<tr>
+							<td colspan="5">게시물이 존재하지 않습니다.</td>
+						</tr>
+					</c:if>
 				</table>
 			</section>
 			

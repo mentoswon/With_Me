@@ -14,6 +14,7 @@ import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.Store_userVO;
 
 @Service
 public class MemberService {
@@ -178,6 +179,26 @@ public class MemberService {
 		return mapper.cancleLike(like_project_code, like_mem_email);
 	}
 	
+	// 좋아요 상품 취소
+	public int cancelProductLike(String like_product_code, String like_mem_email) {
+		return mapper.cancelProductLike(like_product_code, like_mem_email);
+	}
+	
+	// 내가 구매한 상품목록
+	public List<Map<String, Object>> getBuyProductList(int startRow, int listLimit, String mem_email) {
+		return mapper.selectBuyProductList(startRow, listLimit, mem_email);
+	}
+	
+	// 내가 구매한 상품 세부정보
+	public Map<String, Object> getBuyProductDetail(int order_idx) {
+		return mapper.selectBuyProductDetail(order_idx);
+	}
+	
+	// 내가 구매한 상품 결제 취소
+	public int modifyBuyProduct(Store_userVO store_user) {
+		return mapper.updateBuyProduct(store_user);
+	}
+	
 	// 크리에이터 이메일 들고와서 mem_email 들고오기
 	public String getMemEmail(String creatorEmail) {
 		return mapper.selectMemEmail(creatorEmail);
@@ -212,6 +233,7 @@ public class MemberService {
 	public List<Map<String, Object>> getOtherCreatorDonationProjectList(int startRow, int listLimit, String creatorEmail) {
 		return mapper.selectOtherCreatorDonationProjectList(startRow, listLimit, creatorEmail);
 	}
+
 
 	// 팔로우 리스트에서 내가 팔로우한 사람이 팔로우한 수
 //	public List<FollowVO> getFollowerCount(List<FollowVO> followerCount) {
@@ -256,6 +278,18 @@ public class MemberService {
 			String address_main, String address_sub, String address_receiver_tel) {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

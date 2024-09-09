@@ -267,6 +267,9 @@
 						<li class="writeList" data-index="6">
 							<span>팔로잉</span>
 						</li>
+						<li class="writeList" data-index="7">
+							<span>구매한 상품</span>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -295,7 +298,6 @@
 		                <button id="showProjectsBtn">프로젝트 좋아요</button>
 		                <button id="showProductsBtn">상품 좋아요</button>
 		
-		                <!-- Container to hold the lists -->
 		                <div id="likeContent">
 		                	<div id="projectsList" class="likeList" style="display:none;">
 	                            <c:if test="${not empty likeProjectList}">
@@ -371,18 +373,9 @@
 <%-- 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG"> --%>
 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
 												</a>
-												<c:choose>
-													<c:when test="${product.like_mem_email eq sId and product.like_status eq 'Y'}">
-														<button class="like Btn" type="button" onclick="CancleLikeProduct('${product.product_code}', '${sId}')">
-															<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
-														</button>
-													</c:when>
-													<c:otherwise>
-														<button class="like Btn" type="button" onclick="RegistLikeProduct('${product.product_code}', '${sId}')">
-															<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-														</button>
-													</c:otherwise>
-												</c:choose>												
+												<button class="like Btn" type="button" onclick="CancelLikeProduct('${product.product_code}', '${sId}')">
+													<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
+												</button>											
 											</div>
 											<div class="product_info">
 												<h4><a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}"><fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원</a></h4>
@@ -631,7 +624,7 @@
 								        <table border="1">
 								            <tr id="tr_top">
 								                <td>창작자 이름</td>
-								                <td>해당창작자 정보</td>
+								                <td>창작자 소개</td>
 								            </tr>
 								
 								            <c:set var="pageNum" value="1" />
@@ -653,9 +646,8 @@
 								                            </c:otherwise>
 								                        </c:choose>
 								                    </td>
-								                    <td>
-								                        <input type="button" value="답변" 
-								                               onclick="location.href='QnaDetail?qna_number=${qna.qna_number}'">
+								             		<td>
+								                    	${follow.creator_introduce}
 								                    </td>
 								                </tr>
 								            </c:forEach>
@@ -708,7 +700,7 @@
 								        <table border="1">
 								            <tr id="tr_top">
 								                <td>창작자 이름</td>
-								                <td>해당창작자 정보</td>
+								                <td>창작자 소개</td>
 								            </tr>
 								
 								            <c:set var="pageNum" value="1" />
@@ -730,10 +722,67 @@
 								                            </c:otherwise>
 								                        </c:choose>
 								                    </td>
+								                    <td>
+								                    	${follow.creator_introduce}
+								                    </td>
 								                </tr>
 								            </c:forEach>
 								        </table>
 								    </c:if>
+								</section>
+								<br>
+								<%-- ========================== 페이징 처리 영역 ========================== --%>
+								<section id="pageList">
+									<input type="button" value="이전"
+										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
+										<c:if test="${pageNum <= 1}">disabled</c:if>>
+				
+									<c:forEach var="i" begin="${pageInfo.startPage}"
+										end="${pageInfo.endPage}">
+										<c:choose>
+											<c:when test="${i eq pageNum}">
+												<b>${i}</b>
+												<%-- 현재 페이지 번호 --%>
+											</c:when>
+											<c:otherwise>
+												<a href="MemberInfo?pageNum=${i}">${i}</a>
+												<%-- 다른 페이지 번호 --%>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+				
+									<input type="button" value="다음"
+										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
+										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+								</section>
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+			<div id="writeContainer7" class="writeContainer">
+				<div class="MypageWriteWrap">
+					<div class="MypageExplanationWrap">
+						<section id="articleForm">
+							<div align="center">
+								<section id="listForm">
+								<c:if test="${not empty BuyProductList}">
+		                    	<c:set var="hasValidProject" value="false" />
+									<c:forEach var="product" items="${BuyProductList}">
+										<div class="product">
+											<div class="product_image">
+												<a href="BuyProductDetail?order_idx=${product.order_idx}">
+<%-- 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG"> --%>
+													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
+												</a>
+											</div>
+											<div class="product_info">
+												<h4><a href="BuyProductDetail?order_idx=${product.order_idx}"><fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원</a></h4>
+												<span><a href="BuyProductDetail?order_idx=${product.order_idx}">${product.product_name}</a></span>
+											</div>
+										</div>	
+									</c:forEach>
+			                    </c:if>
 								</section>
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>
@@ -798,5 +847,33 @@ function MypageCancelLike(project_code, sId) {
 	});
 }
 
+
+
+</script>
+<script type="text/javascript">
+//상품 좋아요 취소
+function CancelLikeProduct(product_code, sId) {
+	console.log("product_code : " + product_code + ", sId : " + sId);
+	$.ajax({
+		url: "CancleLikeProduct",
+		type : "POST",
+		async:false, // 이 한줄만 추가해주시면 됩니다.
+		data:{
+			"like_product_code": product_code,
+			"like_mem_email": sId
+		},
+		dataType: "json",
+		success: function (response) {
+			if(response.result){
+				alert("좋아요가 취소되었습니다.");
+// 				$(item).remove();
+				location.reload();
+			} else if(!response.result) {
+				alert("좋아요 취소가 실패가 되었습니다!!");
+// 					location.href="MemberInfo";
+			}
+		}
+	});
+}
 </script>
 </html>

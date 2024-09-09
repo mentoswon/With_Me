@@ -129,7 +129,7 @@
 				<c:if test="${not empty qnabo.faq_reply}">
 					<div id="articleReplyArea">
 						<b>답변</b>
-						<textarea rows="10" cols="67" name="faq_reply">${qnabo.faq_reply}</textarea>
+						<textarea rows="10" cols="67" name="faq_reply" readonly="readonly">${qnabo.faq_reply}</textarea>
 					</div>
 				</c:if>
 			</section>
