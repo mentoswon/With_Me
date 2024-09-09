@@ -103,6 +103,7 @@
 			, 0                 -- faq_re_lev
 			, 0                 -- faq_re_seq
 			, #{faq_content}
+			, #{faq_reply}
 			, #{faq_file}
 			, now()
 			, #{mem_email}                 -- sId

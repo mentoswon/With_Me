@@ -14,6 +14,7 @@ import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.Store_userVO;
 
 @Mapper
 public interface MemberMapper {
@@ -119,6 +120,18 @@ public interface MemberMapper {
 	// 좋아요 취소
 	int cancleLike(@Param("like_project_code")String like_project_code, @Param("like_mem_email")String like_mem_email);
 	
+	// 좋아요 상품 취소
+	int cancelProductLike(@Param("like_product_code")String like_product_code, @Param("like_mem_email")String like_mem_email);
+	
+	// 내가 구입한 상품 목록
+	List<Map<String, Object>> selectBuyProductList(@Param("startRow")int startRow, @Param("listLimit")int listLimit, @Param("mem_email")String mem_email);
+	
+	// 내가 구입한 상품 세부정보
+	Map<String, Object> selectBuyProductDetail(int order_idx);
+	
+	// 마이페이지에서 상품 결제 취소
+	int updateBuyProduct(Store_userVO store_user);
+	
 	// 창작자가 아닌 상대방 마이페이지에서 팔로우 리스트 가져오기
 	List<Map<String, Object>> selectOtherNoCreatorFollowList(
 								@Param("startRow") int startRow,
@@ -189,6 +202,16 @@ public interface MemberMapper {
 
 	// creator_email 들고와서 mem_email값 가져오기
 	String selectMemEmail(String creatorEmail);
+
+
+
+
+
+
+
+
+
+
 
 
 

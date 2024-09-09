@@ -236,7 +236,7 @@ public class BoardController {
 		model.addAttribute("QnaBoardList", QnaBoardList);
 		model.addAttribute("pageInfo", pageInfo);
 		
-		return "board/qna_list";
+		return "mypage/qna_list";
 		
 	}
 	
@@ -250,7 +250,7 @@ public class BoardController {
 			return "result/fail";
 		}
 		model.addAttribute("qnabo", qnabo);
-		return "board/qna_detail";
+		return "mypage/qna_detail";
 	}
 	
 	// 1:1문의 게시글 리스트 삭제
