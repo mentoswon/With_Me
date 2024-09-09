@@ -248,9 +248,9 @@
 									
 								<div class="productList">
 									<div class="orderWrapper"> 
-										<span class="orderSelect" id="orderList01" onclick="location.href=''">인기순</span>
-										<span class="orderSelect" id="orderList02" onclick="location.href=''">추천순</span>
-										<span class="orderSelect" id="orderList03" onclick="location.href=''">최신순</span>
+										<span class="orderSelect" id="orderList01" onclick="fetchSortedProducts('newest')">최신순</span>
+										<span class="orderSelect" id="orderList02" onclick="fetchSortedProducts('priceDesc')">가격 높은순</span>
+										<span class="orderSelect" id="orderList03" onclick="fetchSortedProducts('priceAsc')">가격 낮은순</span>
 									</div>
 									<div class="boxWrapper">
 									<c:forEach var="product" items="${StoreList}">
@@ -377,6 +377,27 @@
 		});
 	}
 
+	//================================================================================
+	
+	function fetchSortedProducts(order) {
+		$.ajax({
+			url: 'StoreList', // 서버로 요청을 보낼 url
+			type: 'GET',
+			data: {order: order}, // 정렬 기준을 파라미터로 전송
+			dataType: 'json', // 서버로부터 JSON 데이터를 받음
+			success: function(response) {
+				// 서버에서 받은 JSON 데이터를 HTML로 렌더링
+				renderProductList(response);
+			},
+			error: function(xhr, status, error) {
+				console.log('상품 목록을 가져오는 데 실패했습니다.', error);
+			}
+		});
+	}
+	function renderProductList(products) {
+		const productList = $(#productList);
+	}
+	
 
 </script>	
 
