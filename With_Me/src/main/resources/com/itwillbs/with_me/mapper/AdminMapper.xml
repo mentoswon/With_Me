@@ -230,6 +230,7 @@
 			WHERE funding_project_idx = p.project_idx) AS funding_amt
 		FROM project_info p
 		WHERE project_idx = #{project_idx}
+		OR project_code = #{project_code}
 	</select>
 	
 	<!-- 창작자 정보 조회 -->
@@ -351,4 +352,68 @@
 		DELETE FROM notice
 		WHERE bo_idx = #{bo_idx}
 	</delete>
+	
+	<!-- 신고 개수 조회 -->
+	<select id="selectReportListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM report
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				report_mem_email like concat('%',#{searchKeyword},'%')
+				or report_project_code like concat('%',#{searchKeyword},'%')
+				or report_product_code like concat('%',#{searchKeyword},'%')
+				or report_category like concat('%',#{searchKeyword},'%')
+				or report_date like concat('%',#{searchKeyword},'%')
+				or report_state like concat('%',#{searchKeyword},'%')
+		</if>
+	</select>
+	
+	<!-- 신고 목록 조회 -->
+	<select id="selectReportList" resultType="report">
+		SELECT * 
+		FROM report
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				report_mem_email like concat('%',#{searchKeyword},'%')
+				or report_project_code like concat('%',#{searchKeyword},'%')
+				or report_product_code like concat('%',#{searchKeyword},'%')
+				or report_category like concat('%',#{searchKeyword},'%')
+				or report_date like concat('%',#{searchKeyword},'%')
+				or report_state like concat('%',#{searchKeyword},'%')
+		</if>
+		ORDER BY
+			report_idx DESC
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 신고 상세정보 조회 -->
+	<select id="selectReportDetail" resultType="report">
+		SELECT * 
+		FROM report
+		WHERE report_idx = #{report_idx}
+	</select>
+	
+	<!-- 상품 상세정보 조회 -->
+	<select id="selectProductDetail" resultType="store">
+		SELECT * 
+		FROM product_info
+		WHERE product_code = #{product_code}
+	</select>
+	
+	<!-- 신고 상태 변경 -->
+	<update id="updateReportState">
+		UPDATE report
+		SET 
+			<choose>
+				<when test="report_state.equals('')">
+					report_state = '접수완료'
+				</when>
+				<when test="report_state.equals('접수완료')">
+					report_state = '처리완료'
+				</when>
+			</choose>
+		WHERE report_idx = #{report_idx}
+	</update>
 </mapper>

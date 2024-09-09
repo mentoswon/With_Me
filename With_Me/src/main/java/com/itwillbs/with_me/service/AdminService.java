@@ -12,6 +12,8 @@ import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.ReportVO;
+import com.itwillbs.with_me.vo.StoreVO;
 
 @Service
 public class AdminService {
@@ -116,6 +118,31 @@ public class AdminService {
 	// 공지사항 삭제
 	public int removeNotice(int bo_idx) {
 		return mapper.deleteNotice(bo_idx);
+	}
+	
+	// 신고 개수 조회
+	public int getReportListCount(String searchKeyword) {
+		return mapper.selectReportListCount(searchKeyword);
+	}
+	
+	// 신고 목록 조회
+	public List<ReportVO> getReportList(int startRow, int listLimit, String searchKeyword) {
+		return mapper.selectReportList(startRow, listLimit, searchKeyword);
+	}
+	
+	// 신고 상세정보 조회
+	public ReportVO getReportDetail(ReportVO report) {
+		return mapper.selectReportDetail(report);
+	}
+	
+	// 상품 상세정보 조회
+	public StoreVO getProductDetail(StoreVO product) {
+		return mapper.selectProductDetail(product);
+	}
+	
+	// 신고 상태 변경
+	public int changeReportState(ReportVO report) {
+		return mapper.updateReportState(report);
 	}
 	
 }

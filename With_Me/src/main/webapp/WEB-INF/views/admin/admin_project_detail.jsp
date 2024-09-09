@@ -65,17 +65,10 @@
 			location.href = "AdminProjectRegistApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
 		}
 	}
-	// 프로젝트 취소 승인/거부
-	function projectCancelApproval(isAuthorize, project_idx){
-		let msg = "";
-		
-		if(isAuthorize == 'YES') {
-			msg = "승인";
-		} else if(isAuthorize == 'NO') {
-			msg = "거부";
-		}
-		if(confirm("프로젝트 취소를 " + msg + "하시겠습니까?")) {
-			location.href = "AdminProjectCancelApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
+	// 프로젝트 취소 승인
+	function projectCancelApproval(project_idx){
+		if(confirm("프로젝트 취소를 승인하시겠습니까?")) {
+			location.href = "AdminProjectCancelApproval?status=${param.status}&project_idx=" + project_idx;
 		}
 	}
 </script>
@@ -178,18 +171,18 @@
 							<dt>프로젝트 정책</dt>
 							<dd> | ${project.project_policy}</dd>
 						</dl>
-						<c:if test="${param.status eq '진행중'}">
+						<c:if test="${param.status eq ('등록대기' or '진행중')}">
 							<dl>
 								<dt>취소신청여부</dt>
 								<dd> | 
 									<c:choose>
-										<c:when test="${projectCancel eq null}">신청하지 않음</c:when>
+										<c:when test="${projectCancel == null}">신청하지 않음</c:when>
 										<c:otherwise>신청함</c:otherwise>
 									</c:choose>
 								</dd>
 							</dl>
 							<c:choose>
-								<c:when test="${projectCancel eq null}"></c:when>
+								<c:when test="${projectCancel == null}"></c:when>
 								<c:otherwise>
 									<dl>
 										<dt>취소신청사유</dt>
@@ -204,14 +197,15 @@
 							<c:when test="${param.status eq '등록대기'}">
 								<input type="button" class="approvalBtn" value="등록승인" onclick="projectRegistApproval('YES', ${project.project_idx})">
 								<input type="button" class="approvalBtn" value="등록거부" onclick="projectRegistApproval('NO', ${project.project_idx})">
+								<%-- 창작자가 취소 신청을 하지 않았을 경우 버튼 비활성화 처리 --%>
+								<input type="button" class="approvalBtn" value="취소승인" onclick="projectCancelApproval(${project.project_idx})" <c:if test="${projectCancel == null}">disabled</c:if>>
 							</c:when>
 							<c:when test="${param.status eq '진행중'}">
 								<%-- 창작자가 취소 신청을 하지 않았을 경우 버튼 비활성화 처리 --%>
-								<input type="button" class="approvalBtn" value="취소승인" onclick="projectCancelApproval('YES', ${project.project_idx})" <c:if test="${projectCancel eq null}">disabled</c:if>>
-								<input type="button" class="approvalBtn" value="취소거부" onclick="projectCancelApproval('NO', ${project.project_idx})" <c:if test="${projectCancel eq null}">disabled</c:if>>
+								<input type="button" class="approvalBtn" value="취소승인" onclick="projectCancelApproval(${project.project_idx})" <c:if test="${projectCancel == null}">disabled</c:if>>
 							</c:when>
 							<c:when test="${param.status eq '종료'}">
-								<input type="button" class="approvalBtn" value="버튼" disabled>
+								<input type="button" class="approvalBtn" value="종료됨" disabled>
 							</c:when>
 						</c:choose>
 					</div>

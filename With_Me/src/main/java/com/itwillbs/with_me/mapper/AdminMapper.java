@@ -11,6 +11,8 @@ import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.ReportVO;
+import com.itwillbs.with_me.vo.StoreVO;
 
 @Mapper
 public interface AdminMapper {
@@ -79,5 +81,21 @@ public interface AdminMapper {
 	
 	// 공지사항 삭제
 	int deleteNotice(int bo_idx);
+	
+	// 신고 개수 조회
+	int selectReportListCount(String searchKeyword);
+	
+	// 신고 목록 조회
+	List<ReportVO> selectReportList(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
+									@Param("searchKeyword") String searchKeyword);
+	
+	// 신고 상세정보 조회
+	ReportVO selectReportDetail(ReportVO report);
+	
+	// 상품 상세정보 조회
+	StoreVO selectProductDetail(StoreVO product);
+	
+	// 신고 상태 변경
+	int updateReportState(ReportVO report);
 	
 }

@@ -7,15 +7,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +31,8 @@ import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
+import com.itwillbs.with_me.vo.ReportVO;
+import com.itwillbs.with_me.vo.StoreVO;
 
 @Controller
 public class AdminController {
@@ -193,7 +192,7 @@ public class AdminController {
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
 //		System.out.println("pageInfo : " + pageInfo);
 		
-		// 후원내역 목록, 페이징 정보 Model 객체에 저장 -> admin_member_sponsorship_detail_list.jsp 로 전달
+		// 후원내역 목록, 페이징 정보 Model 객체에 저장 -> admin_member_sponsorship_history_list.jsp 로 전달
 		model.addAttribute("member", member);
 		model.addAttribute("sponsorshipHistoryList", sponsorshipHistoryList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -394,44 +393,28 @@ public class AdminController {
 		}
 	}
 	
-	// 프로젝트 취소 승인/거부
+	// 프로젝트 취소 승인
 	@GetMapping("AdminProjectCancelApproval")
-	public String adminProjectCancelApproval(HttpSession session, Model model, ProjectVO project, String isAuthorize) {
+	public String adminProjectCancelApproval(HttpSession session, Model model, ProjectVO project, String status) {
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
 			model.addAttribute("msg", "관리자 권한이 없습니다.");
 			model.addAttribute("targetURL", "./");
 			return "result/fail";
 		}
-		// 프로젝트 취소 승인/거부
-		int updateCount = 0;
-		String status = "";
-		if(isAuthorize.equals("YES")) {
-			status = "취소";
-			// 프로젝트 상태 변경
-			updateCount += adminService.changeProjectStatus(project, status);
-			// 프로젝트 취소 승인여부 변경
-			updateCount += adminService.changeProjectCancelStatus(project);
-		} else if(isAuthorize.equals("NO")) {
-			updateCount = 1; // update 작업을 하지 않기에 updateCount를 수동으로 조절
-		}
-		// 취소 승인/거부 결과 판별
-		// 성공 시 "프로젝트 취소 승인/거부 성공!" 메세지 출력 및 "AdminProjectList" 서블릿 주소 전달(success.jsp)
-		// 실패 시 "프로젝트 취소 승인/거부 실패!" 메세지 출력 및 이전페이지 처리(fail.jsp)
-		if(updateCount > 0) {
-			if(status.equals("취소")) {
-				model.addAttribute("msg", "프로젝트 취소 승인 성공!");
-			} else {
-				model.addAttribute("msg", "프로젝트 취소 거부 성공!");
-			}
-			model.addAttribute("targetURL", "AdminProjectList?status=진행중");
+		// 프로젝트 취소 승인 - 프로젝트 상태 변경
+		int updateCount = adminService.changeProjectStatus(project, "취소");
+		// 프로젝트 취소 승인여부 변경
+		int updateCount2 = adminService.changeProjectCancelStatus(project);
+		// 취소 승인 결과 판별
+		// 성공 시 "프로젝트 취소 승인 성공!" 메세지 출력 및 "AdminProjectList" 서블릿 주소 전달(success.jsp)
+		// 실패 시 "프로젝트 취소 승인 실패!" 메세지 출력 및 이전페이지 처리(fail.jsp)
+		if(updateCount > 0 && updateCount2 > 0) {
+			model.addAttribute("msg", "프로젝트 취소 승인 성공!");
+			model.addAttribute("targetURL", "AdminProjectList?status=" + status);
 			return "result/success";
 		} else {
-			if(status.equals("취소")) {
-				model.addAttribute("msg", "프로젝트 취소 승인 실패!");
-			} else {
-				model.addAttribute("msg", "프로젝트 취소 거부 실패!");
-			}
+			model.addAttribute("msg", "프로젝트 취소 승인 실패!");
 			return "result/fail";
 		}
 	}
@@ -486,7 +469,7 @@ public class AdminController {
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
 //		System.out.println("pageInfo : " + pageInfo);
 		
-		// 프로젝트 목록, 페이징 정보 Model 객체에 저장 -> admin_notice.jsp 로 전달
+		// 공지사항 목록, 페이징 정보 Model 객체에 저장 -> admin_notice.jsp 로 전달
 		model.addAttribute("noticeList", noticeList);
 		model.addAttribute("pageInfo", pageInfo);
 		
@@ -615,7 +598,7 @@ public class AdminController {
 		// 만약, 컨트롤러 측에서 원본 파일명을 추출하여 별도의 객체로 저장 후 전송할 경우
 		String originalFileName;
 		if(!fileName.equals("")) {
-			// "_" 기호 다음(해당 인덱스값 + 1)부터 끝까지 추출하여 리스트에 추가
+			// "_" 기호 다음(해당 인덱스값 + 1)부터 끝까지 추출하여 변수에 저장
 			originalFileName = (fileName.substring(fileName.indexOf("_") + 1));
 		} else {
 			 // 파일이 존재하지 않을 경우 널스트링 값 추가
@@ -815,6 +798,181 @@ public class AdminController {
 			return "result/success";
 		} else {
 			model.addAttribute("msg", "삭제 실패!");
+			return "result/fail";
+		}
+	}
+	
+	// 관리자 - 게시판관리 - 신고관리
+	@GetMapping("AdminReport")
+	public String adminReport(@RequestParam(defaultValue = "1") int pageNum,
+							@RequestParam(defaultValue ="") String searchKeyword,
+							@RequestParam(defaultValue = "5") int listLimit,
+							HttpSession session, Model model) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+		model.addAttribute("msg", "관리자 권한이 없습니다.");
+		model.addAttribute("targetURL", "./");
+		return "result/fail";
+		}
+		// 페이징 처리
+		//int listLimit = 5; // 페이지 당 목록 개수
+		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
+		
+		int listCount = adminService.getReportListCount(searchKeyword); // 총 목록 개수
+//		System.out.println("listCount : " + listCount);
+		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
+		int endPage = startPage + pageListLimit - 1;
+		if(endPage > maxPage) {
+		endPage = maxPage;
+		}
+		
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
+		if(maxPage == 0) {
+		maxPage = 1;
+		}
+		
+		if(endPage > maxPage) {
+		endPage = maxPage;
+		}
+		
+		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
+		if(pageNum < 1 || pageNum > maxPage) {
+		model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+		model.addAttribute("targetURL", "AdminReport?pageNum=1");
+		return "result/fail";
+		}
+		
+		// 신고 목록 조회
+		// 검색어는 기본적으로 "" 널스트링
+		List<ReportVO> reportList = adminService.getReportList(startRow, listLimit, searchKeyword);
+//		System.out.println("reportList : " + reportList);
+		
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+//		System.out.println("pageInfo : " + pageInfo);
+		
+		// 신고 목록, 페이징 정보 Model 객체에 저장 -> admin_report.jsp 로 전달
+		model.addAttribute("reportList", reportList);
+		model.addAttribute("pageInfo", pageInfo);
+		
+		return "admin/admin_report";
+	}
+	
+	// 신고 상세정보 조회
+	@GetMapping("AdminReportDetail")
+	public String adminReportDetail(HttpSession session, Model model, ReportVO report) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+//		System.out.println("report : " + report);
+		
+		// 신고 상세정보 가져와서 ReportVO 객체에 저장
+		report = adminService.getReportDetail(report);
+//		System.out.println("report : " + report);
+		
+		// ReportVO 객체를 Model 객체에 저장
+		model.addAttribute("report", report);
+		
+		// 회원 상세정보를 MemberVO 객체에 저장
+		MemberVO member = new MemberVO();
+		member.setMem_email(report.getReport_mem_email());
+		member = memberService.getMember(member);
+//		System.out.println("member : " + member);
+		
+		// 회원 상세정보 Model 객체에 저장
+		model.addAttribute("member", member);
+		
+		// 프로젝트 코드와 상품코드를 각각 String 타입 변수에 저장
+		String project_code = report.getReport_project_code();
+		String product_code = report.getReport_product_code();
+		// 프로젝트 코드가 null이 아닐 경우 프로젝트 상세정보 조회
+		if(project_code != null) {
+			// 프로젝트 상세정보를 ProjectVO 객체에 저장
+			ProjectVO project = new ProjectVO();
+			project.setProject_code(project_code);
+			Map<String, Object> projectInfo = adminService.getProjectDetail(project);
+//			System.out.println("projectInfo : " + projectInfo);
+			
+			// 프로젝트 상세정보 Model 객체에 저장
+			model.addAttribute("project", projectInfo);
+		}
+		// 상품코드가 null이 아닐 경우 상품 상세정보 조회
+		if(product_code != null) {
+			// 상품 상세정보를 StoreVO 객체에 저장
+			StoreVO product = new StoreVO();
+			product.setProduct_code(product_code);
+			product = adminService.getProductDetail(product);
+//			System.out.println("product : " + product);
+			
+			// 상품 상세정보 Model 객체에 저장
+			model.addAttribute("product", product);
+		}
+		// -------------------------------------------------------------------------------
+		// 뷰페이지에서 파일의 효율적 처리를 위해 파일명만 별도로 String 타입 변수에 저장
+		String fileName = report.getReport_file();
+//		System.out.println("fileName : " + fileName);
+		// -------------------------------------------------------------------------------
+		// 만약, 컨트롤러 측에서 원본 파일명을 추출하여 별도의 객체로 저장 후 전송할 경우
+		String originalFileName[];
+		if(fileName != null && !fileName.equals("")) {
+			// "_" 기호 다음(해당 인덱스값 + 1)부터 끝까지 추출하여 리스트에 추가
+//			originalFileName = (fileName.substring(fileName.indexOf("_") + 1));
+			// "/" 기호를 기준으로 문자열 분리 후 배열에 저장
+			originalFileName = fileName.split("/");
+		} else {
+			 // 파일이 존재하지 않을 경우 null 값 추가
+			originalFileName = null;
+		}
+//		for(int i = 0; i < originalFileName.length; i++) {
+//			System.out.println("originalFileName[" + i + "] : " + originalFileName[i]);
+//		}
+		// -------------------------------------------------------------------------------
+		// Model 객체에 파일 목록 저장
+		model.addAttribute("fileName", fileName);
+		model.addAttribute("originalFileName", originalFileName);
+		// -------------------------------------------------------------------------------
+		
+		return "admin/admin_report_detail";
+	}
+	
+	// 신고 상태 변경
+	@PostMapping("ChangeReportState")
+	public String changeReportState(HttpSession session, Model model, ReportVO report) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+//		System.out.println("report : " + report);
+		
+		// adminService - changeReportState() 메서드 호출하여 신고 상태 변경 작업 요청
+		// => 파라미터 : ReportVO 객체   리턴타입 : int(updateCount)
+		int updateCount = adminService.changeReportState(report);
+		
+		// 신고 상태 변경 작업 요청 결과 판별
+		if(updateCount > 0) { // 성공
+			// "신고 접수/처리에 성공했습니다." 메세지 출력 및 "AdminReportDetail" 서블릿 주소 전달
+			if(report.getReport_state() == null || report.getReport_state().equals("")) {
+				model.addAttribute("msg", "신고 접수에 성공했습니다.");
+			} else if(report.getReport_state().equals("접수완료")) {
+				model.addAttribute("msg", "신고 처리에 성공했습니다.");
+			}
+			model.addAttribute("targetURL", "AdminReportDetail?report_idx=" + report.getReport_idx());
+			
+			return "result/success";
+		} else { // 실패
+			// "신고 접수/처리에 실패했습니다." 메세지 출력 및 이전 페이지 돌아가기 처리
+			if(report.getReport_state() == null || report.getReport_state().equals("")) {
+				model.addAttribute("msg", "신고 접수에 실패했습니다.");
+			} else if(report.getReport_state().equals("접수완료")) {
+				model.addAttribute("msg", "신고 처리에 실패했습니다.");
+			}
+			
 			return "result/fail";
 		}
 	}

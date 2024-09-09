@@ -146,21 +146,21 @@
 							<%-- pageNum 변수에 pageNum 파라미터값 저장 --%>
 							<c:set var="pageNum" value="${param.pageNum}" />
 						</c:if>
-						<c:forEach var="notice" items="${noticeList}">
+						<c:forEach var="NL" items="${noticeList}">
 							<tr align="center">
-								<td>${notice.bo_idx}</td>
-								<td>${notice.bo_subject}</td>
-								<td>${notice.bo_sysdate}</td>
-								<td>${notice.bo_readcount}</td>
+								<td>${NL.bo_idx}</td>
+								<td>${NL.bo_subject}</td>
+								<td>${NL.bo_sysdate}</td>
+								<td>${NL.bo_readcount}</td>
 								<td>
 									<c:choose>
-										<c:when test="${empty notice.bo_file}">첨부파일이 없습니다</c:when>
-										<c:otherwise>${notice.bo_file}</c:otherwise>
+										<c:when test="${empty NL.bo_file}">첨부파일이 없습니다</c:when>
+										<c:otherwise>${NL.bo_file}</c:otherwise>
 									</c:choose>
 								</td>
 								<td>
-									<input type="button" class="modifyBtn" value="수정" onclick="modifyNotice('${notice.bo_idx}')">
-									<input type="button" class="deleteBtn" value="삭제" onclick="removeNotice('${notice.bo_idx}')">
+									<input type="button" class="modifyBtn" value="수정" onclick="modifyNotice('${NL.bo_idx}')">
+									<input type="button" class="deleteBtn" value="삭제" onclick="removeNotice('${NL.bo_idx}')">
 								</td>
 							</tr>
 						</c:forEach>

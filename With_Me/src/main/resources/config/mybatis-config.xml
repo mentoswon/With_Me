@@ -26,5 +26,6 @@
   		<typeAlias type="com.itwillbs.with_me.vo.BankToken" alias="bankToken"/>
   		<typeAlias type="com.itwillbs.with_me.vo.StoreVO" alias="StoreVO"/>
   		<typeAlias type="com.itwillbs.with_me.vo.CreatorAccountVO" alias="creatorAccount"/>
+  		<typeAlias type="com.itwillbs.with_me.vo.ReportVO" alias="report"/>
 	</typeAliases>
  </configuration>
