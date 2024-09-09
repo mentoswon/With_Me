@@ -52,8 +52,9 @@
 }
 
 #writeForm input[type="submit"],
-#writeForm input[type="button"] {
-    background-color: #59b9a9; /* 버튼 배경색 */
+#writeForm input[type="button"],
+#writeForm input[type="reset"] {
+    background-color: #ffab40; /* 버튼 배경색 */
     color: #fff; /* 버튼 텍스트 색상 */
     border: none;
     padding: 10px 20px;
@@ -63,8 +64,9 @@
 }
 
 #writeForm input[type="submit"]:hover,
-#writeForm input[type="button"]:hover {
-    background-color: #498f7f; /* 버튼 호버 배경색 */
+#writeForm input[type="button"]:hover,
+#writeForm input[type="reset"]:hover {
+    background-color: #ccaa20; /* 버튼 호버 배경색 */
 }
 </style>
 </head>

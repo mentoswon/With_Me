@@ -603,13 +603,7 @@ public class StoreController {
 		String id = (String)session.getAttribute("sId");
 		member.setMem_email(id);
 		
-//		Integer payMethod = Integer.parseInt(String.valueOf(map.get("payMethod"))); // 결제방법
-		
-//		int user_store_product_idx = 0;
-		
 		int insertCount = service.registUserOrder(map); // 사용자 주문 정보 등록
-		
-//		int user_store_product_idx = Integer.parseInt(String.valueOf(map.get("user_store_product_idx")));
 		
 		if(insertCount > 0) {
 			// 스토어 상품 구매 내역 product_payment 테이블에 저장

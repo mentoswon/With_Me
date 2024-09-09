@@ -153,7 +153,7 @@
 						<input type="button" value="삭제" onclick="confirmDelete()">
 					</c:if>
 				</c:if>
-				<input type="button" value="돌아가기" onclick="history.back()">
+				<input type="button" value="돌아가기" onclick="location.href='QnaBoardList'">
 			</section>
 		</section>
 	</main>

@@ -21,7 +21,7 @@
 			<div class="footer_info">
 				<h4>고객지원</h4>
 				<span>평일 9:30 ~ 17:00 <small>(12:00 ~ 14:00 제외)</small></span> <br>
-				<input type="button" value="위드미에 문의" id="askBtn" onclick="location.href='QnaBoardList'">
+				<input type="button" value="위드미에 문의" id="askBtn" onclick="location.href='QnaBoardWrite'">
 			</div>
 		</div>
 		

@@ -32,7 +32,10 @@
 			
 			.inner .con01 p a{
 				text-decoration: underline;
+				color: #ffab40;
 			}
+			
+			
 		</style>
 	</head>
 	<body>
@@ -45,7 +48,8 @@
 				<h2>축하합니다 ! </h2>
 				<h2>주문이 완료 되었습니다 !</h2>
 				
-				<p>주문내역은 <a href="MemberInfo">마이페이지</a> 에서 확인 가능합니다.
+				<p>주문내역은 <b><a href="MemberInfo">마이페이지</a></b> 에서 확인 가능합니다.</p><br>
+				<p><b><a href="./">계속 주문 하시겠습니까?</a></b></p>
 			</section>
 		</div>
 		

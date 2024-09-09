@@ -246,6 +246,7 @@
 			, #{faq_re_lev} + 1  -- faq_re_lev(전달받은 원본글의 값 + 1 사용)  => 새 글 작성과 다름
 			, #{faq_re_seq} + 1  -- faq_re_seq(전달받은 원본글의 값 + 1 사용)  => 새 글 작성과 다름
 			, #{faq_content}
+			, null
 			, now()
 			, #{mem_email}
 		)

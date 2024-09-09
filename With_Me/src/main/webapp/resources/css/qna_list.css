@@ -58,7 +58,15 @@
 }
 
 
-
+.writeBtn {
+	background-color: #fff;
+	color: #FFAB40;
+	width: 100px;
+	padding: 10px;
+	margin-right: 3%;
+	border: none;
+	border-radius: 5px;
+}
 
 
 

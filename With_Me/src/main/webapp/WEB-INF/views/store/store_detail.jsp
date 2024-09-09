@@ -60,12 +60,12 @@
 								<dd><b>평일 16시 전 주문하면 오늘 출발  </b>(무료배송)</dd> <!-- 마감일 다음날 결제 예정일 -->
 							</dl>
 						</div>
-						<form action="StoreInProgress" method="get">
+						<form action="StoreInProgress" method="get" onsubmit="return validateOptionSelection();">
 							
 							<div class="productInfo3">
 								<c:choose>
 									<c:when test="${product_detail.product_status eq '1'}"> <!-- 판매중일 때 -->
-										<select class="reward_item_option_select option">
+										<select class="store_product_option_select option">
 											<option disabled  selected value="">옵션을 선택해주세요.</option>
 											<c:forEach var="productOptions" items="${productOptions}">
 												<option value="${productOptions.splited_product_option}" >${productOptions.splited_product_option}</option>
@@ -113,13 +113,13 @@
 						<div class="wrap">
 							<div>
 								<div class="creator">
-									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg">
+									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/image/withme.png">
 									<span>위드미</span>
 								</div>
 							</div>
 							<div class="btns">
 								<button class="follow" onclick="StoreList('푸드', '')">다른상품 보러가기</button>
-								<button class="ask" onclick="chat()">문의</button>
+								<button class="ask" onclick="location.href='QnaBoardList'">문의</button>
 							</div>
 						</div>
 					</div>
@@ -253,8 +253,8 @@
 			<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 		</footer>
 		<script type="text/javascript">
-			$(".reward_item_option_select").on('change', function(){
-				$("#productOption").val($(".reward_item_option_select").val());
+			$(".store_product_option_select").on('change', function(){
+				$("#productOption").val($(".store_product_option_select").val());
 			});
 			
 			// ==========================================================================
@@ -396,7 +396,20 @@
 			  if (event.keyCode === 13) {
 			    event.preventDefault();
 			  };
-			}, true);			
+			}, true);	
+			
+			// ===============================================================
+			function validateOptionSelection() {
+		        const selectedOption = document.querySelector(".store_product_option_select").value;
+		        
+		        if (!selectedOption) {  // 옵션이 선택되지 않은 경우
+		            alert("옵션을 선택해 주세요.");
+		            document.querySelector(".store_product_option_select").focus();  // 옵션 선택창으로 포커스 이동
+		            return false;  // 폼 제출을 막음
+		        }
+		
+		        return true;  // 옵션이 선택된 경우 폼 제출 허용
+		    }
 		</script>
 	</body>
 </html>

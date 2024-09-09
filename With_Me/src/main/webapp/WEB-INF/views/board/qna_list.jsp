@@ -99,7 +99,7 @@
 							value="검색">
 					</form>
 					<%-- ============================================================================ --%>
-					<input type="button" value="글쓰기" onclick="location.href='QnaBoardWrite'">
+					<input type="button" value="글쓰기" onclick="location.href='QnaBoardWrite'" class="writeBtn">
 				</div>
 			</section>
 			<section id="listForm">
@@ -121,12 +121,16 @@
 							<li class="subject">
 								<a href="QnaBoardDetail?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}"> 
 									<span class="titleBox"> 
-										<span class="group">문의</span> 
-										<span class="subject">${qnabo.mem_name}</span> 
+									<span class="group">${qnabo.faq_idx}</span> 
+									<span class="subject">${qnabo.mem_name}</span> 
+										<%-- ========= 답글 관련 처리 ======== --%>
+										<%-- board_re_lev 값이 0 보다 크면 답글이므로 들여쓰기 후 이미지(re.gif) 표시 --%>
+										<%-- ex) lev = 1 일 때 2칸, lev = 2 일 때 4칸 들여쓰기 --%>
 										<c:if test="${qnabo.faq_re_lev > 0}">
 											<c:forEach begin="1" end="${qnabo.faq_re_lev}">
 												&nbsp;&nbsp;
 											</c:forEach>
+											<img src="${pageContext.request.contextPath}/resources/image/re.gif">
 										</c:if>
 										<span class="subject">${qnabo.faq_subject}</span> 
 										<span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>

@@ -21,10 +21,30 @@
 		<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 		<style>
 		
-		#user_store_complete {
-			width: 100%;
+		.btnGroup {
+			display: flex;
+			align-content: center;
+		}
+		
+		#cancel_btn {
+			width: 30%;
 		    padding: 15px 0;
 		    margin-top: 20px;
+		    border: none;
+		    border-radius: 10px;
+		    background-color: #ddd;
+		    color: #fff;
+		    font-weight: bold;
+		    font-size: 20px;
+		    text-align: center;
+		    cursor: pointer;		
+		}
+		
+		#user_store_complete {
+			width: 70%;
+		    padding: 15px 0;
+		    margin-top: 20px;
+		    margin-right: 10px;
 		    border: none;
 		    border-radius: 10px;
 		    background-color: #ffab40;
@@ -195,17 +215,20 @@
 				
 					
 					
-					<input type="hidden" name="user_store_product_idx" id="user_store_product_idx" value="${selectedProduct.productIdx}">					<!-- 완) 후원자 email -->
-					<input type="hidden" name="user_store_email" id="user_store_email" value="${member.mem_email}">					<!-- 완) 후원자 email -->
-<!-- 					<input type="hidden" name="user_store_product_idx" id="user_store_product_idx" value="">			프로젝트 번호 -->
-					<input type="hidden" name="user_store_product_option" id="user_store_product_option" value="${selectedProduct.productOption}">			<!-- 아이템 옵션 | 로 구분-->
-					<input type="hidden" name="user_order_count" id="user_order_count" value="1">					<!-- 후원 개수 => 우리는 1개 고정 -->
+					<input type="hidden" name="user_store_product_idx" id="user_store_product_idx" value="${selectedProduct.productIdx}">					<!-- 상품 번호 -->
+					<input type="hidden" name="user_store_email" id="user_store_email" value="${member.mem_email}">					<!-- 구매자 email -->
+<!-- 					<input type="hidden" name="user_store_product_idx" id="user_store_product_idx" value="">			상품 번호 -->
+					<input type="hidden" name="user_store_product_option" id="user_store_product_option" value="${selectedProduct.productOption}">			<!-- 스토어 아이템 옵션 | 로 구분-->
+					<input type="hidden" name="user_order_count" id="user_order_count" value="1">					<!-- 상품 개수 => 우리는 1개 고정 -->
 					<input type="hidden" name="user_store_address_idx" id="user_store_address_idx" value="">			<!-- 배송지 번호 -->
-					<input type="hidden" name="user_store_pay_amt" id="user_store_pay_amt" value="${selectedProduct.productPrice}">                  <!-- 총액 -->
+					<input type="hidden" name="user_store_pay_amt" id="user_store_pay_amt" value="${selectedProduct.productPrice}">     <!-- 총액 -->
 					
 					
-					<input type="hidden" name="user_store_pay_method" id="user_store_pay_method" value="">                  <!-- 총액 -->
-					<input type="button" id="user_store_complete" value="결제하기"> 
+					<input type="hidden" name="user_store_pay_method" id="user_store_pay_method" value="">                  <!-- 결제 방식 -->
+					<div class="btnGroup">
+						<input type="button" id="user_store_complete" value="결제하기">
+						<input type="button" id="cancel_btn" onclick="./" value="취소하기"> 
+					</div>
 				</section>
 			</form>
 		</div>
