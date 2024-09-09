@@ -39,7 +39,7 @@
 <%-- 				<c:set var="product_detail" value="${product_detail}"/> --%>
 					<div id="imgArea">
 <%-- 						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/image/imgReady.jpg"> --%>
-						<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}">
+						<img alt="스토어 상품 썸네일" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}">
 					</div>
 					<div id="infoArea">
 						<span class="category">${product_detail.product_category} > ${product_detail.product_category_detail}</span>
@@ -104,7 +104,8 @@
 			
 			<section class="con02">
 				<div class="left">
-					<img alt="상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}" class="detailImg">
+<%-- 					<img alt="상품 상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}" class="detailImg"> --%>
+					<img alt="스토어 상품 썸네일" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
 				</div>
 				
 				<div class="right">

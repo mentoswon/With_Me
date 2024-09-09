@@ -227,7 +227,7 @@
 					<input type="hidden" name="user_store_pay_method" id="user_store_pay_method" value="">                  <!-- 결제 방식 -->
 					<div class="btnGroup">
 						<input type="button" id="user_store_complete" value="결제하기">
-						<input type="button" id="cancel_btn" onclick="./" value="취소하기"> 
+						<input type="button" id="cancel_btn" onclick="location.href='./'" value="취소하기"> 
 					</div>
 				</section>
 			</form>
