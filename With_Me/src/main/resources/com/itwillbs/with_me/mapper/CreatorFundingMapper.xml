@@ -361,4 +361,46 @@
 		, #{pre_pay_amt}		-- pre_pay_amt
 	)
 </insert>
+
+
+<!-- 관리자 엑세스 토큰 정보 조회 - SELECT -->
+<select id="selectAdminAccessToken" resultType="bankToken">
+	SELECT *
+	FROM fintech_user_info
+	WHERE id = 'admin@naver.com'
+</select>
+
+<!-- 정산해야할 펀딩 정보 조회 - SELECT -->
+<select id="selectTodayDepositFunding" resultType="hashmap">
+	SELECT c.creator_email AS email, m.mem_name AS name, p.*, 
+		(SELECT IFNULL(SUM(funding_pay_amt),0) 
+	     FROM funding_user 
+	     WHERE funding_project_idx = p.project_idx
+	     AND funding_status = '후원완료') AS total_amt,	-- 총 모금액
+	    ROUND(
+	        (SELECT IFNULL(SUM(funding_pay_amt), 0) 
+	         FROM funding_user 
+	         WHERE funding_project_idx = p.project_idx
+	         AND funding_status = '후원완료')
+	        * (1 - 0.08 * 1.1) 							-- 8% 수수료와 그에 대한 부가세(10%)
+	    ) AS funding_pay_amt,							-- 정산금액
+	    a.fintech_use_num
+	FROM project_info p
+	JOIN creator_info c ON p.creator_idx = c.creator_idx
+	LEFT JOIN creator_account a ON p.project_idx = a.project_idx
+	JOIN member m ON c.creator_email = m.mem_email
+	-- 일단 여기에 후원된게 있으므로 이걸로 테스트
+	WHERE p.project_idx = 1
+	AND a.status = '입금대기'
+	
+	-- 나중에 이걸로 바꿈
+	-- WHERE DATE_FORMAT(p.funding_end_date + INTERVAL 16 DAY, '%Y-%m-%d') = now()
+</select>
+
+<!-- 창작자 계좌정보 입금상태 변경 - UPDATE -->
+<update id="updateFundingStatus">
+	UPDATE creator_account
+	SET status = '입금완료'
+	WHERE project_idx = #{project_idx}
+</update>
 </mapper>

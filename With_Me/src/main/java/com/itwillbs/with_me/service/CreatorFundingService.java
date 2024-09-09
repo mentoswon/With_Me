@@ -1,5 +1,6 @@
 package com.itwillbs.with_me.service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,6 +183,31 @@ public class CreatorFundingService {
 	// 결제 내역 저장 요청
 	public int registPremiumPayment(Map<String, String> map) {
 		return mapper.insertPremiumPayment(map);
+	}
+
+	// -------------------------------------------------------------------------
+	// [ 정산 구현중 ]
+	// 정산해야할 펀딩 정보 조회 요청
+	public List<Map<String, Object>> getTodayDepositFunding(LocalDate now) {
+		return mapper.selectTodayDepositFunding(now);
+	}
+
+	// 입금이체 요청
+	public Map<String, Object> requestDeposit(Map<String, Object> map) {
+		// BankMapper - selectAdminAccessToken() 메서드 호출하여 관리자 엑세스 토큰 조회
+		// => 파라미터 : 없음   리턴타입 : BankToken
+		BankToken adminToken = mapper.selectAdminAccessToken();
+		
+		// Map 객체의 "token" 이라는 속성으로 BankToken 객체 저장
+		map.put("token", adminToken);
+		
+		// BankApiClient - requestDeposit() 메서드 호출
+		return bankApiClient.requestDeposit(map);
+	}
+
+	// 창작자 계좌정보 입금상태 변경 요청
+	public void updateFundingStatus(Integer project_idx) {
+		mapper.updateFundingStatus(project_idx);
 	}
 
 

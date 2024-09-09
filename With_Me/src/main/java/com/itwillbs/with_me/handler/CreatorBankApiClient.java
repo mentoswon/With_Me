@@ -1,5 +1,6 @@
 package com.itwillbs.with_me.handler;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Map;
 
@@ -338,7 +339,6 @@ public class CreatorBankApiClient {
 
 	
 	// 입금 요청 2.5.2 입금이체 API
-//	public Map<String, String> requestDeposit(Map<String, Object> map) {
 	public Map<String, Object> requestDeposit(Map<String, Object> map) {
 		System.out.println(map);
 		BankToken token = (BankToken) map.get("token"); // 맵에 들어있던 관리자 엑세스 토큰 꺼내기
@@ -380,15 +380,21 @@ public class CreatorBankApiClient {
 		joReq.addProperty("bank_tran_id", bank_tran_id); // 출금계좌인자내역 
 		
 		// ----------요청고객(입금계좌) 정보----------
-		joReq.addProperty("fintech_use_num", (String)map.get("deposit_fintech_use_num")); //입금계좌핀테크이용번호
-		joReq.addProperty("print_content", "아이티윌_입금"); // 입금계좌인자내역 
-		joReq.addProperty("tran_amt", (String)map.get("tran_amt")); // 거래금액
+		joReq.addProperty("fintech_use_num", (String)map.get("fintech_use_num")); //입금계좌핀테크이용번호
+		joReq.addProperty("print_content", "위드미_입금"); // 입금계좌인자내역 
+		// ------------
+//		joReq.addProperty("tran_amt", (String)map.get("tran_amt")); // 거래금액
+		// tran_amt를 BigDecimal에서 String으로 변환
+	    joReq.addProperty("tran_amt", ((BigDecimal)map.get("tran_amt")).toString()); // 거래금액
+		// ------------
+		
 		joReq.addProperty("req_client_name", (String)map.get("deposit_client_name")); // 고객 이름
 		joReq.addProperty("req_client_fintech_use_num", (String)map.get("deposit_fintech_use_num")); // 요청고객핀테크이용번호 
 		// -> 요청고객 계좌번호 미사용 시 핀테크 이용번호 사용하면 되고, 동시 설정 시 오류 발생함 ~!!!!!!!!
 		
-		joReq.addProperty("req_client_num", id.toUpperCase()); 
+		joReq.addProperty("req_client_num", id.split("@")[0].toUpperCase());
 		// 요청고객회원번호인데 고객번호가 따로 없으므로 id 사용. 근데 ! 다 대문자니까 toUpperCase()
+		// ++ 우리는 이메일이라서 일단 @ 앞부분 ..
 		
 		joReq.addProperty("transfer_purpose", "TR"); //이체용도 (송금: TR, 결제: ST)
 		
@@ -429,8 +435,6 @@ public class CreatorBankApiClient {
 		 * 수취인 성명 : req_client_name 값 (대상 고객 - 최종 수취인 - 테스트에서는 나)
 		 * 
 		 */
-		
-		
 		// ------------------------------------------------------------------------
 		// 4. 헤더와 바디를 묶어서 관리하는 HttpEntity 객체 생성
 		// => 이번에는 ~ 바디도 필요함. 둘 다 생성자를 활용하여 전달

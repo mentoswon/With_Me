@@ -1,5 +1,6 @@
 package com.itwillbs.with_me.mapper;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +111,14 @@ public interface CreatorFundingMapper {
 	// 결제 내역 저장
 	int insertPremiumPayment(Map<String, String> map);
 
+	// 관리자 엑세스 토큰 조회
+	BankToken selectAdminAccessToken();
+
+	// 정산해야할 펀딩 정보 조회
+	List<Map<String, Object>> selectTodayDepositFunding(LocalDate now);
+
+	// 창작자 계좌정보 입금상태 변경
+	void updateFundingStatus(Integer project_idx);
 
 
 

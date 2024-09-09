@@ -141,11 +141,12 @@ $(function() {
 					// UI 업데이트
 	                // 대표 이미지 업데이트
 					let projectImage = $("#project_image")[0].files[0];
-	                let imageUrl = projectImage ? URL.createObjectURL(projectImage) : `${contextPath}/resources/upload/$("#projectImg").val()`;
-	                $("#representImage").attr("src", imageUrl);
-	                
-	                // 프로젝트 제목 업데이트
-		            $("#projectTitle").text($("#project_title").val());
+					if(projectImage) {	// file에 이미지 있을 경우에만 업데이트
+		                let imageUrl = projectImage ? URL.createObjectURL(projectImage) : `${contextPath}/resources/upload/$("#projectImg").val()`;
+		                $("#representImage").attr("src", imageUrl);
+		                // 프로젝트 제목 업데이트
+			            $("#projectTitle").text($("#project_title").val());
+					}
 	                
 	                // 프로젝트 카테고리 업데이트
 	                let category = $("#project_category").val();
