@@ -276,7 +276,8 @@
         project_image = #{project_image}, 
         search_tag = #{search_tag}, 
         target_price = #{target_price}, 
-        funding_commission = #{funding_commission}, 
+        funding_commission = #{funding_commission},
+        funding_premium = #{funding_premium},
         funding_start_date = CASE 
             WHEN #{funding_start_date} != '' THEN #{funding_start_date}  -- 시작일 선택시에만 값 넣기
             ELSE null END, 
@@ -333,4 +334,31 @@
 				                             WHERE creator_email = #{id}))
 </select>
 
+<!-- 회원 정보 조회 - SELECT -->
+<select id="selectMemberInfo" resultType="member">
+	SELECT *
+	FROM member
+	WHERE mem_email = #{id}
+</select>
+
+<!-- 프로젝트 상태 변경(심사중) - UPDATE -->
+<update id="updateProjectStatus">
+	UPDATE project_info
+	SET project_status = '심사중'
+	WHERE project_idx = #{project_idx}
+</update>
+
+<!-- 결제 내역 저장 - INSERT -->
+<insert id="insertPremiumPayment">
+	INSERT INTO premium_payment
+	VALUES (
+		null	-- pre_pay_idx(AI)
+		, #{pre_creator_email}	-- pre_creator_email
+		, #{pre_project_code}	-- pre_project_code
+		, #{pre_pay_method_idx}	-- pre_pay_method_idx
+		, '결제완료'			-- pre_pay_status
+		, now()					-- pre_pay_date
+		, #{pre_pay_amt}		-- pre_pay_amt
+	)
+</insert>
 </mapper>

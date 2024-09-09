@@ -30,6 +30,7 @@ import com.itwillbs.with_me.vo.CommonCodeVO;
 import com.itwillbs.with_me.vo.CreatorAccountVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
+import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Controller
@@ -57,8 +58,6 @@ public class CreatorFundingController {
 			session.setAttribute("prevURL", "ProjectStart");
 			return "result/fail";
 		}
-		
-		
 		return "project/project_start";
 	}
 	
@@ -372,7 +371,7 @@ public class CreatorFundingController {
 	}
 	
 	
-	// 프로젝트 저장하기
+	// 프로젝트 저장하기(임시저장)
 	@ResponseBody
 	@PostMapping("SaveProject")
 	public String saveProject(HttpSession session, ProjectVO project, CreatorVO creator) throws Exception {
@@ -646,7 +645,11 @@ public class CreatorFundingController {
 	    	creator.setCreator_image("");
 	    }
 	    
-	    project.setProject_status("심사중");
+	    if (project.getFunding_premium() == 0) {	// Basic 요금제일 경우
+	    	project.setProject_status("심사중");
+		} else {	// Premium 일 경우 광고비 선결제 후 상태변경
+			project.setProject_status("");
+		}
 		// 프로젝트 심사요청(update) - modifyProject 재활용
 		int updateCount = service.modifyProject(project);
 		
@@ -704,9 +707,64 @@ public class CreatorFundingController {
 		
 		System.out.println("updateCount : " + updateCount + ", updateCount2 : " + updateCount2);
 		
-		// 변경된 내용 저장 및 심사중으로 변경(update) 후 내가만든 프로젝트로 이동
-		return "redirect:/MyProject";
+		// 변경된 내용 저장 및 페이지 이동
+		if (project.getFunding_premium() == 0) {	// Basic 요금제일 경우
+			// 제출 완료 페이지로 이동
+			return "redirect:/ProjectSubmit";
+		} else {	// Premium 요금제일 경우
+			// 결제 페이지로 이동
+			return "redirect:/ProjectPayment?project_idx=" + project.getProject_idx();
+		}
 	}
+	
+	// 프로젝트 제출 시 광고비 선결제
+	@GetMapping("ProjectPayment")
+	public String projectPayment(HttpSession session, Model model, @RequestParam("project_idx") String project_idx) {
+		String id = (String)session.getAttribute("sId");
+		// 미로그인 시 로그인 페이지로 이동(로그인 후 ProjectStart 페이지로 돌아오기)
+		if(id == null) {
+			model.addAttribute("msg", "접근 권한이 없습니다.");
+			return "result/fail";
+		}
+		
+		System.out.println("project_idx : " + project_idx);
+		// 프로젝트 정보 불러오기 - getProject 재활용
+		ProjectVO project = service.getProject(project_idx);
+		// 이름, 전화번호 불러오기
+		MemberVO member  = service.getMemberInfo(id);
+		
+		model.addAttribute("project", project);
+		model.addAttribute("member", member);
+		return "project/project_premium_payment";
+	}
+	
+	// 프로젝트 제출 완료 페이지
+	@GetMapping("ProjectSubmit")
+	public String projectSubmit(HttpSession session, Model model, @RequestParam Map<String, String> map) {
+		String id = (String)session.getAttribute("sId");
+		// 미로그인 시 로그인 페이지로 이동(로그인 후 ProjectStart 페이지로 돌아오기)
+		if(id == null) {
+			model.addAttribute("msg", "접근 권한이 없습니다.");
+			return "result/fail";
+		}
+		
+		System.out.println("map : " + map);
+		
+		// 프리미엄 결제하고 온 경우 프로젝트 상태 심사중으로 변경
+		if (map.get("payMethod") != null) {
+			String project_idx = map.get("project_idx");
+			int updateCount = service.modifyProjectStatus(project_idx);
+			
+			// 결제 내역 저장
+			int insertCount = service.registPremiumPayment(map);
+			if(updateCount > 0 && insertCount > 0) {
+				System.out.println("결제 완료 및 프로젝트 제출됨.");
+			}
+		}
+		
+		return "project/project_submit";
+	}
+	
 	
 	// ===============================================================================
 	// 내가만든 프로젝트

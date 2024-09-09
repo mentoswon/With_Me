@@ -62,9 +62,7 @@ $(function() {
 		    formData.append("funding_end_date", fundingEndDate); 
 		}
 		
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// 요금제 선택 시 append 나중에~~
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	    formData.append("funding_premium", $("#funding_premium").val());
 		
 		// ---------------------------------------------------
 		// [ 프로젝트 계획 ]
@@ -480,9 +478,17 @@ $(function() {
     });
     
     // ------------------------------------
-    // basic을 기본 선택으로 설정
-	$("#basic").text("선택완료").addClass("selected");
-    $("#basic").closest(".paymentWrap").addClass("selectedBorder");
+    // 기본 선택 상태 설정
+    let selectedValue = $("#funding_premium").val();
+    if (selectedValue == "0") {
+        // Basic 선택
+        $("#basic").text("선택완료").addClass("selected");
+        $("#basic").closest(".paymentWrap").addClass("selectedBorder");
+    } else if (selectedValue == "1") {
+        // Premium 선택
+        $("#premium").text("선택완료").addClass("selected");
+        $("#premium").closest(".paymentWrap").addClass("selectedBorder");
+    }
     
     // 요금제 선택 이벤트
     $(".paymentButton").click(function() {
@@ -493,6 +499,19 @@ $(function() {
 		$(this).closest(".paymentWrap").addClass("selectedBorder");
 	});
     
+	// Basic 버튼 클릭 시
+    $('#basic').on('click', function() {
+    	alert("Basic 요금이 선택되었습니다!");
+        $("#funding_premium").val(0);
+        return false;
+    });
+
+    // Premium 버튼 클릭 시
+    $('#premium').on('click', function() {
+    	alert("Premium 요금이 선택되었습니다! \n심사요청 시 선결제가 진행됩니다.");
+        $("#funding_premium").val(1);
+        return false;
+    });
     // ========================================================================================
     // [ 후원 구성 ]
     // 아이템 이름 글자 수
@@ -1676,6 +1695,7 @@ function selectAccountInfo(token, project_idx) {
 							</p>
 						</div>
 						<div class="projectContentWrap">
+							<input type="hidden" name="funding_premium" id="funding_premium" value="${project.funding_premium}">
 							<div class="paymentWrap">
 								<h2>Basic</h2>
 								<p>
@@ -1686,7 +1706,7 @@ function selectAccountInfo(token, project_idx) {
 									<p>
 										<b style="color: #FFAB40; font-size: 20px;">✓</b> 위드미 펀딩의 기본 기능으로 나만의 프로젝트를 실현하세요.
 									</p>
-									<button id="basic" class="paymentButton" onclick="alert('서비스 준비중입니다'); return false;">선택하기</button>
+									<button id="basic" class="paymentButton">선택하기</button>
 								</div>
 							</div>
 							<br>
@@ -1698,14 +1718,14 @@ function selectAccountInfo(token, project_idx) {
 									<span class="smallFont">
 										+광고 대행 수수료<br>
 										※ 광고 대행 수수료는 심사 요청 시 선결제로 진행됩니다.<br>
-										광고 대행 수수료 = 펀딩일정(1주일 기준) * 10만원
+										&nbsp;&nbsp;&nbsp;&nbsp;(50만원 선결제)
 									</span>
 								</p>
 								<div align="center">
 									<p>
 										<b style="color: #FFAB40; font-size: 20px;">✓</b> 프리미엄 요금제 선택 시 우선적으로 메인페이지 상단에 노출될 수 있어요!
 									</p>
-									<button id="premium" class="paymentButton" onclick="alert('서비스 준비중입니다'); return false;">선택하기</button>
+									<button id="premium" class="paymentButton">선택하기</button>
 								</div>
 								
 							</div>

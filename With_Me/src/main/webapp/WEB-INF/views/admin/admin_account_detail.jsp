@@ -54,7 +54,10 @@
 <script>
 	// 페이지당 목록 개수 변경
 	function showListLimit(limit) {
-		location.href="AdminAccountDetail?project_code=${param.project_code}&listLimit=" + limit;
+		// HTML 특수 문자와 공백을 URL에 안전하게 인코딩
+		
+		var encodedProjectTitle = encodeURIComponent('${param.project_title}');
+		location.href="AdminAccountDetail?project_code=${param.project_code}&project_title=" + encodedProjectTitle + "&listLimit=" + limit;
 	}
 </script>
 </head>

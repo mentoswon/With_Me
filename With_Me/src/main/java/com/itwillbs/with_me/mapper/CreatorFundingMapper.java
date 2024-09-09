@@ -12,6 +12,7 @@ import com.itwillbs.with_me.vo.CommonCodeVO;
 import com.itwillbs.with_me.vo.CreatorAccountVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
+import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Mapper
@@ -99,6 +100,15 @@ public interface CreatorFundingMapper {
 
 	// 프로젝트 취소 요청한 프로젝트 조회
 	List<Map<String, String>> selectDeleteRequestList(String id);
+
+	// 회원 정보 조회
+	MemberVO selectMemberInfo(String id);
+
+	// 프로젝트 상태 변경
+	int updateProjectStatus(String project_idx);
+
+	// 결제 내역 저장
+	int insertPremiumPayment(Map<String, String> map);
 
 
 

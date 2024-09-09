@@ -14,6 +14,7 @@ import com.itwillbs.with_me.vo.CommonCodeVO;
 import com.itwillbs.with_me.vo.CreatorAccountVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.ItemVO;
+import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 
 @Service
@@ -166,6 +167,21 @@ public class CreatorFundingService {
 	// 프로젝트 취소 요청한 프로젝트 조회 요청
 	public List<Map<String, String>> getDeleteRequestList(String id) {
 		return mapper.selectDeleteRequestList(id);
+	}
+
+	// 회원 정보 조회 요청
+	public MemberVO getMemberInfo(String id) {
+		return mapper.selectMemberInfo(id);
+	}
+
+	// 프로젝트 상태 변경 요청
+	public int modifyProjectStatus(String project_idx) {
+		return mapper.updateProjectStatus(project_idx);
+	}
+
+	// 결제 내역 저장 요청
+	public int registPremiumPayment(Map<String, String> map) {
+		return mapper.insertPremiumPayment(map);
 	}
 
 
