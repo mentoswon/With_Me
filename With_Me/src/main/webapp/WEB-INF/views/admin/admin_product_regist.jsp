@@ -9,27 +9,96 @@
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <style type="text/css">
-	#writeForm {
-		width: 500px;
-		height: 550px;
-		margin: auto;
-	}
-	
-	#writeForm > table {
-		margin: auto;
-		width: 550px;
-	}
-	
-	.write_td_left {
-		width: 150px;
-		background: orange;
-		text-align: center;
-	}
-	
-	.write_td_right {
-		width: 300px;
-		background: skyblue;
-	}
+.product_img {
+	width: 300px;
+	height: 215px;
+}
+.product_img img{
+	width: 25%;
+	object-fit: cover;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+#articleForm {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 116%;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* 셀 간격 조정 */
+}
+
+td {
+    padding: 10px;
+    vertical-align: top;
+}
+
+td:first-child {
+    width: 60%;
+    font-weight: bold;
+}
+
+td:last-child {
+    width: 30%;
+}
+
+input[type="text"], select {
+    width: 40%;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-top: 5px; /* 필드와 레이블 간격 */
+}
+
+.item-option {
+    width: calc(20% - 10px); /* 아이템 옵션의 너비 조정 */
+    margin-right: 10px; /* 아이템 옵션 간격 조정 */
+    display: inline-block;
+}
+
+.product-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.button-container {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.button {
+    background-color: #FFAB40;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #e6952d;
+}
 </style>
 <script>
 // ==========================================================================
@@ -69,7 +138,7 @@ window.onload = function() {
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
 	<main>
-		<article>
+		<article id="articleForm">
 			<h1 align="center">상품 등록</h1>
 			<form action="ProductRegistPro" name="RegistForm" method="post" enctype="multipart/form-data">
 				<section class="joinForm1">
@@ -79,30 +148,20 @@ window.onload = function() {
 						</tr>
 						<tr>
 							<td>
-								<input type="text" name="product_code" size="9" id="product_code">
-<!-- 								<select name="product_code1" id="product_code1"> -->
-<!-- 									<option value="" selected="selected">상위공통코드</option> -->
-<!-- 								</select> -->
-<!-- 								<select name="product_code2" id="product_code2"> -->
-<!-- 									<option value="" selected="selected">공통코드</option> -->
-<!-- 								</select> -->
-<!-- 								<select name="product_code3" id="product_code3"> -->
-<!-- 									<option value="" selected="selected">공통코드</option> -->
-<!-- 								</select> -->
-<!-- 								<input type="text" name="product_code4" size="2"> -->
+								<input type="text" name="product_code" size="9" id="product_code" placeholder="예) SHOPFOFEE001">
 							</td>
 						</tr>	
 						<tr>
-							<td>상품이름</td>
+							<td>상품명</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="product_name" id="product_name"></td>
+							<td><input type="text" name="product_name" id="product_name" placeholder="예) 맛있는 간식"></td>
 						</tr>	
 						<tr>
 							<td>상품설명</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="product_description" id="product_description"></td>
+							<td><input type="text" name="product_description" id="product_description" size="20" placeholder="예) 어떤 아이든 가리지 않고 다 좋아하는 맛"></td>
 						</tr>	
 						<tr>
 							<td>상품 카테고리</td>
@@ -153,10 +212,9 @@ window.onload = function() {
 						</tr>	
 						<%-- 파일 첨부 영역 --%>
 						<tr>
-							<td>상품 이미지</td>
+							<td class="write_td_left"><label for="board_file">파일첨부</label></td>
 						</tr>
 						<tr>
-							<td class="write_td_left"><label for="board_file">파일첨부</label></td>
 							<td class="write_td_right">
 								<%-- 파일 첨부 형식은 input 태그의 type="file" 속성 활용 --%>
 								<%-- 주의! 파일 업로드를 위해 form 태그 속성에 enctype 속성 필수!  --%>
@@ -166,7 +224,10 @@ window.onload = function() {
 							</td>
 						</tr>
 						<tr>
-							<td align="center"><br><input type="submit" value="등록"></td>
+							<td align="center"><br>
+								<input type="submit" value="등록">
+								<input type="button" value="목록" onclick="location.href='AdminStore?pageNum=${param.pageNum}'">
+							</td>
 						</tr>
 					</table>
 				</section>

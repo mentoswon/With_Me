@@ -33,6 +33,11 @@ public class AdminStoreService {
 		return mapper.selectProduct(product_idx);
 	}
 	
+	// 상품 옵션값 가져오기
+	public List<Map<String, Object>> getProdcutOption(int product_idx) {
+		return mapper.selectProductOptions(product_idx);
+	}
+	
 	// 상품 삭제
 	public int removeProduct(int product_idx) {
 		return mapper.deleteProduct(product_idx);
@@ -47,6 +52,7 @@ public class AdminStoreService {
 	public int removeProductImg(Map<String, String> map) {
 		return mapper.deleteProductImg(map);
 	}
+
 	
 	
 }

@@ -126,10 +126,10 @@
 				<!-- 답변 영역 -->
 				<%-- 답글, 수정, 삭제 버튼은 로그인 한 사용자에게만 표시 --%>
 				<%-- 단, 수정, 삭제 버튼은 세션 아이디와 작성자 아이디가 일치할 경우에만 표시 --%>
-				<c:if test="${not empty qna.qna_reply}">
+				<c:if test="${not empty qnabo.faq_reply}">
 					<div id="articleReplyArea">
 						<b>답변</b>
-						<textarea rows="10" cols="67" name="qna_reply">${qnabo.faq_reply}</textarea>
+						<textarea rows="10" cols="67" name="faq_reply">${qnabo.faq_reply}</textarea>
 					</div>
 				</c:if>
 			</section>
@@ -142,18 +142,10 @@
 						<input type="button" value="답변" onclick="location.href='QnaBoardReply?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}'">
 					</c:if>
 					<c:if test="${sessionScope.sId eq qnabo.mem_email}">
-						<input type="button" value="수정" onclick="location.href='QnaBoardModify?faq_idx=${qnabo.faq_idx}&pageNum=${param.pageNum}'">
-						<%-- 임시) 삭제 버튼 클릭 시 BoardDeleteForm.bo 서블릿 요청(삭제 폼 페이지 포워딩) --%>
-						<%-- 파라미터 : 글번호(board_num) --%>
-	<%-- 					<input type="button" value="삭제" onclick="location.href='BoardDeleteForm.bo?board_num=${board.board_num}'"> --%>
-						<%-- 삭제 버튼 클릭 시 패스워드 확인페이지 이동 없이 삭제 확인만 받기 위해 --%>
-						<%-- 자바스크립트 confirmDelete() 메서드 호출하여 확인 후 비즈니스 로직 요청 --%>
-					</c:if>
-					<c:if test="${sessionScope.sId eq qnabo.mem_email || sessionScope.sId eq 'admin@naver.com'}">
 						<input type="button" value="삭제" onclick="confirmDelete()">
 					</c:if>
 				</c:if>
-				<input type="button" value="돌아가기" onclick="location.href='QnaBoardList'">
+				<input type="button" value="돌아가기" onclick="history.back()">
 			</section>
 		</section>
 	</main>

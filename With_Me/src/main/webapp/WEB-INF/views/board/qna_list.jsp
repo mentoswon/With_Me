@@ -76,31 +76,31 @@
 		<div class="mainWrapper">
 		<div class="main" align="center">
 			<section class="boardTitle" id="board_title">
-				<div align="left">
+				<div align="center">
 				<!-- 게시판 리스트 -->
 				<h2>1:1문의</h2>
 				</div>
 			
-				<div align="right">
-					<%-- ============================================================================ --%>
-					<%-- ======================= [ 게시물 검색 기능 추가 ] ========================== --%>
-					<%-- 검색 기능을 위한 폼 생성 --%>
-					<form action="QnaBoardList">
-						<%-- 검색타입 목록(셀렉트박스), 검색어(텍스트박스) 추가(파라미터 있으면 해당 내용 표시) --%>
-						<select name="searchType">
-							<option value="subject"
-								<c:if test="${param.searchType eq 'subject'}">selected</c:if>>제목</option>
-							<option value="content"
-								<c:if test="${param.searchType eq 'content'}">selected</c:if>>내용</option>
-							<option value="subject_content"
-								<c:if test="${param.searchType eq 'subject_content'}">selected</c:if>>제목+내용</option>
-						</select> <input type="text" name="searchKeyword"
-							value="${param.searchKeyword}"> <input type="submit"
-							value="검색">
-					</form>
-					<%-- ============================================================================ --%>
-					<input type="button" value="글쓰기" onclick="location.href='QnaBoardWrite'" class="writeBtn">
-				</div>
+<!-- 				<div align="right"> -->
+<%-- 					============================================================================ --%>
+<%-- 					======================= [ 게시물 검색 기능 추가 ] ========================== --%>
+<%-- 					검색 기능을 위한 폼 생성 --%>
+<!-- 					<form action="QnaBoardList"> -->
+<%-- 						검색타입 목록(셀렉트박스), 검색어(텍스트박스) 추가(파라미터 있으면 해당 내용 표시) --%>
+<!-- 						<select name="searchType"> -->
+<!-- 							<option value="subject" -->
+<%-- 								<c:if test="${param.searchType eq 'subject'}">selected</c:if>>제목</option> --%>
+<!-- 							<option value="content" -->
+<%-- 								<c:if test="${param.searchType eq 'content'}">selected</c:if>>내용</option> --%>
+<!-- 							<option value="subject_content" -->
+<%-- 								<c:if test="${param.searchType eq 'subject_content'}">selected</c:if>>제목+내용</option> --%>
+<!-- 						</select> <input type="text" name="searchKeyword" -->
+<%-- 							value="${param.searchKeyword}"> <input type="submit" --%>
+<!-- 							value="검색"> -->
+<!-- 					</form> -->
+<%-- 					============================================================================ --%>
+<!-- 					<input type="button" value="글쓰기" onclick="location.href='QnaBoardWrite'"> -->
+<!-- 				</div> -->
 			</section>
 			<section id="listForm">
 				<br>
@@ -117,28 +117,24 @@
 						<%-- ================================================ --%>
 						<c:forEach var="qnabo" items="${QnaBoardList}">
 							<%-- boardList 에서 꺼낸 BoardBean 객체(board)에 저장된 멤버변수값(데이터) 출력 --%>
-							
-							<li class="subject">
-								<a href="QnaBoardDetail?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}"> 
-									<span class="titleBox"> 
-									<span class="group">${qnabo.faq_idx}</span> 
-									<span class="subject">${qnabo.mem_name}</span> 
-										<%-- ========= 답글 관련 처리 ======== --%>
-										<%-- board_re_lev 값이 0 보다 크면 답글이므로 들여쓰기 후 이미지(re.gif) 표시 --%>
-										<%-- ex) lev = 1 일 때 2칸, lev = 2 일 때 4칸 들여쓰기 --%>
-										<c:if test="${qnabo.faq_re_lev > 0}">
-											<c:forEach begin="1" end="${qnabo.faq_re_lev}">
-												&nbsp;&nbsp;
-											</c:forEach>
-											<img src="${pageContext.request.contextPath}/resources/image/re.gif">
-										</c:if>
-										<span class="subject">${qnabo.faq_subject}</span> 
-										<span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>
-<%-- 										<span class="view">조회수 ${qnabo.faq_readcount}</span> --%>
-									</span>
-								</a>
-							</li>
-							
+							<c:if test="${sessionScope.sId eq qnabo.mem_email}">
+								<li class="subject">
+									<a href="QnaBoardDetail?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}"> 
+										<span class="titleBox"> 
+											<span class="group">문의</span> 
+											<span class="subject">${qnabo.mem_name}</span> 
+											<c:if test="${qnabo.faq_re_lev > 0}">
+												<c:forEach begin="1" end="${qnabo.faq_re_lev}">
+													&nbsp;&nbsp;
+												</c:forEach>
+											</c:if>
+											<span class="subject">${qnabo.faq_subject}</span> 
+											<span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>
+	<%-- 										<span class="view">조회수 ${qnabo.faq_readcount}</span> --%>
+										</span>
+									</a>
+								</li>
+							</c:if>
 						</c:forEach>
 					</ul>
 					<c:if test="${empty QnaBoardList}">

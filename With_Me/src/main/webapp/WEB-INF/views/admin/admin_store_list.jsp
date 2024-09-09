@@ -117,7 +117,7 @@ function productDetail(productIdx) {
 									<c:when test="${pl.product_status eq 2}">
 										<td>판매중지</td>
 									</c:when>
-									<c:when test="${pl.product_status eq 2}">
+									<c:when test="${pl.product_status eq 3}">
 										<td>품절</td>
 									</c:when>
 								</c:choose>

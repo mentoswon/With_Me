@@ -27,6 +27,9 @@ public interface AdminStoreMapper {
 	// 상품 상세보기
 	StoreVO selectProduct(int product_idx);
 
+	// 상품 옵션값 리스트
+	List<Map<String, Object>> selectProductOptions(int product_idx);
+	
 	// 상품 삭제
 	int deleteProduct(int product_idx);
 
@@ -35,5 +38,6 @@ public interface AdminStoreMapper {
 
 	// 상품 이미지 삭제
 	int deleteProductImg(Map<String, String> map);
+
 	
 }

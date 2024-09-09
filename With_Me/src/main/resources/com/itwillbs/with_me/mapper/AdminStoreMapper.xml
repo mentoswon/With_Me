@@ -87,11 +87,25 @@
 		)
 	</insert>
 	
-	<!-- 상품 상세정보 조회 - SELECT -->
+	<!-- 상품 상세정보 조회 -->
 	<!-- 상품번호에 해당하는 레코드(게시물) 조회 -->
 	<select id="selectProduct" resultType="store">
 		SELECT * 
 		FROM product_info
+		WHERE product_idx = #{product_idx}
+	</select>
+	
+	<!-- 상품 옵션값 가져오기 -->
+	<select id="selectProductOptions" resultType="hashmap">
+		SELECT product_item_option, SUBSTRING_INDEX(SUBSTRING_INDEX(product_item_option, "|", numbers.n), "|" , -1) AS splited_option
+		FROM (
+			SELECT 1 AS n UNION ALL
+			SELECT 2 UNION ALL
+			SELECT 3 UNION ALL
+			SELECT 4 UNION ALL
+			SELECT 5) AS numbers
+		INNER JOIN product_info
+		ON CHAR_LENGTH(product_item_option) - CHAR_LENGTH(REPLACE(product_item_option, "|", "")) >= numbers.n - 1
 		WHERE product_idx = #{product_idx}
 	</select>
 	
@@ -111,6 +125,7 @@
 			, product_description = #{product_description}
 			, product_category = #{product_category}
 			, product_category_detail = #{product_category_detail}
+			, product_item_option = #{product_item_option}
 			, product_price = #{product_price}
 			, product_stock = #{product_stock}
 			, product_status = #{product_status}

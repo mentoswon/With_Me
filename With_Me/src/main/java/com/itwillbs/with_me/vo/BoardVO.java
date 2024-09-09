@@ -47,6 +47,7 @@ public class BoardVO {
 	private int faq_re_lev;
 	private int faq_re_seq;
 	private String faq_content;
+	private String faq_reply;
 	private String faq_file;
 	private Timestamp faq_date;
 	private String mem_name;

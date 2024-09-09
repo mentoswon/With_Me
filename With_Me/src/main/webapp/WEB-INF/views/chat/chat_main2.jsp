@@ -9,101 +9,157 @@
 <%-- 외부 CSS 파일(css/default.css) 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <style type="text/css">
+	body {
+		font-family: Arial, sans-serif;
+		background-color: #f4f4f4;
+		margin: 0;
+		padding: 0;
+	}
+
+	article {
+		padding: 20px;
+	}
+
 	/* 채팅방 목록 영역 */
 	#chatRoomListArea {
-		width: 19%;
-		min-width: 100px;
-		height: 100%;
-		min-height: 300px;
-		border: 1px solid black;
-		display: inline-block;
+		width: 20%;
+		min-width: 150px;
+		height: auto;
+		background-color: #ffffff;
+		border-radius: 5px;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		padding: 10px;
 		overflow: auto;
+		display: inline-block;
+		vertical-align: top;
 	}
-	
+
 	.chatRoomList {
-		font-size: 12px;
+		font-size: 14px;
+		padding: 8px;
 		margin-bottom: 5px;
+		border-radius: 5px;
+		cursor: pointer;
+		background-color: #e9e9e9;
+		transition: background-color 0.3s ease;
 	}
-	
+
 	.chatRoomList:hover {
-		background-color: pink;
+		background-color: #FFAB40;
+		color: #fff;
 	}
-	
+
 	/* 채팅방 표시 영역 */
 	#chatRoomArea {
-		width: 350px;
+		width: 45%;
 		min-width: 350px;
-		height: 100%;
-		min-height: 300px;
-		border: 1px solid black;
+		height: auto;
+		background-color: #ffffff;
+		border-radius: 5px;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		padding: 20px;
 		display: inline-block;
 		overflow: auto;
 	}
-	
+
 	/* 채팅방 1개 영역 */
 	.chatRoom {
-		display: inline-block;
-		margin: 10px 10px 10px 10px;
+		margin-bottom: 20px;
+		padding: 10px;
+		border-bottom: 1px solid #e0e0e0;
 	}
-	
+
 	.chatTitleArea {
 		text-align: center;
+		font-size: 18px;
+		font-weight: bold;
+		margin-bottom: 10px;
 	}
-	
+
 	.chatMessageArea {
-		width: 300px;
-		height: 200px;
-		border: 1px solid gray;
-		overflow: auto;
+		width: 95%;
+		height: 250px;
+		background-color: #f9f9f9;
+		border-radius: 5px;
+		border: 1px solid #ddd;
+		padding: 10px;
+		overflow-y: auto;
+		margin-bottom: 10px;
 	}
 
 	/* 채팅방 메세지 입력 및 버튼 영역 */
 	.commandArea {
-		width: 310px;
-		position: relative;
+		display: flex;
+		align-items: center;
+		margin-top: 10px;
 	}
-	
+
+	.commandArea input[type="text"] {
+		flex-grow: 1;
+		padding: 10px;
+		border-radius: 5px;
+		border: 1px solid #ddd;
+		margin-right: 10px;
+	}
+
+	.commandArea input[type="button"] {
+		background-color: #FFAB40;
+		color: #ffffff;
+		border: none;
+		border-radius: 5px;
+		padding: 10px 20px;
+		margin-left: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+	}
+
+	.commandArea input[type="button"]:hover {
+		background-color: #ff9800;
+	}
+
 	.message {
 		font-size: 14px;
 		margin-bottom: 10px;
-		padding: 
 	}
-	
-	.message.message_align_right {
+
+	.message_align_right {
 		text-align: right;
 	}
-	
-	.message.message_align_left {
+
+	.message_align_left {
 		text-align: left;
 	}
-	
-	.message.message_align_center {
+
+	.message_align_center {
 		text-align: center;
 	}
-	
-	.message.message_align_right .chat_text {
+
+	.message_align_right .chat_text {
 		background-color: #f1f3f5;
 		border-radius: 4px;
-		padding: 4px;
+		padding: 5px;
+		display: inline-block;
 	}
-	
-	.message.message_align_left .chat_text {
+
+	.message_align_left .chat_text {
 		background-color: lightpink;
+		border-radius: 4px;
+		padding: 5px;
+		display: inline-block;
 	}
-	
-	.message.message_align_left .sender_id, .send_time {
-		font-size: 10px;
-		margin: 0px 5px 0px 5px;
-	}
-	
-	.message.message_align_right .send_time {
-		font-size: 10px;
-		margin: 0px 5px 0px 5px;
-	}
-	
-	.message.message_align_center .chat_text {
+
+	.message_align_center .chat_text {
 		background-color: skyblue;
+		border-radius: 4px;
+		padding: 5px;
+		display: inline-block;
 	}
+
+	.sender_id, .send_time {
+		font-size: 10px;
+		color: #666;
+	}
+	
 	
 	
 </style>
@@ -115,12 +171,10 @@
 	<header>
 		<%-- 기본 메뉴 표시 영역(inc/top.jsp) 페이지 삽입 --%>
 		<%-- 현재 위치는 컨텍스트 루트(/MVC_Board = webapp) 이므로 inc 디렉토리의 top.jsp 지정 --%>
-		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+		<jsp:include page="/WEB-INF/views/inc/chat_top.jsp"></jsp:include>
 	</header>
 	<article>
 		<%-- 본문 표시 영역 --%>
-		<h1>채팅 메인페이지</h1>
-		<br>
 		<div id="chatRoomArea"> <%-- 채팅방들을 표시하는 영역 --%>
 			<%-- 각각의 채팅방이 추가될 위치 --%>
 <!-- 			<div class="chatRoom room_id"> -->
@@ -139,10 +193,6 @@
 			<%-- 채팅방 목록을 표시하는 영역 --%>
 		</div>
 	</article>
-	<footer>
-		<%-- 회사 소개 영역(inc/bottom.jsp) 페이지 삽입 --%>
-		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
-	</footer>
 	<script>
 		$(function() {
 			startChat();			

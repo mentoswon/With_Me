@@ -19,9 +19,16 @@
 	</header>
 	<article>
 		<%-- 본문 표시 영역 --%>
-		<h1>메시지</h1>
-		<hr>
-		<h3><a href="Chating">1:1 채팅방 입장</a></h3>
+		<div>
+			<h1>메시지</h1>
+			<hr>
+			<h3><a href="Chating">1:1 채팅방 입장</a></h3>
+		</div>
+		<div>
+			<hr>
+			<h1>1:1 문의 게시글</h1>
+			<input type="button" value="내가 쓴 1:1문의글" id="askBtn" onclick="location.href='QnaBoardList'">
+		</div>
 		
 	</article>
 	<footer>

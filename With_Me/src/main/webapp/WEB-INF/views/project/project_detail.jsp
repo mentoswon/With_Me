@@ -23,7 +23,7 @@
 				// encodeURIComponent 이거는 JavaScript의 내장 함수로, 
 				// 문자열을 안전하게 URL에 포함할 수 있도록 특수 문자를 이스케이프(escape) 처리하여 변환해줌
 				
-				var popupOptions = "width=450, height=600, scrollbars=yes, resizable=no";
+				var popupOptions = "width=1000, height=500, scrollbars=yes, resizable=no";
 				
 				var chatWindow = window.open(chatUrl, "ChatWindow", popupOptions);
 				

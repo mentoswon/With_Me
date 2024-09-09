@@ -85,6 +85,7 @@ public class AdminStoreController {
 		
 		return "admin/admin_store_list";
 	}
+	
 	// 상품 등록
 	@GetMapping("ProductRegist")
 	public String productRegist(HttpSession session, Model model) {
@@ -239,8 +240,11 @@ public class AdminStoreController {
 		
 		// 상품 상세정보 조회 요청
 		StoreVO product = service.getProduct(product_idx);
+		// 상품 옵션값 꺼내기(ex : 빨간색 장난감|파란색 장난감 => 빨간색 장난감)
+		List<Map<String, Object>> productOptions = service.getProdcutOption(product_idx);
 		
 		System.out.println("product : " + product);
+		System.out.println("productOptions : " + productOptions);
 		
 		// 조회 결과가 없을 경우 "존재하지 않는 게시물입니다" 출력 및 이전페이지 돌아가기 처리
 		if(product == null) {
@@ -249,6 +253,7 @@ public class AdminStoreController {
 		}
 		
 		model.addAttribute("product", product);
+		model.addAttribute("productOptions", productOptions);
 		
 //		List<StoreVO> productList = service.getProductDetailList(store);
 		
@@ -399,7 +404,7 @@ public class AdminStoreController {
 	@PostMapping("ProductModify")
 	public String productModifyPro(
 			StoreVO store, @RequestParam(defaultValue = "1") String pageNum,
-			HttpSession session, Model model) throws Exception {
+			HttpSession session, Model model, HttpServletRequest request) throws Exception {
 		
 		
 		System.out.println("store 수정 : " + store);
@@ -444,6 +449,18 @@ public class AdminStoreController {
 		
 		System.out.println("DB 에 저장될 파일명 : " + store.getProduct_img());
 		System.out.println("DB 에 저장될 파일명2 : " + store.getProduct_img2());
+		
+		// 아이템 옵션(여러개 일 시 | 이렇게 처리)
+		String[] options = request.getParameterValues("product_item_option");
+
+		// 값이 있는 옵션만 필터링하여 |로 결합
+		if (options != null) {
+		    // 빈 값(널스트링)을 제외한 값만 모아서 결합
+		    String optionString = Arrays.stream(options)
+		                                .filter(option -> option != null && !option.trim().isEmpty())  // 빈 문자열이나 null 값 제거
+		                                .collect(Collectors.joining("|"));
+		    store.setProduct_item_option(optionString);  // 필터링된 옵션을 저장
+		}
 		
 		// 수정 작업 요청
 		int updateCount = service.modifyProduct(store);

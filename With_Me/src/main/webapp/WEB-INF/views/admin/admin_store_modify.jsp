@@ -230,11 +230,11 @@ function deleteFile(product_idx, fileName, index) {
 						</tr>
 						<tr>
 			                <td>
-								<input type="text" name="item_option_name" class="itemText" placeholder="예) 230mm">
-								<input type="text" name="item_option_name" class="itemText" placeholder="예) 240mm">
-								<input type="text" name="item_option_name" class="itemText" placeholder="예) 250mm">
-								<input type="text" name="item_option_name" class="itemText" placeholder="예) 260mm">
-								<input type="text" name="item_option_name" class="itemText" placeholder="예) 270mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 230mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 240mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 250mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 260mm">
+								<input type="text" name="product_item_option" class="itemText" placeholder="예) 270mm">
 			                </td>
 						</tr>		
 						<tr>
