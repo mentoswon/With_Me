@@ -132,7 +132,7 @@
 	<article>
 		<form action="BuyProductCancel" name="joinForm" method="post">
 		    <section class="profile-form">
-<%-- 		    	<input type="hidden" name="funding_idx" id="funding_idx" value="${BuyProductDetail.funding_idx}"> --%>
+		    	<input type="hidden" name="order_idx" id="order_idx" value="${BuyProductDetail.order_idx}">
 		        <div class="form-group top" style="border: 1px solid #ccc;">
 		            <div>
 		                <div class="image">
