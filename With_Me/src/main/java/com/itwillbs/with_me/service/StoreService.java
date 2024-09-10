@@ -19,16 +19,16 @@ public class StoreService {
 	private StoreMapper mapper;
 	
 	// 리스트 목록 개수 가져오기
-	public int getBoardListCount(String searchKeyword, String productCategory, String productCategory_detail) {
+	public int getBoardListCount(String searchKeyword, String productCategory, String productCategory_detail, String product_state) {
 		
-		return mapper.selectBoardListCount(searchKeyword, productCategory, productCategory_detail);
+		return mapper.selectBoardListCount(searchKeyword, productCategory, productCategory_detail, product_state);
 	}
 	
 	// 리스트 가져오기
 	public List<Map<String, Object>> getStoreList(String searchKeyword, String productCategory,
-			String productCategory_detail, int startRow, int listLimit, String id) {
+			String productCategory_detail, int startRow, int listLimit, String id, String product_state) {
 		
-		return mapper.selectStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit, id);
+		return mapper.selectStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit, id, product_state);
 	}
 
 	// 상품 상세정보 가져오기

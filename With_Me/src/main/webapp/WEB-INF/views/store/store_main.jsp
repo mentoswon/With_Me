@@ -100,6 +100,18 @@ $(function (){
 	word-wrap: break-word;
 }
 
+
+
+.filter {
+	display: inline-block;
+	margin-right: 10px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.filter.active {
+	font-weight: bold;
+} 
 /* ================================================================================================================== */
 /* .boxWrapper { */
 /* 	display: flex; */
@@ -293,7 +305,23 @@ $(function (){
 										<h2>${param.product_category} > ${param.product_category_detail}</h2> 
 									</c:otherwise>
 								</c:choose>
-								
+								<br>
+								<%-- 스토어 목록 필터 --%>
+								<ul>
+								<c:choose>
+									<c:when test="${param.product_category_detail eq null}">
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '', '최신순')">최신순</a></li>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '', '가격낮은순')">가격 낮은순</a></li>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '', '가격높은순')">가격 높은순</a></li>
+									</c:when>
+									<c:otherwise>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '${param.product_category_detail}', '최신순')">최신순</a></li>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '${param.product_category_detail}', '가격낮은순')">가격 낮은순</a></li>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '${param.product_category_detail}', '가격높은순')">가격 높은순</a></li>
+									</c:otherwise>
+								</c:choose>
+								</ul>
+								<br>
 								<%-- 페이지 번호 기본값 1로 설정 --%>
 								<c:set var="pageNum" value="1"/>
 								<c:if test="${not empty param.pageNum}">
@@ -301,11 +329,11 @@ $(function (){
 								</c:if>
 									
 								<div class="productList" id="productList">
-									<div class="orderWrapper"> 
-										<span class="orderSelect" id="orderList01" onclick="fetchSortedProducts('newest')">최신순</span>
-										<span class="orderSelect" id="orderList02" onclick="fetchSortedProducts('priceDesc')">가격 높은순</span>
-										<span class="orderSelect" id="orderList03" onclick="fetchSortedProducts('priceAsc')">가격 낮은순</span>
-									</div>
+<!-- 									<div class="orderWrapper">  -->
+<!-- 										<span class="orderSelect" id="orderList01" onclick="fetchSortedProducts('newest')">최신순</span> -->
+<!-- 										<span class="orderSelect" id="orderList02" onclick="fetchSortedProducts('priceDesc')">가격 높은순</span> -->
+<!-- 										<span class="orderSelect" id="orderList03" onclick="fetchSortedProducts('priceAsc')">가격 낮은순</span> -->
+<!-- 									</div> -->
 									<div class="boxWrapper">
 									<c:forEach var="product" items="${StoreList}">
 										<div class="product">
@@ -379,6 +407,20 @@ $(function (){
 		</footer>
 </body>
 <script type="text/javascript">
+	// 스토어 필터 
+	function storeList(category, category_detail, state) {
+		
+		// 카테고리와 상태에 따라 페이지 리로드
+		if(category_detail != "") {
+			location.href="StoreList?product_category=" + category + "&product_category_detail=" + category_detail + "&product_state=" +state;
+			
+		} else {
+			location.href="StoreList?product_category=" + category + "&product_state=" +state;
+		}
+	}
+
+
+
 	// ===========================================
 	// 상품 좋아요
 	function RegistLikeProduct(product_code, sId) {

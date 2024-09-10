@@ -44,6 +44,7 @@ public class StoreController {
 	public String store(StoreVO store, Model model,
 			@RequestParam(defaultValue = "1") int pageNum,
 			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String product_state,
 			HttpSession session) {
 		System.out.println("searchKeyword : " + searchKeyword);
 		String productCategory = store.getProduct_category();
@@ -60,7 +61,7 @@ public class StoreController {
 
 		//----------------------------------------
 
-		int listCount = service.getBoardListCount(searchKeyword, productCategory, productCategory_detail);
+		int listCount = service.getBoardListCount(searchKeyword, productCategory, productCategory_detail, product_state);
 		System.out.println("listCount : " + listCount);
 
 		int pageListLimit = 3;
@@ -93,7 +94,7 @@ public class StoreController {
 
 		// 목록 표출
 		String id = (String)session.getAttribute("sId");
-		List<Map<String, Object>> StoreList = service.getStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit, id);
+		List<Map<String, Object>> StoreList = service.getStoreList(searchKeyword, productCategory, productCategory_detail, startRow, listLimit, id, product_state);
 		System.out.println("StoreList : " + StoreList);
 		// --------------------------------------------------------------------
 

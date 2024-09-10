@@ -52,7 +52,6 @@
 }
 
 #writeForm input[type="submit"],
-#writeForm input[type="button"],
 #writeForm input[type="reset"] {
     background-color: #ffab40; /* 버튼 배경색 */
     color: #fff; /* 버튼 텍스트 색상 */
@@ -68,6 +67,17 @@
 #writeForm input[type="reset"]:hover {
     background-color: #ccaa20; /* 버튼 호버 배경색 */
 }
+
+#writeForm input[type="button"] {
+    background-color: #acacac; /* 버튼 배경색 */
+    color: #fff; /* 버튼 텍스트 색상 */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
 </style>
 </head>
 <body>
@@ -140,9 +150,11 @@
                             </tr>
                         </table>
                         <section id="commandCell">
-                            <input type="submit" value="등록">&nbsp;&nbsp;
-                            <input type="reset" value="다시쓰기">&nbsp;&nbsp;
-                            <input type="button" value="취소" onclick="history.back()">
+                        	<div align="center">
+	                            <input type="submit" value="등록">&nbsp;&nbsp;
+	                            <input type="reset" value="다시쓰기">&nbsp;&nbsp;
+	                            <input type="button" value="취소" onclick="history.back()">
+                            </div>
                         </section>
                     </form>
                 </div>

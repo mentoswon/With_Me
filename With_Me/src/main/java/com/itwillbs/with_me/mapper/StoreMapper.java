@@ -16,8 +16,8 @@ public interface StoreMapper {
 	// 리스트 목록 개수 가져오기
 	int selectBoardListCount(@Param("searchKeyword") String searchKeyword, 
 							@Param("productCategory") String productCategory,
-							@Param("productCategory_detail") String productCategory_detail); 
-	
+							@Param("productCategory_detail") String productCategory_detail,  
+							@Param("product_state") String product_state);
 	
 	// 리스트 가져오기
 	List<Map<String, Object>> selectStoreList(
@@ -26,7 +26,8 @@ public interface StoreMapper {
 							@Param("productCategory_detail")String productCategory_detail, 
 							@Param("startRow")int startRow, 
 							@Param("listLimit")int listLimit,
-							@Param("id")String id);
+							@Param("id")String id, 
+							@Param("product_state") String product_state);
 
 	// 상품 상세정보 가져오기
 	Map<String, Object> selectProduct(String product_detail);

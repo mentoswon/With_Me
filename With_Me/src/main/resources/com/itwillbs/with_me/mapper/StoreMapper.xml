@@ -24,11 +24,54 @@
 					<when test="productCategory_detail == null">
 						product_category = #{productCategory}
 						AND	product_status = '1'
+						<choose>
+							<when test="product_state == '가격낮은순'">
+								ORDER BY product_price 
+							</when>
+							<when test="product_state == '가격높은순'">
+								ORDER BY product_price DESC
+							</when>
+<!-- 						</choose> -->
+<!-- 							<choose> -->
+								<when test="product_state == '최신순'">
+						AND
+									<![CDATA[ product_created < now() ]]>
+									ORDER BY product_created DESC
+								</when>
+								<otherwise>
+						AND			1 = 1
+								</otherwise>
+<!-- 								<when test="product_state == '가격낮은순'"> -->
+<!-- 									<![CDATA[ product_price < now() ]]> -->
+								
+<!-- 								</when> -->
+<!-- 								<when test="product_state == '가격높은순'"> -->
+<!-- 									<![CDATA[ product_price < now() ]]> -->
+<!-- 								</when> -->
+							</choose>
 					</when>
 					<otherwise>
 						product_category = #{productCategory}
 						AND product_category_detail = #{productCategory_detail}
 						AND	product_status = '1'
+						<choose>
+							<when test="product_state == '가격낮은순'">
+								ORDER BY product_price 
+							</when>
+							<when test="product_state == '가격높은순'">
+								ORDER BY product_price DESC
+							</when>
+<!-- 						</choose> -->
+<!-- 						<choose> -->
+							<when test="product_state == '최신순'">
+						AND
+								<![CDATA[ product_created < now() ]]>
+								ORDER BY product_created DESC
+							</when>
+							<otherwise>
+						AND		1 = 1
+							</otherwise>						
+						</choose>
 					</otherwise>
 				</choose>
 			</otherwise>
@@ -60,11 +103,48 @@
 					<when test="productCategory_detail == null">
 						product_category = #{productCategory}
 						AND product_status = '1'
+						
+						<choose>
+							<when test="product_state == '가격낮은순'">
+								ORDER BY product_price 
+							</when>
+							<when test="product_state == '가격높은순'">
+								ORDER BY product_price DESC
+							</when>
+<!-- 						</choose> -->
+<!-- 						<choose> -->
+							<when test="product_state == '최신순'">
+						AND
+								<![CDATA[ product_created < now() ]]>
+								ORDER BY product_created DESC
+							</when>
+							<otherwise>
+						AND		1 = 1
+							</otherwise>						
+						</choose>						
 					</when>
 					<otherwise>
 						product_category = #{productCategory}
 						AND product_category_detail = #{productCategory_detail}
 						AND product_status = '1'
+						<choose>
+							<when test="product_state == '가격낮은순'">
+								ORDER BY product_price 
+							</when>
+							<when test="product_state == '가격높은순'">
+								ORDER BY product_price DESC
+							</when>
+<!-- 						</choose> -->
+<!-- 						<choose> -->
+							<when test="product_state == '최신순'">
+						AND
+								<![CDATA[ product_created < now() ]]>
+								ORDER BY product_created DESC
+							</when>
+							<otherwise>
+						AND		1 = 1
+							</otherwise>						
+						</choose>						
 					</otherwise>
 				</choose>
 			</otherwise>
