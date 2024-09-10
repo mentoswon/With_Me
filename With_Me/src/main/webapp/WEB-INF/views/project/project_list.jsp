@@ -206,15 +206,15 @@
 							<c:choose>
 								<c:when test="${param.project_category_detail eq null}">
 									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '전체')">전체</a> | </li>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '진행중')">진행 중인 프로젝트</a> | </li>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '마감')">마감한 프로젝트</a> | </li>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '오픈예정')">오픈 예정 프로젝트</a></li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '진행중')">진행 중인 펀딩</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '마감')">마감한 펀딩</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '오픈예정')">오픈 예정 펀딩</a></li>
 								</c:when>
 								<c:otherwise>
 									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '전체')">전체</a> | </li>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '진행중')">진행 중인 프로젝트</a> | </li>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '마감')">마감한 프로젝트</a> | </li>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '오픈예정')">오픈 예정 프로젝트</a></li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '진행중')">진행 중인 펀딩</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '마감')">마감한 펀딩</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '오픈예정')">오픈 예정 펀딩</a></li>
 								</c:otherwise>
 							</c:choose>
 						</ul>

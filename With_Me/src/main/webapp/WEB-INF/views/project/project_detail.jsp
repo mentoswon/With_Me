@@ -263,9 +263,9 @@
 																			</c:forEach>
 																		</select>
 																	</c:when>
-																	<c:otherwise>
+																	<c:when test="${allRewardItems.item_condition eq '주관식'}">
 																		<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write" >
-																	</c:otherwise>
+																	</c:when>
 																</c:choose>
 															</div>
 														</div>
