@@ -47,6 +47,7 @@
 			
 			.sec02 .itemList .itemWrapper .item .item_image .thumnail {
 				width: 100%;
+				height: 100%;
 				object-fit: cover;
 				transform: scale(1.0);
 				transition: transform 0.3s;
