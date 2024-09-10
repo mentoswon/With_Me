@@ -108,33 +108,35 @@
 							<tr align="center">
 								<td>${SHL.project_code}</td>
 								<td>${SHL.project_title}</td>
+								<td>${SHL.pro_pay_status}</td>
 								<td>
 									<c:choose>
-										<c:when test="${SHL.pro_pay_status eq 1}">결제 완료</c:when>
-										<c:when test="${SHL.pro_pay_status eq 2}">미결제</c:when>
+										<c:when test="${SHL.pro_pay_date == null}">
+											미결제 상태이므로 결제일이 없습니다
+										</c:when>
+										<c:otherwise>
+											<%-- 
+											테이블 조회를 Map 타입으로 관리 시 날짜 및 시각 데이터가
+											LocalXXX 타입으로 관리됨(ex. LocalDate, LocalTime, LocalDateTime)
+											=> 날짜 및 시각 정보 조회 시 2024-08-21T16:47:59 형식으로 저장되어 있음
+											=> 일반 Date 타입에서 사용하는 형태로 파싱 후 다시 포맷팅 작업 필요
+											=> JSTL fmt 라이브러리 - <fmt:parseDate> 태그 활용하여 파싱 후
+											   <fmt:formatDate> 태그 활용하여 포맷팅 수행
+											   var 속성 : 파싱 후 해당 날짜 및 시각 정보를 다룰 객체명(변수명)
+											   value 속성 : 파싱할 대상 날짜 데이터
+											   pattern 속성 : 파싱할 대상 날짜 데이터의 기존 형식(2024-08-21T16:47:59)에 대한 패턴 지정
+											                  => 날짜와 시각 사이의 구분자 T 도 정확하게 명시
+											                     (단, 구분자 T 는 단순 텍스트로 취급하기 위해 '' 로 둘러쌈)
+											   type 속성 : 대상 날짜 파싱 타입(time : 시각, date : 날짜, both : 둘 다)
+											--%>
+											<fmt:parseDate var="pro_pay_date" value="${SHL.pro_pay_date}" 
+															pattern="yyyy-MM-dd'T'HH:mm:ss" type="both" />
+											<%-- 파싱 후 날짜 및 시각 형식 : Wed Aug 21 16:47:59 KST 2024 --%>
+											<%-- 파싱된 날짜 및 시각이 저장된 Date 객체의 포맷팅 수행 --%>								
+											<%-- 년년년년-월월-일일 시시:분분:초초 형태로 포맷팅 --%>
+											<fmt:formatDate value="${pro_pay_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+										</c:otherwise>
 									</c:choose>
-								</td>
-								<td>
-									<%-- 
-									테이블 조회를 Map 타입으로 관리 시 날짜 및 시각 데이터가
-									LocalXXX 타입으로 관리됨(ex. LocalDate, LocalTime, LocalDateTime)
-									=> 날짜 및 시각 정보 조회 시 2024-08-21T16:47:59 형식으로 저장되어 있음
-									=> 일반 Date 타입에서 사용하는 형태로 파싱 후 다시 포맷팅 작업 필요
-									=> JSTL fmt 라이브러리 - <fmt:parseDate> 태그 활용하여 파싱 후
-									   <fmt:formatDate> 태그 활용하여 포맷팅 수행
-									   var 속성 : 파싱 후 해당 날짜 및 시각 정보를 다룰 객체명(변수명)
-									   value 속성 : 파싱할 대상 날짜 데이터
-									   pattern 속성 : 파싱할 대상 날짜 데이터의 기존 형식(2024-08-21T16:47:59)에 대한 패턴 지정
-									                  => 날짜와 시각 사이의 구분자 T 도 정확하게 명시
-									                     (단, 구분자 T 는 단순 텍스트로 취급하기 위해 '' 로 둘러쌈)
-									   type 속성 : 대상 날짜 파싱 타입(time : 시각, date : 날짜, both : 둘 다)
-									--%>
-									<fmt:parseDate var="pro_pay_date" value="${SHL.pro_pay_date}" 
-													pattern="yyyy-MM-dd'T'HH:mm:ss" type="both" />
-									<%-- 파싱 후 날짜 및 시각 형식 : Wed Aug 21 16:47:59 KST 2024 --%>
-									<%-- 파싱된 날짜 및 시각이 저장된 Date 객체의 포맷팅 수행 --%>								
-									<%-- 년년년년-월월-일일 시시:분분:초초 형태로 포맷팅 --%>
-									<fmt:formatDate value="${pro_pay_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
 								</td>
 								<td><fmt:formatNumber value="${SHL.pro_pay_amt}" pattern="#,###"/>원</td>
 								<td>${SHL.pay_method_name}</td>
@@ -152,7 +154,7 @@
 					<%-- [이전] 버튼 클릭 시 SponsorshipHistoryList 서블릿 요청(파라미터 : 현재 페이지번호 - 1) --%>
 					<%-- 현재 페이지 번호(pageNum)가 URL 파라미터로 전달되므로 ${pageNum} 활용(미리 저장된 변수값) --%>
 					<%-- 단, 현재 페이지 번호가 1 보다 클 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
-					<input type="button" value="이전" onclick="location.href='SponsorshipHistoryList?pageNum=${pageNum - 1}'" <c:if test="${pageNum <= 1}">disabled</c:if>>
+					<input type="button" value="이전" onclick="location.href='SponsorshipHistoryList?mem_email=${member.mem_email}&pageNum=${pageNum - 1}'" <c:if test="${pageNum <= 1}">disabled</c:if>>
 					<%-- 계산된 페이지 번호가 저장된 PageInfo 객체(pageInfo)를 통해 페이지 번호 출력 --%>
 					<%-- 시작페이지(startPage = begin) 부터 끝페이지(endPage = end)까지 1씩 증가하면서 표시 --%>
 					<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
@@ -163,7 +165,7 @@
 								<b>${i}</b> <%-- 현재 페이지 번호 --%>
 							</c:when>
 							<c:otherwise>
-								<a href="SponsorshipHistoryList?pageNum=${i}">${i}</a> <%-- 다른 페이지 번호 --%>
+								<a href="SponsorshipHistoryList?mem_email=${member.mem_email}&pageNum=${i}">${i}</a> <%-- 다른 페이지 번호 --%>
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>
@@ -172,7 +174,7 @@
 					<%-- 단, 현재 페이지 번호가 최대 페이지번호(maxPage)보다 작을 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
 					<%-- 두 가지 경우의 수에 따라 버튼을 달리 생성하지 않고, disabled 만 추가 여부 설정 --%>
 					<%-- pageNum 파라미터값이 최대 페이지번호 이상일 때 disabled 속성 추가 --%>
-					<input type="button" value="다음" onclick="location.href='SponsorshipHistoryList?pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+					<input type="button" value="다음" onclick="location.href='SponsorshipHistoryList?mem_email=${member.mem_email}&pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 				</div>
 			</article>
 		</section>
