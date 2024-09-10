@@ -20,7 +20,8 @@
 		<li class="depth01">
 			<a href="AdminStore">스토어관리</a>
 			<ul class="depth02">
-				<li><a href="AdminStore">스토어</a></li>
+				<li><a href="AdminStore">스토어 상품 등록</a></li>
+				<li><a href="AdminStoreOrder">스토어 상품 주문내역</a></li>
 			</ul>
 		</li>
 		<li class="depth01">
