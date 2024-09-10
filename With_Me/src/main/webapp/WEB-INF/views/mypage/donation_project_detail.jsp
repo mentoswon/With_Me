@@ -80,22 +80,22 @@
     margin-top: 20px;
 }
 
-.form-actions input[type="submit"], 
-.form-actions input[type="reset"], 
-.form-actions button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
+/* .form-actions input[type="submit"],  */
+/* .form-actions input[type="reset"],  */
+/* .form-actions button { */
+/*     background-color: #4CAF50; */
+/*     color: white; */
+/*     border: none; */
+/*     padding: 10px 20px; */
+/*     border-radius: 5px; */
+/*     cursor: pointer; */
+/* } */
 
-.form-actions input[type="submit"]:hover, 
-.form-actions input[type="reset"]:hover, 
-.form-actions button:hover {
-/*     background-color: #45a049; */
-}
+/* .form-actions input[type="submit"]:hover,  */
+/* .form-actions input[type="reset"]:hover,  */
+/* .form-actions button:hover { */
+/* /*     background-color: #45a049; */
+/* } */
 
 .top {
 	display: flex;
@@ -121,6 +121,12 @@
  .topInfo {
  	margin-top: 20px;
  }
+ 
+ 
+ #button {
+ 	background-color: #FFAB40;
+ 
+ }
 
 </style>
 </head>
@@ -141,12 +147,12 @@
 		            </div>
 		            <div class="topInfo">
 		                <h2>${DonationProjectDetail.project_title}</h2>
-		                <p><fmt:formatNumber value="${DonationProjectDetail.funding_amt}" type="number" groupingUsed="true"/>원</p>
-		                <p><fmt:formatNumber value="${DonationProjectDetail.target_price}" type="number" groupingUsed="true"/>원</p>
+		                <p><b>누적금액</b> : <fmt:formatNumber value="${DonationProjectDetail.funding_amt}" type="number" groupingUsed="true"/>원</p>
+		                <p><b>목표금액</b> : <fmt:formatNumber value="${DonationProjectDetail.target_price}" type="number" groupingUsed="true"/>원</p>
 		            </div>
 		        </div>
 		
-		        <div class="form-group fundInfo" style="border: 1px solid #ccc;">
+		        <div class="form-group" style="border: 1px solid #ccc;">
 		            <div>
 		                <h4>후원 정보</h4>
 		            </div>
@@ -158,16 +164,16 @@
 						<!-- 펀딩 진행 상태 표시 -->
 						<c:choose>
 						    <c:when test="${today >= startDate && today <= endDate}">
-						        펀딩 진행중
+						        <b>펀딩상태</b> : 펀딩 진행중
 						    </c:when>
 						    <c:when test="${today > endDate}">
-						        펀딩 종료됨
+						        <b>펀딩상태</b> : 펀딩 종료됨
 						    </c:when>
 						</c:choose>
-						<p>${DonationProjectDetail.funding_status}</p>
+						<p><b>후원상태</b> : ${DonationProjectDetail.funding_status}</p>
 		
-                		<p><fmt:formatDate value="${fundingPayDate}" pattern="yyyy.MM.dd" /></p>
-		                <p><fmt:formatDate value="${DonationProjectDetail.funding_end_date}" pattern="yyyy.MM.dd" /></p>
+                		<p><b>후원날짜</b> : <fmt:formatDate value="${fundingPayDate}" pattern="yyyy.MM.dd" /></p>
+		                <p><b>펀딩 마감일</b> : <fmt:formatDate value="${DonationProjectDetail.funding_end_date}" pattern="yyyy.MM.dd" /></p>
 		            </div>
 		        </div>
 		
@@ -178,13 +184,13 @@
 		            <div>
 		                <c:choose>
 		                    <c:when test="${empty DonationProjectDetail.reward_title}">
-		                        <p>선물은 선택하지 않고 후원만 합니다.</p>
+		                        <p><b>후원 제목</b> : 선물은 선택하지 않고 후원만 합니다.</p>
 		                    </c:when>
 		                    <c:otherwise>
-		                        <p>${DonationProjectDetail.reward_title}(${DonationProjectDetail.funding_item_option})</p>
+		                        <p><b>후원 제목</b> : ${DonationProjectDetail.reward_title}(${DonationProjectDetail.funding_item_option})</p>
 		                    </c:otherwise>
 		                </c:choose>
-		                <p><fmt:formatNumber value="${DonationProjectDetail.funding_pay_amt - DonationProjectDetail.funding_plus}" type="number" groupingUsed="true"/>원</<p>
+		                <p><b>후원 금액</b> : <fmt:formatNumber value="${DonationProjectDetail.funding_pay_amt - DonationProjectDetail.funding_plus}" type="number" groupingUsed="true"/>원</<p>
 		            </div>
 		        </div>
 		
@@ -193,7 +199,8 @@
 		                <h4>추가 후원 정보</h4>
 		            </div>
 		            <div>
-		                <p><fmt:formatNumber value="${DonationProjectDetail.funding_plus}" type="number" groupingUsed="true"/>원</p>
+		                <p><b>추가 후원금</b> : <fmt:formatNumber value="${DonationProjectDetail.funding_plus}" type="number" groupingUsed="true"/>원</p>
+		                <p><b>총 후원금액</b> : <fmt:formatNumber value="${DonationProjectDetail.funding_pay_amt}" type="number" groupingUsed="true"/>원</p>
 		            </div>
 		        </div>
 		
@@ -201,8 +208,8 @@
 				    <c:if test="${DonationProjectDetail.funding_status != '후원 취소'}">
 				        <input type="submit" value="후원 취소" onclick="return confirm('후원을 취소하시겠습니까?');">
 				    </c:if>
-				
-				    <button type="button" onclick="history.back()">돌아가기</button>
+<!-- 				    <button type="button" onclick="history.back()">돌아가기</button> -->
+				    <input type="button" class="button" value="목록" onclick="location.href='MemberInfo?pageNum=${param.pageNum}'">
 				</div>
 		    </section>
 		</form>

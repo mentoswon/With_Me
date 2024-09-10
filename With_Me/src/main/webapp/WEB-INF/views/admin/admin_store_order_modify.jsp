@@ -64,7 +64,7 @@ td:last-child {
 }
 
 input[type="text"], select {
-    width: 40%;
+    width: 48%;
     padding: 8px;
     box-sizing: border-box;
     margin-top: 5px; /* 필드와 레이블 간격 */
@@ -101,6 +101,14 @@ input[type="text"], select {
 
 .button:hover {
     background-color: #e6952d;
+}
+
+#price {
+	font-weight: normal;
+}
+
+#status {
+	font-weight: normal;
 }
 </style>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -178,164 +186,66 @@ function deleteFile(product_idx, fileName, index) {
 	</header>
 	<!-- 게시판 상세내용 보기 -->
 	<article id="articleForm">
-		<h2 align="center">상품 수정</h2>
-			<form action="ProductModify" name="ProductForm" method="post" enctype="multipart/form-data">
+		<h2 align="center">상품 배송상태 수정</h2>
+			<form action="ProductOrderModify" name="ProductForm" method="post">
 				<section class="ProductForm1">
-					<input type="hidden" name="product_idx" id="product_idx" value="${store.product_idx}">
+					<input type="hidden" name="order_idx" id="order_idx" value="${productOrder.order_idx}">
 					<table id="tb01">
 						<tr>
-							<td>상품코드</td>
+							<td>결제 금액</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="product_code" value="${store.product_code}" id="product_code"></td>
-						</tr>	
-						<tr>
-							<td>상품명</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="text" name="product_name" id="product_name" value="${store.product_name}">
+							<td id="price">
+								<fmt:formatNumber value="${productOrder.product_pay_amt}" type="number" groupingUsed="true"/>원
 							</td>
 						</tr>	
 						<tr>
-							<td>상품설명</td>
+							<td>결제일</td>
 						</tr>
 						<tr>
-							<td>
-								<input type="text" name="product_description" id="product_description" value="${store.product_description}">
-							</td> 
-						</tr>	
-						<tr>
-							<td>상품 카테고리</td>
-						</tr>
-						<tr>
-			                <td>
-			                    <select name="product_category" id="product_category">
-			                        <option value="">카테고리를 선택하세요</option>
-			                    </select>
-			                </td>
-						</tr>	
-						<tr>
-							<td>상품 세부카테고리</td>
-						</tr>
-						<tr>
-			                <td>
-			                    <select name="product_category_detail" id="product_category_detail">
-			                        <option value="">세부 카테고리를 선택하세요</option>
-			                    </select>
-			                </td>
-						</tr>
-						<tr>
-							<td>상품 옵션</td>
-						</tr>
-						<tr>
-			                <td>
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 230mm">
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 240mm">
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 250mm">
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 260mm">
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 270mm">
-			                </td>
-						</tr>		
-						<tr>
-							<td>상품가격</td>
-						</tr>
-						<tr>
-							<td><input type="text" name="product_price" id="product_price" value="${store.product_price}">
-							</td>
-						</tr>
-						<tr>
-							<td>재고수량</td>
-						</tr>
-						<tr>
-							<td><input type="text" name="product_stock" id="product_stock" value="${store.product_stock}">
+							<td><input type="text"  id="order_date" readonly="readonly" value="${productOrder.order_date}">
 							</td>
 						</tr>	
 						<tr>
-							<td>상품상태</td>
+							<td>배송 상태</td>
 						</tr>
 						<tr>
 							<td>
-								<select name="product_status">
-									<option value="1">판매중</option>
-									<option value="2">판매중지</option>
-									<option value="3">품절</option>
+								<select name="product_shipping_info" value="${productOrder.product_shipping_info}">
+									<option value="1">배송전</option>
+									<option value="2">배송중</option>
+									<option value="3">배송완료</option>
 								</select>
 							</td>
-<%-- 							<c:choose> --%>
-<%-- 								<c:when test="${store.product_status eq 1}"> --%>
-<!-- 									<td>판매중</td> -->
-<%-- 								</c:when> --%>
-<%-- 								<c:when test="${store.product_status eq 2}"> --%>
-<!-- 									<td>판매중지</td> -->
-<%-- 								</c:when> --%>
-<%-- 								<c:when test="${store.product_status eq 2}"> --%>
-<!-- 									<td>품절</td> -->
-<%-- 								</c:when> --%>
-<%-- 							</c:choose> --%>
 						</tr>
 						<tr>
-							<td>상품사진</td>
+							<td>결제 상태</td>
 						</tr>
 						<tr>
-							<td class="product_img" colspan="2">
-								<div>
-									<img
-										src="${pageContext.request.contextPath}/resources/upload/${store.product_img}"
-										id="img1" class="feed" name="product_img">
-								</div>
-								<div>
-									<img
-										src="${pageContext.request.contextPath}/resources/upload/${store.product_img2}"
-										id="img1" class="feed" name="product_img2">
-								</div>
+							<td>
+								<input type="text" name="store_usuer_status" id="store_usuer_status" readonly="readonly" value="${productOrder.store_usuer_status}">
 							</td>
-						</tr>
-<!-- 						<tr><td width="70">파일</td> -->
-<!-- 						</tr>	 -->
+						</tr>	
 						<tr>
-<!-- 							<td class="td_left"><label for="product_img">파일첨부</label></td> -->
-							<td class="td_right">
-								<%-- 파일명 존재 여부 판별 --%>
-								<%-- 
-								<c:forEach> 태그를 활용하여 fileList 객체의 요소 갯수만큼 반복
-								=> varStatus 속성을 지정하여 요소 인덱스값 또는 요소 순서번호 확인 가능
-								   (요소 인덱스 : 속성명.index   요소 순서번호 : 속성명.count)
-								--%>
-								<c:forEach var="fileName" items="${fileList}" varStatus="status">
-									<%-- div 태그로 파일 1개의 영역 지정(파일 항목 구분을 위해 class 선택자 뒤에 번호 결합 --%>
-									<div class="file file_item_${status.count}">
-										<c:choose>
-											<c:when test="${not empty fileName}">
-												<%-- 파일명 존재할 경우 원본 파일명 출력 --%>
-												${originalFileList[status.index]}
-												<%-- 파일 삭제 링크(이미지) 생성(개별 삭제 위함) --%>
-												<%-- 삭제 아이콘 클릭 시 deleteFile() 함수 호출(파라미터 : 글번호, 파일명, 카운팅번호) --%>
-												<a href="javascript:deleteFile(${store.product_idx}, '${fileName}', ${status.count})">
-													<img src="${pageContext.request.contextPath}/resources/image/delete-icon.png" class="img_btn_delete" title="파일삭제">
-												</a>
-												<%-- 파일명만 표시하는 경우에도 파일업로드 요소 생성하여 파라미터는 전달되도록 하기 --%>
-												<%-- 단, 사용자에게 보이지 않도록 숨김 처리를 위해 hidden 속성 적용 --%>
-												<input type="file" name="product_img_file${status.count}" hidden>
-											</c:when>
-											<c:otherwise>
-												<%-- 
-												파일명이 존재하지 않을 경우 파일 업로드 항목 표시
-												=> name 속성값을 다르게 부여하기 위해 
-												   file 문자열과 카운팅을 위한 값 ${status.count} 결합하여 name 지정
-												   (ex. "file" + 1 = "file1") 
-												--%>
-												<%--  --%>
-												<input type="file" name="product_img_file${status.count}">
-											</c:otherwise>
-										</c:choose>
-									</div>
-								</c:forEach>
+							<td>주소</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="text" name="address_post_code" id="address_post_code" readonly="readonly" value="${productOrder.address_post_code} / ${productOrder.address_main}">
+								<input type="text" name="address_sub" id="address_sub" readonly="readonly" value="${productOrder.address_sub}">
+							</td>
+						</tr>	
+						<tr>
+							<td>고객 전화번호</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="text" name="address_receiver_tel" id="address_receiver_tel" readonly="readonly" value="${productOrder.address_receiver_tel}">
 							</td>
 						</tr>	
 						<tr>
 							<td align="center"><br>
-								<input type="submit" value="수정" onclick="return confirm('상품 수정이 완료되었습니다.');">
+								<input type="submit" value="수정" onclick="return confirm('배송 상태 변경이 완료되었습니다.');">
 								<input type="button" value="취소" onclick="history.back()">
 							</td>
 						</tr>

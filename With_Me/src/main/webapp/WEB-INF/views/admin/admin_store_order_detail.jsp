@@ -50,7 +50,7 @@ table {
 }
 
 td {
-    padding: 10px;
+    padding: 5px;
     vertical-align: top;
 }
 
@@ -64,16 +64,12 @@ td:first-child {
 	font-weight: normal;
 }
 
-#price {
-	font-weight: normal;
-}
-
 td:last-child {
     width: 30%;
 }
 
 input[type="text"], select {
-    width: 40%;
+    width: 47%;
     padding: 8px;
     box-sizing: border-box;
     margin-top: 5px; /* 필드와 레이블 간격 */
@@ -112,6 +108,14 @@ input[type="text"], select {
     background-color: #e6952d;
 }
 
+#status {
+	font-weight: normal;
+}
+
+#price {
+	font-weight: normal;
+}
+
 </style>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script type="text/javascript">
@@ -136,30 +140,30 @@ function confirmDelete() {
 	
 	<!-- 게시판 상세내용 보기 -->
 	<article id="articleForm">
-		<h2 align="center">상품 상세내용</h2>
+		<h2 align="center">상품 주문내역</h2>
 			<section class="joinForm1">
-				<input type="hidden" name="product_idx">
+				<input type="hidden" name="order_idx">
 				<table id="tb01">
 					<tr>
-						<td>상품코드</td>
+						<td>상품 코드</td>
 					</tr>
 					<tr>
-						<td><input type="text" name="product_code" value="${product.product_code}" id="product_code" readonly="readonly"></td>
+						<td><input type="text" name="product_code" value="${productOrder.product_code}" id="product_code" readonly="readonly"></td>
 					</tr>	
 					<tr>
 						<td>상품명</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" name="product_name" id="product_name" readonly="readonly" value="${product.product_name}">
+							<input type="text" name="product_name" id="product_name" readonly="readonly" value="${productOrder.product_name}">
 						</td>
 					</tr>	
 					<tr>
-						<td>상품설명</td>
+						<td>상품 설명</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" name="product_description" id="product_description" readonly="readonly" value="${product.product_description}">
+							<input type="text" name="product_description" id="product_description" readonly="readonly" value="${productOrder.product_description}">
 						</td> 
 					</tr>	
 					<tr>
@@ -167,15 +171,8 @@ function confirmDelete() {
 					</tr>
 					<tr>
 		                <td>
-							<input type="text" name="product_category" id="product_category" readonly="readonly" value="${product.product_category}">
-		                </td>
-					</tr>	
-					<tr>
-						<td>상품 세부카테고리</td>
-					</tr>
-					<tr>
-		                <td>
-							<input type="text" name="product_category" id="product_category" readonly="readonly" value="${product.product_category_detail}">
+							<input type="text" name="product_category" id="product_category" readonly="readonly" value="${productOrder.product_category}(${productOrder.product_category_detail})">
+							<input type="hidden" name="product_category_detail" id="product_category_detail" readonly="readonly" value="${productOrder.product_category}(${productOrder.product_category_detail})">
 		                </td>
 					</tr>	
 					<tr>
@@ -183,43 +180,73 @@ function confirmDelete() {
 					</tr>
 					<tr>
 				        <td>
-							<c:forEach var="options" items="${productOptions}">
-								<input type="text" name="product_item_option" class="itemText" value="${options.splited_option}" readonly="readonly" >
-							</c:forEach>
+							<input type="text" name="product_item_option" class="itemText" value="${productOrder.product_item_option}" readonly="readonly">
 				        </td>
 					</tr>	
 					<tr>
-						<td>상품가격</td>
+						<td>상품 가격</td>
 					</tr>
 					<tr>
 						<td id="price">
-							<fmt:formatNumber value="${product.product_price}" type="number" groupingUsed="true"/>원
+							<fmt:formatNumber  value="${productOrder.product_price}" type="number" groupingUsed="true"/>원
 						</td>
 					</tr>
 					<tr>
-						<td>재고수량</td>
+						<td>결제 금액</td>
 					</tr>
 					<tr>
 						<td id="price">
-							<fmt:formatNumber value="${product.product_stock}" type="number" groupingUsed="true"/>개
+							<fmt:formatNumber value="${productOrder.product_pay_amt}" type="number" groupingUsed="true"/>원
 						</td>
 					</tr>	
 					<tr>
-						<td>상품상태</td>
+						<td>결제일</td>
+					</tr>
+					<tr>
+						<td><input type="text" name="order_date" id="order_date" readonly="readonly" value="${productOrder.order_date}">
+						</td>
+					</tr>	
+					<tr>
+						<td>배송 상태</td>
 					</tr>
 					<tr>
 						<c:choose>
-							<c:when test="${product.product_status eq 1}">
-								<td id="status">판매중</td>
+							<c:when test="${productOrder.product_shipping_info eq 1}">
+								<td id="status">배송전</td>
 							</c:when>
-							<c:when test="${product.product_status eq 2}">
-								<td id="status">판매중지</td>
+							<c:when test="${productOrder.product_shipping_info eq 2}">
+								<td id="status">배송중</td>
 							</c:when>
-							<c:when test="${product.product_status eq 3}">
-								<td id="status">품절</td>
+							<c:when test="${productOrder.product_shipping_info eq 3}">
+								<td id="status">배송완료</td>
 							</c:when>
 						</c:choose>
 					</tr>
+					<tr>
+						<td>결제 상태</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" name="store_usuer_status" id="store_usuer_status" readonly="readonly" value="${productOrder.store_usuer_status}">
+						</td>
+					</tr>	
+					<tr>
+						<td>주소</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" name="address_post_code" id="address_post_code" readonly="readonly" value="${productOrder.address_post_code} / ${productOrder.address_main}">
+							<input type="text" name="address_sub" id="address_sub" readonly="readonly" value="${productOrder.address_sub}">
+						</td>
+					</tr>	
+					<tr>
+						<td>고객 전화번호</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" name="address_receiver_tel" id="address_receiver_tel" readonly="readonly" value="${productOrder.address_receiver_tel}">
+						</td>
+					</tr>	
 					<tr>
 						<td>상품사진</td>
 					</tr>
@@ -227,48 +254,20 @@ function confirmDelete() {
 						<td class="product_img" colspan="2">
 							<div>
 								<img
-									src="${pageContext.request.contextPath}/resources/upload/${product.product_img}"
+									src="${pageContext.request.contextPath}/resources/upload/${productOrder.product_img}"
 									id="img1" class="car_image" selected>
 							</div>
 							<div>
 								<img
-									src="${pageContext.request.contextPath}/resources/upload/${product.product_img2}"
+									src="${pageContext.request.contextPath}/resources/upload/${productOrder.product_img2}"
 									id="img1" class="car_image" selected>
 							</div>
 						</td>
 					</tr>
-					<tr><td width="70">파일</td>
-					</tr>
-					<tr>	
-						<td colspan="3" id="product_img">
-							<%-- List 객체("fileList") 크기만큼 반복문을 통해 파일명 출력 --%>
-							<c:forEach var="file" items="${fileList}">
-								<%-- 단, 파일명(file 객체)가 비어있지 않을 경우메나 출력 --%>
-								<c:if test="${not empty file}">
-									<%-- [ JSTL - functions 라이브러리 함수 활용하여 원본 파일명 추출하기 ] --%> 
-									<%-- 1) split() 함수 활용하여 "_" 구분자로 분리 후 두번째 인덱스 값 사용 --%>
-		<%-- 							split() : ${fn:split(file, "_")[1]}<br> --%>
-		
-									<%-- 2) substring() 함수 활용하여 시작인덱스부터 지정 인덱스까지 문자열 추출 --%>
-									<%--    (단, 전체 파일명의 길이를  --%>
-		<%-- 							<c:set var="fileLength" value="${fn:length(file)}" /> --%>
-		<%-- 							<c:set var="delimIndex" value="${fn:indexOf(file, '_')}" /> --%>
-		<%-- <%-- 							substring() : ${fn:substring(file, 시작인덱스, 끝인덱스)} --%>
-		<%-- 							substring() : ${fn:substring(file, delimIndex + 1, fileLength)}<br> --%>
-		
-									<%-- 3) substringAfter() 함수 활용하여 시작인덱스부터 끝까지 추출 --%>
-		<%-- 							substringAfter() : ${fn:substringAfter(file, '_')}<br> --%>
-									<c:set var="orginalFileName" value="${fn:substringAfter(file, '_')}"/>
-<%-- 										<input type="hidden" name="originalFileName" value="${originalFileName}" /> --%>
-									${file}
-								</c:if>
-							</c:forEach> 
-						</td>
-					</tr>
 					<tr>
 						<td align="center"><br>
-							<input type="button" value="목록" onclick="location.href='AdminStore?pageNum=${param.pageNum}'">
-							<input type="button" value="수정" onclick="location.href='ProductModify?product_idx=${product.product_idx}&pageNum=${param.pageNum}'">
+							<input type="button" value="목록" onclick="location.href='AdminStoreOrder?pageNum=${param.pageNum}'">
+							<input type="button" value="수정" onclick="location.href='ProductOrderModify?order_idx=${productOrder.order_idx}&pageNum=${param.pageNum}'">
 							<input type="button" value="삭제" onclick="confirmDelete()">
 						</td>
 					</tr>

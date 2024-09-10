@@ -48,12 +48,17 @@
 	.main #pageList {
 		text-align: center;
 	}
+	
+	
+	#table {
+		margin-top: 20px;
+	}
 </style>
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
-function productDetail(productIdx) {
-	location.href="ProductDetail?product_idx=" + productIdx;
+function ProductOrderDetail(orderIdx) {
+	location.href="ProductOrderDetail?order_idx=" + orderIdx;
 }	
 </script>
 </head>
@@ -67,7 +72,7 @@ function productDetail(productIdx) {
 			<article class="main">
 				<h3>등록신청관리</h3>
 				<div class="wrapper_top">
-					<form action="AdminStore">
+					<form action="AdminStoreOrder">
 						<div class="search">
 							<span>Search</span>
 							<select name="searchType">
@@ -77,20 +82,20 @@ function productDetail(productIdx) {
 							<input type="search" name="searchKeyword" value="${param.searchKeyword}" >
 							<input type="submit" value="검색">
 						</div>
-							<input type="button" value="상품 등록" onclick="location.href='ProductRegist'" />
+						<hr>
 					</form>
 				</div>
 				<br>
 				<div class="content">
-					<table border="1">
+					<table border="1" id="table">
 						<tr>
-							<th>상품번호</th>
+							<th>주문번호</th>
 							<th>상품코드</th>
 							<th>카테고리</th>
 							<th>상품명</th>
-							<th>재고</th>
-							<th>등록일</th>
-							<th>상품상태</th>
+							<th>주문일</th>
+							<th>배송 상태</th>
+							<th>결제 상태</th>
 							<th>상세보기</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
@@ -100,33 +105,34 @@ function productDetail(productIdx) {
 							<%-- pageNum 변수에 pageNum 파라미터값 저장 --%>
 							<c:set var="pageNum" value="${param.pageNum}" />
 						</c:if>
-						<c:forEach var="pl" items="${productList}">
+						<c:forEach var="pl" items="${productOrderList}">
 							<tr align="center">
-								<td>${pl.product_idx}</td>
+								<td>${pl.order_idx}</td>
 								<td>${pl.product_code}</td>
-								<td>${pl.product_category}(${pl.product_category_detail})</td>
+								<td>${pl.product_category}</td>
 								<td>${pl.product_name}</td>
-								<td>${pl.product_stock}</td>
+<%-- 								<td>${orderDate}</td> --%>
 								<td>
-									<fmt:formatDate value="${pl.product_created}" pattern="yy-MM-dd HH:mm" />
+									<fmt:formatDate value="${orderDates}" pattern="yy-MM-dd HH:mm" />
 								</td>
 								<c:choose>
-									<c:when test="${pl.product_status eq 1}">
-										<td>판매중</td>
+									<c:when test="${pl.product_shipping_info eq 1}">
+										<td>배송전</td>
 									</c:when>
-									<c:when test="${pl.product_status eq 2}">
-										<td>판매중지</td>
+									<c:when test="${pl.product_shipping_info eq 2}">
+										<td>배송중</td>
 									</c:when>
-									<c:when test="${pl.product_status eq 3}">
-										<td>품절</td>
+									<c:when test="${pl.product_shipping_info eq 3}">
+										<td>배송완료</td>
 									</c:when>
 								</c:choose>
+								<td>${pl.store_usuer_status}</td>
 								<td>
-									<input type="button" value="상세보기" onclick="productDetail(${pl.product_idx})">
+									<input type="button" value="상세보기" onclick="ProductOrderDetail(${pl.order_idx})">
 								</td>
 							</tr>
 						</c:forEach>
-						<c:if test="${empty productList}">
+						<c:if test="${empty productOrderList}">
 							<tr>
 								<td align="center" colspan="8">조회 결과가 없습니다.</td>
 							</tr>
@@ -158,7 +164,7 @@ function productDetail(productIdx) {
 					<%-- 단, 현재 페이지 번호가 최대 페이지번호(maxPage)보다 작을 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
 					<%-- 두 가지 경우의 수에 따라 버튼을 달리 생성하지 않고, disabled 만 추가 여부 설정 --%>
 					<%-- pageNum 파라미터값이 최대 페이지번호 이상일 때 disabled 속성 추가 --%>
-					<input type="button" value="다음" onclick="location.href='AdminStore?pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+					<input type="button" value="다음" onclick="location.href='AdminStoreOrder?pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 				</div>
 			</article>
 		</section>

@@ -291,7 +291,7 @@ $(function() {
 					<div class="MypageExplanationWrap">
 						<div class="inner">
 							<section class="sec02">
-							    <!-- 프로젝트가 존재하는지 먼저 확인 -->
+							    <!-- 후원한 프로젝트가 존재하는지 먼저 확인 -->
 							    <c:if test="${not empty OtherCreatorDonationProjectList}">
 							        <c:set var="hasValidProject" value="false" />
 							
@@ -362,7 +362,7 @@ $(function() {
 							    </c:if>
 							
 							    <!-- projectList 자체가 비어 있을 때 메시지 표시 -->
-							    <c:if test="${empty DonationProjectList}">
+							    <c:if test="${empty OtherCreatorDonationProjectList}">
 							        <p>등록된 프로젝트가 없습니다.</p>
 							    </c:if>
 							</section>

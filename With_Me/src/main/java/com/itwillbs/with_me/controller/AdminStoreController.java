@@ -6,9 +6,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.itwillbs.with_me.service.AdminStoreService;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.StoreVO;
+import com.itwillbs.with_me.vo.Store_userVO;
 
 @Controller
 public class AdminStoreController {
@@ -51,8 +55,6 @@ public class AdminStoreController {
 		int startRow = (pageNum - 1) * listLimit; // 조회할 게시물의 행 번호
 		
 		// 페이징 처리를 위한 계산 작업
-		// BoardListService - getBoardListCount() 메서드 호출하여 전체 게시물 수 조회 요청
-		// => 파라미터 : 검색타입, 검색어   리턴타입 : int(listCount)
 		int listCount = service.getProductListCount(searchType, searchKeyword);
 		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 갯수를 3개로 지정(1 2 3 or 4 5 6)
 		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
@@ -483,6 +485,119 @@ public class AdminStoreController {
 			return "result/fail";
 		}
 	}
+	
+	// 스토어 상품 주문내역 리스트
+	@GetMapping("AdminStoreOrder")
+	public String adminStoreOrder(
+	@RequestParam(defaultValue = "") String searchType,
+	@RequestParam(defaultValue = "") String searchKeyword,
+	@RequestParam(defaultValue = "1") int pageNum,
+	Model model, HttpServletRequest request) {
+		
+		// 페이징 처리를 위해 조회 목록 갯수 조절에 사용될 변수 선언
+		int listLimit = 10; // 페이지 당 게시물 수
+		int startRow = (pageNum - 1) * listLimit; // 조회할 게시물의 행 번호
+		
+		// 페이징 처리를 위한 계산 작업
+		int listCount = service.getProductOrderListCount(searchType, searchKeyword);
+		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 갯수를 3개로 지정(1 2 3 or 4 5 6)
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
+		int endPage = startPage + pageListLimit - 1;
+		
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
+		if(maxPage == 0) {
+			maxPage = 1;
+		}
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 검색했을 때 페이지번호가 1보다 작거나 최대 페이지번호보다 크다면 1페이지로 이동하도록 설정
+		if(pageNum < 1 || pageNum > maxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "AdminStore?pageNum=1");
+			return "result/fail";
+		}
+		
+		List<Map<String, Object>> productOrderList = service.getProductOrderList(searchType, searchKeyword, startRow, listLimit);
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+		// 리스트 객체 안에 있는 order_date 컬럼이 datetime 속성이라서 <fmt:>으로 형변환 할때 오류가 생김!
+		
+		
+		model.addAttribute("productOrderList", productOrderList);
+		model.addAttribute("pageInfo", pageInfo);
+		
+		return "admin/admin_store_order_list";
+	}
+	
+	// 상품 주문내역 상세 보기
+	@GetMapping("ProductOrderDetail")
+	public String productOrderDetail(int order_idx, Model model, StoreVO store, HttpSession session) {
+		
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		
+		// 상품 상세정보 조회 요청
+		Map<String, Object> productOrder = service.getProductOrderDetail(order_idx);
+		System.out.println("productOrder : " + productOrder);
+		
+		// 조회 결과가 없을 경우 "존재하지 않는 게시물입니다" 출력 및 이전페이지 돌아가기 처리
+		if(productOrder == null) {
+			model.addAttribute("msg", "존재하지 않는 주문내역입니다");
+			return "result/fail";
+		}
+		model.addAttribute("productOrder", productOrder);
+		
+		return "admin/admin_store_order_detail";
+	}
+	
+	// 상품 주문내역 배송상태 변경
+	@GetMapping("ProductOrderModify")
+	public String productOrderModify(int order_idx, HttpSession session, Model model) {
+		
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		
+		// 상품 1개 조회
+		Map<String, Object> productOrder = service.getProductOrderDetail(order_idx);
+		System.out.println("productOrder : " + productOrder);
+		model.addAttribute("productOrder", productOrder);
+		
+		
+		return "admin/admin_store_order_modify";
+	}
+	
+	// 상품 주문내역 배송상태 변경
+	@PostMapping("ProductOrderModify")
+	public String productOrderModifyPro(
+			Store_userVO store_user, @RequestParam(defaultValue = "1") String pageNum,
+			HttpSession session, Model model, HttpServletRequest request) throws Exception {
+		
+		
+		System.out.println("store_user 수정 : " + store_user);
+		
+		// 수정 작업 요청
+		int updateCount = service.modifyProductOrder(store_user);
+		
+		if(updateCount > 0) {
+			// 글 상세정보 조회 페이지 리다이렉트(파라미터 : 글번호, 페이지번호)
+			return "redirect:/ProductOrderDetail?order_idx=" + store_user.getOrder_idx() + "&pageNum=" + pageNum;
+		} else {
+			model.addAttribute("msg", "배송상태 변경 실패!");
+			return "result/fail";
+		}
+	}
+
 }
 
 

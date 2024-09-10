@@ -225,6 +225,7 @@
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
 	<%-- ---------- 프로젝트 등록 메뉴바 ---------- --%>
+		<jsp:include page="/WEB-INF/views/inc/mypage_side_nav.jsp"></jsp:include>
 	<div class="inner">
 		<section id="MemberInfo">
 			<div id="projectInfoWrap">
@@ -766,23 +767,29 @@
 						<section id="articleForm">
 							<div align="center">
 								<section id="listForm">
-								<c:if test="${not empty BuyProductList}">
-		                    	<c:set var="hasValidProject" value="false" />
-									<c:forEach var="product" items="${BuyProductList}">
-										<div class="product">
-											<div class="product_image">
-												<a href="BuyProductDetail?order_idx=${product.order_idx}">
-<%-- 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG"> --%>
-													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
-												</a>
-											</div>
-											<div class="product_info">
-												<h4><a href="BuyProductDetail?order_idx=${product.order_idx}"><fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원</a></h4>
-												<span><a href="BuyProductDetail?order_idx=${product.order_idx}">${product.product_name}</a></span>
-											</div>
-										</div>	
-									</c:forEach>
-			                    </c:if>
+								    <c:if test="${not empty BuyProductList}">
+								        <c:set var="hasValidProject" value="false" />
+								        <c:forEach var="product" items="${BuyProductList}">
+								            <div class="product">
+								                <div class="product_image">
+								                    <a href="BuyProductDetail?order_idx=${product.order_idx}">
+								                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
+								                    </a>
+								                </div>
+								                <div class="product_info">
+								                    <h4><a href="BuyProductDetail?order_idx=${product.order_idx}">
+								                        <fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원
+								                    </a></h4>
+								                    <span><a href="BuyProductDetail?order_idx=${product.order_idx}">${product.product_name}</a></span>
+								                </div>
+								            </div>
+								        </c:forEach>
+								    </c:if>
+								    <c:if test="${empty BuyProductList}">
+								        <div class="no-products">
+								            <p>결제한 상품이 없습니다.</p>
+								        </div>
+								    </c:if>
 								</section>
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>

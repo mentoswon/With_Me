@@ -52,14 +52,12 @@
 			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
 	</select>
 	
-	
 	<!-- 전체 상품 수 조회 - SELECT -->
 	<!-- 검색 기능 추가를 위해 검색어에 따른 결과 게시물 수 조회 -->
 	<select id="selectProcutListCount" resultType="int">
 		SELECT COUNT(*)
 		FROM product_info
 	</select>
-	
 	
 	<insert id="insertProduct">
 		<selectKey keyProperty="product_idx" resultType="int" order="BEFORE">
@@ -147,6 +145,64 @@
 			product_img2 = CASE WHEN product_img2 = #{product_img} THEN '' ELSE product_img2 END
 		WHERE 
 			product_idx = #{product_idx}
+	</update>
+	
+	<!-- 전체 상품 주문내역 조회 - SELECT -->
+	<!-- 검색 기능 추가를 위해 검색어에 따른 결과 게시물 수 조회 -->
+	<select id="selectProcutOrderListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM store_user
+	</select>
+	
+	<!-- 상품 주문내역 검색, 리스트 -->
+	<select id="selectProductOrderList" resultType="hashmap">
+		SELECT *
+		FROM store_user s
+		JOIN product_info p
+		ON s.product_idx = p.product_idx
+		JOIN user_address u
+		ON u.address_idx = s.product_address_idx
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+			<choose>
+				<when test="searchType.equals('code')">
+					p.product_code LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType.equals('name')">
+<!-- 					board_content LIKE '%${searchKeyword}%' -->
+					p.product_name LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					1 = 1  -- WHERE 절을 포함시키되 조건을 걸고 싶지 않을 경우 활용 가능한 조건식(무조건 true 가 나오는 식이면 OK)
+				</otherwise>
+			</choose>
+		</if>
+		
+		ORDER BY
+			s.order_date DESC
+		LIMIT
+			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
+			, #{listLimit}  -- Mapper 내의 메서드에서 @Param("listLimit") 로 지정한 파라미터명 사용
+	</select>
+	
+	<!-- 상품 주문내역 상세정보 -->
+	<select id="selectProductOrderDetail" resultType="hashmap">
+		SELECT s.*, u.*, p.product_idx, p.product_code, p.product_name, p.product_description,
+				p.product_category, p.product_category_detail, p.product_price, p.product_status,
+		        p.product_img, p.product_img2
+		FROM store_user s
+		JOIN product_info p
+		ON s.product_idx = p.product_idx
+		JOIN user_address u
+		ON u.address_idx = s.product_address_idx
+		WHERE s.order_idx = #{order_idx}
+	</select>
+	
+	<!-- 상품 주문내역 배송정보 변경 -->
+	<update id="updateProductOrder">
+		UPDATE store_user
+		SET product_shipping_info = #{product_shipping_info}
+		WHERE order_idx = #{order_idx}
 	</update>
 	
 </mapper>

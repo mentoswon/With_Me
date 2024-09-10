@@ -149,74 +149,57 @@
 		            </div>
 		            <div class="topInfo">
 		                <h2>${BuyProductDetail.product_name}</h2>
-		                <p>${BuyProductDetail.product_category}(${BuyProductDetail.product_category_detail})</p>
-			                <p>${BuyProductDetail.store_usuer_status}</p>
+		                <p><b>카테고리</b> : ${BuyProductDetail.product_category}(${BuyProductDetail.product_category_detail})</p>
+			                <p><b>결제상태</b> : ${BuyProductDetail.store_usuer_status}</p>
 <%-- 		                <p><fmt:formatNumber value="${BuyProductDetail.funding_amt}" type="number" groupingUsed="true"/>원</p> --%>
 <%-- 		                <p><fmt:formatNumber value="${BuyProductDetail.target_price}" type="number" groupingUsed="true"/>원</p> --%>
 		            </div>
 		        </div>
-		
-		        <div class="form-group fundInfo" style="border: 1px solid #ccc;">
-		            <div>
-		                <h4>배송 정보</h4>
-		            </div>
-		            <div>
-		                <fmt:formatDate var="today" value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd" />
-						<fmt:formatDate var="startDate" value="${DonationProjectDetail.funding_start_date}" pattern="yyyy-MM-dd" />
-						<fmt:formatDate var="endDate" value="${DonationProjectDetail.funding_end_date}" pattern="yyyy-MM-dd" />
-						
-						<!-- 펀딩 진행 상태 표시 -->
-<%-- 						<c:choose> --%>
-<%-- 						    <c:when test="${today >= startDate && today <= endDate}"> --%>
-<!-- 						        펀딩 진행중 -->
-<%-- 						    </c:when> --%>
-<%-- 						    <c:when test="${today > endDate}"> --%>
-<!-- 						        펀딩 종료됨 -->
-<%-- 						    </c:when> --%>
-<%-- 						</c:choose> --%>
-						<p><fmt:formatDate value="${orderDate}" pattern="yyyy.MM.dd" /></p>
-						<p>${BuyProductDetail.product_pay_amt}</p>
-						<p>${BuyProductDetail.address_post_code}</p>
-						<p>${BuyProductDetail.address_main}</p>
-						<p>${BuyProductDetail.address_sub}</p>
-						<p>${BuyProductDetail.address_receiver_tel}</p>
-						<c:choose>
-							<c:when test="${BuyProductDetail.product_shipping_info eq 1}">
-								<td id="status">배송전</td>
-							</c:when>
-							<c:when test="${BuyProductDetail.product_shipping_info eq 2}">
-								<td>배송중</td>
-							</c:when>
-							<c:when test="${BuyProductDetail.product_shipping_info eq 3}">
-								<td>배송완료</td>
-							</c:when>
-						</c:choose>
-						<p>${DonationProjectDetail.funding_status}</p>
-		
-                		<p><fmt:formatDate value="${fundingPayDate}" pattern="yyyy.MM.dd" /></p>
-		                <p><fmt:formatDate value="${DonationProjectDetail.funding_end_date}" pattern="yyyy.MM.dd" /></p>
-		            </div>
-		        </div>
-		
-		        <div class="form-group" style="border: 1px solid #ccc;">
+				
+				<div class="form-group" style="border: 1px solid #ccc;">
 		            <div>
 		                <h4>상품 정보</h4>
 		            </div>
 		            <div>
-		            	<p>${BuyProductDetail.product_name}</p>
-		            	<p>${BuyProductDetail.product_description}</p>
-		            	<p>${BuyProductDetail.product_item_option}</p>
-		            	<p><fmt:formatNumber value="${BuyProductDetail.product_price}" type="number" groupingUsed="true"/>원</p>
-		            	<p>${BuyProductDetail.order_count}개</p>
+		            	<p><b>상품명</b> : ${BuyProductDetail.product_name}</p>
+		            	<p><b>상품설명</b> : ${BuyProductDetail.product_description}</p>
+		            	<p><b>상품옵션</b> : ${BuyProductDetail.product_item_option}</p>
+		            	<p><b>상품금액</b> : <fmt:formatNumber value="${BuyProductDetail.product_price}" type="number" groupingUsed="true"/>원</p>
+		            	<p><b>주문개수</b> : ${BuyProductDetail.order_count}개</p>
+		            </div>
+		        </div>
+				
+		        <div class="form-group" style="border: 1px solid #ccc;">
+		            <div>
+		                <h4>배송 정보</h4>
+		            </div>
+		            <div>
+						<p><b>주문날짜</b> : <fmt:formatDate value="${orderDate}" pattern="yyyy.MM.dd" /></p>
+						<p><b>결제금액</b> : <fmt:formatNumber value="${BuyProductDetail.product_pay_amt}" type="number" groupingUsed="true"/>원</p>
+						<p><b>도로명</b> : ${BuyProductDetail.address_post_code}</p>
+						<p><b>주소</b> : ${BuyProductDetail.address_main}</p>
+						<p><b>상세주소</b> : ${BuyProductDetail.address_sub}</p>
+						<p><b>수신자 전화번호</b> : ${BuyProductDetail.address_receiver_tel}</p>
+						<c:choose>
+							<c:when test="${BuyProductDetail.product_shipping_info eq 1}">
+								<td id="status"><b>배송상태</b> : 배송전</td>
+							</c:when>
+							<c:when test="${BuyProductDetail.product_shipping_info eq 2}">
+								<td><b>배송상태</b> : 배송중</td>
+							</c:when>
+							<c:when test="${BuyProductDetail.product_shipping_info eq 3}">
+								<td><b>배송상태</b> : 배송완료</td>
+							</c:when>
+						</c:choose>
 		            </div>
 		        </div>
 		
 				<div class="form-actions">
-				    <c:if test="${BuyProductDetail.store_usuer_status != '결제 취소'}">
+				    <c:if test="${BuyProductDetail.store_usuer_status != '결제 취소' && BuyProductDetail.product_shipping_info eq 1}">
 				        <input type="submit" value="결제 취소" onclick="return confirm('결제한 상품을 취소하시겠습니까?');">
 				    </c:if>
-				
-				    <button type="button" onclick="history.back()">돌아가기</button>
+<!-- 				    <button type="button" onclick="history.back()">돌아가기</button> -->
+				    <input type="button" value="목록" onclick="location.href='MemberInfo?pageNum=${param.pageNum}'">
 				</div>
 		    </section>
 		</form>

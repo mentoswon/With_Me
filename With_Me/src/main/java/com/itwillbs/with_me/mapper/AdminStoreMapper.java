@@ -7,16 +7,17 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.with_me.vo.StoreVO;
+import com.itwillbs.with_me.vo.Store_userVO;
 
 @Mapper
 public interface AdminStoreMapper {
 	
 	// 상품 목록 리스트
 	List<StoreVO> selectProductList(
-			@Param("searchType") String searchType,
-			@Param("searchKeyword") String searchKeyword,
-			@Param("startRow") int startRow,
-			@Param("listLimit") int listLimit);
+						@Param("searchType") String searchType,
+						@Param("searchKeyword") String searchKeyword,
+						@Param("startRow") int startRow,
+						@Param("listLimit") int listLimit);
 	
 	// 상품 게시물 갯수 조회
 	int selectProcutListCount(@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword);
@@ -39,5 +40,19 @@ public interface AdminStoreMapper {
 	// 상품 이미지 삭제
 	int deleteProductImg(Map<String, String> map);
 
-	
+	// 상품 주문내역 개수 조회
+	int selectProcutOrderListCount(@Param("searchType")String searchType, @Param("searchType")String searchKeyword);
+
+	// 상품 주문내역 리스트
+	List<Map<String, Object>> selectProductOrderList(
+								@Param("searchType")String searchType,
+								@Param("searchKeyword")String searchKeyword,
+								@Param("startRow")int startRow,
+								@Param("listLimit")int listLimit);
+
+	// 상품 주문내역 상세정보
+	Map<String, Object> selectProductOrderDetail(int order_idx);
+
+	// 상품 주문내역 배송정보 변경
+	int updateProductOrder(Store_userVO store_user);
 }

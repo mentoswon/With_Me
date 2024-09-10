@@ -83,66 +83,52 @@
 			
 			</section>
 			<section id="listForm">
-				<br>
-				<div class="listWrapper">
-					<ul class="list">
-						<%-- 페이지번호 설정 --%>
-						<c:set var="pageNum" value="1" />
-						<c:if test="${not empty param.pageNum}">
-							<c:set var="pageNum" value="${param.pageNum}" />
-						</c:if>
+			    <br>
+			    <div class="listWrapper">
+			        <ul class="list">
+			            <%-- 페이지번호 설정 --%>
+			            <c:set var="pageNum" value="1" />
+			            <c:if test="${not empty param.pageNum}">
+			                <c:set var="pageNum" value="${param.pageNum}" />
+			            </c:if>
 			
-						<%-- 게시글 리스트 출력 --%>
-						<c:forEach var="qnabo" items="${QnaBoardList}">
-							<c:choose>
-								<c:when test="${not empty QnaBoardList}">
-									<%-- 세션에 저장된 사용자 ID와 작성자 이메일이 같은 경우만 출력 --%>
-									<c:if test="${sessionScope.sId eq qnabo.mem_email}">
-										<li class="subject">
-											<a href="QnaBoardDetail?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}">
-												<span class="titleBox">
-													<span class="group">문의</span>
-													<span class="subject">${qnabo.mem_name}</span>
-													<%-- 답변 레벨에 따른 들여쓰기 --%>
-													<c:if test="${qnabo.faq_re_lev > 0}">
-														<c:forEach begin="1" end="${qnabo.faq_re_lev}">
-															&nbsp;&nbsp;
-														</c:forEach>
-													</c:if>
-													<span class="subject">${qnabo.faq_subject}</span>
-													<span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>
-												</span>
-											</a>
-										</li>
-									</c:if>
-								</c:when>
-								<c:otherwise>
-									<span class="titleBox" id="noList">
-										<span class="group">게시물이 존재하지 않습니다.</span>
-									</span>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
+			            <%-- 사용자가 작성한 게시글이 있는지 확인하는 플래그 --%>
+			            <c:set var="hasUserPosts" value="false" />
 			
-						<%-- QnaBoardList가 비어있을 경우 처리 --%>
-<%-- 						<c:if test="${empty QnaBoardList}"> --%>
-<!-- 							<li class="subject"> -->
-<!-- 								<span class="titleBox" id="noList"> -->
-<!-- 									<span class="group">게시물이 존재하지 않습니다.</span> -->
-<!-- 								</span> -->
-<!-- 							</li> -->
-<%-- 						</c:if> --%>
-					</ul>
-				</div>
+			            <%-- 게시글 리스트 출력 --%>
+			            <c:forEach var="qnabo" items="${QnaBoardList}">
+			                <%-- 세션에 저장된 사용자 ID와 작성자 이메일이 같은 경우만 출력 --%>
+			                <c:if test="${sessionScope.sId eq qnabo.mem_email}">
+			                    <c:set var="hasUserPosts" value="true" /> <!-- 사용자가 게시글이 있음 -->
+			                    <li class="subject">
+			                        <a href="QnaBoardDetail?faq_idx=${qnabo.faq_idx}&pageNum=${pageNum}">
+			                            <span class="titleBox">
+			                                <span class="group">문의</span>
+			                                <span class="subject">${qnabo.mem_name}</span>
+			                                <%-- 답변 레벨에 따른 들여쓰기 --%>
+			                                <c:if test="${qnabo.faq_re_lev > 0}">
+			                                    <c:forEach begin="1" end="${qnabo.faq_re_lev}">
+			                                        &nbsp;&nbsp;
+			                                    </c:forEach>
+			                                </c:if>
+			                                <span class="subject">${qnabo.faq_subject}</span>
+			                                <span><fmt:formatDate value="${qnabo.faq_date}" pattern="yyyy-MM-dd" /></span>
+			                            </span>
+			                        </a>
+			                    </li>
+			                </c:if>
+			            </c:forEach>
 			
-				<table>
-					<%-- 게시물이 없을 경우 테이블에 메시지 출력 --%>
-					<c:if test="${empty QnaBoardList}">
-						<tr>
-							<td colspan="5">게시물이 존재하지 않습니다.</td>
-						</tr>
-					</c:if>
-				</table>
+			            <%-- 사용자가 작성한 게시글이 없는 경우 처리 --%>
+			            <c:if test="${hasUserPosts eq false}">
+			                <li class="subject">
+			                    <span class="titleBox" id="noList">
+			                        <span class="group">등록된 게시글이 없습니다.</span>
+			                    </span>
+			                </li>
+			            </c:if>
+			        </ul>
+			    </div>
 			</section>
 			
 			<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
