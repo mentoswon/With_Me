@@ -389,7 +389,8 @@ public class CreatorBankApiClient {
 		// ------------
 		
 		joReq.addProperty("req_client_name", (String)map.get("deposit_client_name")); // 고객 이름
-		joReq.addProperty("req_client_fintech_use_num", (String)map.get("deposit_fintech_use_num")); // 요청고객핀테크이용번호 
+//		joReq.addProperty("req_client_fintech_use_num", (String)map.get("deposit_fintech_use_num")); // 요청고객핀테크이용번호 
+		joReq.addProperty("req_client_fintech_use_num", (String)map.get("fintech_use_num")); // 요청고객핀테크이용번호 
 		// -> 요청고객 계좌번호 미사용 시 핀테크 이용번호 사용하면 되고, 동시 설정 시 오류 발생함 ~!!!!!!!!
 		
 		joReq.addProperty("req_client_num", id.split("@")[0].toUpperCase());

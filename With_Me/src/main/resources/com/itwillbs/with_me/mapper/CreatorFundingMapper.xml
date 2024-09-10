@@ -389,12 +389,12 @@
 	JOIN creator_info c ON p.creator_idx = c.creator_idx
 	LEFT JOIN creator_account a ON p.project_idx = a.project_idx
 	JOIN member m ON c.creator_email = m.mem_email
-	-- 일단 여기에 후원된게 있으므로 이걸로 테스트
-	WHERE p.project_idx = 1
+	WHERE DATE_FORMAT(p.funding_end_date + INTERVAL 16 DAY, '%Y-%m-%d') = now()
 	AND a.status = '입금대기'
 	
-	-- 나중에 이걸로 바꿈
-	-- WHERE DATE_FORMAT(p.funding_end_date + INTERVAL 16 DAY, '%Y-%m-%d') = now()
+	
+	-- 일단 여기에 후원된게 있으므로 이걸로 테스트
+	-- WHERE p.project_idx = 1
 </select>
 
 <!-- 창작자 계좌정보 입금상태 변경 - UPDATE -->

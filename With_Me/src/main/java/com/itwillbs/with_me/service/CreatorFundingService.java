@@ -211,12 +211,6 @@ public class CreatorFundingService {
 	}
 
 
-
-
-
-
-
-
 	// 심사중인 프로젝트 목록 조회 요청
 //	public List<ProjectVO> getReviewProjectList(String id) {
 //		return mapper.selectReviewProjectList(id);
