@@ -148,6 +148,22 @@ public class StoreService {
 		
 	}
 
+	// 스토어 상품 목록 정렬
+	public List<StoreVO> getStoreListByOrder(String order) {
+		if("priceDesc".equals(order)) {
+			return mapper.getStoresByPriceDesc();
+			
+		} else if("priceAsc".equals(order)) {
+			return mapper.getStoresByAsc();
+			
+		} else if("newest".equals(order)) {
+			return mapper.getStoresByNewest();
+			
+		} else {
+			return mapper.getStoresByPopularity();
+		}
+	}
+
 
 	
 

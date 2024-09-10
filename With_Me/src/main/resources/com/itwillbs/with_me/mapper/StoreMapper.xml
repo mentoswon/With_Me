@@ -124,6 +124,7 @@
 			, now()
 			, #{user_store_pay_amt}
 			, default
+			, '결제 완료'
 		)
 	
 	</insert>
@@ -205,7 +206,29 @@
 	
 <!-- ===================================================== -->
 	
+	<select id="getStoresByPriceDesc" resultType="StoreVO">
+		SELECT *
+		FROM product_info 
+		ORDER BY product_price DESC
+	</select>
 	
+	<select id="getStoresByAsc" resultType="StoreVO">
+		SELECT *
+		FROM product_info 
+		ORDER BY product_price 
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<!-- ===================================================== -->
 	
 	<!-- 사용자 배송지 가져오기 -->
 	<select id="selectUserAddress" resultType="address">

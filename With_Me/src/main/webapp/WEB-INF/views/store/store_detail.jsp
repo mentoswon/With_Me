@@ -43,7 +43,10 @@
 					</div>
 					<div id="infoArea">
 						<span class="category">${product_detail.product_category} > ${product_detail.product_category_detail}</span>
-						<button id="shareButton">URL 복사</button>
+						<button id="shareButton">
+							<span id="share"> URL 공유 </span>
+<%-- 							<img alt="링크복사" src="${pageContext.request.contextPath}/resources/image/shareIcon.png" class="shareImg"> --%>
+						</button>
 						<h4>${product_detail.product_name}</h4>
 						<div class="productInfo1">
 							<div>
@@ -65,7 +68,7 @@
 							<div class="productInfo3">
 								<c:choose>
 									<c:when test="${product_detail.product_status eq '1'}"> <!-- 판매중일 때 -->
-										<select class="store_product_option_select option">
+										<select class="store_product_option_select option" id="product_select">
 											<option disabled  selected value="">옵션을 선택해주세요.</option>
 											<c:forEach var="productOptions" items="${productOptions}">
 												<option value="${productOptions.splited_product_option}" >${productOptions.splited_product_option}</option>
@@ -90,6 +93,7 @@
 									</button>
 								</c:otherwise>
 							</c:choose>
+								
 <!-- 								<button class="goStore Btn">상품문의하기</button> -->
 								<input type="hidden" id="productOption" name="productOption" value="">
 								<input type="hidden" id="productPrice" name="productPrice" value="${product_detail.product_price}">
@@ -104,8 +108,8 @@
 			
 			<section class="con02">
 				<div class="left">
-<%-- 					<img alt="상품 상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}" class="detailImg"> --%>
-					<img alt="스토어 상품 썸네일" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+					<img alt="상품 상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}" class="detailImg">
+<%-- 					<img alt="스토어 상품 썸네일" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG" class="detailImg"> --%>
 				</div>
 				
 				<div class="right">
@@ -120,7 +124,7 @@
 							</div>
 							<div class="btns">
 								<button class="follow" onclick="StoreList('푸드', '')">다른상품 보러가기</button>
-								<button class="ask" onclick="location.href='QnaBoardList'">문의</button>
+								<button class="ask" onclick="location.href='QnaBoardWrite'">문의</button>
 							</div>
 						</div>
 					</div>

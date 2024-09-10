@@ -101,6 +101,22 @@ public interface StoreMapper {
 	void insertStorePaymentInfo(Map<String, Object> map);
 
 
+	
+	//===========================================
+	// 스토어 상품 목록 정렬
+	// 상품 내림차순
+	List<StoreVO> getStoresByPriceDesc();
+	
+	//상품 오름차순
+	List<StoreVO> getStoresByAsc();
+
+	//상품 최신순
+	List<StoreVO> getStoresByNewest();
+
+	// 상품 인기순
+	List<StoreVO> getStoresByPopularity();
+	//===========================================
+
 
 
 	

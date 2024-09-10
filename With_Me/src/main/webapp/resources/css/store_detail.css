@@ -6,7 +6,44 @@ section {
 .detailImg {
 	width: 100%; /* 이미지를 div의 너비에 맞춤 */
     height: auto; /* 이미지의 원본 비율을 유지 */
-    object-fit: contain; /* 이미지가 영역을 벗어나지 않도록 조정 */
+    object-fit: cover; /* 이미지가 영역을 벗어나지 않도록 조정 */
+}
+
+
+
+#product_select {
+	width:90%;
+	margin-top:1.5em;
+	
+}
+
+.shareImg {
+	object-fit: cover;
+	width: 30px;
+	height: 20px;
+	
+}
+
+#shareButton {
+	display:inline-flex; /* 나란히 정렬 */
+	align-items: center; /* 수직 정렬 중앙 */
+	background-color: #ffab40;
+	color:#fff; 
+	border:1px solid #eee;
+	border-radius: 7px;
+	padding: 15px;
+	height: 20px; 
+/* 	object-fit: cover; */
+}
+
+#shareButton .shareImg {
+    margin-left: 5px; /* 텍스트와 이미지 사이의 간격 */
+}
+
+#shareButton:hover {
+	cursor:pointer;
+	color: #333;
+	
 }
 
 /* 옵션 표시 */
