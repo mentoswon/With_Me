@@ -400,35 +400,14 @@
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
 	<article>
-			<h1 align="center">내 정보</h1>
-			<form action="MyPageInfoModify" name="joinForm" method="post">
+			<h1 align="center">회원 탈퇴</h1>
+			<form action="MemberWithdraw" name="joinForm" method="post">
 				<section class="joinForm1">
+					<h4>회원 탈퇴 확인을 위해 비밀번호를 입력해 주세요</h4>
+					<br>
 					<table id="tb01">
 						<tr>
-							<td>이름</td>
-						</tr>
-						<tr>
-							<td><input type="text" name="mem_name" id="mem_name" value="${member.mem_name}"></td>
-						</tr>	
-						<tr>
-							<td>이메일</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="text" name="mem_email" id="mem_email" value="${member.mem_email}" placeholder="이메일입력" onblur="checkEmail()">
-								<div id="checkEmailResult"></div>
-							</td>
-						</tr>	
-						<tr>
-							<td>기존 비밀번호</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="password" name="old_mem_passwd" id="old_mem_passwd" size="10" onblur="checkPasswd()">
-							</td> 
-						</tr>	
-						<tr>
-							<td>새 비밀번호</td>
+							<td>비밀번호 입력</td>
 						</tr>
 						<tr>
 							<td>
@@ -438,7 +417,7 @@
 							</td> 
 						</tr>	
 						<tr>
-							<td>새 비밀번호확인</td>
+							<td>비밀번호 확인</td>
 						</tr>
 						<tr>	
 							<td>
@@ -447,45 +426,9 @@
 							</td>
 						</tr>	
 						<tr>
-							<td>주소</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="text" name="mem_post_code" id="mem_post_code" value="${member.mem_post_code}" size="6" readonly>
-								<input type="button" value="주소검색" id="btnSearchAddress">
-								<br>
-								<input type="text" name="mem_add1" id="mem_add1" value="${member.mem_add1}" size="30" placeholder="기본주소">
-								<br>
-								<input type="text" name="mem_add2" id="mem_add2" value="${member.mem_add2}" size="30" placeholder="상세주소">
-							</td>
-						</tr>	
-						<tr>
-							<td>생년월일</td>
-						</tr>
-						<tr>
-							<td id="tdjumin">(생년월일 6자리를 입력해주세요)</td>
-						</tr>
-						<tr>
-							<td><input type="text" name="mem_birthday" maxlength=6 id="mem_birthday" value="${member.mem_birthday}" maxlength="14" required="required" onblur="checkBirth()">
-								<div id="checkBirthResult"></div>
-							</td>
-						</tr>
-						<tr>
-							<td>휴대폰 번호</td>
-						</tr>
-						<tr>
-							<td id="tdtel">(휴대폰 번호를 입력 시 "-"를 입력해주세요)</td>
-						</tr>
-						<tr>
-							<td><input type="text" name="mem_tel" id="mem_tel" value="${member.mem_tel}" maxlength="13" required="required" onblur="checkTel()">
-								<div id="checkTelResult"></div>
-							</td>
-						</tr>	
-						<tr>
 							<td colspan="2" align="center">
-								<input type="submit" value="정보수정">
+								<input type="submit" value="탈퇴하기">
 								<input type="button" value="돌아가기" onclick="history.back()">
-								<input type="button" value="회원탈퇴" onclick="location.href='MemberWithdraw'">
 							</td>
 						</tr>
 						<tr>

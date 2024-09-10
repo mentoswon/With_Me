@@ -279,6 +279,11 @@ public class MemberService {
 		mapper.insertTransAddress(address_mem_email, address_receiver_name, address_post_code,address_main, address_sub,address_receiver_tel);
 	}
 
+	// 회원탈퇴
+	public int withdrawMember(MemberVO member) {
+		return mapper.updateWithdrawMember(member);
+	}
+
 
 
 

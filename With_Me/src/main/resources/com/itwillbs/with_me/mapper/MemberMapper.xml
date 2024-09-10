@@ -465,6 +465,15 @@
 	    WHERE mem_email = #{mem_email}
 	</select>
 	
+	<!-- 회원탈퇴 -->
+	<update id="updateWithdrawMember">
+		UPDATE member
+		SET
+			mem_status = 3
+		WHERE
+			mem_email = #{mem_email}
+	</update>
+	
 	<!-- 상대방 마이페이지(창작자인 경우) -->
 <!-- 	<select id="selectOtherCreatorInfo" resultType="creator"> -->
 <!-- 	    SELECT creator_idx, creator_email, creator_name, creator_image, creator_introduce, phone_auth_status -->

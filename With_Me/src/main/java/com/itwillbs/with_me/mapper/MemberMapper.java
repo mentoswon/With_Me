@@ -203,6 +203,9 @@ public interface MemberMapper {
 	// creator_email 들고와서 mem_email값 가져오기
 	String selectMemEmail(String creatorEmail);
 
+	// 회원탈퇴
+	int updateWithdrawMember(MemberVO member);
+
 
 
 

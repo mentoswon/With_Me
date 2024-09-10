@@ -932,6 +932,52 @@ public class MemberController {
 		}
 	}
 	
+	// 회원 탈퇴
+	@GetMapping("MemberWithdraw")
+	public String withdrawForm(HttpSession session, Model model) {
+		
+		String id = (String)session.getAttribute("sId");
+		if(id == null) {
+			model.addAttribute("msg", "로그인 필수!");
+			model.addAttribute("targetURL", "MemberLogin");
+	
+			return "result/fail";
+		}
+		return "mypage/member_withdraw_form";
+	}
+	
+	// 회원탈퇴 로직
+	@PostMapping("MemberWithdraw")
+	public String withdrawPro(MemberVO member, HttpSession session, Model model, BCryptPasswordEncoder passwordEncoder) {
+		
+		String id = (String)session.getAttribute("sId");
+		if(id == null) { // 세션 아이디가 아닌 경우 튕기게 하는건 시크릿모드에서 주소를 그대로 입력하는것으로 확인 가능
+			model.addAttribute("msg", "로그인 필수!");
+			model.addAttribute("targetURL", "MemberLogin"); // targetURL = ""이면 history.back() / targetURL = href이면 해당 href로 이동(fail.jsp에서 확인가능)
+	
+			return "result/fail";
+		}
+		// --------------------------------------------------------------------
+		// MemberVO 객체에 세션 아이디 저장 
+		member.setMem_email(id);
+		// --------------------------------------------------------------------
+		MemberVO dbMember = service.getMember(member); 
+		
+		// 비크립트 패스워드를 두번째 칸에 넣어야 한다.
+		if(!passwordEncoder.matches(member.getMem_passwd(), dbMember.getMem_passwd())) { // 패스워드 불일치시
+			model.addAttribute("msg", "수정 권한이 없습니다!");
+			return "result/fail";
+		}
+		// --------------------------------------------------------------------
+		// MemberService - withdrawMember() 메서드 호출하여 회원 탈퇴 작업 요청
+		int updateCount = service.withdrawMember(member);
+		
+		session.invalidate();
+		model.addAttribute("msg", "회원 탈퇴 완료!");
+		model.addAttribute("targetURL", "./");
+		return "result/success";
+	}
+	
 	
 }
 
