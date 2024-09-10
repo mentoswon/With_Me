@@ -431,56 +431,8 @@ $(function (){
 		});
 	}
 
-	//================================================================================
 	
-	function fetchSortedProducts(order) {
-	    $.ajax({
-	        url: 'StoreList', // 서버로 요청을 보낼 URL
-	        type: 'GET',
-	        data: { order: order }, // 정렬 기준을 파라미터로 전송
-	        dataType: 'json', // 서버로부터 JSON 데이터를 받음
-	        success: function(response) {
-	            // 서버에서 받은 JSON 데이터를 HTML로 렌더링
-	            renderProductList(response);
-	        },
-	        error: function(xhr, status, error) {
-	            console.log('상품 목록을 가져오는 데 실패했습니다.', error);
-	            console.log('상태 코드:', xhr.status); // HTTP 상태 코드 확인
-	            console.log('상태 텍스트:', status);   // 에러 상태 확인
-	        }
-	    });
-	}
-	
-	function renderProductList(products) {
-	    const productList = $('#productList');
-	    productList.empty(); // 기존 목록을 비우고 새로운 목록을 추가
-	
-	    // 템플릿 리터럴 사용을 통해 변수 치환을 올바르게 처리
-	    products.forEach(product => {
-	        const productHtml = `
-	            <div class="product">
-	                <div class="product_image">
-	                    <a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
-	                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
-	                    </a>
-	                </div>
-	                <div class="product_info">
-	                    <h4>
-	                        <a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
-	                            ${product.product_price.toLocaleString()}원
-	                        </a>
-	                    </h4>
-	                    <span>
-	                        <a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
-	                            ${product.product_name}
-	                        </a>
-	                    </span>
-	                </div>
-	            </div>`;
-	        productList.append(productHtml); // 상품을 목록에 추가
-	    });
-	}
-	
+
 
 </script>	
 

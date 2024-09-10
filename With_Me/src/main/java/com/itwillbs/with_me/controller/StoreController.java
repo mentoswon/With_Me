@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -189,14 +191,6 @@ public class StoreController {
 		map.get("productName");
 		map.get("productIdx");
 
-			
-		
-		
-		
-		
-		
-		
-		
 		
 		// =========================================================================
 
@@ -210,36 +204,6 @@ public class StoreController {
 	}
 
 // ===========================================================================================
-	@RequestMapping(value="/StoreList", method= RequestMethod.GET, produces="application/json")
-	@ResponseBody // ajax 응답을 JSON으로 반환
-	public List<StoreVO> getStoreList(@RequestParam(value="order", required=false, defaultValue="newest") String order) {
-	    // 요청된 정렬 조건을 로그로 확인
-	    System.out.println("정렬 조건: " + order);
-
-	    // 정렬 조건에 맞는 상품 리스트 가져오기
-	    List<StoreVO> sortedStoreList = service.getStoreListByOrder(order);
-
-	    // 결과를 로그로 확인
-	    System.out.println("가져온 상품 리스트: " + sortedStoreList);
-
-	    return sortedStoreList; // JSON 형태로 전달
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 // ===========================================================================================
 	
 	

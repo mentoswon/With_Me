@@ -206,26 +206,6 @@
 	
 <!-- ===================================================== -->
 	
-	<select id="getStoresByPriceDesc" resultType="StoreVO">
-		SELECT *
-		FROM product_info 
-		ORDER BY product_price DESC
-	</select>
-	
-	<select id="getStoresByAsc" resultType="StoreVO">
-		SELECT *
-		FROM product_info 
-		ORDER BY product_price 
-	</select>
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 <!-- ===================================================== -->
