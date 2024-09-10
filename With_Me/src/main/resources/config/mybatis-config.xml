@@ -28,5 +28,6 @@
   		<typeAlias type="com.itwillbs.with_me.vo.CreatorAccountVO" alias="creatorAccount"/>
   		<typeAlias type="com.itwillbs.with_me.vo.ReportVO" alias="report"/>
   		<typeAlias type="com.itwillbs.with_me.vo.Store_userVO" alias="storeUser"/>
+  		<typeAlias type="com.itwillbs.with_me.vo.PwSmsAuthInfoVO" alias="pwSmsAuth"/>
 	</typeAliases>
  </configuration>

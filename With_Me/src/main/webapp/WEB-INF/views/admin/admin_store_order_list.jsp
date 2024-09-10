@@ -111,10 +111,10 @@ function ProductOrderDetail(orderIdx) {
 								<td>${pl.product_code}</td>
 								<td>${pl.product_category}</td>
 								<td>${pl.product_name}</td>
-<%-- 								<td>${orderDate}</td> --%>
-								<td>
-									<fmt:formatDate value="${orderDates}" pattern="yy-MM-dd HH:mm" />
-								</td>
+								<td>${pl.order_date}</td>
+<!-- 								<td> -->
+<%-- 									<fmt:formatDate value="${pl.order_date}" pattern="yy-MM-dd HH:mm" /> --%>
+<!-- 								</td> -->
 								<c:choose>
 									<c:when test="${pl.product_shipping_info eq 1}">
 										<td>배송전</td>

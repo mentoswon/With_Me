@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.service.SmsService;
 import com.itwillbs.with_me.vo.CreatorVO;
+import com.itwillbs.with_me.vo.PwSmsAuthInfoVO;
 import com.itwillbs.with_me.vo.SmsAuthInfo;
 
 @Controller
@@ -69,6 +70,56 @@ public class SmsController {
 			} else {
 				resultMap.put("result", false);	// 인증 실패
 			}
+        } else {
+        	resultMap.put("result", false);	// 인증 실패
+        }
+        // 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+        // => org.json.JSONObject 클래스 활용
+        JSONObject jo = new JSONObject(resultMap);
+        System.out.println("응답 JSON 데이터 " + jo.toString());
+        
+        return jo.toString();
+    }
+    
+    
+    // ========================================================================================
+	// 인증번호 전송(비밀번호 변경)
+	@ResponseBody
+	@PostMapping("PwSendSms")
+	public String pwSendSms(@RequestParam String phone_number, String mem_email) {
+		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		// 문자 인증 발송 요청
+		PwSmsAuthInfoVO PwsmsAuthInfo = service.sendPwAuthSMS(mem_email, phone_number);
+		if (PwsmsAuthInfo != null) {
+			// 문자 인증 정보 등록
+			service.registPwSmsAuthInfo(PwsmsAuthInfo);
+			resultMap.put("result", true);
+		} else {
+			resultMap.put("result", false);
+		}
+		
+		// 리턴 데이터가 저장된 Map 객체를 JSON 객체 형식으로 변환
+		// => org.json.JSONObject 클래스 활용
+		JSONObject jo = new JSONObject(resultMap);
+		System.out.println("응답 JSON 데이터 " + jo.toString());
+		
+		return jo.toString();
+	}
+	
+    // 인증번호 확인
+    @ResponseBody
+    @PostMapping("PwVerifyCode")
+    public String pwVerifyCode(PwSmsAuthInfoVO PwsmsAuthInfo, String mem_eamil) {
+    	// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	
+    	// DB에서 인증 정보 조회
+		PwSmsAuthInfoVO pwSmsAuth = service.getPwSmsAuthInfo(PwsmsAuthInfo);
+        
+        if (pwSmsAuth != null && pwSmsAuth.getAuth_code().equals(PwsmsAuthInfo.getAuth_code())) {
+        	resultMap.put("result", true);	// 인증 성공
         } else {
         	resultMap.put("result", false);	// 인증 실패
         }

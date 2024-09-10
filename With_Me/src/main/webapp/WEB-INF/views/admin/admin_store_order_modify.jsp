@@ -211,10 +211,10 @@ function deleteFile(product_idx, fileName, index) {
 						</tr>
 						<tr>
 							<td>
-								<select name="product_shipping_info" value="${productOrder.product_shipping_info}">
-									<option value="1">배송전</option>
-									<option value="2">배송중</option>
-									<option value="3">배송완료</option>
+								<select name="product_shipping_info">
+									<option value="1" <c:if test="${productOrder.product_shipping_info eq '1'}">selected</c:if>>배송전</option>
+									<option value="2" <c:if test="${productOrder.product_shipping_info eq '2'}">selected</c:if>>배송중</option>
+									<option value="3" <c:if test="${productOrder.product_shipping_info eq '3'}">selected</c:if>>배송완료</option>
 								</select>
 							</td>
 						</tr>

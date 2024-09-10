@@ -257,9 +257,9 @@ function deleteFile(product_idx, fileName, index) {
 						<tr>
 							<td>
 								<select name="product_status">
-									<option value="1">판매중</option>
-									<option value="2">판매중지</option>
-									<option value="3">품절</option>
+									<option value="1" <c:if test="${store.product_status eq '1'}">selected</c:if>>판매중</option>
+									<option value="2" <c:if test="${store.product_status eq '2'}">selected</c:if>>판매중지</option>
+									<option value="3" <c:if test="${store.product_status eq '3'}">selected</c:if>>품절</option>
 								</select>
 							</td>
 <%-- 							<c:choose> --%>

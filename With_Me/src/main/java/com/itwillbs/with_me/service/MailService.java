@@ -24,7 +24,7 @@ public class MailService {
 //		String content = "인증코드 : " + auth_code;
 		// 인증 링크를 메일로 발송할 경우
 //		String content = "<a href=\"http://localhost:8081/mvc_board/MemberEmailAuth?email=" + member.getEmail() + "&auth_code=" + auth_code + "\">이메일 인증을 수행하려면 이 링크를 클릭하세요!</a>";
-		String content = "<a href=\"http://localhost:8081/with_me/MemberEmailAuth?email=" + member.getMem_email() + "&auth_code=" + auth_code + "\">이메일 인증을 수행하려면 이 링크를 클릭하세요!</a>";
+		String content = "<a href=\"http://c5d2403t2.itwillbs.com/With_Me/MemberEmailAuth?email=" + member.getMem_email() + "&auth_code=" + auth_code + "\">이메일 인증을 수행하려면 이 링크를 클릭하세요!</a>";
 		// ----------------------------------------------------------
 		// SendMailClient - sendMail() 메서드 호출하여 메일 발송 요청
 		// => 파라미터 : 이메일주소, 제목, 본문

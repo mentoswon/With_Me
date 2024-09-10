@@ -5,8 +5,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/pw_find_pro.css" rel="stylesheet" type="text/css">
+<script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <style type="text/css">
 #findPw_wrap2 {
 	border: 1px solid #ccc;
@@ -29,6 +30,69 @@
 	padding: 10px;
 }
 </style>
+<script type="text/javascript">
+$(function() {
+	// 본인인증 요청(cool sms)
+	$("#smsBtn").on("click", function(event) {
+		
+		console.log($("#phone_number").val());
+		console.log($("#mem_email").val());
+		
+		$.ajax({
+	        type: 'POST',
+	        url: 'PwSendSms',
+	        data: { 
+	        	"phone_number": $("#phone_number").val().trim().replace(/\D/g, ''), // 하이픈 제거(숫자만 남기기)
+				"mem_email" : $("#mem_email").val()
+	        },
+	        dataType : "json",
+	        success: function(response) {
+	        	if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+					alert("잘못된 접근입니다!");
+				} else if(!response.result) {
+	                alert("인증번호 전송에 실패하였습니다.");
+				} else if(response.result) {
+		            alert("인증코드가 전송되었습니다.\n6자리 인증번호를 입력해주세요.");
+		            $("#smsBtn").val("재발송");
+		            $("#auth_code").focus();
+				}
+	        },
+	        error: function() {
+	            alert("인증코드 전송이 실패했습니다.");
+	        }
+	    });	// ajax 끝
+	});
+
+	// 인증번호 확인
+	$("#verifyCode").on("click", function(event) {
+	    $.ajax({
+	        type: 'POST',
+	        url: 'PwVerifyCode',
+	        data: { 
+	            "phone_number": $("#phone_number").val().trim().replace(/\D/g, ''),
+	            "auth_code": $("#auth_code").val(),
+	            "mem_email" : $("#mem_email").val()
+	        },
+	        dataType : "json",
+	        success: function(response) {
+	        	if(response.isInvalidSession) { // 잘못된 세션 정보일 경우
+					alert("잘못된 접근입니다!");
+				} else if(!response.result) {
+	                alert("인증실패!");
+	                $("#auth_code").focus();
+	                $("#auth_code").val("");
+				} else if(response.result) {
+		            alert("인증되었습니다.");
+		            location.href = "PwResetFinal";
+				}
+	        },
+	        error: function() {
+	            alert("인증에 실패했습니다.");
+	        }
+	    });
+	});
+});
+</script>
 </head>
 <body>
 	<header>
@@ -68,11 +132,14 @@
 											<option value="+82">+82</option>
 										</select>
 									</td>
-									<td><input type="text" name="mem_tel" id="mem_tel" size="10"></td>
-									<th id="th01" align="left"><input type="submit" value="인증번호 받기" ></th>
+									<td><input type="text" name="phone_number" id="phone_number" size="10"></td>
+									<th id="th01" align="left"><input type="button" value="본인인증하기" id="smsBtn"></th>
 								</tr>	
 								<tr>
-									<td colspan="3"><input type="text" name="name" placeholder="인증번호 입력" size="10" maxlength="8"></td>
+									<td colspan="3">
+										<input type="text" id="auth_code" placeholder="인증번호를 입력해주세요" maxlength="6">
+										<input type="button" value="인증번호확인" id="verifyCode">
+									</td>
 								</tr>	
 								
 								<tr>

@@ -36,4 +36,41 @@
 	SET phone_auth_status = 'Y'
 	WHERE creator_email = #{id}
 </update>
+
+
+
+
+
+<!-- 기존 인증정보 존재 여부 확인 - SELECT -->
+<select id="selectPwSmsAuthInfo" resultType="pwSmsAuth">
+	SELECT *
+	FROM pw_sms_auth_info
+	WHERE mem_email = #{mem_email}
+	AND  phone_number =  #{phone_number}
+</select>
+
+<!-- 새 인증번호 등록 - INSERT -->
+<insert id="insertPwSmsAuthInfo">
+    INSERT INTO pw_sms_auth_info (mem_email, phone_number, auth_code)
+    VALUES (
+    	#{mem_email}
+    	, #{phone_number}
+    	, #{auth_code}
+    )
+</insert>
+
+<!-- 기존 인증정보 갱신 - UPDATE -->
+<update id="updatePwSmsAuthInfo">
+    UPDATE pw_sms_auth_info
+    SET auth_code = #{auth_code}
+	WHERE mem_email = #{mem_email}
+</update>
+
+
+
+
+
+
+
+
 </mapper>

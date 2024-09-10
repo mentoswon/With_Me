@@ -10,7 +10,7 @@
 <title>나의 1:1 문의내역</title>
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link
-	href="${pageContext.request.contextPath}/resources/css/default.css"
+	href="${pageContext.request.contextPath}/resources/css/mypage_default.css"
 	rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/qna_list.css" rel="stylesheet" type="text/css">
 <style type="text/css">
