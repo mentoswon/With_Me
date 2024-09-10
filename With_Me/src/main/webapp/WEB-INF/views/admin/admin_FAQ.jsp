@@ -44,7 +44,7 @@
 		background-color: #eee;
 	}
 	
-	.isCancel {
+	.isReply {
 		background-color: orange;
 	}
 	
@@ -57,12 +57,12 @@
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
 	// 페이지당 목록 개수 변경
-	function showListLimit(limit) {
-		location.href="AdminProjectList?status=${param.status}&listLimit=" + limit;
+	function showListLimit(limit){
+		location.href="AdminFAQ?listLimit=" + limit;
 	}
-	// 프로젝트 상세
-	function projectDetail(project_idx) {
-		location.href = "AdminProjectDetail?status=${param.status}&project_idx=" + project_idx;
+	// 1:1문의 상세정보
+	function FAQDetail(faq_idx) {
+		location.href = "AdminFAQDetail?faq_idx=" + faq_idx;
 	}
 </script>
 </head>
@@ -74,17 +74,7 @@
 		<section class="wrapper">
 			<jsp:include page="/WEB-INF/views/inc/admin_side_nav.jsp"></jsp:include>
 			<article class="main">
-				<c:choose>
-					<c:when test="${param.status eq '등록대기'}">
-						<h3>등록신청관리</h3>
-					</c:when>
-					<c:when test="${param.status eq '진행중'}">
-						<h3>진행중인 프로젝트</h3>
-					</c:when>
-					<c:when test="${param.status eq '종료'}">
-						<h3>종료된 프로젝트</h3>
-					</c:when>
-				</c:choose>
+				<h3>1:1문의</h3>
 				<div class="wrapper_top">
 					<div>
 						<span>Show</span>
@@ -96,10 +86,9 @@
 						</select>
 						<span>entries</span>
 					</div>
-					<form action="AdminProjectList">
+					<form action="AdminFAQ">
 						<div class="search">
 							<span>Search</span>
-							<input type="hidden" name="status" value="${param.status}">
 							<input type="search" name="searchKeyword" value="${param.searchKeyword}" >
 							<input type="submit" value="검색">
 						</div>
@@ -108,27 +97,12 @@
 				<div class="content">
 					<table border="1">
 						<tr>
-							<th>프로젝트 코드</th>
-							<th>프로젝트 제목</th>
-							<th>카테고리</th>
-							<th>세부 카테고리</th>
-							<c:choose>
-								<c:when test="${param.status eq '등록대기'}">
-									<th>목표 후원 금액</th>
-									<th>프로젝트 기간</th>
-									<th>프로젝트 심사</th>
-								</c:when>
-								<c:when test="${param.status eq '진행중'}">
-									<th>누적 후원 금액</th>
-									<th>남은 기간</th>
-									<th>프로젝트 상세</th>
-								</c:when>
-								<c:when test="${param.status eq '종료'}">
-									<th>최종 달성한 후원 금액</th>
-									<th>비고</th>
-									<th>프로젝트 상세</th>
-								</c:when>
-							</c:choose>
+							<th>문의번호</th>
+							<th>문의자 성명</th>
+							<th>문의제목</th>
+							<th>첨부파일</th>
+							<th>문의날짜</th>
+							<th>문의 상세정보</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
 						<c:set var="pageNum" value="1" />
@@ -137,58 +111,34 @@
 							<%-- pageNum 변수에 pageNum 파라미터값 저장 --%>
 							<c:set var="pageNum" value="${param.pageNum}" />
 						</c:if>
-						<%-- 오늘 날짜 추출 --%>
-						<c:set var="now" value="<%=new java.util.Date()%>" />
-						<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
-						<%-- 오늘 날짜 추출 end --%>
-						<c:forEach var="PL" items="${projectList}">
+						<c:forEach var="FL" items="${FAQList}">
 							<tr align="center">
-								<td>${PL.project_code}</td>
-								<td>${PL.project_title}</td>
-								<td>${PL.project_category}</td>
-								<td>${PL.project_category_detail}</td>
-								<c:choose>
-									<c:when test="${param.status eq '등록대기'}">
-										<td><fmt:formatNumber value="${PL.target_price}" pattern="#,###"/>원</td>
-										<td>${PL.funding_start_date} ~ ${PL.funding_end_date}</td>
-										<td><input type="button" <c:if test="${PL.pcs != ''}">class="isCancel"</c:if> value="프로젝트 심사" onclick="projectDetail(${PL.project_idx})"></td>
-									</c:when>
-									<c:when test="${param.status eq '진행중'}">
-										<td><fmt:formatNumber value="${PL.funding_amt}" pattern="#,###"/>원</td>
-										<%-- 남은 날짜 계산 --%>
-										<fmt:parseNumber var="strDate" value="${now.time/(1000*60*60*24)}" integerOnly="true"></fmt:parseNumber>
-										<fmt:parseNumber var="endDate" value="${PL.funding_end_date.time/(1000*60*60*24)}" integerOnly="true"></fmt:parseNumber>
-										<c:set var="leftDay" value="${endDate - strDate}"/>
-										<%-- 남은 날짜 계산 end --%>
-										<td>${leftDay}일 후에 종료</td>
-										<td><input type="button" <c:if test="${PL.pcs != ''}">class="isCancel"</c:if> value="프로젝트 상세" onclick="projectDetail(${PL.project_idx})"></td>
-									</c:when>
-									<c:when test="${param.status eq '종료'}">
-										<td><fmt:formatNumber value="${PL.funding_amt}" pattern="#,###"/>원</td>
-										<td>
-											<c:choose>
-												<c:when test="${PL.funding_amt < PL.target_price}">목표 금액 달성 실패</c:when>
-												<c:otherwise>특이사항 없음</c:otherwise>
-											</c:choose>
-										</td>
-										<td><input type="button" value="프로젝트 상세" onclick="projectDetail(${PL.project_idx})"></td>
-									</c:when>
-								</c:choose>
+								<td>${FL.faq_idx}</td>
+								<td>${FL.mem_name}</td>
+								<td>${FL.faq_subject}</td>
+								<td>
+									<c:choose>
+										<c:when test="${FL.faq_file eq null}">파일이 없습니다</c:when>
+										<c:otherwise>${FL.faq_file}</c:otherwise>
+									</c:choose>
+								</td>
+								<td>${FL.faq_date}</td>
+								<td><input type="button" <c:if test="${FL.faq_reply != null && FL.faq_reply != ''}">class="isReply"</c:if> value="문의 상세정보" onclick="FAQDetail(${FL.faq_idx})"></td>
 							</tr>
 						</c:forEach>
-						<c:if test="${empty projectList}">
+						<c:if test="${empty FAQList}">
 							<tr>
-								<td align="center" colspan="7">조회 결과가 없습니다.</td>
+								<td align="center" colspan="6">조회 결과가 없습니다.</td>
 							</tr>
 						</c:if>
 					</table>
 				</div>
 				<%-- ========================== 페이징 처리 영역 ========================== --%>
 				<div id="pageList">
-					<%-- [이전] 버튼 클릭 시 AdminProjectList 서블릿 요청(파라미터 : 현재 페이지번호 - 1) --%>
+					<%-- [이전] 버튼 클릭 시 AdminFAQ 서블릿 요청(파라미터 : 현재 페이지번호 - 1) --%>
 					<%-- 현재 페이지 번호(pageNum)가 URL 파라미터로 전달되므로 ${pageNum} 활용(미리 저장된 변수값) --%>
 					<%-- 단, 현재 페이지 번호가 1 보다 클 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
-					<input type="button" value="이전" onclick="location.href='AdminProjectList?pageNum=${pageNum - 1}&status=${param.status}'" <c:if test="${pageNum <= 1}">disabled</c:if>>
+					<input type="button" value="이전" onclick="location.href='AdminFAQ?pageNum=${pageNum - 1}'" <c:if test="${pageNum <= 1}">disabled</c:if>>
 					<%-- 계산된 페이지 번호가 저장된 PageInfo 객체(pageInfo)를 통해 페이지 번호 출력 --%>
 					<%-- 시작페이지(startPage = begin) 부터 끝페이지(endPage = end)까지 1씩 증가하면서 표시 --%>
 					<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
@@ -199,16 +149,16 @@
 								<b>${i}</b> <%-- 현재 페이지 번호 --%>
 							</c:when>
 							<c:otherwise>
-								<a href="AdminProjectList?pageNum=${i}&status=${param.status}">${i}</a> <%-- 다른 페이지 번호 --%>
+								<a href="AdminFAQ?pageNum=${i}">${i}</a> <%-- 다른 페이지 번호 --%>
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>
-					<%-- [다음] 버튼 클릭 시 AdminProjectList 서블릿 요청(파라미터 : 현재 페이지번호 + 1) --%>
+					<%-- [다음] 버튼 클릭 시 AdminFAQ 서블릿 요청(파라미터 : 현재 페이지번호 + 1) --%>
 					<%-- 현재 페이지 번호(pageNum)가 URL 파라미터로 전달되므로 ${param.pageNum} 활용 --%>
 					<%-- 단, 현재 페이지 번호가 최대 페이지번호(maxPage)보다 작을 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
 					<%-- 두 가지 경우의 수에 따라 버튼을 달리 생성하지 않고, disabled 만 추가 여부 설정 --%>
 					<%-- pageNum 파라미터값이 최대 페이지번호 이상일 때 disabled 속성 추가 --%>
-					<input type="button" value="다음" onclick="location.href='AdminProjectList?pageNum=${pageNum + 1}&status=${param.status}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+					<input type="button" value="다음" onclick="location.href='AdminFAQ?pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 				</div>
 			</article>
 		</section>

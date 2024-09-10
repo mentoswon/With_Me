@@ -166,7 +166,7 @@
 						</c:forEach>
 						<c:if test="${empty noticeList}">
 							<tr>
-								<td align="center" colspan="7">검색결과가 없습니다.</td>
+								<td align="center" colspan="6">검색결과가 없습니다.</td>
 							</tr>
 						</c:if>
 					</table>

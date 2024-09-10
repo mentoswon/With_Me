@@ -45,7 +45,7 @@
 	}
 	
 	.main .content table #yAdmin {
-		background-color:  orange;
+		background-color: orange;
 	}
 	
 	/* 페이징 처리 */

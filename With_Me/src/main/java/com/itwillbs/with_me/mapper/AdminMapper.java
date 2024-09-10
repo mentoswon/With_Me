@@ -98,4 +98,17 @@ public interface AdminMapper {
 	// 신고 상태 변경
 	int updateReportState(ReportVO report);
 	
+	// 1:1문의 개수 조회
+	int selectFAQListCount(String searchKeyword);
+	
+	// 1:1문의 목록 조회
+	List<BoardVO> selectFAQList(@Param("startRow") int startRow, @Param("listLimit") int listLimit,
+								@Param("searchKeyword") String searchKeyword);
+	
+	// 1:1문의 상세정보 조회
+	BoardVO selectFAQDetail(BoardVO faq);
+	
+	// 1:1문의 답변 작성/수정
+	int updateFAQReply(BoardVO faq);
+	
 }

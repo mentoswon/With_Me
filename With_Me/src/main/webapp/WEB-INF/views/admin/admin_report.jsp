@@ -140,7 +140,7 @@
 						</c:forEach>
 						<c:if test="${empty reportList}">
 							<tr>
-								<td align="center" colspan="8">조회 결과가 없습니다.</td>
+								<td align="center" colspan="7">조회 결과가 없습니다.</td>
 							</tr>
 						</c:if>
 					</table>

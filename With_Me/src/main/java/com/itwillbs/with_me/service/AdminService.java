@@ -145,4 +145,24 @@ public class AdminService {
 		return mapper.updateReportState(report);
 	}
 	
+	// 1:1문의 개수 조회
+	public int getFAQListCount(String searchKeyword) {
+		return mapper.selectFAQListCount(searchKeyword);
+	}
+	
+	// 1:1문의 목록 조회
+	public List<BoardVO> getFAQList(int startRow, int listLimit, String searchKeyword) {
+		return mapper.selectFAQList(startRow, listLimit, searchKeyword);
+	}
+	
+	// 1:1문의 상세정보 조회
+	public BoardVO getFAQDetail(BoardVO faq) {
+		return mapper.selectFAQDetail(faq);
+	}
+	
+	// 1:1문의 답변 작성/수정
+	public int changeFAQReply(BoardVO faq) {
+		return mapper.updateFAQReply(faq);
+	}
+	
 }

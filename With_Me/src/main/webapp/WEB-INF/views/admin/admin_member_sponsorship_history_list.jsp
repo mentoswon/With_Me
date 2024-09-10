@@ -111,7 +111,7 @@
 								<td>${SHL.pro_pay_status}</td>
 								<td>
 									<c:choose>
-										<c:when test="${SHL.pro_pay_date == null}">
+										<c:when test="${SHL.pro_pay_date eq null}">
 											미결제 상태이므로 결제일이 없습니다
 										</c:when>
 										<c:otherwise>
