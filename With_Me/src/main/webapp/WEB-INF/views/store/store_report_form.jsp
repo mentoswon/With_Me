@@ -67,6 +67,7 @@
 	function cancelConfirm(){
 		if(confirm("작성을 취소하시겠습니까?")) {
 			$(modal).removeClass("on");
+			location.reload();
 		}
 	}
 	

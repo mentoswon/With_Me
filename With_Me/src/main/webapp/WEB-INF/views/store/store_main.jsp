@@ -188,7 +188,7 @@ $(function (){
 /* 제품 이미지 스타일 */
 .product_image img {
 	width: 100%; /* 이미지의 너비를 부모 요소에 맞춤 */
-	height: auto; /* 높이를 자동으로 설정하여 이미지 비율을 유지 */
+	height: 100%; /* 높이를 자동으로 설정하여 이미지 비율을 유지 */
 	object-fit: cover; /* 이미지가 박스에 맞게 크롭되도록 설정 */
 	margin-bottom: 10px; /* 이미지와 제품명 사이에 적당한 간격 추가 */
 }

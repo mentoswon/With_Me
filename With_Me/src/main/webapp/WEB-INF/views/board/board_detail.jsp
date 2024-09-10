@@ -21,6 +21,9 @@
 	border-radius: 10px;
 	background-color: #fff;
 }
+section {
+	height:90px;
+}
 
 h2 {
 	text-align: left;

@@ -17,17 +17,43 @@
 	
 	<body>
 		<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function() {
-	            document.getElementById('shareButton').addEventListener('click', function() {
-	                const pageUrl = window.location.href;
+// 			document.addEventListener('DOMContentLoaded', function() {
+// 	            document.getElementById('shareButton').addEventListener('click', function() {
+// 	                const pageUrl = window.location.href;
 	
-	                navigator.clipboard.writeText(pageUrl).then(function() {
-	                    alert("링크 복사 완료");
-	                }).catch(function(err) {
-	                    console.error('링크 복사에 실패했습니다: ', err);
-	                });
-	            });
-	        });
+// 	                navigator.clipboard.writeText(pageUrl).then(function() {
+// 	                    alert("링크 복사 완료");
+// 	                }).catch(function(err) {
+// 	                    console.error('링크 복사에 실패했습니다: ', err);
+// 	                });
+// 	            });
+// 	        });
+
+
+			// 위의 방법은 HTTP에서는 동작하지 않고, HTTPS에서만 동작 하기 때문에
+			// 대체 방법으로 document.execCommand('copy')를 사용하여 텍스트를 클립보드에 복사하는 방식을 사용
+			document.addEventListener('DOMContentLoaded', function() {
+			    document.getElementById('shareButton').addEventListener('click', function() {
+			        const pageUrl = window.location.href;
+			
+			        // 임시 textarea 요소 생성
+			        const tempTextarea = document.createElement('textarea');
+			        tempTextarea.value = pageUrl;
+			
+			        // body에 textarea 추가
+			        document.body.appendChild(tempTextarea);
+			
+			        // 텍스트 선택 및 복사
+			        tempTextarea.select();
+			        document.execCommand('copy');
+			
+			        // textarea 제거
+			        document.body.removeChild(tempTextarea);
+			
+			        // 사용자에게 알림
+			        alert("링크 복사 완료");
+			    });
+			});
 		</script>
 		<header>
 			<jsp:include page="/WEB-INF/views/inc/store_top.jsp"></jsp:include>
@@ -108,7 +134,7 @@
 			
 			<section class="con02">
 				<div class="left">
-					<img alt="상품 상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img}" class="detailImg">
+					<img alt="상품 상세 이미지" src="${pageContext.request.contextPath}/resources/upload/${product_detail.product_img2}" class="detailImg">
 <%-- 					<img alt="스토어 상품 썸네일" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG" class="detailImg"> --%>
 				</div>
 				

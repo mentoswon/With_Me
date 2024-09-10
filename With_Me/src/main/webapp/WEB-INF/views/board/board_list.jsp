@@ -8,7 +8,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
+<!-- 외부 CSS 파일(css/default.css) 연결하기 -->
+<link href="${pageContext.request.contextPath }/resources/css/side_default.css" rel="stylesheet" type="text/css">
 <script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <style type="text/css">
 

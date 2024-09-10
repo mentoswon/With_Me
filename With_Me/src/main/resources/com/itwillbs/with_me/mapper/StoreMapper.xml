@@ -405,9 +405,7 @@
 			, #{report_product_code}
 			, #{report_category}
 			, #{report_reason}
-			, #{report_file1}
-			, #{report_file2}
-			, #{report_file3}
+			, #{report_file}
 			, #{report_ref_url1}
 			, #{report_ref_url2}
 			, #{report_ref_url3}

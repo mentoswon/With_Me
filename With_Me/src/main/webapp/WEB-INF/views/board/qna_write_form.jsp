@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <title>1:1 문의</title>
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
-<link href="${pageContext.request.contextPath }/resources/css/default.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath }/resources/css/side_default.css" rel="stylesheet" type="text/css">
 <style type="text/css">
 #writeForm {
     border: 1px solid #ccc;
