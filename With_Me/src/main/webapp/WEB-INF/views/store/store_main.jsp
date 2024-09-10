@@ -109,16 +109,11 @@ $(function (){
 	cursor: pointer;
 }
 
-.filter.active {
+.active-filter {
 	font-weight: bold;
+	color: #ffab40;
 } 
 /* ================================================================================================================== */
-/* .boxWrapper { */
-/* 	display: flex; */
-/* 	justify-content: space-between; */
-/* 	width: 100%; */
-/* 	margin-top: 2em; */
-/* } */
 
 /* 정렬 옵션 박스 스타일 */
 .orderWrapper {
@@ -225,26 +220,7 @@ $(function (){
 	color: #333; /* 글꼴 색상 진하게 변경 */
 }
 
-/* /* boxWrapper 안의 요소들을 한 줄에 4개씩 정렬 */ */
-/* .boxWrapper { */
-/* 	display: flex; /* Flexbox 레이아웃 사용 */ */
-/* 	flex-wrap: wrap; /* 여러 줄로 아이템이 배치될 수 있도록 설정 */ */
-/* 	justify-content: space-around; /* 아이템들 사이에 균등한 간격 설정 */ */
-/* 	gap: 2rem; /* 박스들 사이에 일정한 간격 추가 */ */
-/* } */
 
-/* /* 반응형 디자인: 화면 크기에 따라 줄 수 조절 */ */
-/* @media ( max-width : 768px) { */
-/* 	.product { */
-/* 		width: 48%; /* 작은 화면에서는 2열 그리드 설정 */ */
-/* 	} */
-/* } */
-
-/* @media ( max-width : 480px) { */
-/* 	.product { */
-/* 		width: 100%; /* 모바일 화면에서는 1열 그리드 설정 */ */
-/* 	} */
-/* } */
 
 	/* Mobile Responsive CSS */
 	@media screen and (max-width: 768px) {
@@ -310,13 +286,13 @@ $(function (){
 								<ul>
 								<c:choose>
 									<c:when test="${param.product_category_detail eq null}">
-										<li class="filter"><a href="javascript:storeList('${param.product_category}', '', '최신순')">최신순</a></li>
-										<li class="filter"><a href="javascript:storeList('${param.product_category}', '', '가격낮은순')">가격 낮은순</a></li>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '', '최신순')">최신순</a> | </li>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '', '가격낮은순')">가격 낮은순</a> | </li>
 										<li class="filter"><a href="javascript:storeList('${param.product_category}', '', '가격높은순')">가격 높은순</a></li>
 									</c:when>
 									<c:otherwise>
-										<li class="filter"><a href="javascript:storeList('${param.product_category}', '${param.product_category_detail}', '최신순')">최신순</a></li>
-										<li class="filter"><a href="javascript:storeList('${param.product_category}', '${param.product_category_detail}', '가격낮은순')">가격 낮은순</a></li>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '${param.product_category_detail}', '최신순')">최신순</a> | </li>
+										<li class="filter"><a href="javascript:storeList('${param.product_category}', '${param.product_category_detail}', '가격낮은순')">가격 낮은순</a> | </li>
 										<li class="filter"><a href="javascript:storeList('${param.product_category}', '${param.product_category_detail}', '가격높은순')">가격 높은순</a></li>
 									</c:otherwise>
 								</c:choose>
@@ -407,6 +383,18 @@ $(function (){
 		</footer>
 </body>
 <script type="text/javascript">
+	
+	$(function(){
+		if("${param.product_state}" == "최신순") {
+			$(".filter").find($('a[href*="최신순"]')).addClass('active-filter');
+		} else if("${param.product_state}" == "가격높은순") {
+			$(".filter").find($('a[href*="가격높은순"]')).addClass('active-filter');
+		} else if("${param.product_state}" == "가격낮은순") {
+			$(".filter").find($('a[href*="가격낮은순"]')).addClass('active-filter');
+		} 
+	});	
+	
+	
 	// 스토어 필터 
 	function storeList(category, category_detail, state) {
 		

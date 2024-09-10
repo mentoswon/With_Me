@@ -10,6 +10,23 @@
 		<title>With_Me</title>
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
+		<script type="text/javascript">
+			
+			function StoreList(productCategory, productCategory_detail) {
+				if(productCategory_detail != "") {
+					location.href="StoreList?product_category=" + productCategory + "&product_category_detail=" + productCategory_detail;
+				} else {
+					location.href="StoreList?product_category=" + productCategory;
+				}
+			}
+			
+			
+			$(function (){
+				$(".storeBtn").on('click', function StoreList() {
+			   		StoreList('푸드', '');
+				});
+			});	
+		</script>
 		<style type="text/css">
 			section {
 				margin: 60px auto;
@@ -40,7 +57,7 @@
 	</head>
 	<body>
 		<header>
-			<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/inc/store_top.jsp"></jsp:include>
 		</header>
 		
 		<div class="inner">
@@ -49,7 +66,7 @@
 				<h2>주문이 완료 되었습니다 !</h2>
 				
 				<p>주문내역은 <b><a href="MemberInfo">마이페이지</a></b> 에서 확인 가능합니다.</p><br>
-				<p><b><a href="./">계속 주문 하시겠습니까?</a></b></p>
+				<p><b><a href="StoreList?product_category=푸드" class="btn storeBtn" id="storeButton">계속 주문 하시겠습니까?</a></b></p>
 			</section>
 		</div>
 		
@@ -57,11 +74,8 @@
 			<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 		</footer>
 		
-		<script type="text/javascript">
-			
-			
-		</script>
 	</body>
+
 </html>
 
 
