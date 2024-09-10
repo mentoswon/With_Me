@@ -6,7 +6,10 @@
 	<!-- 프로젝트 리스트 -->
 	<select id="selectProjectList" resultType="hashmap">
 		SELECT * , (SELECT IFNULL(SUM(funding_pay_amt),0) FROM 
-					funding_user WHERE funding_project_idx = project_idx) AS funding_amt
+					funding_user WHERE funding_project_idx = project_idx) AS funding_amt,
+					(SELECT COUNT(funding_idx) 
+					FROM funding_user 
+					WHERE funding_project_idx = p.project_idx) / DATEDIFF(CURDATE(), p.funding_start_date) AS people_per_day_ratio
 		<if test="sId">
 			,l.like_mem_email, l.like_status
 		</if>
@@ -18,7 +21,7 @@
 		<![CDATA[
 			WHERE p.funding_start_date < now() && p.funding_end_date > now() && p.project_status = '승인'
 		]]>
-		ORDER BY funding_amt DESC, p.funding_premium DESC
+		ORDER BY p.funding_premium DESC, people_per_day_ratio DESC 
 	</select>
 	
 	<!-- 스토어 리스트 -->

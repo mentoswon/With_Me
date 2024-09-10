@@ -204,7 +204,7 @@ public class MyWebSocketHandler2 extends TextWebSocketHandler {
 			}
 			
 		} else if(chatMessage.getType().equals(ChatMessage2.TYPE_TALK)) {
-//			System.out.println("채팅 메세지 수신됨 - " + chatMessage);
+			System.out.println("채팅 메세지 수신됨 - " + chatMessage);
 			
 			// getDateTimeForNow() 메서드 호출하여 현재 시스템 날짜 및 시각 정보 저장하기
 			chatMessage.setSend_time(getDateTimeForNow());

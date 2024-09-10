@@ -212,6 +212,7 @@
 				
 				// appendMessageToTargetRoom() 함수 호출하여 수신된 메세지를 채팅방에 표시
 				appendMessageToTargetRoom(data.type, data.sender_id, data.receiver_id, data.room_id, data.message, data.send_time);
+				
 			} else if(data.type == "LEAVE") { // 채팅 종료 메세지 수신
 				appendMessageToTargetRoom(data.type, data.sender_id, data.receiver_id, data.room_id, data.message, data.send_time);
 				disableRoom(data);

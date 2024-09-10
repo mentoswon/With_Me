@@ -79,6 +79,7 @@
 				margin-bottom: 15px;	
 				text-align: left;
 				font-size: 16px;
+				height: 40px;
 			}
 			
 			.sec02 .itemList .itemWrapper .item .item_info a {

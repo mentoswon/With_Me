@@ -181,6 +181,7 @@
 				<a href="javascript:projectList('패션/위생', '', '진행중')"> 패션 / 위생 </a>
 				<ul class="depth02">
 					<li><button value="의류" onclick="projectList('패션/위생',this.value, '진행중')" >의류</button></li>
+					<li><button value="화장실" onclick="projectList('패션/위생',this.value, '진행중')" >화장실</button></li>
 				</ul>
 			</li>
 			
