@@ -709,4 +709,12 @@ input[type="radio"] {
 	    top: 90px;
         transform: translate(-50%, 0%);
 	}
+	
+	#projectMenuTop {
+		display: block;
+		width: 95%;
+		padding: 20px 0;
+	}
+	
+	
 }

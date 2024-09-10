@@ -262,7 +262,7 @@ $(document).ready(function() {
 		$(".projectWrap").show();	// 모든 프로젝트 보여줌
 		
 		if (selectedStatus !== "all") {
-			$("#projectListContainer > h2").remove();
+			$("#projectListContainer > .top").remove();
 			// 선택된 상태에 따라 필터링
 			$(".projectWrap").each(function() {
 				var projectStatus = $(this).attr("class").split(" ")[1]; // 상태 클래스 추출
@@ -437,7 +437,7 @@ $(document).ready(function() {
                 <c:forEach var="project" items="${projectList}">
                     <c:if test="${project.project_status eq '작성중'}">
                         <c:if test="${not isWritingDisplayed}">
-                            <h2>작성중</h2><br>
+                            <div class="top"><h2>작성중</h2></div>
                             <c:set var="isWritingDisplayed" value="true" />
                         </c:if>
                         <div class="projectWrap writing">
@@ -469,7 +469,7 @@ $(document).ready(function() {
                 <c:forEach var="project" items="${projectList}">
                     <c:if test="${project.project_status eq '심사중'}">
                         <c:if test="${not isSubmittedDisplayed}">
-                            <h2>심사중</h2><br>
+                            <div class="top"><h2>심사중</h2></div>
                             <c:set var="isSubmittedDisplayed" value="true" />
                         </c:if>
                         <div class="projectWrap review">
@@ -489,7 +489,8 @@ $(document).ready(function() {
                             </div>
                             <div class="btnWrap">
 								<input type="hidden" name="project_idx" value="${project.project_idx}">
-								<input type="button" class="management" value="관리" onclick="location.href='ProjectCreate?project_idx=${project.project_idx}'"><br>
+<%-- 								<input type="button" class="management" value="관리" onclick="location.href='ProjectCreate?project_idx=${project.project_idx}'"><br> --%>
+								<input type="button" class="management" value="미리보기" onclick="location.href='ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}'"><br>
 								<input type="button" class="requestDelete" data-project-idx="${project.project_idx}" value="취소 요청" <c:if test="${fn:contains(cancelList, project.project_idx)}">disabled</c:if>>
                             </div>
                         </div>
@@ -501,7 +502,7 @@ $(document).ready(function() {
                 <c:forEach var="project" items="${projectList}">
                     <c:if test="${project.project_status eq '승인'}">
                         <c:if test="${not isApprovedDisplayed}">
-                            <h2>승인됨</h2><br>
+                            <div class="top"><h2>승인됨</h2></div>
                             <c:set var="isApprovedDisplayed" value="true" />
                         </c:if>
 						                        
@@ -537,7 +538,7 @@ $(document).ready(function() {
                             </div>
                             <div class="btnWrap">
                                 <input type="hidden" name="project_idx" value="${project.project_idx}">
-                                <input type="button" class="management" value="관리" onclick="location.href='ProjectCreate?project_idx=${project.project_idx}'"><br>
+                                <input type="button" class="management" value="상세" onclick="location.href='ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}'"><br>
                                 <!-- 아직 진행중이지 않은 프로젝트만 삭제요청 가능 -->
                                 <c:if test="${project.funding_start_date > currentDate}">
                                 	<input type="button" class="requestDelete" data-project-idx="${project.project_idx}" value="취소 요청" <c:if test="${fn:contains(cancelList, project.project_idx)}">disabled</c:if>>
@@ -552,7 +553,7 @@ $(document).ready(function() {
                 <c:forEach var="project" items="${projectList}">
                     <c:if test="${project.project_status eq '반려'}">
                         <c:if test="${not isRefusedDisplayed}">
-                            <h2>반려됨</h2><br>
+                            <div class="top"><h2>반려됨</h2></div>
                             <c:set var="isRefusedDisplayed" value="true" />
                         </c:if>
                         <div class="projectWrap refuse">
