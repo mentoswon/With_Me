@@ -41,8 +41,8 @@
 			}
 			
 			.sec02 .itemList .itemWrapper .item .item_image:hover .thumnail {
-				transform: scale(1.2);
-				transition: transform 0.3s;	
+				transform: scale(1.1);
+   				transition: transform 0.5s;
 			}
 			
 			.sec02 .itemList .itemWrapper .item .item_image .thumnail {
@@ -150,9 +150,10 @@
 				cursor: pointer;
 			}
 			
-			.filter.active {
-				font-weight: bold;
-			} 
+			.active-filter {
+			    font-weight: bold;
+			    color: #ffab40;
+			}
 			
 			/* Mobile Responsive CSS */ 
 			@media screen and (max-width:768px) {
@@ -202,13 +203,15 @@
 						<ul>
 							<c:choose>
 								<c:when test="${param.project_category_detail eq null}">
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '진행중')">진행 중인 프로젝트</a></li>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '마감')">마감한 프로젝트</a></li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '전체')">전체</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '진행중')">진행 중인 프로젝트</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '마감')">마감한 프로젝트</a> | </li>
 									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '오픈예정')">오픈 예정 프로젝트</a></li>
 								</c:when>
 								<c:otherwise>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '진행중')">진행 중인 프로젝트</a></li>
-									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '마감')">마감한 프로젝트</a></li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '전체')">전체</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '진행중')">진행 중인 프로젝트</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '마감')">마감한 프로젝트</a> | </li>
 									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '오픈예정')">오픈 예정 프로젝트</a></li>
 								</c:otherwise>
 							</c:choose>
@@ -353,6 +356,18 @@
 	</body>
 	
 	<script type="text/javascript">
+		$(function(){
+			if("${param.project_state}" == "진행중") {
+				$(".filter").find($('a[href*="진행중"]')).addClass('active-filter');
+			} else if("${param.project_state}" == "오픈예정") {
+				$(".filter").find($('a[href*="오픈예정"]')).addClass('active-filter');
+			} else if("${param.project_state}" == "마감") {
+				$(".filter").find($('a[href*="마감"]')).addClass('active-filter');
+			} else if("${param.project_state}" == "전체") {
+				$(".filter").find($('a[href*="전체"]')).addClass('active-filter');
+			}
+		});
+	
 		// 프로젝트 필터
 		function projectList(category, category_detail, state) {
 			if(category_detail != "") {

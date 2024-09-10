@@ -18,7 +18,7 @@
 		<![CDATA[
 			WHERE p.funding_start_date < now() && p.funding_end_date > now() && p.project_status = '승인'
 		]]>
-		ORDER BY funding_amt DESC
+		ORDER BY funding_amt DESC, p.funding_premium DESC
 	</select>
 	
 	<!-- 스토어 리스트 -->

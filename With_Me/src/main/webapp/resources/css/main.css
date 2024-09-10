@@ -111,8 +111,8 @@ section {
 }
 
 .sec01 .mainWrapper .itemList .itemWrapper .item .item_image:hover .thumnail {
-	transform: scale(1.2);
-	transition: transform 0.3s;
+	transform: scale(1.1);
+   	transition: transform 0.5s;
 }
 
 .sec01 .mainWrapper .itemList .itemWrapper .item .item_image .thumnail{
@@ -231,8 +231,8 @@ section {
 }
 
 .sec01 .popularList .popularWrapper .popularItem .popular_image:hover .thumnail{
-	transform: scale(1.2);
-	transition: transform 0.3s;	
+	transform: scale(1.1);
+   	transition: transform 0.5s;
 }
 
 .sec01 .popularList .popularWrapper .popularItem .popular_image img{
@@ -279,8 +279,8 @@ section {
 }
 
 .sec03 .itemList .itemWrapper .item .item_image:hover .thumnail {
-	transform: scale(1.2);
-	transition: transform 0.3s;	
+	transform: scale(1.1);
+   	transition: transform 0.5s;
 }
 
 
