@@ -19,8 +19,9 @@ public interface UserFundingMapper {
 
 	// 리스트 목록 개수 가져오기
 	int selectBoardListCount(@Param("searchKeyword") String searchKeyword, 
-							 @Param("category")String category, 
-							 @Param("category_detail")String category_detail);
+							 @Param("category") String category, 
+							 @Param("category_detail") String category_detail, 
+							 @Param("project_state") String project_state);
 	
 	
 	// 리스트 가져오기
@@ -29,7 +30,8 @@ public interface UserFundingMapper {
 												@Param("searchKeyword")String searchKeyword, 
 												@Param("startRow")int startRow, 
 												@Param("listLimit")int listLimit,
-												@Param("id")String id);
+												@Param("id")String id, 
+												@Param("project_state") String project_state);
 
 
 	// 프로젝트 상세정보 가져오기
@@ -149,7 +151,6 @@ public interface UserFundingMapper {
 
 	// funding_user status 바꾸기
 	void updateFundingStatus(Map<String, Object> user);
-
 
 
 

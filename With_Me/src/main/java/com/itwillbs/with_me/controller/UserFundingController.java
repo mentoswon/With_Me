@@ -62,6 +62,7 @@ public class UserFundingController {
 	public String projectList(ProjectVO project, Model model, 
 			@RequestParam(defaultValue = "1") int pageNum,
 			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String project_state,
 			HttpSession session) {
 		System.out.println("searchKeyword : " + searchKeyword);
 		
@@ -72,7 +73,7 @@ public class UserFundingController {
 //		System.out.println("category : " + category);
 //		System.out.println("category_detail : " + category_detail);
 		
-		// 한 페이지에서 표시할 글 목록 개수 지정 (jsp 에서 가져옴)
+		// 한 페이지에서 표시할 글 목록 개수 지정
 		int listLimit = 8;
 		
 		// 조회 시작 행 번호 계산
@@ -82,7 +83,7 @@ public class UserFundingController {
 		
 		// 페이징 처리를 위한 계산 작업 (jsp 에서 가져옴)
 		// 검색 파라미터 추가해주기 (원래 파라미터 없음)
-		int listCount = service.getBoardListCount(searchKeyword, category,category_detail);
+		int listCount = service.getBoardListCount(searchKeyword, category, category_detail, project_state);
 		
 		System.out.println("listCount : " + listCount);
 		
@@ -119,7 +120,7 @@ public class UserFundingController {
 		
 		String id = (String)session.getAttribute("sId");
 		
-		List<Map<String, Object>> projectList = service.getProjectList(category, category_detail, searchKeyword, startRow, listLimit, id);
+		List<Map<String, Object>> projectList = service.getProjectList(category, category_detail, searchKeyword, startRow, listLimit, id, project_state);
 		
 		System.out.println("projectList : " + projectList);
 		
@@ -965,6 +966,11 @@ public class UserFundingController {
 		
 		return bankUserInfo;
 	}
+	
+	// -----------------------------------------------------------------------------------------------------
+	
+	
+	
 }
 
 

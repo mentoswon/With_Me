@@ -30,13 +30,13 @@ public class UserFundingService {
 	private UserBankApiClient bankApiClient;
 	
 	// 리스트 목록 개수 가져오기
-	public int getBoardListCount(String searchKeyword, String category, String category_detail) {
-		return mapper.selectBoardListCount(searchKeyword, category, category_detail);
+	public int getBoardListCount(String searchKeyword, String category, String category_detail, String project_state) {
+		return mapper.selectBoardListCount(searchKeyword, category, category_detail, project_state);
 	}
 	
 	// 리스트 가져오기
-	public List<Map<String, Object>> getProjectList(String category, String category_detail, String searchKeyword, int startRow, int listLimit, String id) {
-		return mapper.selectProjectList(category,category_detail, searchKeyword,startRow,listLimit, id);
+	public List<Map<String, Object>> getProjectList(String category, String category_detail, String searchKeyword, int startRow, int listLimit, String id, String project_state) {
+		return mapper.selectProjectList(category,category_detail, searchKeyword,startRow,listLimit, id, project_state);
 	}
 
 	

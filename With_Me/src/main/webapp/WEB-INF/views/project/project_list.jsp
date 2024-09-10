@@ -13,6 +13,11 @@
 		<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 		<style type="text/css">
+			h2 {
+				font-size: 16px;
+				margin-bottom: 30px;
+			}
+			
 			.sec02 .itemList {
 				padding-top: 30px;
 				height: 100%;
@@ -80,13 +85,12 @@
 				word-wrap: break-word;
 			}
 			
-			
 			.sec02 .itemList .itemWrapper .item .fund_info {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				margin-bottom: 15px;
-			} 
+			}
 			
 			.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap {
 				display: flex;
@@ -139,8 +143,19 @@
 				color: #fff;
 			}
 			
-			/* Mobile Responsive CSS */
-			@media screen and (max-width: 768px) {
+			.filter {
+				display: inline-block;
+				margin-right: 10px;
+				font-size: 13px;
+				cursor: pointer;
+			}
+			
+			.filter.active {
+				font-weight: bold;
+			} 
+			
+			/* Mobile Responsive CSS */ 
+			@media screen and (max-width:768px) {
 				.sec02 .itemList .itemWrapper {
 					display: grid;
 					grid-template-columns: repeat(2, 1fr);
@@ -183,6 +198,22 @@
 							</c:otherwise>
 						</c:choose>
 						
+						<%-- 목록 필터 --%>
+						<ul>
+							<c:choose>
+								<c:when test="${param.project_category_detail eq null}">
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '진행중')">진행 중인 프로젝트</a></li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '마감')">마감한 프로젝트</a></li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '오픈예정')">오픈 예정 프로젝트</a></li>
+								</c:when>
+								<c:otherwise>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '진행중')">진행 중인 프로젝트</a></li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '마감')">마감한 프로젝트</a></li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '오픈예정')">오픈 예정 프로젝트</a></li>
+								</c:otherwise>
+							</c:choose>
+						</ul>
+											
 						<%-- 페이지 번호 기본값 1로 설정 --%>
 						<c:set var="pageNum" value="1"/>
 						<c:if test="${not empty param.pageNum}">
@@ -322,6 +353,15 @@
 	</body>
 	
 	<script type="text/javascript">
+		// 프로젝트 필터
+		function projectList(category, category_detail, state) {
+			if(category_detail != "") {
+				location.href="ProjectList?project_category=" + category + "&project_category_detail=" + category_detail + "&project_state=" + state;
+			} else {
+				location.href="ProjectList?project_category=" + category + "&project_state=" + state;
+			}
+		}
+		
 		// 프로젝트 좋아요
 		function registLike(project_code, sId) {
 // 				console.log("project_code : " + project_code + ", sId : " + sId);
@@ -373,9 +413,10 @@
 		}
 		
 		// 프로젝트 오픈 알림 신청 0909 추가
-		function setNotiProject(project_idx) {
-			alert("알림 신청이 완료되었습니다.");
-		}
+// 		function setNotiProject(project_idx) {
+// 			alert("알림 신청이 완료되었습니다.");
+// 		}
+		
 	</script>
 </html>
 

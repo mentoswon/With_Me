@@ -518,9 +518,7 @@
 			                + '<div class="left">'
 			                +  '<div>'
 			                +    address.address_receiver_name
-			                +    (address.address_is_default === "Y" 
-			                        ? '<span class="default_symbol">기본 배송지</span>' 
-			                        : '')
+			                +    (address.address_is_default === "Y" ? '<span class="default_symbol">기본 배송지</span>' : '')
 			                +  '</div>'
 			                +  '<div>'
 			                +    '[' + address.address_post_code + '] ' + address.address_main

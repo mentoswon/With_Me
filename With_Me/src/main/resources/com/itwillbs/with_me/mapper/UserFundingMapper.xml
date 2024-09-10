@@ -25,11 +25,41 @@
 					<when test="category_detail == null">
 						project_category = #{category}
 						AND	project_status = '승인'
+						AND
+							<choose>
+								<when test="project_state == '진행중'">
+									<![CDATA[ funding_start_date < now() AND funding_end_date > now() ]]>
+								</when>
+								<when test="project_state == '오픈예정'">
+									<![CDATA[ funding_start_date > now() ]]>
+								</when>
+								<when test="project_state == '마감'">
+									<![CDATA[ funding_end_date < now() ]]>
+								</when>
+								<otherwise>
+									1 = 1
+								</otherwise>
+							</choose>
 					</when>
 					<otherwise>
 						project_category = #{category}
 						AND project_category_detail = #{category_detail}
 						AND	project_status = '승인'
+						AND
+							<choose>
+								<when test="project_state == '진행중'">
+									<![CDATA[ funding_start_date < now() AND funding_end_date > now() ]]>
+								</when>
+								<when test="project_state == '오픈예정'">
+									<![CDATA[ funding_start_date > now() ]]>
+								</when>
+								<when test="project_state == '마감'">
+									<![CDATA[ funding_end_date < now() ]]>
+								</when>
+								<otherwise>
+									1 = 1
+								</otherwise>
+							</choose>
 					</otherwise>
 				</choose>
 			</otherwise>
@@ -64,11 +94,41 @@
 					<when test="category_detail == null">
 						p.project_category = #{category}
 						AND	p.project_status = '승인'
+						AND
+							<choose>
+								<when test="project_state == '진행중'">
+									<![CDATA[ funding_start_date < now() AND funding_end_date > now() ]]>
+								</when>
+								<when test="project_state == '오픈예정'">
+									<![CDATA[ funding_start_date > now() ]]>
+								</when>
+								<when test="project_state == '마감'">
+									<![CDATA[ funding_end_date < now() ]]>
+								</when>
+								<otherwise>
+									1 = 1
+								</otherwise>
+							</choose>
 					</when>
 					<otherwise>
 						p.project_category = #{category}
 						AND p.project_category_detail = #{category_detail}
 						AND	p.project_status = '승인'
+						AND
+							<choose>
+								<when test="project_state == '진행중'">
+									<![CDATA[ funding_start_date < now() AND funding_end_date > now() ]]>
+								</when>
+								<when test="project_state == '오픈예정'">
+									<![CDATA[ funding_start_date > now() ]]>
+								</when>
+								<when test="project_state == '마감'">
+									<![CDATA[ funding_end_date < now() ]]>
+								</when>
+								<otherwise>
+									1 = 1
+								</otherwise>
+							</choose>
 					</otherwise>
 				</choose>
 			</otherwise>
@@ -535,4 +595,20 @@
 		SET funding_status = '후원완료'
 		WHERE funding_idx = #{funding_idx}
 	</update>
+	
+	<!-- 목록필터 - 진행 중 -->
+	<select id="selectProjectListFilter1" resultType="hashmap">
+		SELECT p.*, c.*, 
+		<if test="id">
+			l.like_mem_email, l.like_status,
+		</if>
+			(SELECT IFNULL(SUM(funding_pay_amt),0) FROM funding_user WHERE funding_project_idx = p.project_idx) AS funding_amt
+		FROM project_info p JOIN creator_info c
+		ON p.creator_idx = c.creator_idx
+		<if test="id">
+			LEFT JOIN like_ l
+			ON p.project_code = l.like_project_code AND l.like_mem_email = #{id}
+		</if> 
+		<![CDATA[ WHERE p.funding_start_date < now() AND p.funding_end_date > now() AND	p.project_status = '승인']]>
+	</select>
 </mapper>
