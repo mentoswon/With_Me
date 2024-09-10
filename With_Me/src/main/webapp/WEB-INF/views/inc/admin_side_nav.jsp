@@ -36,9 +36,9 @@
 			<a href="AdminNotice">게시판관리</a>
 			<ul class="depth02">
 				<li><a href="AdminNotice">공지사항</a></li>
-				<li><a href="AdminReport">신고관리</a></li>
 <!-- 				<li><a href="AdminCs">자주 묻는 질문</a></li> -->
 				<li><a href="AdminFAQ">1:1 문의</a></li>
+				<li><a href="AdminReport">신고관리</a></li>
 			</ul>
 		</li>
 	</ul>

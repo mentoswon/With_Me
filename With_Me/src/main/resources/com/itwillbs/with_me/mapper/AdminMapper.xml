@@ -356,6 +356,58 @@
 		WHERE bo_idx = #{bo_idx}
 	</delete>
 	
+	<!-- 1:1문의 개수 조회 -->
+	<select id="selectFAQListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM faq
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				faq_subject like concat('%',#{searchKeyword},'%')
+				or faq_content like concat('%',#{searchKeyword},'%')
+				or faq_reply like concat('%',#{searchKeyword},'%')
+				or faq_file like concat('%',#{searchKeyword},'%')
+				or faq_date like concat('%',#{searchKeyword},'%')
+				or mem_email like concat('%',#{searchKeyword},'%')
+		</if>
+	</select>
+	
+	<!-- 1:1문의 목록 조회 -->
+	<select id="selectFAQList" resultType="bo">
+		SELECT * ,
+			(SELECT mem_name
+			FROM member
+			WHERE mem_email = f.mem_email) AS mem_name
+		FROM faq f
+		<if test="!searchKeyword.equals('')">
+			WHERE 
+				faq_subject like concat('%',#{searchKeyword},'%')
+				or faq_content like concat('%',#{searchKeyword},'%')
+				or faq_reply like concat('%',#{searchKeyword},'%')
+				or faq_file like concat('%',#{searchKeyword},'%')
+				or faq_date like concat('%',#{searchKeyword},'%')
+				or mem_email like concat('%',#{searchKeyword},'%')
+		</if>
+		ORDER BY
+			faq_idx DESC
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 1:1문의 상세정보 조회 -->
+	<select id="selectFAQDetail" resultType="bo">
+		SELECT * 
+		FROM faq
+		WHERE faq_idx = #{faq_idx}
+	</select>
+	
+	<!-- 1:1문의 답변 작성/수정 -->
+	<update id="updateFAQReply">
+		UPDATE faq
+		SET faq_reply = #{faq_reply}
+		WHERE faq_idx = #{faq_idx}
+	</update>
+	
 	<!-- 신고 개수 조회 -->
 	<select id="selectReportListCount" resultType="int">
 		SELECT COUNT(*)
@@ -418,57 +470,5 @@
 				</when>
 			</choose>
 		WHERE report_idx = #{report_idx}
-	</update>
-	
-	<!-- 1:1문의 개수 조회 -->
-	<select id="selectFAQListCount" resultType="int">
-		SELECT COUNT(*)
-		FROM faq
-		<if test="!searchKeyword.equals('')">
-			WHERE 
-				faq_subject like concat('%',#{searchKeyword},'%')
-				or faq_content like concat('%',#{searchKeyword},'%')
-				or faq_reply like concat('%',#{searchKeyword},'%')
-				or faq_file like concat('%',#{searchKeyword},'%')
-				or faq_date like concat('%',#{searchKeyword},'%')
-				or mem_email like concat('%',#{searchKeyword},'%')
-		</if>
-	</select>
-	
-	<!-- 1:1문의 목록 조회 -->
-	<select id="selectFAQList" resultType="bo">
-		SELECT * ,
-			(SELECT mem_name
-			FROM member
-			WHERE mem_email = f.mem_email) AS mem_name
-		FROM faq f
-		<if test="!searchKeyword.equals('')">
-			WHERE 
-				faq_subject like concat('%',#{searchKeyword},'%')
-				or faq_content like concat('%',#{searchKeyword},'%')
-				or faq_reply like concat('%',#{searchKeyword},'%')
-				or faq_file like concat('%',#{searchKeyword},'%')
-				or faq_date like concat('%',#{searchKeyword},'%')
-				or mem_email like concat('%',#{searchKeyword},'%')
-		</if>
-		ORDER BY
-			faq_idx DESC
-		LIMIT
-			#{startRow}
-			, #{listLimit}
-	</select>
-	
-	<!-- 1:1문의 상세정보 조회 -->
-	<select id="selectFAQDetail" resultType="bo">
-		SELECT * 
-		FROM faq
-		WHERE faq_idx = #{faq_idx}
-	</select>
-	
-	<!-- 1:1문의 답변 작성/수정 -->
-	<update id="updateFAQReply">
-		UPDATE faq
-		SET faq_reply = #{faq_reply}
-		WHERE faq_idx = #{faq_idx}
 	</update>
 </mapper>

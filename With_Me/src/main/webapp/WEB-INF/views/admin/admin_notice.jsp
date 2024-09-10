@@ -82,7 +82,7 @@
 	
 	.notice .notice_popup .close_btn, .notice .notice_popup .regist_btn, .notice .notice_popup .reset_btn {
 	    padding: 10px 20px;
-	    background-color: rgb(116, 0, 0);
+	    background-color: #ffab40;
 	    border: none;
 	    border-radius: 5px;
 	    color: #fff;

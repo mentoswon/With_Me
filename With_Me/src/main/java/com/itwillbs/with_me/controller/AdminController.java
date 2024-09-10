@@ -802,6 +802,131 @@ public class AdminController {
 		}
 	}
 	
+	// 관리자 - 게시판관리 - 1:1문의
+	@GetMapping("AdminFAQ")
+	public String adminFAQ(@RequestParam(defaultValue = "1") int pageNum,
+						@RequestParam(defaultValue ="") String searchKeyword,
+						@RequestParam(defaultValue = "5") int listLimit,
+						HttpSession session, Model model) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		// 페이징 처리
+		//int listLimit = 5; // 페이지 당 목록 개수
+		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
+		
+		int listCount = adminService.getFAQListCount(searchKeyword); // 총 목록 개수
+//		System.out.println("listCount : " + listCount);
+		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
+		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
+		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
+		int endPage = startPage + pageListLimit - 1;
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
+		if(maxPage == 0) {
+			maxPage = 1;
+		}
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
+		if(pageNum < 1 || pageNum > maxPage) {
+			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+			model.addAttribute("targetURL", "AdminFAQ?pageNum=1");
+			return "result/fail";
+		}
+		
+		// 1:1문의 목록 조회
+		// 검색어는 기본적으로 "" 널스트링
+		List<BoardVO> FAQList = adminService.getFAQList(startRow, listLimit, searchKeyword);
+//		System.out.println("FAQList : " + FAQList);
+		
+		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+//		System.out.println("pageInfo : " + pageInfo);
+		
+		// 1:1문의 목록, 페이징 정보 Model 객체에 저장 -> admin_FAQ.jsp 로 전달
+		model.addAttribute("FAQList", FAQList);
+		model.addAttribute("pageInfo", pageInfo);
+		
+		return "admin/admin_FAQ";
+	}
+	
+	// 1:1문의 상세정보 조회
+	@GetMapping("AdminFAQDetail")
+	public String adminFAQDetail(HttpSession session, Model model, BoardVO faq) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+//		System.out.println("faq : " + faq);
+		
+		// 1:1문의 상세정보 가져와서 BoardVO 객체에 저장
+		faq = adminService.getFAQDetail(faq);
+//		System.out.println("faq : " + faq);
+		
+		// BoardVO 객체를 Model 객체에 저장
+		model.addAttribute("faq", faq);
+		
+		// 회원 상세정보를 MemberVO 객체에 저장
+		MemberVO member = new MemberVO();
+		member.setMem_email(faq.getMem_email());
+		member = memberService.getMember(member);
+//		System.out.println("member : " + member);
+		
+		// 회원 상세정보 Model 객체에 저장
+		model.addAttribute("member", member);
+		// -------------------------------------------------------------------------------
+		// 뷰페이지에서 파일의 효율적 처리를 위해 파일명만 별도로 String 타입 변수에 저장
+		String fileName = faq.getFaq_file();
+//		System.out.println("fileName : " + fileName);
+		// -------------------------------------------------------------------------------
+		// Model 객체에 파일 목록 저장
+		model.addAttribute("fileName", fileName);
+		// -------------------------------------------------------------------------------
+		
+		return "admin/admin_FAQ_detail";
+	}
+	
+	// 1:1문의 답변 작성/수정
+	@PostMapping("AdminFAQReply")
+	public String adminFAQReply(HttpSession session, Model model, BoardVO faq, String replyType) {
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+//		System.out.println("faq : " + faq);
+		
+		// adminService - changeFAQReply() 메서드 호출하여 답변 작성/수정 작업 요청
+		// => 파라미터 : BoardVO 객체   리턴타입 : int(updateCount)
+		int updateCount = adminService.changeFAQReply(faq);
+		
+		// 답변 작성/수정 작업 요청 결과 판별
+		if(updateCount > 0) { // 성공
+			// "답변 작성/수정에 성공했습니다." 메세지 출력 및 "AdminFAQDetail" 서블릿 주소 전달
+			model.addAttribute("msg", "답변 " + replyType + "에 성공했습니다.");
+			model.addAttribute("targetURL", "AdminFAQDetail?faq_idx=" + faq.getFaq_idx());
+			
+			return "result/success";
+		} else { // 실패
+			// "답변 작성/수정에 실패했습니다." 메세지 출력 및 이전 페이지 돌아가기 처리
+			model.addAttribute("msg", "답변 " + replyType + "에 실패했습니다.");
+			
+			return "result/fail";
+		}
+	}
+	
 	// 관리자 - 게시판관리 - 신고관리
 	@GetMapping("AdminReport")
 	public String adminReport(@RequestParam(defaultValue = "1") int pageNum,
@@ -977,130 +1102,6 @@ public class AdminController {
 		}
 	}
 	
-	// 관리자 - 게시판관리 - 1:1문의
-	@GetMapping("AdminFAQ")
-	public String adminFAQ(@RequestParam(defaultValue = "1") int pageNum,
-						@RequestParam(defaultValue ="") String searchKeyword,
-						@RequestParam(defaultValue = "5") int listLimit,
-						HttpSession session, Model model) {
-		// 관리자 권한이 없는 경우 접근 차단
-		if(session.getAttribute("sIsAdmin").equals("N")) {
-			model.addAttribute("msg", "관리자 권한이 없습니다.");
-			model.addAttribute("targetURL", "./");
-			return "result/fail";
-		}
-		// 페이징 처리
-		//int listLimit = 5; // 페이지 당 목록 개수
-		int startRow = (pageNum - 1) * listLimit; // 조회할 목록의 행 번호
-		
-		int listCount = adminService.getFAQListCount(searchKeyword); // 총 목록 개수
-//		System.out.println("listCount : " + listCount);
-		int pageListLimit = 3; // 임시) 페이지 당 페이지 번호 개수를 3개로 지정(1 2 3 or 4 5 6)
-		int maxPage = listCount / listLimit + (listCount % listLimit > 0 ? 1 : 0);
-		int startPage = (pageNum - 1) / pageListLimit * pageListLimit + 1;
-		int endPage = startPage + pageListLimit - 1;
-		if(endPage > maxPage) {
-			endPage = maxPage;
-		}
-		
-		// 최대 페이지번호(maxPage) 값의 기본값을 1로 설정하기 위해 계산 결과가 0 이면 1 로 변경
-		if(maxPage == 0) {
-			maxPage = 1;
-		}
-		
-		if(endPage > maxPage) {
-			endPage = maxPage;
-		}
-		
-		// 페이지 번호가 1보다 작거나 최대 페이지 번호보다 클 경우
-		if(pageNum < 1 || pageNum > maxPage) {
-			model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-			model.addAttribute("targetURL", "AdminFAQ?pageNum=1");
-			return "result/fail";
-		}
-		
-		// 1:1문의 목록 조회
-		// 검색어는 기본적으로 "" 널스트링
-		List<BoardVO> FAQList = adminService.getFAQList(startRow, listLimit, searchKeyword);
-//		System.out.println("FAQList : " + FAQList);
-		
-		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
-//		System.out.println("pageInfo : " + pageInfo);
-		
-		// 1:1문의 목록, 페이징 정보 Model 객체에 저장 -> admin_FAQ.jsp 로 전달
-		model.addAttribute("FAQList", FAQList);
-		model.addAttribute("pageInfo", pageInfo);
-		
-		return "admin/admin_FAQ";
-	}
-	
-	// 1:1문의 상세정보 조회
-	@GetMapping("AdminFAQDetail")
-	public String adminFAQDetail(HttpSession session, Model model, BoardVO faq) {
-		// 관리자 권한이 없는 경우 접근 차단
-		if(session.getAttribute("sIsAdmin").equals("N")) {
-			model.addAttribute("msg", "관리자 권한이 없습니다.");
-			model.addAttribute("targetURL", "./");
-			return "result/fail";
-		}
-//		System.out.println("faq : " + faq);
-		
-		// 1:1문의 상세정보 가져와서 BoardVO 객체에 저장
-		faq = adminService.getFAQDetail(faq);
-//		System.out.println("faq : " + faq);
-		
-		// BoardVO 객체를 Model 객체에 저장
-		model.addAttribute("faq", faq);
-		
-		// 회원 상세정보를 MemberVO 객체에 저장
-		MemberVO member = new MemberVO();
-		member.setMem_email(faq.getMem_email());
-		member = memberService.getMember(member);
-//		System.out.println("member : " + member);
-		
-		// 회원 상세정보 Model 객체에 저장
-		model.addAttribute("member", member);
-		// -------------------------------------------------------------------------------
-		// 뷰페이지에서 파일의 효율적 처리를 위해 파일명만 별도로 String 타입 변수에 저장
-		String fileName = faq.getFaq_file();
-//		System.out.println("fileName : " + fileName);
-		// -------------------------------------------------------------------------------
-		// Model 객체에 파일 목록 저장
-		model.addAttribute("fileName", fileName);
-		// -------------------------------------------------------------------------------
-		
-		return "admin/admin_FAQ_detail";
-	}
-	
-	// 1:1문의 답변 작성/수정
-	@PostMapping("AdminFAQReply")
-	public String adminFAQReply(HttpSession session, Model model, BoardVO faq, String replyType) {
-		// 관리자 권한이 없는 경우 접근 차단
-		if(session.getAttribute("sIsAdmin").equals("N")) {
-			model.addAttribute("msg", "관리자 권한이 없습니다.");
-			model.addAttribute("targetURL", "./");
-			return "result/fail";
-		}
-//		System.out.println("faq : " + faq);
-		
-		// adminService - changeFAQReply() 메서드 호출하여 답변 작성/수정 작업 요청
-		// => 파라미터 : BoardVO 객체   리턴타입 : int(updateCount)
-		int updateCount = adminService.changeFAQReply(faq);
-		
-		// 답변 작성/수정 작업 요청 결과 판별
-		if(updateCount > 0) { // 성공
-			// "답변 작성/수정에 성공했습니다." 메세지 출력 및 "AdminFAQDetail" 서블릿 주소 전달
-			model.addAttribute("msg", "답변 " + replyType + "에 성공했습니다.");
-			model.addAttribute("targetURL", "AdminFAQDetail?faq_idx=" + faq.getFaq_idx());
-			
-			return "result/success";
-		} else { // 실패
-			// "답변 작성/수정에 실패했습니다." 메세지 출력 및 이전 페이지 돌아가기 처리
-			model.addAttribute("msg", "답변 " + replyType + "에 실패했습니다.");
-			
-			return "result/fail";
-		}
-	}
 }
 
 
