@@ -1356,7 +1356,7 @@ function linkAccount() {
 	authWindow.location = "https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
 							+ "response_type=code"
 							+ "&client_id=4066d795-aa6e-4720-9383-931d1f60d1a9"
-							+ "&redirect_uri=http://localhost:8081/with_me/callback"
+							+ "&redirect_uri=http://c5d2403t2.itwillbs.com/with_me/callback"
 							+ "&scope=login inquiry transfer"
 							+ "&state=12345678901234567890123456789012"
 							+ "&auth_type=0";
