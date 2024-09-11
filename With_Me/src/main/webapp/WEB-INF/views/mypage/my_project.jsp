@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>With_Me</title>
+<title>with_me</title>
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
@@ -490,7 +490,7 @@ $(document).ready(function() {
                             <div class="btnWrap">
 								<input type="hidden" name="project_idx" value="${project.project_idx}">
 <%-- 								<input type="button" class="management" value="관리" onclick="location.href='ProjectCreate?project_idx=${project.project_idx}'"><br> --%>
-								<input type="button" class="management" value="미리보기" onclick="location.href='ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}'"><br>
+								<input type="button" class="management" value="미리보기" onclick="location.href='ProjectDetail?project_code=${project.project_code}'"><br>
 								<input type="button" class="requestDelete" data-project-idx="${project.project_idx}" value="취소 요청" <c:if test="${fn:contains(cancelList, project.project_idx)}">disabled</c:if>>
                             </div>
                         </div>
@@ -538,7 +538,7 @@ $(document).ready(function() {
                             </div>
                             <div class="btnWrap">
                                 <input type="hidden" name="project_idx" value="${project.project_idx}">
-                                <input type="button" class="management" value="상세" onclick="location.href='ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}'"><br>
+                                <input type="button" class="management" value="상세" onclick="location.href='ProjectDetail?project_code=${project.project_code}'"><br>
                                 <!-- 아직 진행중이지 않은 프로젝트만 삭제요청 가능 -->
                                 <c:if test="${project.funding_start_date > currentDate}">
                                 	<input type="button" class="requestDelete" data-project-idx="${project.project_idx}" value="취소 요청" <c:if test="${fn:contains(cancelList, project.project_idx)}">disabled</c:if>>
