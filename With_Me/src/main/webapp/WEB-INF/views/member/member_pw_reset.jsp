@@ -118,50 +118,122 @@
 		}
 	}
 	
-// 	$(function() {
-// 		// 가입(submit) 클릭 시 이벤트 처리(생략)
-// 		$("form").submit(function() {
-// 			// 아이디 정규표현식 검사, 패스워드와 패스워드 확인 정규표현식 검사,
-// 			// 취미 항목 체크 여부 확인을 통해 해당 항목이 부적합 할 경우 
-// 			// 오류메세지 출력 및 submit 동작 취소
-// 			if(!checkPasswdResult) {
-// 				alert("패스워드를 부적합하게 입력했습니다.");
-// 				$("#mem_passwd").focus();
-// 				return false; // submit 동작 취소
+	$(function() {
+		// 가입(submit) 클릭 시 이벤트 처리(생략)
+		$("form").submit(function() {
+			// 아이디 정규표현식 검사, 패스워드와 패스워드 확인 정규표현식 검사,
+			// 취미 항목 체크 여부 확인을 통해 해당 항목이 부적합 할 경우 
+			// 오류메세지 출력 및 submit 동작 취소
+			if(!checkPasswdResult) {
+				alert("패스워드를 부적합하게 입력했습니다.");
+				$("#mem_passwd").focus();
+				return false; // submit 동작 취소
 				
-// 			} else if(!checkPasswd2Result) {
-// 				alert("패스워드 확인 항목이 일치하지 않습니다!");
-// 				$("#mem_passwd2").focus();
-// 				return false;
-// 			}
-// 		});
-// 	});
+			} else if(!checkPasswd2Result) {
+				alert("패스워드 확인 항목이 일치하지 않습니다!");
+				$("#mem_passwd2").focus();
+				return false;
+			}
+		});
+	});
 	
 	
 	//========================================================================================================
 </script>
-<style type="text/css">
-#findPw_wrap3 {
-	border: 1px solid #ccc;
-	border-radius: 12px;
-	padding: 10px 30px;
-}
-#next {
-	padding: 10px 30px;
-	border: none;
-	border-radius: 12px;
-	background-color: #ccc;
-}
-#next:hover {
-	background-color: #59b9a9;
-}
-#sec02 {
-	background-color: #f1f3f5;
-	border-radius: 12px;
-	margin: 10px 60px;
-	padding: 10px;
-}
-</style>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            width: 100%;
+            max-width: 500px;
+            margin: 60px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #findPw_wrap3 {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #sec01 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        td, th {
+            padding: 12px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        input[type="password"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 250px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+
+        input[type="button"]:hover, input[type="submit"]:hover {
+            opacity: 0.9;
+        }
+
+        #td03, #td04 {
+            text-align: left;
+            font-size: 16px;
+        }
+
+
+        #checkPasswdComplexResult, #checkPasswdResult, #checkPasswd2Result {
+            font-size: 12px;
+            color: red;
+            margin-top: 5px;
+        }
+
+        #td05 {
+            text-align: center;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #FFAB40;
+        }
+        
+        #next {
+        	padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #FFAB40;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            width: 80px;
+            margin-left: 165px;
+        }
+    </style>
 
 </head>
 <body>

@@ -206,6 +206,7 @@ public interface MemberMapper {
 	// 회원탈퇴
 	int updateWithdrawMember(MemberVO member);
 
+	// 카카오
 	MemberVO selectMemberFromEmail(String email);
 
 

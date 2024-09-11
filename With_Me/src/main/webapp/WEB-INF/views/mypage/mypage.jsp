@@ -12,6 +12,7 @@
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_like.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_default.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/mypage_main.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -245,7 +246,80 @@
 .sec01 .mainWrapper {
 	width: 80%;
 }
-	
+
+#showProjectsBtn {
+    width: 100%;
+    max-width: 132px;
+    padding: 10px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #FFAB40;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+#showProductsBtn {
+    width: 100%;
+    max-width: 132px;
+    padding: 10px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #FFAB40;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.item_project {
+	width: 24%;
+}
+
+#likeBtn {
+	width: 15%;
+}
+
+#likeProjectTitle {
+	font-size: 16px;
+}
+
+#likeProjectName {
+	color: #BBBBBB;
+	font-size: 13px;
+	font-weight: normal;
+}
+
+#fund_rate {
+	    margin-right: 10px;
+    color: #ffab40;
+    font-weight: bold;
+}
+
+.likeProduct {
+	width: 21%;
+}
+
+#productsList, #projectList {
+    gap: 20px;
+}
+
+#chat, #qna {
+/*       width: 100%; */
+      padding: 12px;
+      background-color: #FFAB40;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-right: 33px;
+}
+
+
 </style>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -267,13 +341,13 @@
 	//         $("#writeContainer" + index).show();	// 해당 인덱스에 해당하는 콘텐츠 영역만 보이기
 	//     });
 	    document.getElementById('showProjectsBtn').addEventListener('click', function() {
-	        document.getElementById('projectsList').style.display = 'block';
+	        document.getElementById('projectsList').style.display = 'flex';
 	        document.getElementById('productsList').style.display = 'none';
 	    });
 	
 	    document.getElementById('showProductsBtn').addEventListener('click', function() {
 	        document.getElementById('projectsList').style.display = 'none';
-	        document.getElementById('productsList').style.display = 'block';
+	        document.getElementById('productsList').style.display = 'flex';
 	    });
 	    
 		
@@ -290,8 +364,7 @@
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
 	<%-- ---------- 프로젝트 등록 메뉴바 ---------- --%>
-		<jsp:include page="/WEB-INF/views/inc/mypage_side_nav.jsp"></jsp:include>
-	<div class="inner">
+	<div class="inner" style="min-height: 404px;">
 		<section id="MemberInfo">
 			<div id="projectInfoWrap">
 				<div id="MypageMenuTop">
@@ -336,6 +409,9 @@
 						<li class="writeList" data-index="7">
 							<span>구매한 상품</span>
 						</li>
+						<li class="writeList" data-index="8">
+							<span>메세지</span>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -378,20 +454,20 @@
 					                    <c:choose>
 					                        <c:when test="${project.funding_end_date > today}">
 					                            <c:set var="hasValidProject" value="true" />
-					                            <div class="item">
+					                            <div class="item_project">
 					                                <div class="item_image">
 					                                    <a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
 					                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 					                                    </a>
 <%-- 															<c:if test="${not empty likeProjectList.like_status and likeProjectList.like_status eq 'Y'}"> --%>
-														<button class="like Btn" type="button" onclick="MypageCancelLike('${project.project_code}', '${sId}')">
+														<button class="like Btn" id="likeBtn" type="button" onclick="MypageCancelLike('${project.project_code}', '${sId}')">
 															<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 														</button>
 <%-- 															</c:if> --%>
 					                                </div>
 					                                <div class="item_info">
-					                                    <h4><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
-					                                    <h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
+					                                    <h4 id="likeProjectName"><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
+					                                    <h3 ><a id="likeProjectTitle" href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
 					                                </div>
 					                                <div class="fund_info">
 					                                    <div class="fund_leftWrap">
@@ -435,10 +511,9 @@
 		                    	<c:if test="${not empty likeProjectList}">
 		                    	<c:set var="hasValidProject" value="false" />
 									<c:forEach var="product" items="${likeProductList}">
-										<div class="product">
+										<div class="product likeProduct">
 											<div class="product_image">
 												<a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
-<%-- 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG"> --%>
 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
 												</a>
 												<button class="like Btn" type="button" onclick="CancelLikeProduct('${product.product_code}', '${sId}')">
@@ -489,7 +564,7 @@
 								<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 						                                </div>
 						                                <div class="item_info">
-						                                    <h4><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
+						                                    <h4><a href="OtherMemberInfo?creator_email=${project.creator_email}">${project.creator_name}</a></h4>
 						                                    <h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
 						                                </div>
 						                                <div class="fund_info">
@@ -521,7 +596,7 @@
 						                                        </c:choose>
 						                                    </div>
 						                                </div>
-						                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
+						                                <progress class="progress"  id="fund_rate" value="${fund_rate}" min="0" max="100"></progress>
 						                            </div>
 						                        </c:when>
 						                    </c:choose>
@@ -787,6 +862,22 @@
 					</div>
 				</div>
 			</div>
+			<div id="writeContainer8" class="writeContainer">
+				<div class="MypageWriteWrap">
+					<div class="MypageExplanationWrap">
+						<div class="inner">
+							<section class="sec01">
+							    <!-- 후원하는 프로젝트가 존재하는지 먼저 확인 -->
+							    <div class="productList" id="productList">
+							    	<button type="button" id="chat" class="ask" onclick="chat()">나의 채팅방</button>
+							    	<input type="button" id="qna" onclick="location.href='QnaBoardList'" value="나의 1:1문의">
+<!-- 							    	<button type="button" class="ask" onclick="loaction.href='QnaBoardList'">나의 1:1문의</button> -->
+								</div>
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
 		</article>
 	</div>
 	<footer>
@@ -848,5 +939,28 @@ function CancelLikeProduct(product_code, sId) {
 		}
 	});
 }
+
+function chat() {
+// 	console.log("채팅창 열기: " + creatorId);
+	
+	var chatUrl = "/with_me/Chating"; 
+//		var chatUrl = "/Chating?receiver_id=" + creatorId; 
+	// encodeURIComponent 이거는 JavaScript의 내장 함수로, 
+	// 문자열을 안전하게 URL에 포함할 수 있도록 특수 문자를 이스케이프(escape) 처리하여 변환해줌
+	
+	var popupOptions = "width=1000, height=500, scrollbars=yes, resizable=no";
+	
+	var chatWindow = window.open(chatUrl, "ChatWindow", popupOptions);
+	
+    if (chatWindow) {
+        chatWindow.focus();
+    } else {
+        alert("팝업 창이 차단되었습니다. 팝업 차단을 해제해주세요.");
+    }
+}
+
+
+
+
 </script>
 </html>

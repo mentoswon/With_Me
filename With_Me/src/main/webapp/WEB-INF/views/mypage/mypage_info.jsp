@@ -28,74 +28,74 @@
 	let checkTelResult = false;
 	// =============================================================
 	
-	function checkEmail() {
-		// 입력받은 이메일 값 가져오기
-		let mem_email = $("#mem_email").val();
+// 	function checkEmail() {
+// 		// 입력받은 이메일 값 가져오기
+// 		let mem_email = $("#mem_email").val();
 		
-		let regex =  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+// 		let regex =  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 		
-		let msg = "";
-		let color = "";
-		let bgColor = "";
+// 		let msg = "";
+// 		let color = "";
+// 		let bgColor = "";
 
-		// 정규표현식 문자열을 관리하는 객체(regex)의 exec() 메서드 호출하여
-		// 검사할 문자열을 전달하면 정규표현식 일치 여부 확인 가능
-		if(!regex.exec(mem_email)) { // 불일치
-			checkEmailResult = false; // 아이디 검사 적합 여부 false(부적합) 값 저장
-		} else { // 일치
-			checkEmailResult = true; // 아이디 검사 적합 여부 true(적합) 값 저장
-		}
+// 		// 정규표현식 문자열을 관리하는 객체(regex)의 exec() 메서드 호출하여
+// 		// 검사할 문자열을 전달하면 정규표현식 일치 여부 확인 가능
+// 		if(!regex.exec(mem_email)) { // 불일치
+// 			checkEmailResult = false; // 아이디 검사 적합 여부 false(부적합) 값 저장
+// 		} else { // 일치
+// 			checkEmailResult = true; // 아이디 검사 적합 여부 true(적합) 값 저장
+// 		}
 		
 		
 		// 정규표현식 규칙 검사 결과 판별
 		// => 불일치 시 불일치 메세지 출력 처리
 		// => 일치 시 AJAX 활용하여 아이디 중복 검사 요청 후 결과 처리
-		if(!checkEmailResult) {
-			msg = "올바른 양식의 이메일을 입력하세요";
-			color = "red";
-			bgColor = "lightpink";
-		} else {
-			$.ajax({
-				type : "GET",
-				url : "MemberCheckDupEmail",
-				data : {
-					mem_email : $("#mem_email").val()
-				},
-				success : function(result) {
-					console.log("result = " + result);
-					if(result.trim() == "true") {
-						msg = "이미 사용중인 이메일";
-						color = "red";
-						bgColor = "lightpink";
-					} else if(result.trim() == "false") {
-						msg = "사용 가능한 이메일";
-						color = "green";
-						bgColor = "";
-					}
+// 		if(!checkEmailResult) {
+// 			msg = "올바른 양식의 이메일을 입력하세요";
+// 			color = "red";
+// 			bgColor = "lightpink";
+// 		} else {
+// 			$.ajax({
+// 				type : "GET",
+// 				url : "MemberCheckDupEmail",
+// 				data : {
+// 					mem_email : $("#mem_email").val()
+// 				},
+// 				success : function(result) {
+// 					console.log("result = " + result);
+// 					if(result.trim() == "true") {
+// 						msg = "이미 사용중인 이메일";
+// 						color = "red";
+// 						bgColor = "lightpink";
+// 					} else if(result.trim() == "false") {
+// 						msg = "사용 가능한 이메일";
+// 						color = "green";
+// 						bgColor = "";
+// 					}
 					
-					$("#checkEmailResult").text(msg);
-					$("#checkEmailResult").css("color", color);
-					$("#mem_email").css("background", bgColor);
-				}
-			});
-		}
+// 					$("#checkEmailResult").text(msg);
+// 					$("#checkEmailResult").css("color", color);
+// 					$("#mem_email").css("background", bgColor);
+// 				}
+// 			});
+// 		}
 		
-		// AJAX 요청에 대한 코드 실행 시점 문제 발생으로 AJAX 응답 성공 시
-		// 기본값 널스트링 값이 저장된 채로 실행되므로 정확한 결과값이 표시되지 않는다!
-		// => 따라서, 현재 코드가 AJAX 요청 성공 시 처리하는 success 블럭에도 추가되어야한다!
+// 		// AJAX 요청에 대한 코드 실행 시점 문제 발생으로 AJAX 응답 성공 시
+// 		// 기본값 널스트링 값이 저장된 채로 실행되므로 정확한 결과값이 표시되지 않는다!
+// 		// => 따라서, 현재 코드가 AJAX 요청 성공 시 처리하는 success 블럭에도 추가되어야한다!
 		
-		$("#checkEmailResult").text(msg);
-		$("#checkEmailResult").css("color", color);
-		$("#mem_email").css("background", bgColor);
+// 		$("#checkEmailResult").text(msg);
+// 		$("#checkEmailResult").css("color", color);
+// 		$("#mem_email").css("background", bgColor);
 		
-	}
+// 	}
 	
 	
 	function checkTel() {
 		// 입력받은 전화번호 값 가져오기
 		let mem_tel = $("#mem_tel").val();
 		
-		let regex = /^0\d{1,2}(-|\))\d{3,4}-\d{4}$/;
+		let regex = /^01(0|1|[6-9])[0-9]{3,4}[0-9]{4}$/;
 
 		// 정규표현식 문자열을 관리하는 객체(regex)의 exec() 메서드 호출하여
 		// 검사할 문자열을 전달하면 정규표현식 일치 여부 확인 가능
@@ -256,35 +256,22 @@
 // 			// 아이디 정규표현식 검사, 패스워드와 패스워드 확인 정규표현식 검사,
 // 			// 취미 항목 체크 여부 확인을 통해 해당 항목이 부적합 할 경우 
 // 			// 오류메세지 출력 및 submit 동작 취소
-// 			if(!checkIdResult) {
-// 				alert("아이디 규칙이 적합하지 않습니다!");
-// 				$("#mem_id").focus();
-// 				return false; // submit 동작 취소
-// // 			} else if(!checkPasswdResult) { // 패스워드 검사 결과 확인 생략
-// // 				alert("패스워드 규칙이 적합하지 않습니다!");
-// // 				$("#passwd").focus();
-// // 				return false; // submit 동작 취소
-// 			} else if(!checkPasswd2Result) {
-// 				alert("패스워드 확인 항목이 일치하지 않습니다!");
-// 				$("#mem_passwd2").focus();
-// 				return false; // submit 동작 취소
+			if(!checkPasswdResult) {
+				alert("패스워드를 부적합하게 입력했습니다.");
+				$("#mem_passwd").focus();
+				return false; // submit 동작 취소
 				
-// 			} else if(!checkPasswdResult) {
-// 				alert("패스워드를 부적합하게 입력했습니다.");
-// 				$("#mem_passwd").focus();
-// 				return false;
-				
-// 			} else if(!checkJuminResult) {
-// 				alert("주민번호를 부적합하게 입력했습니다.");
-// 				$("#mem_jumin").focus();
-// 				return false;
+			} else if(!checkPasswd2Result) {
+				alert("패스워드 확인 항목이 일치하지 않습니다!");
+				$("#mem_passwd2").focus();
+				return false; // submit 동작 취소
 			
-// 			} else if(!checkTelResult) {
-// 				alert("전화번호를 부적합하게 입력했습니다.");
-// 				$("#mem_tel").focus();
-// 				return false;
+			} else if(!checkTelResult) {
+				alert("전화번호를 부적합하게 입력했습니다.");
+				$("#mem_tel").focus();
+				return false;
 			
-// 			}
+			}
 			
 			
 		});
@@ -408,14 +395,14 @@
 							<td>이름</td>
 						</tr>
 						<tr>
-							<td><input type="text" name="mem_name" id="mem_name" value="${member.mem_name}"></td>
+							<td><input type="text" name="mem_name" id="mem_name" value="${member.mem_name}" readonly="readonly"></td>
 						</tr>	
 						<tr>
 							<td>이메일</td>
 						</tr>
 						<tr>
 							<td>
-								<input type="text" name="mem_email" id="mem_email" value="${member.mem_email}" placeholder="이메일입력" onblur="checkEmail()">
+								<input type="text" name="mem_email" id="mem_email" value="${member.mem_email}" placeholder="이메일입력" onblur="checkEmail()" readonly="readonly">
 								<div id="checkEmailResult"></div>
 							</td>
 						</tr>	

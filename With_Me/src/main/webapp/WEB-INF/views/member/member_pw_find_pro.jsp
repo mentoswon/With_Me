@@ -8,28 +8,6 @@
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/pw_find_pro.css" rel="stylesheet" type="text/css">
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
-<style type="text/css">
-#findPw_wrap2 {
-	border: 1px solid #ccc;
-	border-radius: 12px;
-	padding: 10px 30px;
-}
-#next {
-	padding: 10px 30px;
-	border: none;
-	border-radius: 12px;
-	background-color: #ccc;
-}
-#next:hover {
-	background-color: #59b9a9;
-}
-#sec02 {
-	background-color: #f1f3f5;
-	border-radius: 12px;
-	margin: 10px 60px;
-	padding: 10px;
-}
-</style>
 <script type="text/javascript">
 $(function() {
 	// 본인인증 요청(cool sms)
@@ -93,6 +71,102 @@ $(function() {
 	});
 });
 </script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            width: 100%;
+            max-width: 500px;
+            margin: 60px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #findPw_wrap2 {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #sec01 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #td02 {
+            font-size: 16px;
+            color: #555;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        td, th {
+            padding: 4px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        #td03 {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 222px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+        }
+
+        input[type="button"], input[type="submit"] {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #FFAB40;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover, input[type="submit"]:hover {
+            opacity: 0.9;
+        }
+
+        #th01 {
+            text-align: center;
+        }
+
+        #td05 {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 	<header>
@@ -119,20 +193,14 @@ $(function() {
 						<div style="display: flex; justify-content: center;">
 							<table>
 								<tr>
-									<td id="td04" colspan="3" ><b>이름</b></td>
-								</tr>
-								<tr>
-									<td colspan="3"><input type="text" size="10" maxlength="5"></td>
-								</tr>
-								<tr>
 									<td id="td03" colspan="3"><b>휴대전화번호</b></td>
 								</tr>
 								<tr>
-									<td>
-										<select name="CountryCode">
-											<option value="+82">+82</option>
-										</select>
-									</td>
+<!-- 									<td> -->
+<!-- 										<select name="CountryCode"> -->
+<!-- 											<option value="+82">+82</option> -->
+<!-- 										</select> -->
+<!-- 									</td> -->
 									<td><input type="text" name="phone_number" id="phone_number" size="10"></td>
 									<th id="th01" align="left"><input type="button" value="본인인증하기" id="smsBtn"></th>
 								</tr>	
@@ -144,11 +212,6 @@ $(function() {
 								</tr>	
 								
 								<tr>
-								<td id="td05" align="center" colspan="3">
-									<br><input type="submit" value="다음" id="next">
-		<!-- 						<input type="button" value="다음" onclick="location.href='MemberJoin_two'"> -->
-		<!-- 						<input type="button" value="돌아가기" onclick="history.back()"> -->
-								</td>
 							</tr>
 							</table>
 						</div>

@@ -14,6 +14,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.itwillbs.with_me.vo.KakaoTokenVO;
+
 @Service
 public class KakaoService {
 	@Value("${kakao_client_id}")
@@ -28,7 +30,7 @@ public class KakaoService {
 	private static final String REQUEST_TOKEN_URL = "https://kauth.kakao.com/oauth/token"; 
 	private static final String REQUEST_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me"; 
 	
-	public Map<String, String> requestKakaoAccessToken(String code) {
+	public KakaoTokenVO requestKakaoAccessToken(String code) {
 		URI uri = UriComponentsBuilder
 				.fromUriString(REQUEST_TOKEN_URL) // 요청 주소 설정
 				.encode() // 주소 인코딩
@@ -53,11 +55,11 @@ public class KakaoService {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		
-		ParameterizedTypeReference<Map<String, String>> responseType = 
-				new ParameterizedTypeReference<Map<String,String>>() {};
+//		ParameterizedTypeReference<Map<String, String>> responseType = 
+//				new ParameterizedTypeReference<Map<String,String>>() {};
 				
-		ResponseEntity<Map<String, String>> responseEntity = 
-				restTemplate.exchange(uri, HttpMethod.POST, httpEntity, responseType);
+		ResponseEntity<KakaoTokenVO> responseEntity = 
+				restTemplate.exchange(uri, HttpMethod.POST, httpEntity, KakaoTokenVO.class);
 		
 		// 임시) 응답 정보 확인을 위해 ResponseEntity 객체의 메서드 활용
 		System.out.println("응답 코드 : " + responseEntity.getStatusCode());
@@ -71,7 +73,7 @@ public class KakaoService {
 	}
 
 	
-	public Map<String, Object> requestKakaoUserInfo(Map<String, String> token) {
+	public Map<String, Object> requestKakaoUserInfo(KakaoTokenVO token) {
 		URI uri = UriComponentsBuilder
 				.fromUriString(REQUEST_USER_INFO_URL) // 요청 주소 설정
 				.encode() // 주소 인코딩
@@ -81,7 +83,7 @@ public class KakaoService {
 		HttpHeaders headers = new HttpHeaders(); // 추가할 헤더정보가 1개이므로 기본 생성자 활용
 //		headers.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
 //		System.out.println("access_token : " + token.get("access_token"));
-		headers.setBearerAuth(token.get("access_token"));
+		headers.setBearerAuth(token.getAccess_token());
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(headers);		
 		System.out.println("HttpEntity : " + httpEntity.toString());

@@ -508,6 +508,13 @@
 		)
 	</insert>
 	
+	<!-- 카카오 -->
+	<select id="selectMemberFromEmail" resultType="member">
+		SELECT * 
+		FROM member
+		WHERE mem_email = #{mem_email}
+	</select>
+	
 </mapper>
 
 

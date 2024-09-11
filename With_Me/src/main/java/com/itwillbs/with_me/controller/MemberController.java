@@ -29,6 +29,7 @@ import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.FundingVO;
+import com.itwillbs.with_me.vo.KakaoTokenVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
@@ -337,7 +338,7 @@ public class MemberController {
 	public String kakaoLogin(String code, Model model, HttpSession session) {
 //		System.out.println(code);
 		
-		Map<String, String> token = kakaoService.requestKakaoAccessToken(code);
+		KakaoTokenVO token = kakaoService.requestKakaoAccessToken(code);
 		System.out.println(token);
 		
 		Map<String, Object> userInfo = kakaoService.requestKakaoUserInfo(token);

@@ -5,30 +5,75 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.servletContext.contextPath}/resources/css/join_success_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/id_find.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-#findId_wrap {
-	border: 1px solid #ccc;
-	border-radius: 12px;
-	padding: 10px 30px;
-}
-#moveLogin {
-	padding: 10px 30px;
-	border: none;
-	border-radius: 12px;
-	background-color: #ccc;
-}
-#moveLogin:hover {
-	background-color: #59b9a9;
-}
-#findId_wrap_ {
-	background-color: #f1f3f5;
-	border-radius: 12px;
-	margin: 10px 60px;
-	padding: 10px;
-}
-</style>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            width: 100%;
+            max-width: 500px;
+            margin: 60px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #findId_wrap_ {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #table01 {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #table01 td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        #table01 td:first-child {
+            font-weight: bold;
+            color: #555;
+        }
+
+        #table01 td:last-child {
+            color: #333;
+        }
+
+        #moveLogin {
+            width: 100%;
+            max-width: 200px;
+            padding: 12px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #FFAB40;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #moveLogin:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
 	<header>
@@ -51,8 +96,6 @@
 						<td colspan="2" align="center">
 							<br>
 							<input type="button" value="로그인하러 가기" onclick="location.href='MemberLogin'" id="moveLogin">
-<!-- 						<input type="button" value="다음" onclick="location.href='MemberJoin_two'"> -->
-<!-- 						<input type="button" value="돌아가기" onclick="history.back()"> -->
 						</td>
 					</tr>
 				</table>

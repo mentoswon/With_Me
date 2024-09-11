@@ -266,35 +266,30 @@
 // 			// 아이디 정규표현식 검사, 패스워드와 패스워드 확인 정규표현식 검사,
 // 			// 취미 항목 체크 여부 확인을 통해 해당 항목이 부적합 할 경우 
 // 			// 오류메세지 출력 및 submit 동작 취소
-// 			if(!checkIdResult) {
-// 				alert("아이디 규칙이 적합하지 않습니다!");
-// 				$("#mem_id").focus();
+			if(!checkEmailResult) {
+				alert("아이디 규칙이 적합하지 않습니다!");
+				$("#mem_email").focus();
+				return false; // submit 동작 취소
+// 			} else if(!checkPasswdResult) { // 패스워드 검사 결과 확인 생략
+// 				alert("패스워드 규칙이 적합하지 않습니다!");
+// 				$("#passwd").focus();
 // 				return false; // submit 동작 취소
-// // 			} else if(!checkPasswdResult) { // 패스워드 검사 결과 확인 생략
-// // 				alert("패스워드 규칙이 적합하지 않습니다!");
-// // 				$("#passwd").focus();
-// // 				return false; // submit 동작 취소
-// 			} else if(!checkPasswd2Result) {
-// 				alert("패스워드 확인 항목이 일치하지 않습니다!");
-// 				$("#mem_passwd2").focus();
-// 				return false; // submit 동작 취소
+			} else if(!checkPasswd2Result) {
+				alert("패스워드 확인 항목이 일치하지 않습니다!");
+				$("#mem_passwd2").focus();
+				return false; // submit 동작 취소
 				
-// 			} else if(!checkPasswdResult) {
-// 				alert("패스워드를 부적합하게 입력했습니다.");
-// 				$("#mem_passwd").focus();
-// 				return false;
-				
-// 			} else if(!checkJuminResult) {
-// 				alert("주민번호를 부적합하게 입력했습니다.");
-// 				$("#mem_jumin").focus();
-// 				return false;
+			} else if(!checkPasswdResult) {
+				alert("패스워드를 부적합하게 입력했습니다.");
+				$("#mem_passwd").focus();
+				return false;
 			
-// 			} else if(!checkTelResult) {
-// 				alert("전화번호를 부적합하게 입력했습니다.");
-// 				$("#mem_tel").focus();
-// 				return false;
+			} else if(!checkTelResult) {
+				alert("전화번호를 부적합하게 입력했습니다.");
+				$("#mem_tel").focus();
+				return false;
 			
-// 			}
+			}
 			
 			
 		});
@@ -443,7 +438,7 @@
 			<form action="MemberJoinPro" name="joinForm" method="post">
 				<div>
 					<label for="name">이름</label> 
-					<input placeholder="2~5글자의 한글" type="text" name="mem_name" id="mem_name" required>
+					<input type="text" name="mem_name" id="mem_name" required>
 					<div id="checkNameResult"></div>
 				</div>
 				<div>
