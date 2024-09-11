@@ -96,7 +96,7 @@
 							<c:if test="${projectList[status.index] != null and limit < 4}">
 								<div class="item">
 									<div class="item_image">
-										<a href="ProjectDetail?project_title=${projectList[status.index].project_title}&project_code=${projectList[status.index].project_code}">
+										<a href="ProjectDetail?project_code=${projectList[status.index].project_code}">
 											<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${projectList[status.index].project_image}">
 										</a>
 										<c:choose>
@@ -129,7 +129,7 @@
 												<h4><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>% 달성</h4>
 											</c:otherwise>
 										</c:choose>
-										<a href="ProjectDetail?project_title=${projectList[status.index].project_title}&project_code=${projectList[status.index].project_code}">${projectList[status.index].project_title}</a>
+										<a href="ProjectDetail?project_code=${projectList[status.index].project_code}">${projectList[status.index].project_title}</a>
 									</div>
 									<span class="tag">펀딩</span>
 								</div>
@@ -159,7 +159,7 @@
 							<b>${status.index + 1}</b>
 							<div class="popTitle">
 								<span><a href="OtherMemberInfo?creator_email=${popularProList[status.index].creator_email}">${popularProList[status.index].creator_name}</a></span>
-								<h3><a href="ProjectDetail?project_title=${popularProList[status.index].project_title}&project_code=${popularProList[status.index].project_code}">${popularProList[status.index].project_title}</a></h3>
+								<h3><a href="ProjectDetail?project_code=${popularProList[status.index].project_code}">${popularProList[status.index].project_title}</a></h3>
 								
 								<%-- 펀딩률 --%>
 								<fmt:parseNumber var="funding_amt" value="${popularProList[status.index].funding_amt*1.0}" ></fmt:parseNumber>
@@ -170,7 +170,7 @@
 								<span><fmt:formatNumber pattern="0.00">${fund_rate}</fmt:formatNumber>% 달성</span>
 							</div>
 							<div class="popular_image">
-								<a href="ProjectDetail?project_title=${popularProList[status.index].project_title}&project_code=${popularProList[status.index].project_code}">
+								<a href="ProjectDetail?project_code=${popularProList[status.index].project_code}">
 									<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${popularProList[status.index].project_image}">
 								</a>
 							</div>
@@ -188,11 +188,11 @@
 						<div class="popularItem">
 							<b>${status.index + 1}</b>
 							<div class="popTitle">
-								<h3><a href="StoreDetail?product_name=${popularProduct[status.index].product_name}&product_code=${popularProduct[status.index].product_code}">${popularProduct[status.index].product_name}</a></h3>
+								<h3><a href="StoreDetail?product_code=${popularProduct[status.index].product_code}">${popularProduct[status.index].product_name}</a></h3>
 								<span>${popularProduct[status.index].product_price} 원</span>
 							</div>
 							<div class="popular_image">
-								<a href="StoreDetail?product_name=${popularProduct[status.index].product_name}&product_code=${popularProduct[status.index].product_code}">
+								<a href="StoreDetail?product_code=${popularProduct[status.index].product_code}">
 									<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${popularProduct[status.index].product_img}">
 								</a>
 							</div>
@@ -213,7 +213,7 @@
 					<c:if test="${storeList[status.index] != null and limit < 3}">
 						<div class="item">
 							<div class="item_image">
-								<a href="StoreDetail?product_name=${storeList[status.index].product_name}&product_code=${storeList[status.index].product_code}">
+								<a href="StoreDetail?product_code=${storeList[status.index].product_code}">
 									<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/${storeList[status.index].product_img}">
 								</a>
 								<c:choose>
@@ -230,7 +230,7 @@
 								</c:choose>
 							</div>
 							<div class="item_info">
-								<h4><a href="StoreDetail?product_name=${storeList[status.index].product_name}&product_code=${storeList[status.index].product_code}">${storeList[status.index].product_name}</a></h4>
+								<h4><a href="StoreDetail?product_code=${storeList[status.index].product_code}">${storeList[status.index].product_name}</a></h4>
 								<span><fmt:formatNumber value="${storeList[status.index].product_price}" pattern="#,###"/>원</span>
 							</div>
 						</div>

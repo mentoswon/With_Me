@@ -7,7 +7,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>With_Me</title>
+		<title>with_me</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/fund_in_progress.css" rel="stylesheet" type="text/css">
@@ -83,7 +83,7 @@
 						<div class="infoWrapper">
 							<div class="title">${selectedReward.reward_title}</div>
 							<div>
-								<c:if test="${optionMap ne null}">
+								<c:if test="${optionMap ne '='}">
 									<c:forEach var="optionMap" items="${optionMap}">
 										<div class="option_name">${optionMap.key}</div>
 										<div class="multiple_option">&nbsp;&nbsp;- 옵션 : ${optionMap.value}</div>
@@ -735,7 +735,7 @@
 				authWindow.location = "https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
 										+ "response_type=code"
 										+ "&client_id=4066d795-aa6e-4720-9383-931d1f60d1a9"
-										+ "&redirect_uri=http://localhost:8081/with_me/callback"
+										+ "&redirect_uri=http://c5d2403t2.itwillbs.com/with_me/callback"
 										+ "&scope=login inquiry transfer"
 										+ "&state=12345678901234567890123456789012"
 										+ "&auth_type=0";

@@ -11,13 +11,14 @@
 	</appender>
 	
  	<!-- 로그 메세지를 파일로 출력 --> 
-<!-- 	<appender name="rollingFile" class="org.apache.log4j.DailyRollingFileAppender"> -->
-<!-- 		<param name="file" value="System.out" /> -->
-<!-- 		<param name="DatePattern" value=".yyyy-MM-dd" /> -->
-<!-- 		<layout class="org.apache.log4j.PatternLayout"> -->
-<!-- 			<param name="ConversionPattern" value="%-5p: %c - %m%n" /> -->
-<!-- 		</layout> -->
-<!-- 	</appender> -->
+	<appender name="rollingFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="./logs/with_me/with_me.log" />
+		<param name="maxFileSize" value="10MB" />
+		<param name="DatePattern" value=".yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
+		</layout>
+	</appender>
 	
 	<!-- Application Loggers -->
 	<logger name="com.itwillbs.with_me">
@@ -63,6 +64,7 @@
 	<root>
 		<priority value="warn" />
 		<appender-ref ref="console" />
+		<appender-ref ref="rollingFile" />
 	</root>
 	
 </log4j:configuration>

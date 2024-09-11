@@ -236,7 +236,7 @@
 							<c:forEach var="project" items="${projectList}">
 								<div class="item">
 									<div class="item_image">
-										<a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
+										<a href="ProjectDetail?project_code=${project.project_code}">
 											<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 										</a>
 										<c:choose>

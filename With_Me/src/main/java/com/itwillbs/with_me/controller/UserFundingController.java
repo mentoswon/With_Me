@@ -274,7 +274,8 @@ public class UserFundingController {
 	// 사용자 후원 진행
 	@GetMapping("FundInProgress")
 	public String fundInProgress(@RequestParam Map<String, Object> map, HttpSession session, MemberVO member, Model model) {
-		System.out.println("map 후원 진행 : " + map);	
+		System.out.println("map 후원 진행 : " + map);
+		System.out.println("funding_item_option : " + map.get("funding_item_option"));
 		
 		String id = (String) session.getAttribute("sId");
 		
@@ -301,7 +302,7 @@ public class UserFundingController {
 		
 		Map<String, Object> optionMap = new HashMap<String, Object>(); // option 만 따로 담을 map
 		
-		if(map.get("funding_item_option") != null) {
+		if(map.get("funding_item_option") != "") {
 			
 			String selected_option = map.get("funding_item_option").toString();
 			String selected_option_title = map.get("reward_option_title").toString();
@@ -322,13 +323,14 @@ public class UserFundingController {
 			}
 			
 			System.out.println("optionMap : " +optionMap);
+			
+			model.addAttribute("optionMap", optionMap);
 		}
 		
 		// =========================================================================
 		model.addAttribute("member", member);
 		model.addAttribute("userAddress", userAddress);
 		model.addAttribute("selectedReward", map);
-		model.addAttribute("optionMap", optionMap);
 		
 		
 		return "project/fund_in_progress";

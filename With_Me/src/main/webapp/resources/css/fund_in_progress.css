@@ -2,6 +2,7 @@
 section {
 	margin: 60px auto;
 	width: 60%;
+	min-height: auto;
 }
 
 .inner h2 {

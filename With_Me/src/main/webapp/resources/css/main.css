@@ -128,7 +128,13 @@ section {
 }
 
 .sec01 .mainWrapper .itemList .itemWrapper .item .item_info h4{
+	font-size: 14px;
 	margin-bottom: 15px;
+	color: #ffab40;
+}
+
+.sec01 .mainWrapper .itemList .itemWrapper .item .item_info a {
+	line-height: 1.2;
 }
 
 .sec01 .mainWrapper .itemList .itemWrapper .item .tag {

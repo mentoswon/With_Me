@@ -7,7 +7,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>With_Me</title>
+		<title>with_me</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/report_form.css" rel="stylesheet" type="text/css">
@@ -49,6 +49,7 @@
 					<div id="infoArea">
 						<span class="category">${project_detail.project_category} > ${project_detail.project_category_detail}</span>
 						<h4>${project_detail.project_title}</h4>
+						<h6>${project_detail.project_summary}</h6>
 						<div class="fundInfo1">
 							<div>
 								<span>모인 금액</span>
@@ -252,22 +253,24 @@
 														<div class="reward_item">
 															<div class="reward_item_name">${allRewardItems.item_name}</div>
 															
-															<!-- 옵션이 있으면 셀렉박스 표출됨 -->
-															<div class="reward_item_option">
-																<c:choose>
-																	<c:when test="${allRewardItems.item_condition eq '객관식'}">
-																		<select class="reward_item_option_select">
-																			<option disabled hidden selected value="">옵션을 선택해주세요.</option>
-																			<c:forEach var="itemOptions" items="${itemOptions}">
-																				<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
-																			</c:forEach>
-																		</select>
-																	</c:when>
-																	<c:when test="${allRewardItems.item_condition eq '주관식'}">
-																		<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write" >
-																	</c:when>
-																</c:choose>
-															</div>
+															<c:if test="${not empty allRewardItems}">
+																<!-- 옵션이 있으면 셀렉박스 표출됨 -->
+																<div class="reward_item_option">
+																	<c:choose>
+																		<c:when test="${allRewardItems.item_condition eq '객관식'}">
+																			<select class="reward_item_option_select">
+																				<option disabled hidden selected value="">옵션을 선택해주세요.</option>
+																				<c:forEach var="itemOptions" items="${itemOptions}">
+																					<option value="${itemOptions.splited_item_option}" >${itemOptions.splited_item_option}</option>
+																				</c:forEach>
+																			</select>
+																		</c:when>
+																		<c:when test="${allRewardItems.item_condition eq '주관식'}">
+																			<input type="text" placeholder="옵션을 입력해주세요." class="reward_item_option_write" >
+																		</c:when>
+																	</c:choose>
+																</div>
+															</c:if>
 														</div>
 													</c:if>
 												</c:forEach>
