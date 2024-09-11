@@ -217,7 +217,7 @@
 							<%-- 현재 페이지 번호 --%>
 						</c:when>
 						<c:otherwise>
-							<a href="board_list?pageNum=${i}">${i}</a>
+							<a href="BoardList?pageNum=${i}">${i}</a>
 							<%-- 다른 페이지 번호 --%>
 						</c:otherwise>
 					</c:choose>

@@ -371,7 +371,7 @@ $(function (){
 			
 			<section id="pageList">
 				<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-				<input type="button" value="이전" onclick="location.href='StoreList?pageNum=${pageNum - 1}'"
+				<input type="button" value="이전" onclick="location.href='StoreList?product_category=${param.product_category}&pageNum=${pageNum - 1}'"
 						<c:if test="${pageNum <= 1}">disabled</c:if> >
 				
 				<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
@@ -382,13 +382,13 @@ $(function (){
 							<b>${i}</b>
 						</c:when>
 						<c:otherwise>
-							<a href="StoreList?pageNum=${i}">${i}</a>
+							<a href="StoreList?product_category=${param.product_category}&pageNum=${i}">${i}</a>
 						</c:otherwise>
 					</c:choose>
 				
 				</c:forEach>
 				
-				<input type="button" value="다음" onclick="location.href='StoreList?pageNum=${pageNum + 1}'"
+				<input type="button" value="다음" onclick="location.href='StoreList?product_category=${param.product_category}&pageNum=${pageNum + 1}'"
 						<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 			</section>
 		</div>
