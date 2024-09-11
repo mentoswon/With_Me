@@ -214,7 +214,7 @@
 						<div class="item">
 							<div class="item_image">
 								<a href="StoreDetail?product_code=${storeList[status.index].product_code}">
-									<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/${storeList[status.index].product_img}">
+									<img alt="이미지" class="thumnail" src="${pageContext.request.contextPath}/resources/upload/${storeList[status.index].product_img}">
 								</a>
 								<c:choose>
 									<c:when test="${storeList[status.index].like_mem_email eq sId and storeList[status.index].like_status eq 'Y'}">

@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>With_Me</title>
+<title>with_me</title>
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <style>
@@ -27,7 +27,6 @@
 	}
 	
 	.main .wrapper_top .search {
-		width: 280px;
 		position: absolute;
 		left: 40%;
 	}
@@ -38,10 +37,6 @@
 	
 	.main .content table {
 		width: 100%;
-	}
-	
-	.main .content table th {
-		background-color: #eee;
 	}
 	
 	.isReply {

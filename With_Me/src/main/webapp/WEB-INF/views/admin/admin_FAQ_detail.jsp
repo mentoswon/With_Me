@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>1:1 문의</title>
+<title>with_me</title>
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link href="${pageContext.request.contextPath }/resources/css/default.css" rel="stylesheet" type="text/css">
 <style type="text/css">
@@ -49,7 +49,10 @@
 		border-radius: 5px;
 	}
 	
-	#commandCell {text-align: center;}
+	#commandCell {
+		text-align: center;
+		height: auto;
+	}
 	
 	#writeForm input[type="submit"],
 	#writeForm input[type="button"] {

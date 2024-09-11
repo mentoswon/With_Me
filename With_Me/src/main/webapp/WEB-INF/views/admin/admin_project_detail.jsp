@@ -7,13 +7,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>With_Me</title>
+<title>with_me</title>
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/project_detail.css" rel="stylesheet" type="text/css">
 <style>
-	.con01 {
-		height: 1200px;
+	section {
+		height: auto;
 	}
 	/* 승인/거부 버튼 시작 */
 	.approvalBtn {
@@ -50,6 +50,13 @@
 		background-color: #ffab40;
 		margin-bottom: 10px;
 		cursor: pointer;
+	}
+	
+	dd {
+		width: 78%;
+	    word-break: keep-all;
+	    padding: 5px;
+		margin-left: 5px;
 	}
 	/* 목록 버튼 끝 */
 </style>
@@ -99,8 +106,6 @@
 			<div class="itemWrapper">
 				<div id="imgArea">
 					<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}" title="프로젝트 썸네일">
-					<br>
-					<img alt="프로젝트 소개" src="${pageContext.request.contextPath}/resources/upload/${project.project_introduce}" title="프로젝트 소개">
 				</div>
 				<div id="infoArea">
 					<span class="category">${project.project_category} > ${project.project_category_detail}</span>
@@ -122,33 +127,33 @@
 					<div class="fundInfo2">
 						<dl>
 							<dt>프로젝트 요약</dt>
-							<dd> | ${project.project_summary}</dd>
+							<dd>${project.project_summary}</dd>
 						</dl>
 						<dl>
 							<dt>목표 후원 금액</dt>
-							<dd> | <fmt:formatNumber value="${project.target_price}" pattern="#,###"/> 원</dd>
+							<dd><fmt:formatNumber value="${project.target_price}" pattern="#,###"/> 원</dd>
 						</dl>
 						<c:choose>
 							<c:when test="${param.status eq '진행중'}">
 								<dl>
 									<dt>누적 후원 금액</dt>
-									<dd> | <fmt:formatNumber value="${project.funding_amt}" pattern="#,###"/> 원</dd>
+									<dd><fmt:formatNumber value="${project.funding_amt}" pattern="#,###"/> 원</dd>
 								</dl>
 							</c:when>
 							<c:when test="${param.status eq '종료'}">
 								<dl>
 									<dt>최종 달성 금액</dt>
-									<dd> | <fmt:formatNumber value="${project.funding_amt}" pattern="#,###"/> 원</dd>
+									<dd><fmt:formatNumber value="${project.funding_amt}" pattern="#,###"/> 원</dd>
 								</dl>
 							</c:when>
 						</c:choose>
 						<dl>
 							<dt>수수료</dt>
-							<dd> | <fmt:formatNumber value="${project.funding_commission}" pattern="#,###"/> 원</dd>
+							<dd><fmt:formatNumber value="${project.funding_commission}" pattern="#,###"/> 원</dd>
 						</dl>
 						<dl>
 							<dt>프리미엄 요금</dt>
-							<dd> | 
+							<dd> 
 								<c:choose>
 									<c:when test="${project.funding_premium eq 0}">미선택</c:when>
 									<c:when test="${project.funding_premium eq 1}">선택</c:when>
@@ -157,7 +162,7 @@
 						</dl>
 						<dl>
 							<dt>펀딩기간</dt>
-							<dd> | ${project.funding_start_date} ~ ${project.funding_end_date}</dd>
+							<dd>${project.funding_start_date} ~ ${project.funding_end_date}</dd>
 						</dl>
 						<%-- 오늘 날짜 추출 --%>
 						<c:set var="now" value="<%=new java.util.Date()%>" />
@@ -171,13 +176,13 @@
 						<c:if test="${param.status eq '진행중'}">
 							<dl>
 								<dt>남은 기간</dt>
-								<dd> | ${leftDay}일</dd>
+								<dd>${leftDay}일</dd>
 							</dl>
 						</c:if>
 						<c:if test="${param.status eq ('등록대기' or '진행중')}">
 							<dl>
 								<dt>취소신청여부</dt>
-								<dd> | 
+								<dd> 
 									<c:choose>
 										<c:when test="${projectCancel == null}">신청하지 않음</c:when>
 										<c:otherwise>신청함</c:otherwise>
@@ -189,7 +194,7 @@
 								<c:otherwise>
 									<dl>
 										<dt>취소신청사유</dt>
-										<dd> | ${projectCancel.project_cancel_reason}</dd>
+										<dd>${projectCancel.project_cancel_reason}</dd>
 									</dl>
 								</c:otherwise>
 							</c:choose>
@@ -230,6 +235,9 @@
 					</div>
 				</div>
 			</div>
+		</section>
+		<section>
+			<img alt="프로젝트 소개" src="${pageContext.request.contextPath}/resources/upload/${project.project_introduce}" title="프로젝트 소개">		
 		</section>
 		<div class="listBtn">
 			<input type="button" id="listBtn" value="목록" onclick="location.href='AdminProjectList?status=${param.status}'">

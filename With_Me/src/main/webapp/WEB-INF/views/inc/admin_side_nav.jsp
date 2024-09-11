@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <nav class="side_nav">
 	<ul>
-		<li><a href="AdminMain" id="GoHome">관리자페이지 홈</a></li>
+		<li><a href="AdminMemberList" id="GoHome">관리자페이지 홈</a></li>
 		<li class="depth01">
 			<a href="javascript:showDepth02(0)">회원관리</a>
 <!-- 			<p class="showDepth02">회원관리</p> -->

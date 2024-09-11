@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>With_Me</title>
+<title>with_me</title>
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <style>
@@ -27,7 +27,6 @@
 	}
 	
 	.main .wrapper_top .search {
-		width: 280px;
 		position: absolute;
 		left: 40%;
 	}
@@ -36,17 +35,24 @@
 		margin-bottom: 50px;
 	}
 	
-	.main .content table {
-		width: 100%;
-	}
+/* 	.main .content table { */
+/* 		width: 100%; */
+/* 		border-collapse: collapse; */
+/* 		border-radius: 5px; */
+/* 	} */
 	
-	.main .content table th {
-		background-color: #eee;
-	}
+/* 	.main .content table th { */
+/* 		background-color: #fffbe7; */
+/* 		padding: 5px; */
+/* 	} */
 	
-	.main .content table #yAdmin {
-		background-color: orange;
-	}
+/* 	.main .content table td { */
+/* 		padding: 7px 5px; */
+/* 	}	 */
+	
+/* 	.main .content table #yAdmin { */
+/* 		background-color: #ffab40; */
+/* 	} */
 	
 	/* 페이징 처리 */
 	.main #pageList {

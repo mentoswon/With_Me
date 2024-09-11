@@ -131,7 +131,7 @@
 					<c:choose>
 						<%-- 관리자일 경우 관리자메인페이지로 포워딩 --%>
 						<c:when test="${sessionScope.sIsAdmin eq 'Y'}">
-							<a href="AdminMain" class="loged">${sessionScope.sName}님</a>
+							<a href="AdminMemberList" class="loged">${sessionScope.sName}님</a>
 						</c:when>
 						<%-- 관리자가 아닐 경우(=일반 회원일 경우) 프로필 팝업 출력 --%>
 						<c:otherwise>
