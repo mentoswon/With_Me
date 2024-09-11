@@ -1,6 +1,9 @@
 @charset "UTF-8";
 
-/* .inner 크기 - default.css 에 있어서 생략 */
+/* .inner 크기 - 수정 */
+.inner {
+	max-width: 1440px;
+}
 
 .inner .wrapper {
 	display: flex;
