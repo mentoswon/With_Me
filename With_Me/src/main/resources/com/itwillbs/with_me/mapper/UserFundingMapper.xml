@@ -525,8 +525,22 @@
 			, #{user_funding_email}
 			, #{funding_idx}
 			, #{user_funding_pay_method}
-			, '미결제'
-			, null
+			<choose>
+				<when test="user_funding_pay_method == 1 || user_funding_pay_method == 2">
+					, '결제완료'
+				</when>
+				<otherwise>
+					, '미결제'
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="user_funding_pay_method == 1 || user_funding_pay_method == 2">
+					, now()
+				</when>
+				<otherwise>
+					, null
+				</otherwise>
+			</choose>
 			, #{user_funding_pay_amt}
 		)
 	</insert>

@@ -68,7 +68,7 @@
 					</div>
 					
 					<div class="mySlides">
-						<img src="https://puppydog.co.kr/web/upload/appfiles/0zdpAngaKBFnlCcCqpCU4A/c4f80a5d10178e13cb76c6b9dcf3fdb2.jpg" style="width:100%">
+						<img src="https://image6.coupangcdn.com/image/ccm/banner/dfd7e060cc19c56392b66f1b87d3d6a2.jpg" style="width:100%">
 					</div>
 					
 					<div class="mySlides">

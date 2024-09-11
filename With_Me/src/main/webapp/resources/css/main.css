@@ -18,15 +18,28 @@
 	object-fit: cover;
 }
 
+.slideshow-container {
+	width: 100%;
+	height: 100%;
+}
 /* 페이드 효과를 위한 클래스 */
 .mySlides {
 	opacity:0; 
 	display: none;
+	width: 100%;
+    height: 100%;
 }
+
 .mySlides.fade {
 	display: block;
 	opacity: 1;
 	transition: opacity 1s ease-in-out;
+}
+
+.mySlides img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 section {
@@ -54,12 +67,6 @@ section {
 /* 				center center / cover no-repeat; */
 	position: relative;
 	overflow: hidden;
-}
-
-.sec01 .mainWrapper #mainBanner .bannerImg {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
 }
 
 /*  🤞🤞 펀딩 아이템 리스트  */
