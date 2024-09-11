@@ -642,7 +642,7 @@
 							                            <div class="item">
 							                                <div class="item_image">
 							                                    <a href="DonationProjectDetail?funding_idx=${dp.funding_idx}">
-							                                       <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
+							                                       <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${dp.project_image}">
 							                                    </a>
 <%-- 							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png"> --%>
 							                                    <!-- 나중에 쓸 채워진 하트 -->
@@ -741,13 +741,13 @@
 								                                    <c:choose>
 								                                        <c:when test="${not empty follow.creator_name}">
 								                                            <button class="creator-btn" 
-								                                                    onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+								                                                    onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
 								                                                ${follow.creator_name}
 								                                            </button>
 								                                        </c:when>
 								                                        <c:otherwise>
 								                                            <button class="creator-btn" 
-								                                                    onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+								                                                    onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
 								                                                ${follow.mem_name}
 								                                            </button>
 								                                        </c:otherwise>
@@ -828,7 +828,7 @@
 					<div class="MypageExplanationWrap">
 						<div class="inner">
 							<section class="sec01">
-							    <!-- 후원하는 프로젝트가 존재하는지 먼저 확인 -->
+							    <!-- 구매한 상품이 존재하는지 먼저 확인 -->
 							    <div class="productList" id="productList">
 <!-- 									<div class="orderWrapper">  -->
 <!-- 										<span class="orderSelect" id="orderList01" onclick="fetchSortedProducts('newest')">최신순</span> -->
@@ -855,7 +855,7 @@
 							
 							    <!-- projectList 자체가 비어 있을 때 메시지 표시 -->
 							    <c:if test="${empty BuyProductList}">
-							        <p>등록된 프로젝트가 없습니다.</p>
+							        <p>결제한 상품이 없습니다.</p>
 							    </c:if>
 							</section>
 						</div>

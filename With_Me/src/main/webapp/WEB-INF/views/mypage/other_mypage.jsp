@@ -10,6 +10,7 @@
 <title>위드미 | 마이페이지</title>
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.servletContext.contextPath}/resources/css/other_mypage.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/mypage_main.css" rel="stylesheet" type="text/css">
@@ -96,6 +97,8 @@
 		background-color: #ffab40;
 		border-radius: 3px;
 	}
+	
+	
 </style>
 <script type="text/javascript">
 $(function() {
@@ -201,7 +204,7 @@ $(function() {
 							                            <div class="item">
 							                                <div class="item_image">
 							                                    <a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
-							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 							                                    </a>
 							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
 							                                    <!-- 나중에 쓸 채워진 하트 -->
@@ -259,30 +262,6 @@ $(function() {
 						        <p>등록된 프로젝트가 없습니다.</p>
 						    </c:if>
 						</section>
-							
-							<section id="pageList">
-								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-								<input type="button" value="이전" onclick="location.href='ProjectList?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if> >
-								
-								<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
-								<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-									
-									<c:choose>
-										<c:when test="${pageNum eq i}">
-											<b>${i}</b>
-										</c:when>
-										<c:otherwise>
-											<a href="ProjectList?pageNum=${i}">${i}</a>
-										</c:otherwise>
-									</c:choose>
-								
-						<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
-								</c:forEach>
-								
-								<input type="button" value="다음" onclick="location.href='ProjectList?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-							</section>
 						</div>
 					</div>
 				</div>
@@ -309,7 +288,7 @@ $(function() {
 							                            <div class="item">
 							                                <div class="item_image">
 							                                    <a href="ProjectDetail?project_title=${dp.project_title}&project_code=${dp.project_code}">
-							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 							                                    </a>
 							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
 							                                    <!-- 나중에 쓸 채워진 하트 -->
@@ -367,29 +346,6 @@ $(function() {
 							        <p>등록된 프로젝트가 없습니다.</p>
 							    </c:if>
 							</section>
-							<section id="pageList">
-								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-								<input type="button" value="이전" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if> >
-								
-								<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
-								<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-									
-									<c:choose>
-										<c:when test="${pageNum eq i}">
-											<b>${i}</b>
-										</c:when>
-										<c:otherwise>
-											<a href="MemberInfo?pageNum=${i}">${i}</a>
-										</c:otherwise>
-									</c:choose>
-								
-						<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
-								</c:forEach>
-								
-								<input type="button" value="다음" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-							</section>
 						</div>
 					</div>
 				</div>
@@ -397,104 +353,89 @@ $(function() {
 			<div id="writeContainer5" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<section id="articleForm">
-							<div align="center">
-								<section id="listForm">
-								    <!-- 상대방이 창작자인 경우 -->
-								    <c:choose>
-								        <c:when test="${not empty otherCreatorfollowList}">
-								            <c:if test="${empty otherCreatorfollowList}">
-								                <p>팔로우한 사용자가 없습니다.</p>
-								            </c:if>
-								
-								            <c:if test="${not empty otherCreatorfollowList}">
-								                <table border="1">
-								                    <tr id="tr_top">
-								                        <td>창작자 이름</td>
-								                        <td>해당창작자 정보</td>
-								                    </tr>
-								
-								                    <c:set var="pageNum" value="1" />
-								                    <c:if test="${not empty param.pageNum}">
-								                        <c:set var="pageNum" value="${param.pageNum}" />
-								                    </c:if>
-								
-								                    <c:forEach var="follow" items="${otherCreatorfollowList}">
-								                        <tr>
-								                            <td>
-								                                <c:choose>
-								                                    <c:when test="${not empty follow.creator_name}">
-								                                        <input type="button" value="${follow.creator_name}" 
-								                                               onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
-								                                    </c:when>
-								                                    <c:otherwise>
-								                                        <input type="button" value="${follow.mem_name}" 
-								                                               onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
-								                                    </c:otherwise>
-								                                </c:choose>
-								                            </td>
-								                        </tr>
-								                    </c:forEach>
-								                </table>
-								            </c:if>
-								        </c:when>
-								
-								        <c:otherwise>
-								            <c:if test="${empty OtherNoCreatorfollowList}">
-								                <p>팔로우한 사용자가 없습니다.</p>
-								            </c:if>
-								
-								            <c:if test="${not empty OtherNoCreatorfollowList}">
-								                <table border="1">
-								                    <tr id="tr_top">
-								                        <td>사용자 이름</td>
-								                        <td>해당 사용자 정보</td>
-								                    </tr>
-								
-								                    <c:set var="pageNum" value="1" />
-								                    <c:if test="${not empty param.pageNum}">
-								                        <c:set var="pageNum" value="${param.pageNum}" />
-								                    </c:if>
-								
-								                    <c:forEach var="follow" items="${OtherNoCreatorfollowList}">
-								                        <tr>
-								                            <td>
-								                                <input type="button" value="${follow.mem_name}" 
-								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
-								                            </td>
-								                        </tr>
-								                    </c:forEach>
-								                </table>
-								            </c:if>
-								        </c:otherwise>
-								    </c:choose>
-								</section>
-								<br>
-								<%-- ========================== 페이징 처리 영역 ========================== --%>
-								<section id="pageList">
-									<input type="button" value="이전"
-										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if>>
-				
-									<c:forEach var="i" begin="${pageInfo.startPage}"
-										end="${pageInfo.endPage}">
-										<c:choose>
-											<c:when test="${i eq pageNum}">
-												<b>${i}</b>
-												<%-- 현재 페이지 번호 --%>
-											</c:when>
-											<c:otherwise>
-												<a href="MemberInfo?pageNum=${i}">${i}</a>
-												<%-- 다른 페이지 번호 --%>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-				
-									<input type="button" value="다음"
-										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-								</section>
-							</div>
+						<section id="articleForm" class="center-container">
+						    <div>
+						        <section id="listForm">
+						            <c:choose>
+						                <c:when test="${not empty otherCreatorfollowList}">
+						                    <c:if test="${empty otherCreatorfollowList}">
+						                        <p class="empty-message">팔로우한 사용자가 없습니다.</p>
+						                    </c:if>
+						
+						                    <c:if test="${not empty otherCreatorfollowList}">
+						                        <table class="follow-table">
+						                            <thead>
+						                                <tr>
+						                                    <th>창작자 이름</th>
+						                                    <th>창작자 소개</th>
+						                                </tr>
+						                            </thead>
+						                            <tbody>
+						                                <c:set var="pageNum" value="1" />
+						                                <c:if test="${not empty param.pageNum}">
+						                                    <c:set var="pageNum" value="${param.pageNum}" />
+						                                </c:if>
+						
+						                                <c:forEach var="follow" items="${otherCreatorfollowList}">
+						                                    <tr>
+						                                        <td>
+						                                            <c:choose>
+						                                                <c:when test="${not empty follow.creator_name}">
+						                                                    <input type="button" class="creator-btn" value="${follow.creator_name}" 
+						                                                        onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
+						                                                </c:when>
+						                                                <c:otherwise>
+						                                                    <input type="button" class="creator-btn" value="${follow.mem_name}" 
+						                                                        onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
+						                                                </c:otherwise>
+						                                            </c:choose>
+						                                        </td>
+						                                        <td>${follow.creator_introduce}</td>
+						                                    </tr>
+						                                </c:forEach>
+						                            </tbody>
+						                        </table>
+						                    </c:if>
+						                </c:when>
+						
+						                <c:otherwise>
+						                    <c:if test="${empty OtherNoCreatorfollowList}">
+						                        <p class="empty-message">팔로우한 사용자가 없습니다.</p>
+						                    </c:if>
+						
+						                    <c:if test="${not empty OtherNoCreatorfollowList}">
+						                        <table class="follow-table">
+						                            <thead>
+						                                <tr>
+						                                    <th>사용자 이름</th>
+						                                    <th>창작자 소개</th>
+						                                </tr>
+						                            </thead>
+						                            <tbody>
+						                                <c:set var="pageNum" value="1" />
+						                                <c:if test="${not empty param.pageNum}">
+						                                    <c:set var="pageNum" value="${param.pageNum}" />
+						                                </c:if>
+						
+						                                <c:forEach var="follow" items="${OtherNoCreatorfollowList}">
+						                                    <tr>
+						                                        <td>
+						                                            <input type="button" class="creator-btn" value="${follow.mem_name}" 
+						                                                onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_mem_email}'">
+						                                        </td>
+						                                    </tr>
+							                                <tr>
+							                                	<td>${follow.creator_introduce}</td>
+							                                </tr>
+						                                </c:forEach>
+						                            </tbody>
+						                        </table>
+						                    </c:if>
+						                </c:otherwise>
+						            </c:choose>
+						        </section>
+						        <br>
+						    </div>
 						</section>
 					</div>
 				</div>
@@ -502,105 +443,87 @@ $(function() {
 			<div id="writeContainer6" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<section id="articleForm">
-							<div align="center">
-								<section id="listForm">
-								    <!-- 상대방이 창작자인 경우 -->
-								    <c:choose>
-								        <c:when test="${not empty otherCreatorfollowingList}">
-								            <c:if test="${empty otherCreatorfollowingList}">
-								                <p>팔로잉한 사용자가 없습니다.</p>
-								            </c:if>
-								
-								            <c:if test="${not empty otherCreatorfollowingList}">
-								                <table border="1">
-								                    <tr id="tr_top">
-								                        <td>창작자 이름</td>
-								                        <td>해당창작자 정보</td>
-								                    </tr>
-								
-								                    <c:set var="pageNum" value="1" />
-								                    <c:if test="${not empty param.pageNum}">
-								                        <c:set var="pageNum" value="${param.pageNum}" />
-								                    </c:if>
-								
-								                    <c:forEach var="follow" items="${otherCreatorfollowingList}">
-								                        <tr>
-								                            <td>
-								                                <c:choose>
-								                                    <c:when test="${not empty follow.creator_name}">
-								                                        <input type="button" value="${follow.creator_name}" 
-								                                               onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
-								                                    </c:when>
-								                                    <c:otherwise>
-								                                        <input type="button" value="${follow.mem_name}" 
-								                                               onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
-								                                    </c:otherwise>
-								                                </c:choose>
-								                            </td>
-								                        </tr>
-								                    </c:forEach>
-								                </table>
-								            </c:if>
-								        </c:when>
-								
-								        <c:otherwise>
-								            <c:if test="${empty OtherNoCreatorfollowingList}">
-								                <p>팔로우한 사용자가 없습니다.</p>
-								            </c:if>
-								
-								            <c:if test="${not empty OtherNoCreatorfollowingList}">
-								                <table border="1">
-								                    <tr id="tr_top">
-								                        <td>사용자 이름</td>
-								                        <td>해당 사용자 정보</td>
-								                    </tr>
-								
-								                    <c:set var="pageNum" value="1" />
-								                    <c:if test="${not empty param.pageNum}">
-								                        <c:set var="pageNum" value="${param.pageNum}" />
-								                    </c:if>
-								
-								                    <c:forEach var="follow" items="${OtherNoCreatorfollowingList}">
-								                        <tr>
-								                            <td>
-								                                <input type="button" value="${follow.mem_name}" 
-								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
-								                            </td>
-								                        </tr>
-								                    </c:forEach>
-								                </table>
-								            </c:if>
-								        </c:otherwise>
-								    </c:choose>
-								</section>
-								<br>
-								<%-- ========================== 페이징 처리 영역 ========================== --%>
-								<section id="pageList">
-									<input type="button" value="이전"
-										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if>>
-				
-									<c:forEach var="i" begin="${pageInfo.startPage}"
-										end="${pageInfo.endPage}">
-										<c:choose>
-											<c:when test="${i eq pageNum}">
-												<b>${i}</b>
-												<%-- 현재 페이지 번호 --%>
-											</c:when>
-											<c:otherwise>
-												<a href="MemberInfo?pageNum=${i}">${i}</a>
-												<%-- 다른 페이지 번호 --%>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-				
-									<input type="button" value="다음"
-										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-								</section>
-							</div>
-						</section>
+						<section id="articleForm" class="center-container">
+    <div>
+        <section id="listForm">
+            <c:choose>
+                <c:when test="${not empty otherCreatorfollowingList}">
+                    <c:if test="${empty otherCreatorfollowingList}">
+                        <p class="empty-message">팔로잉한 사용자가 없습니다.</p>
+                    </c:if>
+
+                    <c:if test="${not empty otherCreatorfollowingList}">
+                        <table class="follow-table">
+                            <thead>
+                                <tr>
+                                    <th>창작자 이름</th>
+                                    <th>창작자 소개</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:set var="pageNum" value="1" />
+                                <c:if test="${not empty param.pageNum}">
+                                    <c:set var="pageNum" value="${param.pageNum}" />
+                                </c:if>
+
+                                <c:forEach var="follow" items="${otherCreatorfollowingList}">
+                                    <tr>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${not empty follow.creator_name}">
+                                                    <input type="button" class="creator-btn" value="${follow.creator_name}" 
+                                                        onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="button" class="creator-btn" value="${follow.mem_name}" 
+                                                        onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    	<td>${follow.creator_introduce}</td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:if>
+                </c:when>
+
+                <c:otherwise>
+                    <c:if test="${empty OtherNoCreatorfollowingList}">
+                        <p class="empty-message">팔로우한 사용자가 없습니다.</p>
+                    </c:if>
+
+                    <c:if test="${not empty OtherNoCreatorfollowingList}">
+                        <table class="follow-table">
+                            <thead>
+                                <tr>
+                                    <th>사용자 이름</th>
+                                    <th>해당 사용자 정보</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:set var="pageNum" value="1" />
+                                <c:if test="${not empty param.pageNum}">
+                                    <c:set var="pageNum" value="${param.pageNum}" />
+                                </c:if>
+
+                                <c:forEach var="follow" items="${OtherNoCreatorfollowingList}">
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="creator-btn" value="${follow.mem_name}" 
+                                                onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:if>
+                </c:otherwise>
+            </c:choose>
+        </section>
+        <br>
+    </div>
+</section>
 					</div>
 				</div>
 			</div>

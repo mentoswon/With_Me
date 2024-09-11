@@ -153,9 +153,8 @@
 		        <div class="form-group top" style="border: 1px solid #ccc;">
 		            <div>
 		                <div class="image">
-<%-- 		                    <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG"> --%>
 		                    <img
-								src="${pageContext.request.contextPath}/resources/upload/${DonationProjectDetail.product_img}"
+								src="${pageContext.request.contextPath}/resources/upload/${DonationProjectDetail.project_image}"
 								id="img1" class="product_image" selected>
 		                </div>
 		            </div>

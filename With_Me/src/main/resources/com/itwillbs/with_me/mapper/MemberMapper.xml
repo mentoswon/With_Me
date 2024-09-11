@@ -401,6 +401,8 @@
 			 FROM creator_info c
         	 WHERE f.follow_mem_email = c.creator_email) AS creator_name
 		FROM follow f
+		JOIN creator_info c
+		ON f.follow_mem_email = c.creator_email
 		WHERE f.follow_creator = #{creatorEmail}
 		LIMIT
 			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
@@ -417,6 +419,8 @@
 			 FROM creator_info c
         	 WHERE f.follow_creator = c.creator_email) AS creator_name
 		FROM follow f
+		JOIN creator_info c
+		ON f.follow_creator = c.creator_email
 		WHERE f.follow_mem_email = #{creatorEmail}
 		LIMIT
 			#{startRow}     -- Mapper 내의 메서드에서 @Param("startRow") 로 지정한 파라미터명 사용
