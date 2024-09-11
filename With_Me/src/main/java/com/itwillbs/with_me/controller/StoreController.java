@@ -169,7 +169,9 @@ public class StoreController {
 		if(id == null) {
 			model.addAttribute("msg", "로그인 후 사용가능합니다.\\n로그인 페이지로 이동합니다.");
 			model.addAttribute("targetURL", "MemberLogin");
-			session.setAttribute("prevURL", "StoreInProgress");
+			// 로그인 성공 이후 메인페이지로 이동 
+			
+//			session.setAttribute("prevURL", "StoreInProgress");
 			return "result/fail";
 
 		}
