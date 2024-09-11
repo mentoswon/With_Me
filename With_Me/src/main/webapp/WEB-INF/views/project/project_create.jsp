@@ -1260,15 +1260,12 @@ $(function() {
 		let isCreatorNameFilled = $("#creator_name").val() !== '';
 		let isCreatorUploaded = $("#creatorImg").val() !== '' || $("#creator_image").val() !== '';
 		let isCreatorIntroduceFilled = $("#creator_introduce").val() !== '';
-		// 입금 계좌가 등록되었는지 확인 (계좌 정보가 #creatorAccountInfo에 있는지 체크)
-	    let isAccountInfoFilled = $("#creatorAccountInfo .accountInfo").length > 0;
-		
 		
 		// 모든 필수 항목이 입력되었거나 선택되었는지 확인
 		if (isCategorySelected && isCategoryDetailSelected && isTitleFilled && isSummaryFilled && isImageUploaded 
 				&& isPriceFilled && isStartDateFilled && isEndDateFilled
 				&& isIntroduceUploaded && isBudgetUploaded
-				&& isCreatorNameFilled && isCreatorUploaded && isCreatorIntroduceFilled && isAccountInfoFilled) {
+				&& isCreatorNameFilled && isCreatorUploaded && isCreatorIntroduceFilled) {
 			$("#request").prop("disabled", false); // 버튼 활성화
 		} else {
 			$("#request").prop("disabled", true); // 버튼 비활성화
