@@ -88,7 +88,7 @@ $(function (){
 
 .sec01 .productList .boxWrapper .product .product_info h4 {
 	font-size: 13px;
-	font-weight: normal;
+	font-weight: bold;
 	color: #bbb;
 }
 
@@ -163,7 +163,7 @@ $(function (){
 /* 개별 제품 박스 스타일 */
 .product {
 	width: 20%; /* 4열 그리드 설정 */
-	height: 250px; /* 박스의 전체 높이를 300px로 제한 */
+	height: 300px; /* 박스의 전체 높이를 300px로 제한 */
 	margin-bottom: 20px; /* 아래쪽 여백 */
 	border: 1px solid #eee; /* 경계선 설정 */
 	border-radius: 8px; /* 모서리를 둥글게 설정 */
@@ -204,29 +204,38 @@ $(function (){
 }
 /* 제품 정보 스타일 */
 .product_info {
+	margin-top: 1.5em;
 	text-align: left; /* 텍스트 가운데 정렬 */
 	padding: 10px 0 0 0; /* 아래쪽 패딩을 제거하여 텍스트와 이미지 간격 줄이기 */
 }
 
+
 /* 제품 가격 스타일 */
 .product_info h4 {
-	font-size: 16px; /* 글꼴 크기 설정 */
+	height: 25px;
+	text-align:right;
+	font-size: 20px; /* 글꼴 크기 설정 */
 	font-weight: bold; /* 글꼴 굵게 설정 */
 	margin-bottom: 5px; /* 제품명과 가격 사이의 간격을 줄이기 */
-	color: #333; /* 글꼴 색상 설정 */
+	margin-top: 15px; /* 제품명과 가격 사이의 간격을 줄이기 */
 }
+.product_info h4 a {
+	color: #ffab40; /* 글꼴 색상 설정 */
 
+}
 /* 제품명 링크 스타일 */
 .product_info a {
+	height: 35px;
 	display: block; /* 블록 요소로 설정 */
-	font-size: 14px; /* 글꼴 크기 설정 */
+	font-size: 16px; /* 글꼴 크기 설정 */
+	font-weight: 500; /* 글꼴 굵게 설정 */
 	color: #666; /* 글꼴 색상 설정 */
 	text-decoration: none; /* 밑줄 제거 */
 }
 
 /* 제품명 링크에 마우스를 올렸을 때 스타일 */
-.product_info a:hover {
-	color: #333; /* 글꼴 색상 진하게 변경 */
+.product_info h4 a:hover {
+	color: #fe9100; /* 글꼴 색상 진하게 변경 */
 }
 
 
@@ -323,7 +332,7 @@ $(function (){
 									<c:forEach var="product" items="${StoreList}">
 										<div class="product">
 											<div class="product_image">
-												<a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
+												<a href="StoreDetail?product_code=${product.product_code}">
 <%-- 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG"> --%>
 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
 												</a>
@@ -341,8 +350,8 @@ $(function (){
 												</c:choose>												
 											</div>
 											<div class="product_info">
-												<h4><a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}"><fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원</a></h4>
-												<span><a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">${product.product_name}</a></span>
+												<span><a href="StoreDetail?product_code=${product.product_code}">${product.product_name}</a></span>
+												<h4><a href="StoreDetail?product_code=${product.product_code}"><fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원</a></h4>
 											</div>
 										</div>	
 									</c:forEach>

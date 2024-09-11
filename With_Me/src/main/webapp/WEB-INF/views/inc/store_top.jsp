@@ -144,6 +144,7 @@
 				<a href="javascript:StoreList('패션/위생', '')"> 패션 / 위생 </a>
 				<ul class="depth02">
 					<li><button value="의류" onclick="StoreList('패션/위생',this.value)" >의류</button></li>
+					<li><button value="화장실" onclick="StoreList('패션/위생',this.value)" >화장실</button></li>
 				</ul>
 			</li>
 			
