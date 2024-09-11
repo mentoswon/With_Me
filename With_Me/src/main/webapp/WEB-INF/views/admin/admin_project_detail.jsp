@@ -12,11 +12,14 @@
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/project_detail.css" rel="stylesheet" type="text/css">
 <style>
+	.con01 {
+		height: 1200px;
+	}
 	/* 승인/거부 버튼 시작 */
 	.approvalBtn {
 		border: 1px solid #eee;
 		border-radius: 10px;
-		width: 400px;
+		
 		height: 50px;
 		font-weight: bold;
 		font-size: 20px;
@@ -28,6 +31,8 @@
 	.approvalBtn:disabled {
 		background-color: gray;
 	}
+	.size1 {width: 150px;}
+	.size2 {width: 400px;}
 	/* 승인/거부 버튼 끝 */
 	
 	/* 목록 버튼 시작 */
@@ -51,26 +56,26 @@
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
 <script>
-	// 프로젝트 등록 승인/거부
-	function projectRegistApproval(isAuthorize, project_idx) {
-		let msg = "";
-		
-		if(isAuthorize == 'YES') {
-			msg = "승인";
-		} else if(isAuthorize == 'NO') {
-			msg = "거부";
-		}
-		
-		if(confirm("프로젝트 등록을 " + msg + "하시겠습니까?")) {
-			location.href = "AdminProjectRegistApproval?isAuthorize=" + isAuthorize + "&project_idx=" + project_idx;
-		}
-	}
-	// 프로젝트 취소 승인
-	function projectCancelApproval(project_idx){
-		if(confirm("프로젝트 취소를 승인하시겠습니까?")) {
-			location.href = "AdminProjectCancelApproval?status=${param.status}&project_idx=" + project_idx;
-		}
-	}
+	$(function() {
+		// 프로젝트 등록 승인
+		$(".approvalForm").submit(function() {
+			if(!confirm("프로젝트 등록을 승인하시겠습니까?")) {
+				return false;
+			}
+		});
+		// 프로젝트 등록 거부
+		$(".refusalForm").submit(function() {
+			if(!confirm("프로젝트 등록을 거부하시겠습니까?")) {
+				return false;
+			}
+		});
+		// 프로젝트 취소 승인
+		$(".cancelForm").submit(function() {
+			if(!confirm("프로젝트 취소를 승인하시겠습니까?")) {
+				return false;
+			}
+		});
+	});	
 </script>
 </head>
 <body>
@@ -94,6 +99,8 @@
 			<div class="itemWrapper">
 				<div id="imgArea">
 					<img alt="프로젝트 썸네일" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}" title="프로젝트 썸네일">
+					<br>
+					<img alt="프로젝트 소개" src="${pageContext.request.contextPath}/resources/upload/${project.project_introduce}" title="프로젝트 소개">
 				</div>
 				<div id="infoArea">
 					<span class="category">${project.project_category} > ${project.project_category_detail}</span>
@@ -167,10 +174,6 @@
 								<dd> | ${leftDay}일</dd>
 							</dl>
 						</c:if>
-						<dl>
-							<dt>프로젝트 정책</dt>
-							<dd> | ${project.project_policy}</dd>
-						</dl>
 						<c:if test="${param.status eq ('등록대기' or '진행중')}">
 							<dl>
 								<dt>취소신청여부</dt>
@@ -195,17 +198,33 @@
 					<div class="fundInfo3">
 						<c:choose>
 							<c:when test="${param.status eq '등록대기'}">
-								<input type="button" class="approvalBtn" value="등록승인" onclick="projectRegistApproval('YES', ${project.project_idx})">
-								<input type="button" class="approvalBtn" value="등록거부" onclick="projectRegistApproval('NO', ${project.project_idx})">
-								<%-- 창작자가 취소 신청을 하지 않았을 경우 버튼 비활성화 처리 --%>
-								<input type="button" class="approvalBtn" value="취소승인" onclick="projectCancelApproval(${project.project_idx})" <c:if test="${projectCancel == null}">disabled</c:if>>
+								<form action="AdminProjectRegistApproval" class="approvalForm" method="post">
+									<input type="hidden" name="project_idx" value="${project.project_idx}">
+									<input type="hidden" name="isAuthorize" value="YES">
+									<input type="submit" class="approvalBtn size1" value="등록승인">
+								</form>
+								<form action="AdminProjectRegistApproval" class="refusalForm" method="post">
+									<input type="hidden" name="project_idx" value="${project.project_idx}">
+									<input type="hidden" name="isAuthorize" value="NO">
+									<input type="submit" class="approvalBtn size1" value="등록거부">
+								</form>
+								<form action="AdminProjectCancelApproval" class="cancelForm" method="post">
+									<input type="hidden" name="project_idx" value="${project.project_idx}">
+									<input type="hidden" name="status" value="${param.status}">
+									<%-- 창작자가 취소 신청을 하지 않았을 경우 버튼 비활성화 처리 --%>
+									<input type="submit" class="approvalBtn size1" value="취소승인" <c:if test="${projectCancel == null}">disabled</c:if>>
+								</form>
 							</c:when>
 							<c:when test="${param.status eq '진행중'}">
-								<%-- 창작자가 취소 신청을 하지 않았을 경우 버튼 비활성화 처리 --%>
-								<input type="button" class="approvalBtn" value="취소승인" onclick="projectCancelApproval(${project.project_idx})" <c:if test="${projectCancel == null}">disabled</c:if>>
+								<form action="AdminProjectCancelApproval" class="cancelForm" method="post">
+									<input type="hidden" name="project_idx" value="${project.project_idx}">
+									<input type="hidden" name="status" value="${param.status}">
+									<%-- 창작자가 취소 신청을 하지 않았을 경우 버튼 비활성화 처리 --%>
+									<input type="submit" class="approvalBtn size2" value="취소승인" <c:if test="${projectCancel == null}">disabled</c:if>>
+								</form>
 							</c:when>
 							<c:when test="${param.status eq '종료'}">
-								<input type="button" class="approvalBtn" value="종료됨" disabled>
+								<input type="button" class="approvalBtn size2" value="종료됨" disabled>
 							</c:when>
 						</c:choose>
 					</div>

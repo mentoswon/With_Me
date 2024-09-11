@@ -40,7 +40,7 @@
 }
 
 /* depth02 */
-.inner .wrapper .side_nav .depth01 .depth02{
+.inner .wrapper .side_nav .depth01 .adminDepth02{
 /* 	position: absolute; */
 /* 	opacity: 0; */
 /* 	transition: 0.3s; */
@@ -49,7 +49,7 @@
 	margin-top: 0.8rem;
 }
 
-.inner .wrapper .side_nav .depth01:hover .depth02 {
+.inner .wrapper .side_nav .depth01 .adminDepth02.show {
 /* 	opacity: 1; */
 /* 	pointer-events: auto; */
 	display: block;

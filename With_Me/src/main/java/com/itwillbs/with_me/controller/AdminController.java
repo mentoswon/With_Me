@@ -118,7 +118,7 @@ public class AdminController {
 	// 관리자 권한 부여/해제
 	// 같은 서블릿 주소에서 하면 버튼을 눌러서 넘어왔는지 그냥 넘어왔는지 판별이 안되므로 
 	// 주소를 구분해서 하는게 좋다 !!!!!
-	@GetMapping("ChangeAdminAuthorize")
+	@PostMapping("ChangeAdminAuthorize")
 	public String changeAdminAuthorize(MemberVO member, HttpSession session, Model model) {
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
@@ -356,7 +356,7 @@ public class AdminController {
 	}
 	
 	// 프로젝트 등록 승인/거부
-	@GetMapping("AdminProjectRegistApproval")
+	@PostMapping("AdminProjectRegistApproval")
 	public String adminProjectRegistApproval(HttpSession session, Model model, ProjectVO project, String isAuthorize) {
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
@@ -394,7 +394,7 @@ public class AdminController {
 	}
 	
 	// 프로젝트 취소 승인
-	@GetMapping("AdminProjectCancelApproval")
+	@PostMapping("AdminProjectCancelApproval")
 	public String adminProjectCancelApproval(HttpSession session, Model model, ProjectVO project, String status) {
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
@@ -744,7 +744,7 @@ public class AdminController {
 	}
 	
 	// 공지사항 삭제
-	@GetMapping("AdminNoticeRemove")
+	@PostMapping("AdminNoticeRemove")
 	public String adminNoticeRemove(int bo_idx, @RequestParam(defaultValue = "1") int pageNum,
 									HttpSession session, Model model) throws Exception {
 		// 관리자 권한이 없는 경우 접근 차단

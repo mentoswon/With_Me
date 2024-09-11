@@ -61,19 +61,18 @@
 		location.href="AdminMemberList?listLimit=" + limit;
 	}
 	// 관리자 권한 변경
-	function confirmAdmin(email, isAdmin, isAuthorize){
-		let msg = "";
-		
-		if(isAuthorize == 'Y') {
-			msg = "부여";
-		} else if(isAuthorize == 'N') {
-			msg = "해제";
-		}
-		
-		if(confirm("관리자 권한을 " + msg + "하시겠습니까?")){
-			location.href="ChangeAdminAuthorize?mem_email=" + email + "&mem_isAdmin=" + isAdmin;
-		}
-	}
+	$(function() {
+		$(".grantAdmin").submit(function() {
+			if(!confirm("관리자 권한을 부여하시겠습니까?")) {
+				return false;
+			}
+		});
+		$(".releaseAdmin").submit(function() {
+			if(!confirm("관리자 권한을 해제하시겠습니까?")) {
+				return false;
+			}
+		});
+	});
 </script>
 </head>
 <body>
@@ -145,11 +144,18 @@
 								<td>
 									<c:choose>
 										<c:when test="${member.mem_isAdmin eq 0}">
-											<input type="button" value="관리자 권한 부여" onclick="confirmAdmin('${member.mem_email}',${member.mem_isAdmin}, 'Y')"
-												<c:if test="${member.mem_status eq 2 or member.mem_status eq 3}">disabled</c:if>>
+											<form action="ChangeAdminAuthorize" class="grantAdmin" method="post">
+												<input type="hidden" name="mem_email" value="${member.mem_email}">
+												<input type="hidden" name="mem_isAdmin" value="${member.mem_isAdmin}">
+												<input type="submit" value="관리자 권한 부여" <c:if test="${member.mem_status eq 2 or member.mem_status eq 3}">disabled</c:if>>
+											</form>
 										</c:when>
 										<c:otherwise>
-											<input type="button" value="관리자 권한 해제" id="yAdmin" onclick="confirmAdmin('${member.mem_email}',${member.mem_isAdmin}, 'N')">
+											<form action="ChangeAdminAuthorize" class="releaseAdmin" method="post">
+												<input type="hidden" name="mem_email" value="${member.mem_email}">
+												<input type="hidden" name="mem_isAdmin" value="${member.mem_isAdmin}">
+												<input type="submit" value="관리자 권한 해제" id="yAdmin">
+											</form>
 										</c:otherwise>
 									</c:choose>
 								</td>

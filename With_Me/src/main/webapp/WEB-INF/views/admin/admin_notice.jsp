@@ -93,6 +93,7 @@
 	.notice.on {display: block;}
 	.btnArea {margin-top: 30px;}
 	
+	.removeNotice {display: inline-block;}
 </style>
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -160,7 +161,11 @@
 								</td>
 								<td>
 									<input type="button" class="modifyBtn" value="수정" onclick="modifyNotice('${NL.bo_idx}')">
-									<input type="button" class="deleteBtn" value="삭제" onclick="removeNotice('${NL.bo_idx}')">
+									<form action="AdminNoticeRemove" class="removeNotice" method="post">
+										<input type="hidden" name="bo_idx" value="${NL.bo_idx}">
+										<input type="hidden" name="pageNum" value="${pageNum}">
+										<input type="submit" class="deleteBtn" value="삭제">
+									</form>
 								</td>
 							</tr>
 						</c:forEach>
@@ -237,7 +242,7 @@
 					<input type="hidden" name="pageNum" value="${pageNum}">
 					<div id="resultArea"></div> <%-- 수정 팝업 내용 들어갈 자리 --%>
 					<div class="btnArea" style="text-align : center">
-						<input type="submit" class="regist_btn" value="등록">
+						<input type="submit" class="regist_btn" value="수정">
 						<input type="button" class="close_btn" value="취소">
 					</div>
 				</form>
@@ -305,12 +310,14 @@
 				notice[i].classList.remove('on');
 			});
 		}
-		// 공지사항 삭제
-		function removeNotice(bo_idx){
-			if(confirm("공지사항을 삭제하시겠습니까?")) {
-				location.href="AdminNoticeRemove?bo_idx=" + bo_idx;
-			}
-		}
+		$(function() {
+			// 공지사항 삭제
+			$(".removeNotice").submit(function() {
+				if(!confirm("공지사항을 삭제하시겠습니까?")) {
+					return false;
+				}
+			});
+		});
 	</script>
 	<footer>
 		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
