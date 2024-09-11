@@ -80,7 +80,7 @@
 				<div id="category01">
 					<div class="cateTitle">
 						<h4>주목할 만한 프로젝트</h4>
-						<a href="ProjectList?project_category=푸드">
+						<a href="ProjectList?project_category=푸드&project_state=전체">
 							<img class="more" alt="더보기" src="${pageContext.request.contextPath}/resources/image/plus.png">
 						</a>
 					</div>
