@@ -81,6 +81,10 @@ th {
 #list_btn:hover {
 	background-color: #fe9100;
 }
+
+section { /* 페이지 하단 공백 생기는 현상 해결 */
+	min-height: 80px;
+}
 </style>
 </head>
 <body>

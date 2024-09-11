@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>1:1 문의</title>
+<title>with_me</title>
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link href="${pageContext.request.contextPath }/resources/css/side_default.css" rel="stylesheet" type="text/css">
 <style type="text/css">
@@ -65,7 +65,7 @@
 #writeForm input[type="submit"]:hover,
 #writeForm input[type="button"]:hover,
 #writeForm input[type="reset"]:hover {
-    background-color: #ccaa20; /* 버튼 호버 배경색 */
+    background-color: #fe9100; /* 버튼 호버 배경색 */
 }
 
 #writeForm input[type="button"] {

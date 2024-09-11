@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>With_Me</title>
+<title>with_me</title>
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link
 	href="${pageContext.request.contextPath }/resources/css/default.css"
@@ -80,6 +80,10 @@ th {
 
 #list_btn:hover {
 	background-color: #fe9100;
+}
+
+section { /* 페이지 하단 공백 생기는 현상 해결 */
+	min-height: 80px;
 }
 </style>
 </head>

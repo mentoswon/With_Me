@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>store</title>
+<title>with_me</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
@@ -136,7 +136,7 @@ $(function (){
 /* 배너 이미지 스타일 */
 .mainBanner {
 	width: 100%; /* 배너가 전체 너비를 차지하도록 설정 */
-	height: 300px; /* 배너 높이를 300px로 설정 */
+	height: 400px; /* 배너 높이를 300px로 설정 */
 	overflow: hidden; /* 이미지가 넘치지 않도록 설정 */
 	margin-bottom: 20px; /* 아래쪽 여백 설정 */
 }
@@ -262,15 +262,15 @@ $(function (){
 <%-- 							<img class="bannerImg" alt="배너" src="${pageContext.request.contextPath}/resources/image/cuteDog3.jpg"> --%>
 							<div class="slideshow-container">
 								<div class="mySlides fade">
-									<img src="https://cdn2.wadiz.kr/2024/04/24/f1a770b3-8156-4dfc-bbe4-bfb48a187423.jpg/wadiz/resize/800/format/jpg/quality/85/" style="width:100%">
+									<img src="https://cdn.dogpang.com/catpang/data/event/banner/goodsno_maintopnew_202309141930171.jpg" style="width:100%">
 								</div>
 								
 								<div class="mySlides">
-									<img src="https://cdn2.wadiz.kr/2024/03/26/1c656025-7247-4b09-a168-d2f3218e86f5.jpg/wadiz/resize/800/format/jpg/quality/85/" style="width:100%">
+									<img src="https://cdn2.wadiz.kr/2023/07/06/6e756eb6-7584-4920-82fd-dd8d55e20c4d.jpg/wadiz/resize/800/format/jpg/quality/85/" style="width:100%">
 								</div>
 								
 								<div class="mySlides">
-									<img src="https://cdn2.wadiz.kr/2024/02/19/18008394-1637-40c2-ab09-1bfcac97bfe4.jpg/wadiz/resize/800/format/jpg/quality/85/" style="width:100%">
+									<img src="https://cdn3.wadiz.kr/studio/images/2024/02/13/22ace994-3dcf-4e78-bafa-9d0276940b7e.jpeg/wadiz/resize/800/format/jpg/quality/85/" style="width:100%">
 								</div>
 							</div>							
 						</div>

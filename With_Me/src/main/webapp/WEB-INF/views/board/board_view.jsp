@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>캠핑갈카 공지사항 게시판</title>
+<title>with_me</title>
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link
 	href="${pageContext.request.contextPath }/resources/css/default.css"
