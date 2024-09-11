@@ -321,7 +321,7 @@ public class MemberController {
 
 			// 관리자(admin) 일 경우 관리자 메인으로 리다이렉트
 			if(dbMember.getMem_isAdmin() == 1) {
-				return "redirect:/AdminMain";
+				return "redirect:/AdminMemberList";
 			}
 			
 			if(session.getAttribute("prevURL") == null) {
