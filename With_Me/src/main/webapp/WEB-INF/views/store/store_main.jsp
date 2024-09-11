@@ -72,6 +72,7 @@ $(function (){
 
 .sec01 .productList .boxWrapper .product .product_image {
 	position: relative;
+
 }
 
 .sec01 .productList .boxWrapper .product .product_image .like {
@@ -100,7 +101,9 @@ $(function (){
 	word-wrap: break-word;
 }
 
-
+.sec01 .mainWrapper {
+	width: 80%;
+}
 
 .filter {
 	display: inline-block;
@@ -191,8 +194,14 @@ $(function (){
 	height: 100%; /* 높이를 자동으로 설정하여 이미지 비율을 유지 */
 	object-fit: cover; /* 이미지가 박스에 맞게 크롭되도록 설정 */
 	margin-bottom: 10px; /* 이미지와 제품명 사이에 적당한 간격 추가 */
+    transform: scale(1.0);
+    transition: transform 0.3s;
 }
 
+/* 마우스 오버 시 이미지 확대 */
+.product_image img:hover {
+    transform: scale(1.1); /* 마우스 오버 시 이미지를 살짝 확대 */
+}
 /* 제품 정보 스타일 */
 .product_info {
 	text-align: left; /* 텍스트 가운데 정렬 */

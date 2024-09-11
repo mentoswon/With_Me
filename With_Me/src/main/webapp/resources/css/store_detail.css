@@ -606,28 +606,75 @@ color: #fff;
 
 
 /* Mobile Responsive CSS */
-@media screen and (max-width: 768px) {
-	.itemWrapper {
-		display: block;
-	}
+/* @media screen and (max-width: 768px) { */
+/* 	.itemWrapper { */
+/* 		display: block; */
+/* 	} */
 
-	.con02 {
-		display: block;
-	}
+/* 	.con02 { */
+/* 		display: block; */
+/* 	} */
 	
-	.itemWrapper #imgArea {
-		width: 100%;
-	}
+/* 	.itemWrapper #imgArea { */
+/* 		width: 100%; */
+/* 	} */
 	
-	.itemWrapper #infoArea {
-		width: 100%;
-	}
+/* 	.itemWrapper #infoArea { */
+/* 		width: 100%; */
+/* 	} */
 	
-	.con02 .left {
-		width: 100%;
-	}
+/* 	.con02 .left { */
+/* 		width: 100%; */
+/* 	} */
 	
-	.con02 .right {
-	    width: 100%;
-	}
+/* 	.con02 .right { */
+/* 	    width: 100%; */
+/* 	} */
+/* } */
+
+
+
+@media screen and (max-width: 768px) {
+    .itemWrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 20px;
+        overflow: visible; /* overflow를 visible로 설정하여 숨겨진 요소가 없도록 함 */
+    }
+
+    #imgArea, #infoArea {
+        width: 100%;
+    }
+
+    .con01 {
+        overflow: visible; /* hidden 대신 visible로 설정 */
+        padding: 10px;
+    }
+
+    .con02 {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .con02 .left, .con02 .right {
+        width: 100%;
+    }
+
+    /* 구매하기 버튼과 관련된 요소들이 보이지 않을 때 */
+    .productInfo1, .productInfo2, .productInfo3, .productInfo4 {
+        display: block; /* 각 영역이 정상적으로 표시되도록 block 처리 */
+        width: 100%;
+        overflow: visible; /* 숨김을 방지하기 위해 overflow 설정 */
+    }
+
+    /* 구매하기 버튼의 숨김 문제 해결 */
+    .goStore.Btn {
+        display: block;
+        width: 100%;
+        font-size: 16px; /* 적절한 크기로 설정 */
+        margin-top: 10px; /* 위쪽에 약간의 여백 추가 */
+    }
 }
