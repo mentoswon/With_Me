@@ -97,7 +97,7 @@
 	LEFT JOIN project_payment pay ON u.funding_idx = pay.pro_funding_idx
 	LEFT JOIN user_account a ON m.mem_email = a.mem_email
 	WHERE p.project_code = #{project_code}
-	AND u.funding_status = '후원중'
+	AND u.funding_status != '후원취소'
 	<if test="!searchKeyword.equals('')">
 		AND (
 			u.funding_idx like concat('%',#{searchKeyword},'%')
@@ -115,14 +115,14 @@
 	           ' ~ ', 
 	           DATE_FORMAT(p.funding_end_date + INTERVAL 8 DAY, '%Y-%m-%d')
 	       ) AS user_payment_date,
-	       u.funding_pay_amt, pay.pro_pay_status, a.fintech_use_num
+	       u.funding_pay_amt, pay.pro_pay_status, a.fintech_use_num, pay.pro_funding_pay_method_idx
 	FROM funding_user u 
 	JOIN member m ON u.funding_mem_email = m.mem_email
 	JOIN project_info p ON p.project_idx = u.funding_project_idx
 	LEFT JOIN project_payment pay ON u.funding_idx = pay.pro_funding_idx
 	LEFT JOIN user_account a ON m.mem_email = a.mem_email
 	WHERE p.project_code = #{project_code}
-	AND u.funding_status = '후원중'
+	AND u.funding_status != '후원취소'
 	<if test="!searchKeyword.equals('')">
 		AND (
 			u.funding_idx like concat('%',#{searchKeyword},'%')
