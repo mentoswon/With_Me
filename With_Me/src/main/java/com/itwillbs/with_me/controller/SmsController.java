@@ -90,6 +90,9 @@ public class SmsController {
 		// JSON 타입으로 리턴 데이터를 생성을 편리하게 수행하기 위해 Map<String, Object> 객체 생성
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
+		System.out.println("mem_email !!!!!!!!!!!! : " + mem_email);
+		System.out.println("phone_number !!!!!!!!!!! : " + phone_number);
+		
 		// 문자 인증 발송 요청
 		PwSmsAuthInfoVO PwsmsAuthInfo = service.sendPwAuthSMS(mem_email, phone_number);
 		if (PwsmsAuthInfo != null) {

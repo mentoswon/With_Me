@@ -144,8 +144,8 @@ article {	/* 가운데 정렬 */
 
 /* ----- 프로젝트 작성 영역 ---------- */
 .MypageWriteWrap {
-	display: flex;
-	align-items: flex-start;
+/* 	display: flex; */
+/* 	align-items: flex-start; */
 	margin-bottom: 30px;
 }
 

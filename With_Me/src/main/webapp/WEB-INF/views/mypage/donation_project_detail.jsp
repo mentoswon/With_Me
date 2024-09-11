@@ -24,7 +24,6 @@
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
     border-radius: 8px;
     border: 1px solid #ddd;
 }
@@ -52,9 +51,10 @@
 }
 
 .form-group p {
-    font-size: 16px;
+/*     font-size: 16px; */
     color: #333;
     padding: 5px 0;
+    margin-left: 20px;
 }
 
 #profile-img {
@@ -75,27 +75,30 @@
 }
 
 .form-actions {
-    display: flex;
+/*     display: flex; */
     justify-content: space-between;
     margin-top: 20px;
+    margin-right: 10px;
 }
 
-/* .form-actions input[type="submit"],  */
-/* .form-actions input[type="reset"],  */
-/* .form-actions button { */
-/*     background-color: #4CAF50; */
-/*     color: white; */
-/*     border: none; */
-/*     padding: 10px 20px; */
-/*     border-radius: 5px; */
-/*     cursor: pointer; */
-/* } */
+.form-actions input[type="submit"], 
+.form-actions input[type="button"], 
+.form-actions button {
+    background-color: #FFAB40;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: -70px;
+    margin-left: 162px;
+}
 
-/* .form-actions input[type="submit"]:hover,  */
-/* .form-actions input[type="reset"]:hover,  */
-/* .form-actions button:hover { */
-/* /*     background-color: #45a049; */
-/* } */
+.form-actions input[type="submit"]:hover, 
+.form-actions input[type="button"]:hover, 
+.form-actions button:hover {
+/*     background-color: #45a049; */
+}
 
 .top {
 	display: flex;
@@ -118,14 +121,22 @@
  	object-fit: cover;
  }
  
+ .image img2 {
+ 	width: 100%;
+ 	height: 100%;
+ 	object-fit: cover;
+ }
+ 
  .topInfo {
  	margin-top: 20px;
  }
  
- 
- #button {
- 	background-color: #FFAB40;
- 
+ .info {
+ 	font-size: 20px;
+ 	margin-bottom: 2px;
+ }
+ #status {
+ 	margin-left: 20px;
  }
 
 </style>
@@ -146,7 +157,7 @@
 		                </div>
 		            </div>
 		            <div class="topInfo">
-		                <h2>${DonationProjectDetail.project_title}</h2>
+		                <h3>${DonationProjectDetail.project_title}</h3>
 		                <p><b>누적금액</b> : <fmt:formatNumber value="${DonationProjectDetail.funding_amt}" type="number" groupingUsed="true"/>원</p>
 		                <p><b>목표금액</b> : <fmt:formatNumber value="${DonationProjectDetail.target_price}" type="number" groupingUsed="true"/>원</p>
 		            </div>
@@ -154,7 +165,7 @@
 		
 		        <div class="form-group" style="border: 1px solid #ccc;">
 		            <div>
-		                <h4>후원 정보</h4>
+		                <b><p class="info">후원 정보</p></b>
 		            </div>
 		            <div>
 		                <fmt:formatDate var="today" value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd" />
@@ -164,10 +175,10 @@
 						<!-- 펀딩 진행 상태 표시 -->
 						<c:choose>
 						    <c:when test="${today >= startDate && today <= endDate}">
-						        <b>펀딩상태</b> : 펀딩 진행중
+						        <p><b>펀딩상태</b> : 펀딩 진행중</p>
 						    </c:when>
 						    <c:when test="${today > endDate}">
-						        <b>펀딩상태</b> : 펀딩 종료됨
+						        <p><b>펀딩상태</b> : 펀딩 종료됨</p>
 						    </c:when>
 						</c:choose>
 						<p><b>후원상태</b> : ${DonationProjectDetail.funding_status}</p>
@@ -179,7 +190,7 @@
 		
 		        <div class="form-group" style="border: 1px solid #ccc;">
 		            <div>
-		                <h4>선물 정보</h4>
+		                <b><p class="info">선물 정보</p></b>
 		            </div>
 		            <div>
 		                <c:choose>
@@ -196,7 +207,7 @@
 		
 		        <div class="form-group" style="border: 1px solid #ccc;">
 		            <div>
-		                <h4>추가 후원 정보</h4>
+		                <b><p class="info">추가 후원 정보</p></b>
 		            </div>
 		            <div>
 		                <p><b>추가 후원금</b> : <fmt:formatNumber value="${DonationProjectDetail.funding_plus}" type="number" groupingUsed="true"/>원</p>

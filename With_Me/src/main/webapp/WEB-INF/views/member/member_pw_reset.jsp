@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/pw_find.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
 <script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -173,8 +173,7 @@
 		<section>
 			<div id="findPw_wrap3">
 				<form action="PwResetFinal" name="joinForm" method="post">
-					<input type="hidden" name="mem_tel" value="${dbMember.mem_tel}" id="mem_tel" size="10">	
-					<input type="hidden" name="mem_id" value="${dbMember.mem_email}" id="mem_email" size="10">	
+					<input type="hidden" name="mem_tel" value="${param.mem_tel}" id="mem_tel" size="10">	
 					<section id="sec01">
 						<table>
 							<tr>

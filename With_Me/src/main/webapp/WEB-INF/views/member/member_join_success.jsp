@@ -5,22 +5,59 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-.btn {
-	border: none;
-	border-radius: 12px;
-	padding: 15px 30px;
-	margin: 10px;
-}
-#joinFinish {
-	border: 1px solid #ccc;
-	border-radius: 12px;
-	padding: 30px 0 50px 0;
-	margin: 60px 120px;
-}
+<link href="${pageContext.request.servletContext.contextPath}/resources/css/join_success_default.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-</style>
+        main {
+            width: 100%;
+            max-width: 500px;
+            margin: 60px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        main h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        main div {
+            margin-bottom: 20px;
+        }
+
+        main input[type="button"] {
+            width: 100%;
+            max-width: 200px;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+        }
+
+        main input[type="button"].btn-home {
+            background-color: #ccc;
+        }
+
+        main input[type="button"].btn {
+            background-color: #FFAB40;
+        }
+
+        main input[type="button"]:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
 	<header>
@@ -35,7 +72,7 @@
 				<div align="center">
 					<input type="button" value="홈으로" onclick="location.href='./'" class="btn" style="background-color: #ccc;">
 					<input type="button" value="로그인"
-						onclick="location.href='MemberLogin'" class="btn" style="background-color: #59b9a9;">
+						onclick="location.href='MemberLogin'" class="btn">
 				</div>
 			</div>
 		</section>

@@ -95,7 +95,7 @@
 		// 입력받은 전화번호 값 가져오기
 		let mem_tel = $("#mem_tel").val();
 		
-		let regex = /^0\d{1,2}(-|\))\d{3,4}-\d{4}$/;
+		let regex = /^01(0|1|[6-9])[0-9]{3,4}[0-9]{4}$/;
 
 		// 정규표현식 문자열을 관리하는 객체(regex)의 exec() 메서드 호출하여
 		// 검사할 문자열을 전달하면 정규표현식 일치 여부 확인 가능
@@ -345,10 +345,89 @@
 		
 </script>
 <style type="text/css">
-/* #need { */
-/* 	margin-bottom: 20px; */
-/* } */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
+        main {
+            width: 360px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        main h4 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        main form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        main label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        main input[type="text"],
+        main input[type="password"],
+        main input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        main input[type="button"],
+        main button.btn {
+            width: 26%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: #FFAB40;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 40px;
+            margin-bottom: 10px;
+        }
+        
+
+        main input[type="button"]:hover,
+        main button.btn:hover {
+            background-color: #FF8A00;
+        }
+
+        main .outer-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        main .outer-link a {
+            color: #FFAB40;
+            text-decoration: none;
+        }
+
+        main .outer-link a:hover {
+            text-decoration: underline;
+        }
+
+        main div {
+            margin-bottom: 10px;
+        }
+
+        main div:last-child {
+            margin-bottom: 0;
+        }
 </style>
 
 </head>
@@ -358,7 +437,7 @@
 		<jsp:include page="/WEB-INF/views//inc/top.jsp"></jsp:include>
 	</header>
 	<main>
-		<div align="center">
+		<div align="left">
 			<h4>회원 가입</h4>
 			<br>
 			<form action="MemberJoinPro" name="joinForm" method="post">
@@ -370,7 +449,6 @@
 				<div>
 					<label for="email">이메일</label> 
 					<input placeholder="이메일을 입력해주세요" type="text" name="mem_email" id="mem_email" required onblur="checkEmail()">
-					<input type="button" value="이메일 인증" id="emailAuthCodeButton" onclick="sendAuthMail()">
 					<div id="checkEmailResult"></div>
 				</div>
 				<div>
@@ -389,7 +467,7 @@
 				<div>
 					<label for="address">주소</label>
 						<input type="text" name="mem_post_code" id="mem_post_code" size="6" required readonly>
-						<input type="button" value="주소검색" id="btnSearchAddress">
+						<input type="button" class="addsearch" value="주소검색" id="btnSearchAddress">
 						<br>
 						<input type="text" name="mem_add1" id="mem_add1" size="30" placeholder="기본주소" required>
 						<br>

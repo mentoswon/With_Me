@@ -24,18 +24,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.with_me.handler.RsaKeyGenerator;
+import com.itwillbs.with_me.service.KakaoService;
 import com.itwillbs.with_me.service.MailService;
 import com.itwillbs.with_me.service.MemberService;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.FundingVO;
-import com.itwillbs.with_me.vo.LikeVO;
 import com.itwillbs.with_me.vo.MailAuthInfo;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.Store_userVO;
-
-import retrofit2.http.GET;
 
 @Controller
 public class MemberController {
@@ -43,6 +41,8 @@ public class MemberController {
 	private MemberService service;
 	@Autowired
 	private MailService MailService;
+	@Autowired
+	private KakaoService kakaoService;
 	
 	// 가상의 경로명 저장(이클립스 프로젝트 상의 경로)
 	private String uploadPath = "/resources/upload"; 
@@ -94,7 +94,7 @@ public class MemberController {
 	@ResponseBody
 	@GetMapping("MemberCheckDupTel")
 	public String checkDupTel(MemberVO member) {
-//		System.out.println("tel : " + member.getMem_tel());
+		System.out.println("tel : " + member.getMem_tel());
 		
 		// MemberService - getMember() 메서드 재사용하여 회원 상세정보 조회
 		// => 파라미터 : MemberVO 객체   리턴타입 : MemberVO 객체
@@ -332,6 +332,37 @@ public class MemberController {
 		}
 	}
 	
+	// [ 카카오 로그인 ]
+	@GetMapping("KakaoLoginCallback")
+	public String kakaoLogin(String code, Model model, HttpSession session) {
+//		System.out.println(code);
+		
+		Map<String, String> token = kakaoService.requestKakaoAccessToken(code);
+		System.out.println(token);
+		
+		Map<String, Object> userInfo = kakaoService.requestKakaoUserInfo(token);
+		System.out.println(userInfo);
+		
+		// 이메일 저장된 kakaoAccount 객체 꺼내기
+		Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
+		
+		MemberVO member = service.getMemberFromEmail((String)kakaoAccount.get("email"));
+		System.out.println(member);
+		
+		if(member == null) {
+			model.addAttribute("msg", "가입되지 않은 회원입니다!\\n회원가입 페이지로 이동합니다.");
+			model.addAttribute("targetURL", "MemberJoin?email=" + kakaoAccount.get("email"));
+			return "result/success";
+		} else {
+			// 가입된 회원은 즉시 로그인 처리
+			session.setAttribute("sId", member.getMem_email());
+			session.setMaxInactiveInterval(60 * 60); // 60초 * 60분
+			return "redirect:/";
+		}
+		
+	}
+	
+	
 	// 이메일 인증 메일 재발송 폼
 	@GetMapping("ReSendAuthMail")
 	public String reSendAuthMailForm() {
@@ -445,12 +476,19 @@ public class MemberController {
 //		return "member/member_pw_find";
 	}
 	
+	// 비밀번호 재설정 폼
+	@GetMapping("PwResetFinal")
+	public String pwResetFinal() {
+		return "member/member_pw_reset";
+	}
+	
+	
 	// 비밀번호 재설정
 	@PostMapping("PwResetFinal")
-	public String pwResetFinal(@RequestParam Map<String, String> map, MemberVO member
-								, BCryptPasswordEncoder passwordEncoder, Model model) {
+	public String pwResetFinalPro(@RequestParam Map<String, String> map, MemberVO member
+								, BCryptPasswordEncoder passwordEncoder, Model model, @RequestParam(defaultValue = "")String mem_tel) {
 		member = service.getMember(member); // // map이 있으니까 member에 덮어씌워도 상관없다
-		
+		System.out.println("mem_tel : " + mem_tel);
 		// 새 비밀번호 입력 여부를 확인하여 새 비밀번호 입력됐을 경우 암호화 수행 필요
 		if(!map.get("mem_passwd").equals("")) { // 널스트링이 아니면 새 비밀번호 암호화 수행
 			map.put("mem_passwd", passwordEncoder.encode(map.get("mem_passwd")));

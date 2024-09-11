@@ -35,6 +35,8 @@ public class MemberService {
 	public MemberVO getId(MemberVO member) {
 		return mapper.selectId(member);
 	}
+	
+
 
 	// 이메일 인증 정보 등록 요청
 	public void registMailAuthInfo(MailAuthInfo mailAuthInfo) {
@@ -283,6 +285,13 @@ public class MemberService {
 	public int withdrawMember(MemberVO member) {
 		return mapper.updateWithdrawMember(member);
 	}
+
+	// 회원 이메일 조회(카카오 회원가입용)
+	public MemberVO getMemberFromEmail(String email) {
+		return mapper.selectMemberFromEmail(email);
+	}
+
+
 
 
 

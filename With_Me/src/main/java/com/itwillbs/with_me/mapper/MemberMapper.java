@@ -206,6 +206,8 @@ public interface MemberMapper {
 	// 회원탈퇴
 	int updateWithdrawMember(MemberVO member);
 
+	MemberVO selectMemberFromEmail(String email);
+
 
 
 

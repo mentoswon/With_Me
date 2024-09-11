@@ -10,6 +10,7 @@
 <title>위드미 | 마이페이지</title>
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_like.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/mypage_main.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>
@@ -107,11 +108,6 @@
 		object-fit: cover;
 	}
 	
-	.item_image img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
 	
 	.product {
 	width: 115%; /* 4열 그리드 설정 */
@@ -130,6 +126,24 @@
 	padding: 10px; /* 내부 여백을 줄여 깔끔하게 */
 }
 
+	.buyProduct {
+	width: 88%; /* 4열 그리드 설정 */
+	height: 211px; /* 박스의 전체 높이를 300px로 제한 */
+	margin-bottom: 20px; /* 아래쪽 여백 */
+	border: 1px solid #eee; /* 경계선 설정 */
+	border-radius: 8px; /* 모서리를 둥글게 설정 */
+	overflow: hidden; /* 내용이 박스를 넘치지 않도록 설정 */
+	background-color: #fff; /* 배경색 설정 */
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 박스 그림자 설정 */
+	transition: box-shadow 0.3s ease-in-out; /* 마우스 오버 시 그림자 변화 애니메이션 */
+	position: relative; /* 위치 조정을 위해 상대 위치 설정 */
+	display: flex; /* 박스 내의 내용 정렬을 위해 플렉스 사용 */
+	flex-direction: column; /* 내용을 위아래로 배치 */
+	justify-content: space-between; /* 내용이 박스 내에서 균등하게 배치되도록 설정 */
+	padding: 10px; /* 내부 여백을 줄여 깔끔하게 */
+	margin-right: 20px;
+}
+
 /* ------------------------------------------------------- */
 /* 제품 박스에 마우스를 올렸을 때 스타일 */
 .product:hover {
@@ -144,7 +158,7 @@
 /* 제품 이미지 스타일 */
 .product_image img {
 	width: 100%; /* 이미지의 너비를 부모 요소에 맞춤 */
-	height: 24px; /* 높이를 자동으로 설정하여 이미지 비율을 유지 */
+	height: 100%; /* 높이를 자동으로 설정하여 이미지 비율을 유지 */
 	object-fit: cover; /* 이미지가 박스에 맞게 크롭되도록 설정 */
 	margin-bottom: 10px; /* 이미지와 제품명 사이에 적당한 간격 추가 */
 }
@@ -169,6 +183,8 @@
 	font-size: 14px; /* 글꼴 크기 설정 */
 	color: #666; /* 글꼴 색상 설정 */
 	text-decoration: none; /* 밑줄 제거 */
+	margin-bottom: 15px;
+	
 }
 
 /* 제품명 링크에 마우스를 올렸을 때 스타일 */
@@ -180,6 +196,55 @@
 	width: 30px;
 }
 
+/* --------------------------------------------------------- */
+.sec01 .productList {
+	height: 100%;
+}
+
+.sec01 .productList .boxWrapper {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 2rem;
+}
+
+.sec01 .productList .boxWrapper .product {
+	width: 160%;
+}
+
+.sec01 .productList .boxWrapper .product .product_image {
+	position: relative;
+
+}
+
+.sec01 .productList .boxWrapper .product .product_image .like {
+	position: absolute;
+	top: 88%;
+	right: 2%;
+	width: 25px;
+	height: 25px;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+}
+
+.sec01 .productList .boxWrapper .product .product_info h4 {
+	font-size: 13px;
+	font-weight: bold;
+	color: #bbb;
+}
+
+.sec01 .productList .boxWrapper .product .product_info h3 {
+	text-align: left;
+	font-size: 16px;
+}
+
+.sec01 .productList .boxWrapper .product .product_info a {
+	word-wrap: break-word;
+}
+
+.sec01 .mainWrapper {
+	width: 80%;
+}
 	
 </style>
 <script type="text/javascript">
@@ -294,12 +359,14 @@
 		    <div id="writeContainer2" class="writeContainer">
 		        <div class="MypageWriteWrap">
 		            <div class="MypageExplanationWrap">
+		            <div class="inner">
 		            <section class="sec02">
 		            
 		                <button id="showProjectsBtn">프로젝트 좋아요</button>
 		                <button id="showProductsBtn">상품 좋아요</button>
 		
-		                <div id="likeContent">
+		                <div id="itemList">
+		                <div class="itemWrapper">
 		                	<div id="projectsList" class="likeList" style="display:none;">
 	                            <c:if test="${not empty likeProjectList}">
 	                            	<c:set var="hasValidProject" value="false" />
@@ -314,7 +381,7 @@
 					                            <div class="item">
 					                                <div class="item_image">
 					                                    <a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
-					                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+					                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 					                                    </a>
 <%-- 															<c:if test="${not empty likeProjectList.like_status and likeProjectList.like_status eq 'Y'}"> --%>
 														<button class="like Btn" type="button" onclick="MypageCancelLike('${project.project_code}', '${sId}')">
@@ -387,7 +454,9 @@
 			                    </c:if>
 		                    </div>
 		                </div>
+		                </div>
 		            </section>
+		            </div>
 		            </div>
 		        </div>
 		    </div>
@@ -413,7 +482,7 @@
 						                            <div class="item">
 						                                <div class="item_image">
 						                                    <a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
-						                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+						                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 						                                    </a>
 						                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
 						                                    <!-- 나중에 쓸 채워진 하트 -->
@@ -472,29 +541,6 @@
 						    </c:if>
 						</section>
 							
-							<section id="pageList">
-								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-								<input type="button" value="이전" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if> >
-								
-								<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
-								<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-									
-									<c:choose>
-										<c:when test="${pageNum eq i}">
-											<b>${i}</b>
-										</c:when>
-										<c:otherwise>
-											<a href="MemberInfo?pageNum=${i}">${i}</a>
-										</c:otherwise>
-									</c:choose>
-								
-						<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
-								</c:forEach>
-								
-								<input type="button" value="다음" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-							</section>
 						</div>
 					</div>
 				</div>
@@ -521,9 +567,9 @@
 							                            <div class="item">
 							                                <div class="item_image">
 							                                    <a href="DonationProjectDetail?funding_idx=${dp.funding_idx}">
-							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG">
+							                                       <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 							                                    </a>
-							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+<%-- 							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png"> --%>
 							                                    <!-- 나중에 쓸 채워진 하트 -->
 									<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 							                                </div>
@@ -582,29 +628,6 @@
 							        <p>등록된 프로젝트가 없습니다.</p>
 							    </c:if>
 							</section>
-							<section id="pageList">
-								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-								<input type="button" value="이전" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if> >
-								
-								<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
-								<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-									
-									<c:choose>
-										<c:when test="${pageNum eq i}">
-											<b>${i}</b>
-										</c:when>
-										<c:otherwise>
-											<a href="MemberInfo?pageNum=${i}">${i}</a>
-										</c:otherwise>
-									</c:choose>
-								
-						<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
-								</c:forEach>
-								
-								<input type="button" value="다음" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-							</section>
 						</div>
 					</div>
 				</div>
@@ -614,71 +637,55 @@
 					<div class="MypageExplanationWrap">
 						<section id="articleForm">
 							<div align="center">
-								<section id="listForm">
-								    <!-- followList가 비어있을 때 팔로우한 사용자가 없다는 메시지 표시 -->
-								    <c:if test="${empty followList}">
-								        <p>팔로우한 사용자가 없습니다.</p>
-								    </c:if>
-								
-								    <!-- followList가 비어있지 않을 때 목록을 표시 -->
-								    <c:if test="${not empty followList}">
-								        <table border="1">
-								            <tr id="tr_top">
-								                <td>창작자 이름</td>
-								                <td>창작자 소개</td>
-								            </tr>
-								
-								            <c:set var="pageNum" value="1" />
-								            <c:if test="${not empty param.pageNum}">
-								                <c:set var="pageNum" value="${param.pageNum}" />
+								<section id="articleForm">
+								    <div class="center-container">
+								        <section id="listForm">
+								            <!-- followList가 비어있을 때 팔로우한 사용자가 없다는 메시지 표시 -->
+								            <c:if test="${empty followList}">
+								                <p class="empty-message">팔로우한 사용자가 없습니다.</p>
 								            </c:if>
 								
-								            <c:forEach var="follow" items="${followList}">
-								                <tr>
-								                    <td>
-								                        <c:choose>
-								                            <c:when test="${not empty follow.creator_name}">
-								                                <input type="button" value="${follow.creator_name}" 
-								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
-								                            </c:when>
-								                            <c:otherwise>
-								                                <input type="button" value="${follow.mem_name}" 
-								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
-								                            </c:otherwise>
-								                        </c:choose>
-								                    </td>
-								             		<td>
-								                    	${follow.creator_introduce}
-								                    </td>
-								                </tr>
-								            </c:forEach>
-								        </table>
-								    </c:if>
-								</section>
-								<br>
-								<%-- ========================== 페이징 처리 영역 ========================== --%>
-								<section id="pageList">
-									<input type="button" value="이전"
-										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if>>
-				
-									<c:forEach var="i" begin="${pageInfo.startPage}"
-										end="${pageInfo.endPage}">
-										<c:choose>
-											<c:when test="${i eq pageNum}">
-												<b>${i}</b>
-												<%-- 현재 페이지 번호 --%>
-											</c:when>
-											<c:otherwise>
-												<a href="MemberInfo?pageNum=${i}">${i}</a>
-												<%-- 다른 페이지 번호 --%>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-				
-									<input type="button" value="다음"
-										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+								            <!-- followList가 비어있지 않을 때 목록을 표시 -->
+								            <c:if test="${not empty followList}">
+								                <table class="follow-table">
+								                    <thead>
+								                        <tr id="tr_top">
+								                            <th>창작자 이름</th>
+								                            <th>창작자 소개</th>
+								                        </tr>
+								                    </thead>
+								                    <tbody>
+								                        <c:set var="pageNum" value="1" />
+								                        <c:if test="${not empty param.pageNum}">
+								                            <c:set var="pageNum" value="${param.pageNum}" />
+								                        </c:if>
+								
+								                        <c:forEach var="follow" items="${followList}">
+								                            <tr>
+								                                <td>
+								                                    <c:choose>
+								                                        <c:when test="${not empty follow.creator_name}">
+								                                            <button class="creator-btn" 
+								                                                    onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+								                                                ${follow.creator_name}
+								                                            </button>
+								                                        </c:when>
+								                                        <c:otherwise>
+								                                            <button class="creator-btn" 
+								                                                    onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+								                                                ${follow.mem_name}
+								                                            </button>
+								                                        </c:otherwise>
+								                                    </c:choose>
+								                                </td>
+								                                <td>${follow.creator_introduce}</td>
+								                            </tr>
+								                        </c:forEach>
+								                    </tbody>
+								                </table>
+								            </c:if>
+								        </section>
+								    </div>
 								</section>
 							</div>
 						</section>
@@ -689,74 +696,54 @@
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
 						<section id="articleForm">
-							<div align="center">
-								<section id="listForm">
-								    <!-- followList가 비어있을 때 팔로우한 사용자가 없다는 메시지 표시 -->
-								    <c:if test="${empty followingList}">
-								        <p>팔로우한 사용자가 없습니다.</p>
-								    </c:if>
-								
-								    <!-- followList가 비어있지 않을 때 목록을 표시 -->
-								    <c:if test="${not empty followingList}">
-								        <table border="1">
-								            <tr id="tr_top">
-								                <td>창작자 이름</td>
-								                <td>창작자 소개</td>
-								            </tr>
-								
-								            <c:set var="pageNum" value="1" />
-								            <c:if test="${not empty param.pageNum}">
-								                <c:set var="pageNum" value="${param.pageNum}" />
-								            </c:if>
-								
-								            <c:forEach var="follow" items="${followingList}">
-								                <tr>
-								                    <td>
-								                        <c:choose>
-								                            <c:when test="${not empty follow.creator_name}">
-								                                <input type="button" value="${follow.creator_name}" 
-								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
-								                            </c:when>
-								                            <c:otherwise>
-								                                <input type="button" value="${follow.mem_name}" 
-								                                       onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
-								                            </c:otherwise>
-								                        </c:choose>
-								                    </td>
-								                    <td>
-								                    	${follow.creator_introduce}
-								                    </td>
-								                </tr>
-								            </c:forEach>
-								        </table>
-								    </c:if>
-								</section>
-								<br>
-								<%-- ========================== 페이징 처리 영역 ========================== --%>
-								<section id="pageList">
-									<input type="button" value="이전"
-										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if>>
-				
-									<c:forEach var="i" begin="${pageInfo.startPage}"
-										end="${pageInfo.endPage}">
-										<c:choose>
-											<c:when test="${i eq pageNum}">
-												<b>${i}</b>
-												<%-- 현재 페이지 번호 --%>
-											</c:when>
-											<c:otherwise>
-												<a href="MemberInfo?pageNum=${i}">${i}</a>
-												<%-- 다른 페이지 번호 --%>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-				
-									<input type="button" value="다음"
-										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-								</section>
-							</div>
+						    <div class="center-container">
+						        <section id="listForm">
+						            <!-- followList가 비어있을 때 팔로우한 사용자가 없다는 메시지 표시 -->
+						            <c:if test="${empty followingList}">
+						                <p class="empty-message">팔로우한 사용자가 없습니다.</p>
+						            </c:if>
+						
+						            <!-- followList가 비어있지 않을 때 목록을 표시 -->
+						            <c:if test="${not empty followingList}">
+						                <table class="follow-table">
+						                    <thead>
+						                        <tr id="tr_top">
+						                            <th>창작자 이름</th>
+						                            <th>창작자 소개</th>
+						                        </tr>
+						                    </thead>
+						                    <tbody>
+						                        <c:set var="pageNum" value="1" />
+						                        <c:if test="${not empty param.pageNum}">
+						                            <c:set var="pageNum" value="${param.pageNum}" />
+						                        </c:if>
+						
+						                        <c:forEach var="follow" items="${followingList}">
+						                            <tr>
+						                                <td>
+						                                    <c:choose>
+						                                        <c:when test="${not empty follow.creator_name}">
+						                                            <button class="creator-btn" 
+						                                                    onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+						                                                ${follow.creator_name}
+						                                            </button>
+						                                        </c:when>
+						                                        <c:otherwise>
+						                                            <button class="creator-btn" 
+						                                                    onclick="location.href='OtherMemberInfo?creator_email=${follow.follow_creator}'">
+						                                                ${follow.mem_name}
+						                                            </button>
+						                                        </c:otherwise>
+						                                    </c:choose>
+						                                </td>
+						                                <td>${follow.creator_introduce}</td>
+						                            </tr>
+						                        </c:forEach>
+						                    </tbody>
+						                </table>
+						            </c:if>
+						        </section>
+						    </div>
 						</section>
 					</div>
 				</div>
@@ -764,60 +751,39 @@
 			<div id="writeContainer7" class="writeContainer">
 				<div class="MypageWriteWrap">
 					<div class="MypageExplanationWrap">
-						<section id="articleForm">
-							<div align="center">
-								<section id="listForm">
-								    <c:if test="${not empty BuyProductList}">
-								        <c:set var="hasValidProject" value="false" />
-								        <c:forEach var="product" items="${BuyProductList}">
-								            <div class="product">
-								                <div class="product_image">
-								                    <a href="BuyProductDetail?order_idx=${product.order_idx}">
-								                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
-								                    </a>
-								                </div>
-								                <div class="product_info">
-								                    <h4><a href="BuyProductDetail?order_idx=${product.order_idx}">
-								                        <fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원
-								                    </a></h4>
-								                    <span><a href="BuyProductDetail?order_idx=${product.order_idx}">${product.product_name}</a></span>
-								                </div>
-								            </div>
-								        </c:forEach>
-								    </c:if>
-								    <c:if test="${empty BuyProductList}">
-								        <div class="no-products">
-								            <p>결제한 상품이 없습니다.</p>
-								        </div>
-								    </c:if>
-								</section>
-								<br>
-								<%-- ========================== 페이징 처리 영역 ========================== --%>
-								<section id="pageList">
-									<input type="button" value="이전"
-										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if>>
-				
-									<c:forEach var="i" begin="${pageInfo.startPage}"
-										end="${pageInfo.endPage}">
-										<c:choose>
-											<c:when test="${i eq pageNum}">
-												<b>${i}</b>
-												<%-- 현재 페이지 번호 --%>
-											</c:when>
-											<c:otherwise>
-												<a href="MemberInfo?pageNum=${i}">${i}</a>
-												<%-- 다른 페이지 번호 --%>
-											</c:otherwise>
-										</c:choose>
+						<div class="inner">
+							<section class="sec01">
+							    <!-- 후원하는 프로젝트가 존재하는지 먼저 확인 -->
+							    <div class="productList" id="productList">
+<!-- 									<div class="orderWrapper">  -->
+<!-- 										<span class="orderSelect" id="orderList01" onclick="fetchSortedProducts('newest')">최신순</span> -->
+<!-- 										<span class="orderSelect" id="orderList02" onclick="fetchSortedProducts('priceDesc')">가격 높은순</span> -->
+<!-- 										<span class="orderSelect" id="orderList03" onclick="fetchSortedProducts('priceAsc')">가격 낮은순</span> -->
+<!-- 									</div> -->
+									<div class="boxWrapper">
+									<c:forEach var="product" items="${BuyProductList}">
+										<div class="buyProduct">
+											<div class="product_image">
+												<a href="BuyProductDetail?order_idx=${product.order_idx}">
+<%-- 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/image/cuteDog.JPG"> --%>
+													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
+												</a>
+											</div>
+											<div class="product_info">
+												<span><a href="BuyProductDetail?order_idx=${product.order_idx}">${product.product_name}</a></span>
+												<h4><a href="BuyProductDetail?order_idx=${product.order_idx}"><fmt:formatNumber pattern="#,###">${product.product_price}</fmt:formatNumber>원</a></h4>
+											</div>
+										</div>	
 									</c:forEach>
-				
-									<input type="button" value="다음"
-										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-								</section>
-							</div>
-						</section>
+									</div>
+								</div>
+							
+							    <!-- projectList 자체가 비어 있을 때 메시지 표시 -->
+							    <c:if test="${empty BuyProductList}">
+							        <p>등록된 프로젝트가 없습니다.</p>
+							    </c:if>
+							</section>
+						</div>
 					</div>
 				</div>
 			</div>

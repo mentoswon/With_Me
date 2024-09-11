@@ -24,7 +24,6 @@
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
     border-radius: 8px;
     border: 1px solid #ddd;
 }
@@ -52,9 +51,10 @@
 }
 
 .form-group p {
-    font-size: 16px;
+/*     font-size: 16px; */
     color: #333;
     padding: 5px 0;
+    margin-left: 20px;
 }
 
 #profile-img {
@@ -75,24 +75,27 @@
 }
 
 .form-actions {
-    display: flex;
+/*     display: flex; */
     justify-content: space-between;
     margin-top: 20px;
+    margin-right: 10px;
 }
 
 .form-actions input[type="submit"], 
-.form-actions input[type="reset"], 
+.form-actions input[type="button"], 
 .form-actions button {
-    background-color: #4CAF50;
+    background-color: #FFAB40;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    margin-right: -70px;
+    margin-left: 162px;
 }
 
 .form-actions input[type="submit"]:hover, 
-.form-actions input[type="reset"]:hover, 
+.form-actions input[type="button"]:hover, 
 .form-actions button:hover {
 /*     background-color: #45a049; */
 }
@@ -118,8 +121,22 @@
  	object-fit: cover;
  }
  
+ .image img2 {
+ 	width: 100%;
+ 	height: 100%;
+ 	object-fit: cover;
+ }
+ 
  .topInfo {
  	margin-top: 20px;
+ }
+ 
+ .info {
+ 	font-size: 20px;
+ 	margin-bottom: 2px;
+ }
+ #status {
+ 	margin-left: 20px;
  }
 
 </style>
@@ -141,14 +158,9 @@
 								src="${pageContext.request.contextPath}/resources/upload/${BuyProductDetail.product_img}"
 								id="img1" class="product_image" selected>
 		                </div>
-		                <div>
-							<img
-								src="${pageContext.request.contextPath}/resources/upload/${BuyProductDetail.product_img2}"
-								id="img2" class="product_image2" selected>
-		                </div>
 		            </div>
 		            <div class="topInfo">
-		                <h2>${BuyProductDetail.product_name}</h2>
+		                <h3>${BuyProductDetail.product_name}</h3>
 		                <p><b>카테고리</b> : ${BuyProductDetail.product_category}(${BuyProductDetail.product_category_detail})</p>
 			                <p><b>결제상태</b> : ${BuyProductDetail.store_usuer_status}</p>
 <%-- 		                <p><fmt:formatNumber value="${BuyProductDetail.funding_amt}" type="number" groupingUsed="true"/>원</p> --%>
@@ -158,7 +170,7 @@
 				
 				<div class="form-group" style="border: 1px solid #ccc;">
 		            <div>
-		                <h4>상품 정보</h4>
+		                <b><p class="info">상품 정보</p></b>
 		            </div>
 		            <div>
 		            	<p><b>상품명</b> : ${BuyProductDetail.product_name}</p>
@@ -171,7 +183,7 @@
 				
 		        <div class="form-group" style="border: 1px solid #ccc;">
 		            <div>
-		                <h4>배송 정보</h4>
+		                <b><p class="info">배송 정보</p></b>
 		            </div>
 		            <div>
 						<p><b>주문날짜</b> : <fmt:formatDate value="${orderDate}" pattern="yyyy.MM.dd" /></p>
@@ -182,13 +194,13 @@
 						<p><b>수신자 전화번호</b> : ${BuyProductDetail.address_receiver_tel}</p>
 						<c:choose>
 							<c:when test="${BuyProductDetail.product_shipping_info eq 1}">
-								<td id="status"><b>배송상태</b> : 배송전</td>
+								<p id="status"><b>배송상태</b> : 배송전</p>
 							</c:when>
 							<c:when test="${BuyProductDetail.product_shipping_info eq 2}">
-								<td><b>배송상태</b> : 배송중</td>
+								<p><b>배송상태</b> : 배송중</p>
 							</c:when>
 							<c:when test="${BuyProductDetail.product_shipping_info eq 3}">
-								<td><b>배송상태</b> : 배송완료</td>
+								<p><b>배송상태</b> : 배송완료</p>
 							</c:when>
 						</c:choose>
 		            </div>

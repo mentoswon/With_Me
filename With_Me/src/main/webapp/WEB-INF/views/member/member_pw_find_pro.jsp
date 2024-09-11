@@ -83,7 +83,7 @@ $(function() {
 	                $("#auth_code").val("");
 				} else if(response.result) {
 		            alert("인증되었습니다.");
-		            location.href = "PwResetFinal";
+		            location.href = "PwResetFinal?mem_tel=" + $("#phone_number").val();
 				}
 	        },
 	        error: function() {
@@ -104,6 +104,7 @@ $(function() {
 			<div id="findPw_wrap2">
 				<form action=PwResetPro method="post">
 					<input type="hidden" name="mem_email" value="${param.mem_email}" id="mem_email" size="10">
+					<input type="hidden" name="mem_tel" value="${param.mem_tel}" id="mem_tel" size="10">
 					<section id="sec01">
 						<table>
 							<tr>

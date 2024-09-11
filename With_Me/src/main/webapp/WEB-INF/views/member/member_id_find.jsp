@@ -7,28 +7,79 @@
 <title>Insert title here</title>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/mypage_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/id_find.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-#findId_wrap {
-	border: 1px solid #ccc;
-	border-radius: 12px;
-	padding: 10px 30px;
-}
-#next {
-	padding: 10px 30px;
-	border: none;
-	border-radius: 12px;
-	background-color: #ccc;
-}
-#next:hover {
-	background-color: #59b9a9;
-}
-#sec02 {
-	background-color: #f1f3f5;
-	border-radius: 12px;
-	margin: 10px 60px;
-	padding: 10px;
-}
-</style>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            width: 100%;
+            max-width: 500px;
+            margin: 60px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #findId_wrap h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #findId_wrap p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        #findId_wrap input[type="text"] {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        #findId_wrap input[type="submit"] {
+            width: 100%;
+            max-width: 120px;
+            padding: 10px;
+            margin: 20px 0;
+            border: none;
+            border-radius: 8px;
+            background-color: #FFAB40;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #findId_wrap input[type="submit"]:hover {
+            opacity: 0.9;
+        }
+
+        #findId_wrap td {
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            text-align: center;
+        }
+
+        #td02 {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
 	<header>
