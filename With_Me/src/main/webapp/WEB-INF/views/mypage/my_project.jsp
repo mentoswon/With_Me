@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>With_Me</title>
+<title>with_me</title>
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <%-- jquery 라이브러리 포함시키기 --%>

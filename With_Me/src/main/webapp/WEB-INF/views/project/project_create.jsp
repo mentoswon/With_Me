@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>With_Me</title>
+<title>with_me</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <%-- 외부 CSS 파일 연결하기 --%>
 <link href="${pageContext.request.servletContext.contextPath}/resources/css/project_create.css" rel="stylesheet" type="text/css">
@@ -906,7 +906,7 @@ $(function() {
 			let listReward =  
 			    	'<div class="rewardListWrap">'
 				  +   '<div class="rewardList">'
-				  +     '<h2>' + reward.reward_price + '원+</h2>'
+			      +     '<h2>' + reward.reward_price.toLocaleString() + '원+</h2>'  // 숫자에 콤마 추가
 				  +     '<h4>' + reward.reward_title + '</h4>'
 				  +     '<p>'
 				  +       reward.item_details + '<br>';
@@ -1260,17 +1260,15 @@ $(function() {
 		let isCreatorNameFilled = $("#creator_name").val() !== '';
 		let isCreatorUploaded = $("#creatorImg").val() !== '' || $("#creator_image").val() !== '';
 		let isCreatorIntroduceFilled = $("#creator_introduce").val() !== '';
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// ---- 본인인증, 입금계좌는 나중에 -----
-		// => 본인인증되야 입금계좌 선택 가능하므로 입금계좌만 확인해도 될듯
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// 입금 계좌가 등록되었는지 확인 (계좌 정보가 #creatorAccountInfo에 있는지 체크)
+	    let isAccountInfoFilled = $("#creatorAccountInfo .accountInfo").length > 0;
 		
 		
 		// 모든 필수 항목이 입력되었거나 선택되었는지 확인
 		if (isCategorySelected && isCategoryDetailSelected && isTitleFilled && isSummaryFilled && isImageUploaded 
 				&& isPriceFilled && isStartDateFilled && isEndDateFilled
 				&& isIntroduceUploaded && isBudgetUploaded
-				&& isCreatorNameFilled && isCreatorUploaded && isCreatorIntroduceFilled) {
+				&& isCreatorNameFilled && isCreatorUploaded && isCreatorIntroduceFilled && isAccountInfoFilled) {
 			$("#request").prop("disabled", false); // 버튼 활성화
 		} else {
 			$("#request").prop("disabled", true); // 버튼 비활성화
@@ -1326,16 +1324,23 @@ $(function() {
 		let isCreatorNameFilled = $("#creator_name").val() !== '';
 		let isCreatorUploaded = $("#creatorImg").val() !== '' || $("#creator_image").val() !== '';
 		let isCreatorIntroduceFilled = $("#creator_introduce").val() !== '';
+		// 입금 계좌가 등록되었는지 확인 (계좌 정보가 #creatorAccountInfo에 있는지 체크)
+	    let isAccountInfoFilled = $("#creatorAccountInfo .accountInfo").length > 0;
 		
 		// 모든 필수 항목이 입력되었거나 선택되었는지 확인
 		if (isCategorySelected && isCategoryDetailSelected && isTitleFilled && isSummaryFilled && isImageUploaded 
 				&& isPriceFilled && isStartDateFilled && isEndDateFilled
 				&& isIntroduceUploaded && isBudgetUploaded
-				&& isCreatorNameFilled && isCreatorUploaded && isCreatorIntroduceFilled) {
+				&& isCreatorNameFilled && isCreatorUploaded && isCreatorIntroduceFilled  && isAccountInfoFilled) {
 			return true;
 		} else {
-			return false;
-		}
+	        if (!isAccountInfoFilled) {
+	            alert("입금 계좌를 등록해주세요.");
+	        } else {
+	            alert("필수 항목을 모두 입력해주세요.");
+	        }
+	        return false;
+	    }
     });
 
 });	// ready 이벤트 끝
@@ -1834,7 +1839,7 @@ function selectAccountInfo(token, project_idx) {
 							<c:forEach var="reward" items="${rewardList}">
 								<div class="rewardListWrap">
 		           					<div class="rewardList">
-		           						<h2>${reward.reward_price}원+</h2>
+		           						<h2><fmt:formatNumber value="${reward.reward_price}" type="number" groupingUsed="true"/>원+</h2>
 		           						<h4>${reward.reward_title}</h4>
 		           						<p>
 											${reward.item_details}<br>
