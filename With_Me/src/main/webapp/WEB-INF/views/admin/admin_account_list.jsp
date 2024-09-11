@@ -177,9 +177,18 @@
 							</tr>
 						</c:forEach>
 						<c:if test="${empty accountList}">
-							<tr>
-								<td align="center" colspan="6">조회 결과가 없습니다.</td>
-							</tr>
+							<c:choose>
+								<c:when test="${param.status eq '출금대기'}">
+									<tr>
+										<td align="center" colspan="6">조회 결과가 없습니다.</td>
+									</tr>
+								</c:when>
+								<c:otherwise>
+									<tr>
+										<td align="center" colspan="8">조회 결과가 없습니다.</td>
+									</tr>
+								</c:otherwise>
+							</c:choose>
 						</c:if>
 					</table>
 				</div>
