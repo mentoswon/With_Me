@@ -83,7 +83,7 @@ public class SmsService {
         // 쓰레드로 SMS 발송 작업 수행
         new Thread(() -> {
             // 쓰레드로 수행할 작업
-//            sendSmsClient.sendSms(phone_number, content); // 인스턴스를 통해 호출
+            sendSmsClient.sendSms(phone_number, content); // 인스턴스를 통해 호출
             System.out.println("쓰레드 작업 완료");
         }).start(); // start() 메서드 호출 필수!
         
