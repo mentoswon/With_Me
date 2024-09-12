@@ -88,6 +88,20 @@
 	section {
 		min-height: auto;
 	}
+	.replyArea {
+		border: 1px solid gray;
+	    background-color: #f9f9f9;
+	    font-size: 14px;
+	    padding: 10px;
+	    resize: none;
+	    width: 95%;
+	    outline:none;
+	    margin-top: 10px;
+	}
+	textarea:focus {
+    	border: 1px solid gray; /* 클릭 시에도 동일한 테두리 유지 */
+	}
+	
 </style>
 <script type="text/javascript">
 	function confirmDelete() {
@@ -131,8 +145,8 @@
 				<%-- 단, 수정, 삭제 버튼은 세션 아이디와 작성자 아이디가 일치할 경우에만 표시 --%>
 				<c:if test="${not empty qnabo.faq_reply}">
 					<div id="articleReplyArea">
-						<b>답변</b>
-						<textarea rows="10" cols="67" name="faq_reply" readonly="readonly">${qnabo.faq_reply}</textarea>
+						<b>답변</b><br>
+						<textarea rows="10" cols="67" name="faq_reply" readonly="readonly" class="replyArea">${qnabo.faq_reply}</textarea>
 					</div>
 				</c:if>
 			</section>

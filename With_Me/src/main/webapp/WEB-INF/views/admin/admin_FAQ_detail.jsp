@@ -69,6 +69,23 @@
 	#writeForm input[type="button"]:hover{
 		background-color: #ccaa20; /* 버튼 호버 배경색 */
 	}
+	section {
+		min-height: 80px;
+	}
+	
+	.replyArea {
+		border: 1px solid gray;
+	    background-color: #f9f9f9;
+	    font-size: 12px;
+	}
+	textarea {
+	    resize: none;
+	    outline: none; /* 클릭 시 외부 테두리 제거 */
+	}
+	
+	textarea:focus {
+	    border: 1px solid gray; /* 클릭 시에도 동일한 테두리 유지 */
+	}
 </style>
 </head>
 <body>
@@ -104,30 +121,8 @@
 							</tr>
 							<tr>
 								<td class="write_td_right">
-									<textarea id="qna_content" name="faq_content" rows="15" cols="40" readonly>${faq.faq_content}</textarea>
+									<textarea id="qna_content" name="faq_content" rows="10" cols="40" readonly>${faq.faq_content}</textarea>
 								</td>
-							</tr>
-							<tr>
-								<td class="write_td_left"><label for="faq_content">파일</label></td>
-							</tr>
-                            <tr>
-								<c:choose>
-									<c:when test="${faq.faq_file == null}">
-										<td class="write_td_right"><p>파일이 없습니다</p></td>
-									</c:when>
-									<c:otherwise>
-										<td class="write_td_right">
-											<p>
-												<%-- 파일명 존재할 경우 원본 파일명 출력 --%>
-												${fileName}
-												<%-- 파일 다운로드 링크(버튼) 생성 --%>
-												<a href="${pageContext.request.contextPath}/resources/upload/${fileName}" download="${fileName}">
-													<input type="button" value="다운로드">
-												</a>
-											</p>
-										</td>
-									</c:otherwise>
-								</c:choose>
 							</tr>
 							<tr>
 								<td class="write_td_left"><label for="faq_content">답변</label></td>
@@ -136,10 +131,10 @@
 								<td class="write_td_right">
 									<c:choose>
 										<c:when test="${faq.faq_reply != null && faq.faq_reply != ''}">
-											<textarea name="faq_reply" rows="15" cols="40">${faq.faq_reply}</textarea>
+											<textarea name="faq_reply" rows="10" cols="40" class="replyArea">${faq.faq_reply}</textarea>
 										</c:when>
 										<c:otherwise>
-											<textarea name="faq_reply" rows="15" cols="40"></textarea>
+											<textarea name="faq_reply" rows="10" cols="40" class="replyArea"></textarea>
 										</c:otherwise>
 									</c:choose>
 								</td>
