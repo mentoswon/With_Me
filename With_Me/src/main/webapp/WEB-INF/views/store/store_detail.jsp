@@ -281,7 +281,7 @@
 		    </div>
 	    </div>
 		<footer>
-			<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/inc/store_bottom.jsp"></jsp:include>
 		</footer>
 		<script type="text/javascript">
 			$(".store_product_option_select").on('change', function(){

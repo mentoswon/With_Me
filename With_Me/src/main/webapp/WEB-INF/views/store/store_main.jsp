@@ -398,7 +398,7 @@ $(function (){
 		
 		
 		<footer>
-			<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/inc/store_bottom.jsp"></jsp:include>
 		</footer>
 </body>
 <script type="text/javascript">

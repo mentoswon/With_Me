@@ -44,6 +44,18 @@
 		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 	}
 	.profile.on {display: block;}
+	
+	header {
+    	background-color: #ffee99;
+   		position: relative;
+   		z-index: 9;
+	}
+	
+	.inner>nav ul .depth01 .depth02 li {/* 스토어 탑 카테고리 배경색상 노랑색으로 변경 */
+   		line-height: 1;
+    	height: 40px;
+    	background-color: #ffee99;
+	}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>

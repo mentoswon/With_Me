@@ -84,7 +84,7 @@
 	</head>
 	<body>
 		<header>
-			<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/inc/store_top.jsp"></jsp:include>
 		</header>
 		<div id="postcode-layer" style="display:none; position:fixed; overflow:hidden; z-index:9999; -webkit-overflow-scrolling:touch;">
 		    <!-- 여기에 Daum Postcode API 팝업이 렌더링됩니다. -->
@@ -325,7 +325,7 @@
 		
 		
 		<footer>
-			<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/inc/store_bottom.jsp"></jsp:include>
 		</footer>
 		
 		<script type="text/javascript">
