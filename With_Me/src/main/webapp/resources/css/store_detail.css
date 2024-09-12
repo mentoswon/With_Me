@@ -76,12 +76,11 @@ section {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	height: 500px;
 }
 
 .itemWrapper #imgArea {
 	width: 53%;
-	height: 100%;
+	height: 500px;
 }
 
 .itemWrapper #imgArea img {

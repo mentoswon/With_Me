@@ -107,18 +107,18 @@
 								</c:choose>
 							</div>
 							<div class="productInfo4">
-							<c:choose>
-								<c:when test="${product_detail.isLike.like_mem_email eq sId and product_detail.isLike.like_status eq 'Y'}">
-									<button class="like Btn" type="button" onclick="CancelLikeProduct('${product_detail.product_code}', '${sId}')">
-										<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
-									</button>
-								</c:when>
-								<c:otherwise>
-									<button class="like Btn" type="button" onclick="RegistLikeProduct('${product_detail.product_code}', '${sId}')">
-										<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-									</button>
-								</c:otherwise>
-							</c:choose>
+								<c:choose>
+									<c:when test="${product_detail.isLike.like_mem_email eq sId and product_detail.isLike.like_status eq 'Y'}">
+										<button class="like Btn" type="button" onclick="CancelLikeProduct('${product_detail.product_code}', '${sId}')">
+											<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
+										</button>
+									</c:when>
+									<c:otherwise>
+										<button class="like Btn" type="button" onclick="RegistLikeProduct('${product_detail.product_code}', '${sId}')">
+											<img alt="좋아요" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
+										</button>
+									</c:otherwise>
+								</c:choose>
 								
 <!-- 								<button class="goStore Btn">상품문의하기</button> -->
 								<input type="hidden" id="productOption" name="productOption" value="">
@@ -180,8 +180,6 @@
 								<div class="reward_title">서울특별시 서초구 서초대로 398, 20층</div>
 								<div class="reward_title">(서초동, BNK 디지털타워)</div>
 							</div>
-							
-
 						</div>
 					</div>
 				</div>
@@ -275,9 +273,6 @@
 		        	</div>
 				</div>
    				<img alt="닫기" src="${pageContext.request.contextPath}/resources/image/close.png" class="close_btn2">
-		    
-		    
-		    
 		    </div>
 	    </div>
 		<footer>
