@@ -143,7 +143,7 @@
 								<td>
 									<c:choose>
 										<c:when test="${account.pro_funding_pay_method_idx eq '3'}">${account.fintech_use_num}</c:when>
-										<c:otherwise>카드결제 되었습니다.</c:otherwise> 
+										<c:otherwise>선결제 되었습니다.</c:otherwise> 
 									</c:choose>
 								</td>
 <!-- 								<td> -->
@@ -155,7 +155,7 @@
 						</c:forEach>
 						<c:if test="${empty accountList}">
 							<tr>
-								<td align="center" colspan="6">조회 결과가 없습니다.</td>
+								<td align="center" colspan="7">조회 결과가 없습니다.</td>
 							</tr>
 						</c:if>
 					</table>

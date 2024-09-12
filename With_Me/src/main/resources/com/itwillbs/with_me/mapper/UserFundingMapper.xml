@@ -551,7 +551,7 @@
 		SELECT f.*, m.mem_name AS name
 		FROM funding_user f JOIN member m
 		ON f.funding_mem_email = m.mem_email 
-		WHERE (SELECT DATE_FORMAT(funding_pay_date, '%Y-%m-%d')) = #{now}
+		WHERE (SELECT DATE_FORMAT(funding_pay_date, '%Y-%m-%d')) = #{now} AND funding_status = '후원중'
 	</select>
 	
 	<!-- ======================================================================= -->

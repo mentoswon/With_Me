@@ -25,7 +25,7 @@ public class UserFundingPay{
 	private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 	
 	// ================================================================================================================
-	@Scheduled(cron = "0 00 10 * * ?")  //(오전 10시 설정 예정)
+	@Scheduled(cron = "0 0 10 * * ?")  //(오전 10시 설정 예정)
 	public void transScheduler () throws Exception {
 		
 		// ----------------------------------------------------------

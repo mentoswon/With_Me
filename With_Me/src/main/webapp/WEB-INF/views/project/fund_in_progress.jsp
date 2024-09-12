@@ -103,19 +103,6 @@
 					</div>
 				</section>
 				
-				<%-- 위치 고민 중 --%>
-				<section class="con03">
-					<div class="moreFundAmt">
-						<h4>추가 후원(선택)</h4>
-						<div class="infoWrapper">
-							<div>
-								<div>후원금</div>
-								<input type="number" value="" id="inputMoreAmt" min="0">&nbsp; 원
-							</div>
-						</div>
-					</div>
-				</section>
-				
 				<section class="con02">
 					<div class="addressInfo">
 						<h4>배송지
@@ -146,6 +133,19 @@
 									</div>
 								</c:if>	
 							</c:forEach>
+						</div>
+					</div>
+				</section>
+				
+				<%-- 위치 고민 중 --%>
+				<section class="con03">
+					<div class="moreFundAmt">
+						<h4>추가 후원(선택)</h4>
+						<div class="infoWrapper">
+							<div>
+								<div>후원금</div>
+								<input type="number" value="" id="inputMoreAmt" min="0">&nbsp; 원
+							</div>
 						</div>
 					</div>
 				</section>

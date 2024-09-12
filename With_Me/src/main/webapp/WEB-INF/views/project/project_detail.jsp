@@ -172,7 +172,7 @@
 						<div class="wrap">
 							<div>
 								<div class="creator">
-									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/upload/${project_detail.project_image}">
+									<img alt="창작자 프로필사진" src="${pageContext.request.contextPath}/resources/upload/${project_detail.creator_image}">
 									<span><a href="OtherMemberInfo?creator_email=${project_detail.creator_email}">${project_detail.creator_name}</a></span>
 								</div>
 								<div>
@@ -234,7 +234,7 @@
 										<input type="hidden" value="0" name="funding_reward_idx">
 										<input type="hidden" value="일반 후원하기" name="reward_title">
 										<input type="hidden" value="1000" name="reward_price">
-			<!-- 									<input type="hidden" value="" name="funding_item_option" class="funding_item_option"> -->
+										<input type="hidden" value="" name="funding_item_option" class="funding_item_option">
 										<input type="submit" value="결정했어요!" class="rewardSubmitBtn">
 									</form>
 								</div>

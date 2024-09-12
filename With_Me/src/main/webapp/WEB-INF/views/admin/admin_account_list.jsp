@@ -143,12 +143,12 @@
 								<td>${account.funding_end_date}</td>
 								<c:choose>
 									<c:when test="${param.status eq '출금대기'}">
-										<td>${account.user_payment_date}일 전</td>
+										<td>${account.user_payment_date}일 후</td>
 <%-- 										<td><input type="button" value="후원자목록" onclick="accountDetail('${account.project_code}', '${account.project_title}')"></td> --%>
 										<td><input type="button" value="후원자목록" onclick="accountDetail('${account.project_code}')"></td>
 									</c:when>
 									<c:when test="${param.status eq '입금대기'}">
-										<td>${account.settlement_date}일 전</td>
+										<td>${account.settlement_date}일 후</td>
 										<td><fmt:formatNumber value="${account.funding_account}" type="number" groupingUsed="true"/>원</td>
 						                <c:set var="commission" value="${account.funding_account * 0.08}" />	<%-- 수수료(8%) 계산 --%>
 						                <c:set var="vat" value="${commission * 0.10}" />	<%-- 부가가치세(VAT 10%) 계산 --%>
@@ -163,7 +163,16 @@
 <!-- 										</td> -->
 									</c:when>
 									<c:when test="${param.status eq '입금완료'}">
-										<td>${account.settlement_date}일 전</td>
+										<c:choose>
+										    <c:when test="${account.settlement_date < 0}">
+										        <c:set var="absDate" value="${-account.settlement_date}일 전" />
+										    </c:when>
+										    <c:otherwise>
+										        <c:set var="absDate" value="${account.settlement_date}일 후" />
+										    </c:otherwise>
+										</c:choose>
+									
+										<td>${absDate}</td>
 										<td><fmt:formatNumber value="${account.funding_account}" type="number" groupingUsed="true"/>원</td>
 						                <c:set var="commission" value="${account.funding_account * 0.08}" />	<%-- 수수료(8%) 계산 --%>
 						                <c:set var="vat" value="${commission * 0.10}" />	<%-- 부가가치세(VAT 10%) 계산 --%>
