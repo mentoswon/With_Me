@@ -92,7 +92,8 @@
 						<tr>
 							<th>USER ID</th>
 							<th>후원자명</th>
-							<th>결제예정일</th>
+							<th>결제수단</th>
+							<th>결제일시</th>
 							<th>결제금액</th>
 							<th>결제상태</th>
 <!-- 							<th>계좌정보</th> -->
@@ -113,10 +114,34 @@
 							<tr align="center">
 								<td>${account.mem_email}</td>
 								<td>${account.mem_name}</td>
-								<td>${account.user_payment_date}</td>
+								<td>
+									<c:choose>
+										<c:when test="${account.pro_funding_pay_method_idx eq '1'}">카카오페이</c:when>
+										<c:when test="${account.pro_funding_pay_method_idx eq '2'}">카드결제</c:when>
+										<c:when test="${account.pro_funding_pay_method_idx eq '3'}">계좌이체(후결제)</c:when>
+									</c:choose>
+								</td>
+								<%-- 결제일시 --%>
+								<c:choose>
+									<%-- 결제완료 일 경우 결제 일시 띄우기 --%>
+									<c:when test="${account.pro_pay_status eq '결제완료'}">
+<%-- 										<td>${account.pro_pay_date}</td> --%>
+								        <td>${account.formattedProPayDate}</td>
+									</c:when>
+									<%-- 미결제(결제예정)인것은 user_payment_date 띄움 --%>
+									<c:otherwise>
+										<td>${account.user_payment_date} 결제예정</td>
+									</c:otherwise>
+									
+								</c:choose>
 								<td>${account.funding_pay_amt}원</td>
 								<td>${account.pro_pay_status}</td>
-								<td>${account.fintech_use_num}</td>
+								<td>
+									<c:choose>
+										<c:when test="${account.pro_funding_pay_method_idx eq '3'}">${account.fintech_use_num}</c:when>
+										<c:otherwise>카드결제 되었습니다.</c:otherwise> 
+									</c:choose>
+								</td>
 <!-- 								<td> -->
 <%-- 									<c:forEach var="info" items="${bankUserInfo.res_list}"> --%>
 <%-- 										${info.account_holder_name}&nbsp;${info.account_num_masked}(${info.bank_name}) --%>

@@ -1,5 +1,7 @@
 package com.itwillbs.with_me.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itwillbs.with_me.service.AdminAccountService;
 import com.itwillbs.with_me.service.CreatorFundingService;
 import com.itwillbs.with_me.vo.BankToken;
-import com.itwillbs.with_me.vo.CreatorAccountVO;
-import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.PageInfo;
-import com.itwillbs.with_me.vo.ProjectCancelVO;
-import com.itwillbs.with_me.vo.ProjectVO;
 
 @Controller
 public class AdminAccountController {
@@ -149,9 +147,19 @@ public class AdminAccountController {
 		System.out.println("accountList : " + accountList);
 		
 		// fintech_use_num을 이용해 계좌 정보 조회
+		// => 조회 잘 안되서 생략 (fintech_use_num 만 띄울거임)
         for (Map<String, Object> account : accountList) {
             String fintechUseNum = (String) account.get("fintech_use_num");
             String id = (String) account.get("mem_email");
+            
+            // 날짜 변환 작업 (LocalDateTime -> String 변환)
+            LocalDateTime proPayDate = (LocalDateTime) account.get("pro_pay_date");
+            if (proPayDate != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                String formattedDate = proPayDate.format(formatter);
+                account.put("formattedProPayDate", formattedDate); // 변환한 날짜를 새로운 필드에 저장
+            }
+            
             if (fintechUseNum != null) {
             	System.out.println("fintechUseNum : " + fintechUseNum);
             	// 핀테크 사용자 관련 정보 조회(엑세스토큰 조회 위함)

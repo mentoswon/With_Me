@@ -115,7 +115,7 @@
 	           ' ~ ', 
 	           DATE_FORMAT(p.funding_end_date + INTERVAL 8 DAY, '%Y-%m-%d')
 	       ) AS user_payment_date,
-	       u.funding_pay_amt, pay.pro_pay_status, a.fintech_use_num, pay.pro_funding_pay_method_idx
+	       u.funding_pay_amt, pay.pro_pay_status, a.fintech_use_num, pay.pro_funding_pay_method_idx, pay.pro_pay_date
 	FROM funding_user u 
 	JOIN member m ON u.funding_mem_email = m.mem_email
 	JOIN project_info p ON p.project_idx = u.funding_project_idx
