@@ -101,6 +101,7 @@
 	.item_image {
 		width: 230px;
 		height: 230px;
+		position: relative;
 	}
 	
 	.item_image img {
@@ -280,6 +281,8 @@
 
 #likeBtn {
 	width: 15%;
+	background-color: white;
+    border: none;
 }
 
 #likeProjectTitle {
@@ -318,6 +321,30 @@
       transition: background-color 0.3s;
       margin-right: 33px;
 }
+
+#projectsList {
+	gap: 15px;
+}
+
+.like {
+	position: absolute;
+    bottom: 7px;
+    right: 4px;
+    background-color: transparent;
+    border: none;
+    width: 32px;
+}
+
+ .like.product { 
+ 	position: absolute; 
+     bottom: 54px; 
+     right: 3px; 
+     background-color: transparent; 
+     border: none; 
+     width: 45px;
+     height: auto;
+     box-shadow: none;
+ } 
 
 
 </style>
@@ -460,13 +487,13 @@
 					                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 					                                    </a>
 <%-- 															<c:if test="${not empty likeProjectList.like_status and likeProjectList.like_status eq 'Y'}"> --%>
-														<button class="like Btn" id="likeBtn" type="button" onclick="MypageCancelLike('${project.project_code}', '${sId}')">
+														<button class="like Btn" type="button" onclick="MypageCancelLike('${project.project_code}', '${sId}')">
 															<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 														</button>
 <%-- 															</c:if> --%>
 					                                </div>
 					                                <div class="item_info">
-					                                    <h4 id="likeProjectName"><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
+					                                    <h4 id="likeProjectName"><a href="OtherMemberInfo?creator_email=${project.creator_email}">${project.creator_name}</a></h4>
 					                                    <h3 ><a id="likeProjectTitle" href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
 					                                </div>
 					                                <div class="fund_info">
@@ -516,7 +543,7 @@
 												<a href="StoreDetail?product_name=${product.product_name}&product_code=${product.product_code}">
 													<img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${product.product_img}">
 												</a>
-												<button class="like Btn" type="button" onclick="CancelLikeProduct('${product.product_code}', '${sId}')">
+												<button class="like Btn product" type="button" onclick="CancelLikeProduct('${product.product_code}', '${sId}')">
 													<img alt="좋아요" class="islike" src="${pageContext.request.contextPath}/resources/image/colored_like.png">
 												</button>											
 											</div>

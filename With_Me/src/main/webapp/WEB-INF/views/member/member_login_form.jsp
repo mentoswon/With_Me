@@ -141,7 +141,7 @@
                     <div class="extra-buttons">
                         <input type="button" value="인증메일 재발송" onclick="location.href='ReSendAuthMail'">
                         <c:set var="client_id" value="5d33f40785e5f7a04c305e9e2ea27009" />
-                        <c:set var="redirect_uri" value="http://localhost:8081/with_me/KakaoLoginCallback" />
+                        <c:set var="redirect_uri" value="http://c5d2403t2.itwillbs.com/with_me/KakaoLoginCallback" />
                         <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}">
                             <img src="${pageContext.request.servletContext.contextPath}/resources/image/kakao_login_medium_narrow.png">
                         </a>
