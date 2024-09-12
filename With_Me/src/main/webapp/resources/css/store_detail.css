@@ -216,8 +216,6 @@ section {
 
 .con02 .left {
 	width: 70%;
-	max-width: 70%; /* 원하는 너비 제한을 설정 */
-/* 	height: auto; */
 	overflow: hidden;
 }
 
@@ -643,7 +641,7 @@ color: #fff;
         overflow: visible; /* overflow를 visible로 설정하여 숨겨진 요소가 없도록 함 */
     }
 
-    #imgArea, #infoArea {
+    .itemWrapper #imgArea, .itemWrapper #infoArea {
         width: 100%;
     }
 

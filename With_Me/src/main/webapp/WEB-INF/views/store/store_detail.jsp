@@ -188,7 +188,7 @@
 			</section>
 		</div>
 		
-<div class="modal"> <!-- 신고 -->
+		<div class="modal"> <!-- 신고 -->
 		    <div class="modal_popup">
 		        <h3>신고하기</h3>
 	        	<span>어떤 문제가 있나요?</span><br>
