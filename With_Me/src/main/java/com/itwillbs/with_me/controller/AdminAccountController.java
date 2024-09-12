@@ -112,8 +112,7 @@ public class AdminAccountController {
 									@RequestParam(defaultValue ="") String searchKeyword,
 									@RequestParam(defaultValue = "5") int listLimit,
 									HttpSession session, Model model, 
-									@RequestParam("project_code") String project_code,
-									@RequestParam("project_title") String project_title) {
+									@RequestParam("project_code") String project_code) {
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
 			model.addAttribute("msg", "관리자 권한이 없습니다.");
@@ -173,7 +172,7 @@ public class AdminAccountController {
 		// 프로젝트 목록, 페이징 정보 Model 객체에 저장
 		model.addAttribute("accountList", accountList);
 		model.addAttribute("pageInfo", pageInfo);
-		model.addAttribute("project_title", project_title);
+//		model.addAttribute("project_title", project_title);
 		
 		return "admin/admin_account_detail";
 	}

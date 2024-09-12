@@ -51,8 +51,9 @@
 	function showListLimit(limit) {
 		// HTML 특수 문자와 공백을 URL에 안전하게 인코딩
 		
-		var encodedProjectTitle = encodeURIComponent('${param.project_title}');
-		location.href="AdminAccountDetail?project_code=${param.project_code}&project_title=" + encodedProjectTitle + "&listLimit=" + limit;
+// 		var encodedProjectTitle = encodeURIComponent('${param.project_title}');
+// 		location.href="AdminAccountDetail?project_code=${param.project_code}&project_title=" + encodedProjectTitle + "&listLimit=" + limit;
+		location.href="AdminAccountDetail?project_code=${param.project_code}&listLimit=" + limit;
 	}
 </script>
 </head>
@@ -64,7 +65,8 @@
 		<section class="wrapper">
 			<jsp:include page="/WEB-INF/views/inc/admin_side_nav.jsp"></jsp:include>
 			<article class="main">
-				<h3>${param.project_title} (${param.project_code})</h3>
+<%-- 				<h3>${param.project_title} (${param.project_code})</h3> --%>
+				<h3>${param.project_code}</h3>
 				<div class="wrapper_top">
 					<div>
 						<span>Show</span>
@@ -93,7 +95,8 @@
 							<th>결제예정일</th>
 							<th>결제금액</th>
 							<th>결제상태</th>
-							<th>계좌정보</th>
+<!-- 							<th>계좌정보</th> -->
+							<th>핀테크번호</th>
 						</tr>
 						<%-- 페이지번호(pageNum 파라미터) 가져와서 저장(없을 경우 기본값 1로 설정) --%>
 						<c:set var="pageNum" value="1" />
@@ -104,7 +107,7 @@
 						</c:if>
 						<%-- 오늘 날짜 추출 --%>
 						<c:set var="now" value="<%=new java.util.Date()%>" />
-						<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+						<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set>
 						<%-- 오늘 날짜 추출 end --%>
 						<c:forEach var="account" items="${accountList}">
 							<tr align="center">
@@ -113,11 +116,12 @@
 								<td>${account.user_payment_date}</td>
 								<td>${account.funding_pay_amt}원</td>
 								<td>${account.pro_pay_status}</td>
-								<td>
-									<c:forEach var="info" items="${bankUserInfo.res_list}">
-										${info.account_holder_name}&nbsp;${info.account_num_masked}(${info.bank_name})
-									</c:forEach>
-								</td>
+								<td>${account.fintech_use_num}</td>
+<!-- 								<td> -->
+<%-- 									<c:forEach var="info" items="${bankUserInfo.res_list}"> --%>
+<%-- 										${info.account_holder_name}&nbsp;${info.account_num_masked}(${info.bank_name}) --%>
+<%-- 									</c:forEach> --%>
+<!-- 								</td> -->
 							</tr>
 						</c:forEach>
 						<c:if test="${empty accountList}">
