@@ -203,7 +203,7 @@ $(function() {
 							                            <c:set var="hasValidProject" value="true" />
 							                            <div class="item">
 							                                <div class="item_image">
-							                                    <a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">
+							                                    <a href="ProjectDetail?project_code=${project.project_code}">
 							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 							                                    </a>
 							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
@@ -211,8 +211,8 @@ $(function() {
 									<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 							                                </div>
 							                                <div class="item_info">
-							                                    <h4><a href="MemberInfoTest?mem_email=${project.creator_email}">${project.creator_name}</a></h4>
-							                                    <h3><a href="ProjectDetail?project_title=${project.project_title}&project_code=${project.project_code}">${project.project_title}</a></h3>
+							                                    <h4><a href="OtherMemberInfo?creator_email=${project.creator_email}">${project.creator_name}</a></h4>
+							                                    <h3><a href="ProjectDetail?project_code=${project.project_code}">${project.project_title}</a></h3>
 							                                </div>
 							                                <div class="fund_info">
 							                                    <div class="fund_leftWrap">
@@ -287,7 +287,7 @@ $(function() {
 							                            <c:set var="hasValidProject" value="true" />
 							                            <div class="item">
 							                                <div class="item_image">
-							                                    <a href="ProjectDetail?project_title=${dp.project_title}&project_code=${dp.project_code}">
+							                                    <a href="ProjectDetail?project_code=${dp.project_code}">
 							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 							                                    </a>
 							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
@@ -296,7 +296,7 @@ $(function() {
 							                                </div>
 							                                <div class="item_info">
 							                                    <h4><a href="OtherMemberInfo?creator_email=${dp.creator_email}">${dp.creator_name}</a></h4>
-							                                    <h3><a href="ProjectDetail?project_title=${dp.project_title}&project_code=${dp.project_code}">${dp.project_title}</a></h3>
+							                                    <h3><a href="ProjectDetail?project_code=${dp.project_code}">${dp.project_title}</a></h3>
 							                                </div>
 							                                <div class="fund_info">
 							                                    <div class="fund_leftWrap">
