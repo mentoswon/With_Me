@@ -1709,7 +1709,7 @@ function selectAccountInfo(token, project_idx) {
 									<p>
 										<b style="color: #FFAB40; font-size: 20px;">✓</b> 위드미 펀딩의 기본 기능으로 나만의 프로젝트를 실현하세요.
 									</p>
-									<button id="basic" class="paymentButton">선택하기</button>
+									<button type="button" id="basic" class="paymentButton">선택하기</button>
 								</div>
 							</div>
 							<br>
@@ -1728,7 +1728,7 @@ function selectAccountInfo(token, project_idx) {
 									<p>
 										<b style="color: #FFAB40; font-size: 20px;">✓</b> 프리미엄 요금제 선택 시 우선적으로 메인페이지 상단에 노출될 수 있어요!
 									</p>
-									<button id="premium" class="paymentButton">선택하기</button>
+									<button type="button" id="premium" class="paymentButton">선택하기</button>
 								</div>
 								
 							</div>
