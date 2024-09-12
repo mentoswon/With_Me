@@ -586,7 +586,6 @@
 						                                    <a href="ProjectDetail?project_code=${project.project_code}">
 						                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 						                                    </a>
-						                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
 						                                    <!-- 나중에 쓸 채워진 하트 -->
 								<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 						                                </div>

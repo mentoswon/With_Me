@@ -207,9 +207,6 @@ $(function() {
 							                                    <a href="ProjectDetail?project_code=${project.project_code}">
 							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${project.project_image}">
 							                                    </a>
-							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-							                                    <!-- 나중에 쓸 채워진 하트 -->
-									<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 							                                </div>
 							                                <div class="item_info">
 							                                    <h4><a href="OtherMemberInfo?creator_email=${project.creator_email}">${project.creator_name}</a></h4>
@@ -289,11 +286,8 @@ $(function() {
 							                            <div class="item">
 							                                <div class="item_image">
 							                                    <a href="ProjectDetail?project_code=${dp.project_code}">
-							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${dp..project_image}">
+							                                        <img alt="이미지" src="${pageContext.request.contextPath}/resources/upload/${dp.project_image}">
 							                                    </a>
-							                                    <img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/empty_like.png">
-							                                    <!-- 나중에 쓸 채워진 하트 -->
-									<%-- 								<img alt="좋아요" class="like" src="${pageContext.request.contextPath}/resources/image/colored_like.png"> --%>
 							                                </div>
 							                                <div class="item_info">
 							                                    <h4><a href="OtherMemberInfo?creator_email=${dp.creator_email}">${dp.creator_name}</a></h4>
