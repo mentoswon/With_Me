@@ -22,7 +22,7 @@
 	background-color: #fff;
 }
 section {
-	height:90px;
+	min-height: auto;
 }
 
 h2 {
