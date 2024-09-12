@@ -55,4 +55,10 @@ public interface AdminStoreMapper {
 
 	// 상품 주문내역 배송정보 변경
 	int updateProductOrder(Store_userVO store_user);
+
+	// 상품 주문내역 값 들고오기
+	Store_userVO selectProductOrder(int order_idx);
+
+	// 상품 주문내역 삭제
+	int deleteProductOrder(int order_idx);
 }

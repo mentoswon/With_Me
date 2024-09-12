@@ -205,6 +205,21 @@
 		WHERE order_idx = #{order_idx}
 	</update>
 	
+	<!-- 상품 주문내역 값 들고오기 -->
+	<select id="selectProductOrder" resultType="storeUser">
+		SELECT * 
+		FROM store_user
+		WHERE order_idx = #{order_idx}
+	</select>
+	
+	
+	<!-- 상품 주문내역 삭제 -->
+	<delete id="deleteProductOrder">
+		DELETE
+		FROM store_user
+		WHERE order_idx = #{order_idx}
+	</delete>
+	
 </mapper>
 
 

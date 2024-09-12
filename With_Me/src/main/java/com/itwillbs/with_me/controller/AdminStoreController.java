@@ -602,6 +602,37 @@ public class AdminStoreController {
 			return "result/fail";
 		}
 	}
+	
+	
+	// 상품 주문내역 삭제
+	@GetMapping("ProductOrderDelete")
+	public String productOrderDelete(
+			int order_idx, @RequestParam(defaultValue = "1") int pageNum,
+			HttpSession session, Model model) throws Exception {
+		
+		// 관리자 권한이 없는 경우 접근 차단
+		if(session.getAttribute("sIsAdmin").equals("N")) {
+			model.addAttribute("msg", "관리자 권한이 없습니다.");
+			model.addAttribute("targetURL", "./");
+			return "result/fail";
+		}
+		
+		// 지울 상품 조회
+		Store_userVO storeUser = service.getProductOrder(order_idx);
+		System.out.println("storeUser : " + storeUser);
+		
+		// 상품 삭제 작업
+		int deleteCount = service.removeProductOrder(order_idx);
+		
+		if(deleteCount > 0) {
+			model.addAttribute("msg", "삭제 성공!");
+			model.addAttribute("targetURL", "AdminStoreOrder?pageNum=" + pageNum);
+			return "result/success";
+		} else {
+			model.addAttribute("msg", "삭제 실패!");
+			return "result/fail";
+		}
+	}
 
 }
 

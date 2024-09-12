@@ -125,7 +125,7 @@ function confirmDelete() {
 	// 다이얼로그의 확인 버튼 클릭 시 "BoardDelete.bo" 서블릿 요청
 	// => 파라미터 : 글번호, 페이지번호
 	if(confirm("삭제하시겠습니까?")) {
-		location.href = "ProductDelete?product_idx=${product.product_idx}&pageNum=${param.pageNum}";
+		location.href = "ProductOrderDelete?order_idx=${productOrder.order_idx}&pageNum=${param.pageNum}";
 	}
 }
 
@@ -142,7 +142,7 @@ function confirmDelete() {
 	<article id="articleForm">
 		<h2 align="center">상품 주문내역</h2>
 			<section class="joinForm1">
-				<input type="hidden" name="order_idx">
+				<input type="hidden" name="order_idx" value="${productOrder.order_idx}">
 				<table id="tb01">
 					<tr>
 						<td>상품 코드</td>

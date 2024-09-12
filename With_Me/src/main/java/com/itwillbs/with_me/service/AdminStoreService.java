@@ -73,6 +73,16 @@ public class AdminStoreService {
 	public int modifyProductOrder(Store_userVO store_user) {
 		return mapper.updateProductOrder(store_user);
 	}
+	
+	// 상품 주문내역 값 들고오기
+	public Store_userVO getProductOrder(int order_idx) {
+		return mapper.selectProductOrder(order_idx);
+	}
+	
+	// 상품 주문내역 삭제
+	public int removeProductOrder(int order_idx) {
+		return mapper.deleteProductOrder(order_idx);
+	}
 
 	
 	
