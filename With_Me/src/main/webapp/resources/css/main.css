@@ -101,6 +101,7 @@ section {
 .sec01 .mainWrapper .itemList .itemWrapper {
 	display: flex;
 	justify-content: space-between;
+	flex-wrap: wrap;
 }
 
 .sec01 .mainWrapper .itemList .itemWrapper .item{
@@ -276,6 +277,7 @@ section {
 .sec03 .itemList .itemWrapper {
 	display: flex;
 	justify-content: space-between;
+	flex-wrap: wrap;
 	width: 100%;
 }
 
@@ -324,8 +326,23 @@ section {
 	.sec01 .mainWrapper {
 		width: 100%;
 	}
+	.sec01 .mainWrapper .itemList {
+		height: auto;
+	}
+	
+	.sec01 .mainWrapper .itemList .itemWrapper .item {
+		width: 47%;
+	}
 	
 	.sec01 .popularList {
 		display: none;
+	}
+	
+	.sec03 .itemList {
+		height: auto;
+	}
+	
+	.sec03 .itemList .itemWrapper .item {
+		width: 47%;
 	}
 }
