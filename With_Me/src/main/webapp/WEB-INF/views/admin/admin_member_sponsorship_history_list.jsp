@@ -106,8 +106,8 @@
 								<td>${SHL.pro_pay_status}</td>
 								<td>
 									<c:choose>
-										<c:when test="${SHL.pro_pay_date eq null}">
-											미결제 상태이므로 결제일이 없습니다
+										<c:when test="${SHL.pro_pay_status eq '미결제'}">
+											아직 결제가 진행되지 않았습니다
 										</c:when>
 										<c:otherwise>
 											<%-- 
@@ -125,11 +125,11 @@
 											   type 속성 : 대상 날짜 파싱 타입(time : 시각, date : 날짜, both : 둘 다)
 											--%>
 											<fmt:parseDate var="pro_pay_date" value="${SHL.pro_pay_date}" 
-															pattern="yyyy-MM-dd'T'HH:mm:ss" type="both" />
-											<%-- 파싱 후 날짜 및 시각 형식 : Wed Aug 21 16:47:59 KST 2024 --%>
+															pattern="yyyy-MM-dd'T'HH:mm" type="both" />
+											<%-- 파싱 후 날짜 및 시각 형식 : Wed Aug 21 16:47 KST 2024 --%>
 											<%-- 파싱된 날짜 및 시각이 저장된 Date 객체의 포맷팅 수행 --%>								
-											<%-- 년년년년-월월-일일 시시:분분:초초 형태로 포맷팅 --%>
-											<fmt:formatDate value="${pro_pay_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+											<%-- 년년년년-월월-일일 시시:분분 형태로 포맷팅 --%>
+											<fmt:formatDate value="${pro_pay_date}" pattern="yyyy-MM-dd HH:mm"/>
 										</c:otherwise>
 									</c:choose>
 								</td>

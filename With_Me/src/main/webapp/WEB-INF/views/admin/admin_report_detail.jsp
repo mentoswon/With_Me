@@ -153,7 +153,10 @@
 						</dl>
 						<dl>
 							<dt>신고 날짜</dt>
-							<dd> | ${report.report_date}</dd>
+							<dd> | 
+								<%-- 년년년년-월월-일일 시시:분분 형태로 포맷팅 --%>
+								<fmt:formatDate value="${report.report_date}" pattern="yyyy-MM-dd HH:mm"/>
+							</dd>
 						</dl>
 						<dl>
 							<dt>신고 상태</dt>

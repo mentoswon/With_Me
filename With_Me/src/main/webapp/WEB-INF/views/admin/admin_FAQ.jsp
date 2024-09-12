@@ -117,7 +117,10 @@
 										<c:otherwise>${FL.faq_file}</c:otherwise>
 									</c:choose>
 								</td>
-								<td>${FL.faq_date}</td>
+								<td>
+									<%-- 년년년년-월월-일일 시시:분분 형태로 포맷팅 --%>
+									<fmt:formatDate value="${FL.faq_date}" pattern="yyyy-MM-dd HH:mm"/>
+								</td>
 								<td><input type="button" <c:if test="${FL.faq_reply != null && FL.faq_reply != ''}">class="isReply"</c:if> value="문의 상세정보" onclick="FAQDetail(${FL.faq_idx})"></td>
 							</tr>
 						</c:forEach>
