@@ -19,6 +19,7 @@
 				or project_title like concat('%',#{searchKeyword},'%') 	
 				or project_summary like concat('%',#{searchKeyword},'%') 	
 				or project_category_detail like concat('%',#{searchKeyword},'%') 	
+				or FIND_IN_SET(#{searchKeyword}, REPLACE(search_tag, '|', ',')) > 0
 			</when>
 			<otherwise>
 				<choose>
@@ -75,7 +76,6 @@
 		(SELECT IFNULL(SUM(funding_pay_amt),0) FROM funding_user WHERE funding_project_idx = p.project_idx) AS funding_amt
 		FROM project_info p JOIN creator_info c
 		ON p.creator_idx = c.creator_idx
-		
 		<if test="id">
 			LEFT JOIN like_ l
 			ON p.project_code = l.like_project_code AND l.like_mem_email = #{id}
@@ -87,7 +87,8 @@
 				or p.project_category_detail like concat('%',#{searchKeyword},'%') 	
 				or p.project_title like concat('%',#{searchKeyword},'%') 	
 				or p.project_summary like concat('%',#{searchKeyword},'%') 	
-				or p.project_category_detail like concat('%',#{searchKeyword},'%') 	
+				or p.project_category_detail like concat('%',#{searchKeyword},'%')
+				or FIND_IN_SET(#{searchKeyword}, REPLACE(p.search_tag, '|', ',')) > 0
 			</when>
 			<otherwise>
 				<choose>

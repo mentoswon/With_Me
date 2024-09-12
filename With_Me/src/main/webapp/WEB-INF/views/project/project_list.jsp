@@ -186,6 +186,11 @@
 			<section class="sec02">
 				<c:choose>
 					<c:when test="${searchKeyword ne '' && empty projectList}">
+						<c:if test="${not empty param.searchKeyword}">
+							<div style="display: inline-block; font-weight: bold; color: #ffab40;">${param.searchKeyword}</div>
+							<span>&nbsp;검색결과</span>
+						</c:if>
+						<h2></h2>
 						<%-- 목록 필터 --%>
 						<ul>
 							<c:choose>
@@ -208,7 +213,11 @@
 						이용에 불편을 드려 죄송합니다.
 						</p>
 					</c:when>
-					<c:when test="${searchKeyword ne ''}">
+					<c:when test="${not empty projectList}">
+						<c:if test="${not empty param.searchKeyword}">
+							<div style="display: inline-block; font-weight: bold; color: #ffab40;">${param.searchKeyword}</div>
+							<span>&nbsp;검색결과</span>
+						</c:if>
 						<c:choose>
 							<c:when test="${param.project_category_detail eq null}">
 								<h2>${param.project_category}</h2>
@@ -218,7 +227,7 @@
 							</c:otherwise>
 						</c:choose>
 						
-						<%-- 목록 필터 --%>
+<%-- 						목록 필터 --%>
 						<ul>
 							<c:choose>
 								<c:when test="${param.project_category_detail eq null}">
