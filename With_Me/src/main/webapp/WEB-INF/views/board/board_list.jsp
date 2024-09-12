@@ -90,6 +90,9 @@
     color: #888;
     margin-left: 1em;
 }
+section {
+	min-height:150px;
+}
 </style>
 </head>
 <body>

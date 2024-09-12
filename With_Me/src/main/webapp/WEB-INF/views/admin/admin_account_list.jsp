@@ -52,10 +52,15 @@
 		location.href="AdminAccountList?status=${param.status}&listLimit=" + limit;
 	}
 	// 프로젝트 상세
-    function accountDetail(project_code, project_title) {
+//     function accountDetail(project_code, project_title) {
+//     	// HTML 특수 문자와 공백을 URL에 안전하게 인코딩
+// 		var encodedProjectTitle = encodeURIComponent(project_title);
+// 		location.href = "AdminAccountDetail?project_code=" + project_code + "&project_title=" + encodedProjectTitle;
+//     }
+    function accountDetail(project_code) {
     	// HTML 특수 문자와 공백을 URL에 안전하게 인코딩
-		var encodedProjectTitle = encodeURIComponent(project_title);
-		location.href = "AdminAccountDetail?project_code=" + project_code + "&project_title=" + encodedProjectTitle;
+// 		var encodedProjectTitle = encodeURIComponent(project_title);
+		location.href = "AdminAccountDetail?project_code=" + project_code;
     }
 </script>
 </head>
@@ -114,7 +119,8 @@
 									<th>정산일</th>
 									<th>총 모금액</th>
 									<th>정산액</th>
-									<th>계좌정보</th>
+									<th>핀테크 번호</th>
+<!-- 									<th>계좌정보</th> -->
 								</c:otherwise>
 							</c:choose>
 						</tr>
@@ -127,7 +133,7 @@
 						</c:if>
 						<%-- 오늘 날짜 추출 --%>
 						<c:set var="now" value="<%=new java.util.Date()%>" />
-						<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
+						<c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set>
 						<%-- 오늘 날짜 추출 end --%>
 						<c:forEach var="account" items="${accountList}">
 							<tr align="center">
@@ -138,7 +144,8 @@
 								<c:choose>
 									<c:when test="${param.status eq '출금대기'}">
 										<td>${account.user_payment_date}일 전</td>
-										<td><input type="button" value="후원자목록" onclick="accountDetail('${account.project_code}', '${account.project_title}')"></td>
+<%-- 										<td><input type="button" value="후원자목록" onclick="accountDetail('${account.project_code}', '${account.project_title}')"></td> --%>
+										<td><input type="button" value="후원자목록" onclick="accountDetail('${account.project_code}')"></td>
 									</c:when>
 									<c:when test="${param.status eq '입금대기'}">
 										<td>${account.settlement_date}일 전</td>
@@ -148,11 +155,12 @@
 						                <c:set var="totalFee" value="${commission + vat}" />	<%-- 총 수수료 --%>
 						                <c:set var="finalAmount" value="${account.funding_account - totalFee}" />	<%-- 수수료를 뺀 최종 금액 --%>
            							    <td><fmt:formatNumber value="${finalAmount}" type="number" maxFractionDigits="0"/>원</td>	<%-- 최종 금액을 반올림하여 출력 --%>
-										<td>
-											<c:forEach var="info" items="${bankUserInfo.res_list}">
-												${info.account_holder_name}&nbsp;${info.account_num_masked}(${info.bank_name})
-											</c:forEach>
-										</td>
+										<td>${account.fintech_use_num}</td>
+<!-- 										<td> -->
+<%-- 											<c:forEach var="info" items="${bankUserInfo.res_list}"> --%>
+<%-- 												${info.account_holder_name}&nbsp;${info.account_num_masked}(${info.bank_name}) --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</td> -->
 									</c:when>
 									<c:when test="${param.status eq '입금완료'}">
 										<td>${account.settlement_date}일 전</td>
@@ -162,28 +170,20 @@
 						                <c:set var="totalFee" value="${commission + vat}" />	<%-- 총 수수료 --%>
 						                <c:set var="finalAmount" value="${account.funding_account - totalFee}" />	<%-- 수수료를 뺀 최종 금액 --%>
            							    <td><fmt:formatNumber value="${finalAmount}" type="number" maxFractionDigits="0"/>원</td>	<%-- 최종 금액을 반올림하여 출력 --%>
-										<td>
-											<c:forEach var="info" items="${bankUserInfo.res_list}">
-												${info.account_holder_name}&nbsp;${info.account_num_masked}(${info.bank_name})
-											</c:forEach>
-										</td>
+										<td>${account.fintech_use_num}</td>
+<!-- 										<td> -->
+<%-- 											<c:forEach var="info" items="${bankUserInfo.res_list}"> --%>
+<%-- 												${info.account_holder_name}&nbsp;${info.account_num_masked}(${info.bank_name}) --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</td> -->
 									</c:when>
 								</c:choose>
 							</tr>
 						</c:forEach>
 						<c:if test="${empty accountList}">
-							<c:choose>
-								<c:when test="${param.status eq '출금대기'}">
-									<tr>
-										<td align="center" colspan="6">조회 결과가 없습니다.</td>
-									</tr>
-								</c:when>
-								<c:otherwise>
-									<tr>
-										<td align="center" colspan="8">조회 결과가 없습니다.</td>
-									</tr>
-								</c:otherwise>
-							</c:choose>
+							<tr>
+								<td align="center" colspan="6">조회 결과가 없습니다.</td>
+							</tr>
 						</c:if>
 					</table>
 				</div>

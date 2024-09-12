@@ -85,6 +85,9 @@
 	#commandCell input[type="button"]:hover {
 		background-color: #d07601;
 	}
+	section {
+		min-height: auto;
+	}
 </style>
 <script type="text/javascript">
 	function confirmDelete() {
