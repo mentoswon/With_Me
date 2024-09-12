@@ -43,7 +43,7 @@
 		<div class="inner">
 			<section class="con01">
 				<h2>축하합니다 ! </h2>
-				<h2><span>${param.FundMemCount}번째</span> 후원자가 돼셨습니다 !</h2>
+				<h2><span>${param.FundMemCount}번째</span> 후원자가 되셨습니다 !</h2>
 				
 				<p>후원내역은 <a href="DonationProjectDetail?funding_idx=${param.funding_idx}">마이페이지</a> 에서 확인 가능합니다.
 			</section>

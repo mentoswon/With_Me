@@ -186,7 +186,24 @@
 			<section class="sec02">
 				<c:choose>
 					<c:when test="${searchKeyword ne '' && empty projectList}">
-						<p>
+						<%-- 목록 필터 --%>
+						<ul>
+							<c:choose>
+								<c:when test="${param.project_category_detail eq null}">
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '전체')">전체</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '진행중')">진행 중인 펀딩</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '마감')">마감한 펀딩</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '', '오픈예정')">오픈 예정 펀딩</a></li>
+								</c:when>
+								<c:otherwise>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '전체')">전체</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '진행중')">진행 중인 펀딩</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '마감')">마감한 펀딩</a> | </li>
+									<li class="filter"><a href="javascript:projectList('${param.project_category}', '${param.project_category_detail}', '오픈예정')">오픈 예정 펀딩</a></li>
+								</c:otherwise>
+							</c:choose>
+						</ul>
+						<p style="margin-top: 30px;">
 						검색결과가 없습니다. <br><br>
 						이용에 불편을 드려 죄송합니다.
 						</p>
