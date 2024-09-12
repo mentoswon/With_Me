@@ -1,5 +1,7 @@
 package com.itwillbs.with_me.vo;
 
+import java.sql.Timestamp;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -22,7 +24,7 @@ public class ReportVO {
 	private String report_ref_url1;
 	private String report_ref_url2;
 	private String report_ref_url3;
-	private String report_date;
+	private Timestamp report_date;
 	private String report_state;
 }
 

@@ -147,7 +147,10 @@
 							<tr align="center">
 								<td>${NL.bo_idx}</td>
 								<td>${NL.bo_subject}</td>
-								<td>${NL.bo_sysdate}</td>
+								<td>							
+									<%-- 년년년년-월월-일일 시시:분분 형태로 포맷팅 --%>
+									<fmt:formatDate value="${NL.bo_sysdate}" pattern="yyyy-MM-dd HH:mm"/>
+								</td>
 								<td>${NL.bo_readcount}</td>
 								<td>
 									<c:choose>

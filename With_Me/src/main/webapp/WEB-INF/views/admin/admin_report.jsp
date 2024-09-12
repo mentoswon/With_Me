@@ -119,7 +119,10 @@
 									</c:choose>
 								</td>
 								<td>${RL.report_category}</td>
-								<td>${RL.report_date}</td>
+								<td>
+									<%-- 년년년년-월월-일일 시시:분분 형태로 포맷팅 --%>
+									<fmt:formatDate value="${RL.report_date}" pattern="yyyy-MM-dd HH:mm"/>
+								</td>
 								<td>
 									<c:choose>
 										<c:when test="${RL.report_state eq null}">접수대기</c:when>
