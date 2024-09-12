@@ -17,7 +17,7 @@
 	width: 60%;
 	margin: 20px auto;
 	padding: 20px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
 	border-radius: 10px;
 	background-color: #fff;
 }
