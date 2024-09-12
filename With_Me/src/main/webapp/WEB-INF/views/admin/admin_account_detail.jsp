@@ -123,14 +123,18 @@
 								</td>
 								<%-- 결제일시 --%>
 								<c:choose>
+									<%-- 계좌이체 인데 미결제인 경우 --%>
+									<c:when test="${account.pro_pay_status eq '미결제' && account.pro_funding_pay_method_idx eq '3'}">
+										<td>${account.user_payment_date} 결제예정</td>
+									</c:when>
 									<%-- 결제완료 일 경우 결제 일시 띄우기 --%>
 									<c:when test="${account.pro_pay_status eq '결제완료'}">
 <%-- 										<td>${account.pro_pay_date}</td> --%>
 								        <td>${account.formattedProPayDate}</td>
 									</c:when>
-									<%-- 미결제(결제예정)인것은 user_payment_date 띄움 --%>
+									<%-- 그외 - 결제오류 --%>
 									<c:otherwise>
-										<td>${account.user_payment_date} 결제예정</td>
+										<td>--</td>
 									</c:otherwise>
 									
 								</c:choose>
