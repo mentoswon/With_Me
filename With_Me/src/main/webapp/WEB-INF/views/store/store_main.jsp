@@ -58,6 +58,7 @@ $(function (){
 /* ================================================================================================================== */
 .sec01 .productList {
 	height: 100%;
+	width: 98%
 }
 
 .sec01 .productList .boxWrapper {
@@ -102,7 +103,7 @@ $(function (){
 }
 
 .sec01 .mainWrapper {
-	width: 80%;
+	width: 100%;
 }
 
 .filter {
