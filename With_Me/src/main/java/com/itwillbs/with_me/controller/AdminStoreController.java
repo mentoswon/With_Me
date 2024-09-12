@@ -523,13 +523,13 @@ public class AdminStoreController {
 		
 		List<Map<String, Object>> productOrderList = service.getProductOrderList(searchType, searchKeyword, startRow, listLimit);
 		PageInfo pageInfo = new PageInfo(listCount, pageListLimit, maxPage, startPage, endPage);
+		
 		// 리스트 객체 안에 있는 order_date 컬럼이 datetime 속성이라서 <fmt:>으로 형변환 할때 오류가 생김!
-		
-		// 리스트 객체가 아니라 Map객체로 뽑았을 때는 이렇게 써서 변환 시켰는데 list 객체라서 아래처럼 안되는거 같음!
-//		LocalDateTime fundingPayDate = (LocalDateTime) productOrderList.get("funding_pay_date");
-//		Date date = Date.from(fundingPayDate.atZone(ZoneId.systemDefault()).toInstant());
-//		request.setAttribute("fundingPayDate", date);
-		
+		// 그래서 order_date를 Map객체를 for문으로 반복해서 String으로 바꿔서 form에서 형태를 바꿔야한다.
+		for(Map<String, Object> productOrder : productOrderList) {
+			productOrder.put("order_date", productOrder.get("order_date").toString());
+			System.out.println(productOrder);
+		}
 		
 		model.addAttribute("productOrderList", productOrderList);
 		model.addAttribute("pageInfo", pageInfo);

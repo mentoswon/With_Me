@@ -52,7 +52,7 @@
 
 	/* 채팅방 표시 영역 */
 	#chatRoomArea {
-		width: 45%;
+		width: 50%;
 		min-width: 350px;
 		height: auto;
 		background-color: #ffffff;
