@@ -539,7 +539,7 @@ public class AdminStoreController {
 	
 	// 상품 주문내역 상세 보기
 	@GetMapping("ProductOrderDetail")
-	public String productOrderDetail(int order_idx, Model model, StoreVO store, HttpSession session) {
+	public String productOrderDetail(int order_idx, Model model, StoreVO store, HttpSession session, HttpServletRequest request) {
 		
 		// 관리자 권한이 없는 경우 접근 차단
 		if(session.getAttribute("sIsAdmin").equals("N")) {
@@ -551,6 +551,10 @@ public class AdminStoreController {
 		// 상품 상세정보 조회 요청
 		Map<String, Object> productOrder = service.getProductOrderDetail(order_idx);
 		System.out.println("productOrder : " + productOrder);
+		
+//		LocalDateTime fundingPayDate = (LocalDateTime) productOrder.get("order_date");
+//		Date date = Date.from(fundingPayDate.atZone(ZoneId.systemDefault()).toInstant());
+//		request.setAttribute("fundingPayDate", date);
 		
 		// 조회 결과가 없을 경우 "존재하지 않는 게시물입니다" 출력 및 이전페이지 돌아가기 처리
 		if(productOrder == null) {

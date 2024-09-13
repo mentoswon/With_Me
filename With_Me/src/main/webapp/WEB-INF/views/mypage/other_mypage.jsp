@@ -99,6 +99,9 @@
 		border-radius: 3px;
 	}
 	
+	article {
+		min-height: 500px;
+	}
 	
 </style>
 <script type="text/javascript">

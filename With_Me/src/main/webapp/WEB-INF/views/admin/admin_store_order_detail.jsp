@@ -203,7 +203,9 @@ function confirmDelete() {
 						<td>결제일</td>
 					</tr>
 					<tr>
-						<td><input type="text" name="order_date" id="order_date" readonly="readonly" value="${productOrder.order_date}">
+						<td>
+							<input type="text" name="order_date" id="order_date" readonly="readonly" value="${productOrder.order_date}">
+<%-- 							<fmt:formatDate value="${productOrder.order_date}" pattern="yyyy.MM.dd HH:mm" />	 --%>
 						</td>
 					</tr>	
 					<tr>
