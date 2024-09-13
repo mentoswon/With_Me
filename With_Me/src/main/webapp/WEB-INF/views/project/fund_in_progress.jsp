@@ -680,6 +680,7 @@
 				
 				payMethod[0].classList.add("on");
 				$("#user_funding_pay_method").val($(this).val());
+				$(".infoWrapper.account").hide();
 			});
 			
 			$("#creditCard").click(function() {
@@ -689,6 +690,7 @@
 				
 				payMethod[1].classList.add("on");
 				$("#user_funding_pay_method").val($(this).val());
+				$(".infoWrapper.account").hide();
 			});
 			
 			$("#accountTransfer").click(function() {
@@ -698,6 +700,7 @@
 				
 				payMethod[2].classList.add("on");
 				$("#user_funding_pay_method").val($(this).val());
+				$(".infoWrapper.account").show();
 			});
 			
 			// 결제 진행
@@ -763,7 +766,7 @@
 							
 						for(account of accountList) {
 							let list = 
-								"<div class='infoWrapper'>"
+								"<div class='infoWrapper account'>"
 								+	"<div>"
 					            +		account.account_holder_name
 					            +		"[" + account.bank_name + "]" + " "
