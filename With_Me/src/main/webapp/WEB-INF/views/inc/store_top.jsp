@@ -133,7 +133,6 @@
 				<%-- 각 메뉴에 맞는 서블릿 주소 매핑 --%>
 				<li class="depth01"><a href="MemberInfo">프로필</a></li>
 				<li class="depth01"><a href="MyProject">내가 만든 프로젝트</a></li>
-				<li class="depth01"><a href="MyChat">메시지</a></li>
 			</ul>
 			<div class="btnArea" style="text-align : center">
 	        	<input type="button" class="close_btn" value="닫기" onclick="ProfilePopupClose()">
