@@ -5,7 +5,6 @@
 		<li><a href="AdminMemberList" id="GoHome">관리자페이지 홈</a></li>
 		<li class="depth01">
 			<a href="javascript:showDepth02(0)">회원관리</a>
-<!-- 			<p class="showDepth02">회원관리</p> -->
 			<ul class="adminDepth02">
 				<li><a href="AdminMemberList">회원목록</a></li>
 			</ul>
@@ -16,6 +15,7 @@
 				<li><a href="AdminProjectList?status=등록대기">등록신청관리</a></li>
 				<li><a href="AdminProjectList?status=진행중">진행중인 프로젝트</a></li>
 				<li><a href="AdminProjectList?status=종료">종료된 프로젝트</a></li>
+				<li><a href="AdminProjectList?status=취소">취소된 프로젝트</a></li>
 			</ul>
 		</li>
 		<li class="depth01">
@@ -45,12 +45,18 @@
 	</ul>
 </nav>
 <script>
-	let adminDepth02 = document.querySelectorAll('.adminDepth02');
+	let adminDepth02 = document.querySelectorAll(".adminDepth02");
 	
 	function showDepth02(num) {
-		for(let i = 0; i < adminDepth02.length; i++) {
-			adminDepth02[i].classList.remove('show');
+		if(adminDepth02[num].classList.item(1) == null) {
+			for(let i = 0; i < adminDepth02.length; i++) {
+				adminDepth02[i].classList.remove("show");
+			}
+			adminDepth02[num].classList.add("show");
+		} else {
+			for(let i = 0; i < adminDepth02.length; i++) {
+				adminDepth02[i].classList.remove("show");
+			}
 		}
-		adminDepth02[num].classList.add('show');
 	}
 </script>

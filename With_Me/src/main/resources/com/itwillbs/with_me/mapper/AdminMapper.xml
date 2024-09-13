@@ -169,6 +169,9 @@
 				project_status = '승인'
 				AND funding_end_date &lt; now()
 			</when>
+			<when test="projectStatus.equals('취소')">
+				project_status = '취소'
+			</when>
 		</choose>
 		<if test="!searchKeyword.equals('')">
 			AND (
@@ -188,11 +191,15 @@
 		SELECT * ,
 			(SELECT IFNULL(SUM(funding_pay_amt),0)
 			FROM funding_user
-			WHERE funding_project_idx = p.project_idx) AS funding_amt,
+			WHERE funding_project_idx = pi.project_idx) AS funding_amt,
 			IFNULL((SELECT project_cancel_status
 			FROM project_cancel
-			WHERE project_idx = p.project_idx),'') AS pcs
-		FROM project_info p
+			WHERE project_idx = pi.project_idx),'') AS pcs
+		FROM project_info pi
+		<if test="projectStatus.equals('취소')">
+			JOIN project_cancel pc
+			ON pc.project_idx = pi.project_idx
+		</if>
 		WHERE 
 		<choose>
 			<when test="projectStatus.equals('심사중')">
@@ -205,6 +212,9 @@
 			<when test="projectStatus.equals('종료')">
 				project_status = '승인'
 				AND funding_end_date &lt; now()
+			</when>
+			<when test="projectStatus.equals('취소')">
+				project_status = '취소'
 			</when>
 		</choose>
 		<if test="!searchKeyword.equals('')">
@@ -219,7 +229,7 @@
 			)
 		</if>
 		ORDER BY
-			project_idx DESC
+			pi.project_idx DESC
 		LIMIT
 			#{startRow}
 			, #{listLimit}

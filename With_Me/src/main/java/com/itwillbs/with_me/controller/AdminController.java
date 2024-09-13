@@ -280,6 +280,8 @@ public class AdminController {
 			projectStatus = "승인";
 		} else if(status.equals("종료")) {
 			projectStatus = "종료";
+		} else if(status.equals("취소")) {
+			projectStatus = "취소";
 		}
 		// 페이징 처리
 //		int listLimit = 5; // 페이지 당 목록 개수

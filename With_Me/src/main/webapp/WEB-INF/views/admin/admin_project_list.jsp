@@ -79,6 +79,9 @@
 					<c:when test="${param.status eq '종료'}">
 						<h3>종료된 프로젝트</h3>
 					</c:when>
+					<c:when test="${param.status eq '취소'}">
+						<h3>취소된 프로젝트</h3>
+					</c:when>
 				</c:choose>
 				<div class="wrapper_top">
 					<div>
@@ -121,6 +124,10 @@
 								<c:when test="${param.status eq '종료'}">
 									<th>최종 달성한 후원 금액</th>
 									<th>비고</th>
+									<th>프로젝트 상세</th>
+								</c:when>
+								<c:when test="${param.status eq '취소'}">
+									<th>취소신청사유</th>
 									<th>프로젝트 상세</th>
 								</c:when>
 							</c:choose>
@@ -166,6 +173,10 @@
 												<c:otherwise>특이사항 없음</c:otherwise>
 											</c:choose>
 										</td>
+										<td><input type="button" value="프로젝트 상세" onclick="projectDetail(${PL.project_idx})"></td>
+									</c:when>
+									<c:when test="${param.status eq '취소'}">
+										<td>${PL.project_cancel_reason}</td>
 										<td><input type="button" value="프로젝트 상세" onclick="projectDetail(${PL.project_idx})"></td>
 									</c:when>
 								</c:choose>

@@ -95,12 +95,9 @@
 				<c:when test="${param.status eq '등록대기'}">
 					<h2>프로젝트 심사</h2>
 				</c:when>
-				<c:when test="${param.status eq '진행중'}">
+				<c:otherwise>
 					<h2>프로젝트 상세정보</h2>
-				</c:when>
-				<c:when test="${param.status eq '종료'}">
-					<h2>프로젝트 상세정보</h2>
-				</c:when>
+				</c:otherwise>
 			</c:choose>
 			<br>
 			<div class="itemWrapper">
@@ -179,7 +176,7 @@
 								<dd>${leftDay}일</dd>
 							</dl>
 						</c:if>
-						<c:if test="${param.status eq ('등록대기' or '진행중')}">
+						<c:if test="${param.status eq ('등록대기' or '진행중' or '취소')}">
 							<dl>
 								<dt>취소신청여부</dt>
 								<dd> 
@@ -230,6 +227,9 @@
 							</c:when>
 							<c:when test="${param.status eq '종료'}">
 								<input type="button" class="approvalBtn size2" value="종료됨" disabled>
+							</c:when>
+							<c:when test="${param.status eq '취소'}">
+								<input type="button" class="approvalBtn size2" value="취소됨" disabled>
 							</c:when>
 						</c:choose>
 					</div>
