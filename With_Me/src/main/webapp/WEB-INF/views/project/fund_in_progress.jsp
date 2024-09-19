@@ -806,6 +806,7 @@
 				if($("input:radio[name=payMethod]:checked").val() == "1") {
 					IMP.request_pay({
 						// 파라미터 값 설정
+						m_redirect_url : "UserFundingPro",
 						pg : "kakaopay.TC0ONETIME", // PG사 코드표에서 선택
 						pay_method : "card", // 결제 방식
 						merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호
@@ -830,6 +831,7 @@
 				} else if($("input:radio[name=payMethod]:checked").val() == "2"){
 					IMP.request_pay({
 						// 파라미터 값 설정
+						m_redirect_url : "UserFundingPro",
 						pg : "html5_inicis.INIpayTest", // PG사 코드표에서 선택
 						pay_method : "card", // 결제 방식
 						merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호

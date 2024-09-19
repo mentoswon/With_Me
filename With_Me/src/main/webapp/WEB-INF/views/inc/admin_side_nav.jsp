@@ -43,9 +43,9 @@
 			</ul>
 		</li>
 		<li class="depth01">
-			<a href="javascript:showDepth02(5)">공통코드</a>
+			<a href="javascript:showDepth02(5)">카테고리 관리</a>
 			<ul class="adminDepth02">
-				<li><a href="CommonCode">공통코드 추가</a></li>
+				<li><a href="CommonCode">카테고리 추가</a></li>
 			</ul>
 		</li>
 	</ul>

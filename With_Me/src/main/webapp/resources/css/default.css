@@ -58,6 +58,7 @@ article h1, h3{
 
 article table {
 	margin: auto;
+    border: 1px solid #eee;
 }
 
 #pageList {
@@ -136,7 +137,7 @@ article table {
 }
 
 .inner>nav {
-	max-width: 1280px;
+   	max-width: 1440px;
     margin: 0 auto;
 	display: flex;
 	justify-content: space-between;
