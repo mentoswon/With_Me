@@ -239,6 +239,27 @@ $(function (){
 	color: #fe9100; /* 글꼴 색상 진하게 변경 */
 }
 
+.pageButton { /* 하단 페이지 버튼 */
+	width: 70px;
+	height:30px;
+	background-color: #ffab40;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 17px;
+}
+.pageButton:hover { /* 하단 페이지 버튼 클릭 시 */
+	background-color: #eeab20;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 박스 그림자 설정 */
+}
+
+.pageNum {
+	margin-right: 6px;
+	margin-left: 6px;
+	color: #000;
+
+}
+
 
 
 	/* Mobile Responsive CSS */
@@ -372,7 +393,7 @@ $(function (){
 			
 			<section id="pageList">
 				<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-				<input type="button" value="이전" onclick="location.href='StoreList?product_category=${param.product_category}&pageNum=${pageNum - 1}'"
+				<input type="button" class="pageButton" value="이전" onclick="location.href='StoreList?product_category=${param.product_category}&pageNum=${pageNum - 1}'"
 						<c:if test="${pageNum <= 1}">disabled</c:if> >
 				
 				<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
@@ -380,16 +401,16 @@ $(function (){
 					
 					<c:choose>
 						<c:when test="${pageNum eq i}">
-							<b>${i}</b>
+							<b class="pageNum">${i}</b>
 						</c:when>
 						<c:otherwise>
-							<a href="StoreList?product_category=${param.product_category}&pageNum=${i}">${i}</a>
+							<a href="StoreList?product_category=${param.product_category}&pageNum=${i}" class="pageNum">${i}</a>
 						</c:otherwise>
 					</c:choose>
 				
 				</c:forEach>
 				
-				<input type="button" value="다음" onclick="location.href='StoreList?product_category=${param.product_category}&pageNum=${pageNum + 1}'"
+				<input type="button" class="pageButton" value="다음" onclick="location.href='StoreList?product_category=${param.product_category}&pageNum=${pageNum + 1}'"
 						<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 			</section>
 		</div>

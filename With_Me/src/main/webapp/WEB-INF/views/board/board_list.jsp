@@ -93,6 +93,28 @@
 section {
 	min-height:150px;
 }
+
+.pageButton { /* 하단 페이지 버튼 */
+	width: 70px;
+	height:30px;
+	background-color: #ffab40;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 17px;
+}
+.pageButton:hover { /* 하단 페이지 버튼 클릭 시 */
+	background-color: #eeab20;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 박스 그림자 설정 */
+}
+
+.pageNum {
+	margin-right: 6px;
+	margin-left: 6px;
+	color: #000;
+
+}
+
 </style>
 </head>
 <body>
@@ -204,7 +226,7 @@ section {
 				<%-- [이전] 버튼 클릭 시 BoardList 서블릿 요청(파라미터 : 현재 페이지번호 - 1) --%>
 				<%-- 현재 페이지 번호(pageNum)가 URL 파라미터로 전달되므로 ${pageNum} 활용(미리 저장된 변수값) --%>
 				<%-- 단, 현재 페이지 번호가 1 보다 클 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
-				<input type="button" value="이전"
+				<input type="button" class="pageButton" value="이전"
 					onclick="location.href='BoardList?pageNum=${pageNum - 1}'"
 					<c:if test="${pageNum <= 1}">disabled</c:if>>
 
@@ -216,11 +238,11 @@ section {
 					<%-- 단, 현재 페이지(i 값과 pageNum 파라미터값이 동일)는 하이퍼링크 없이 굵게 표시 --%>
 					<c:choose>
 						<c:when test="${i eq pageNum}">
-							<b>${i}</b>
+							<b class="pageNum">${i}</b>
 							<%-- 현재 페이지 번호 --%>
 						</c:when>
 						<c:otherwise>
-							<a href="BoardList?pageNum=${i}">${i}</a>
+							<a class="pageNum" href="BoardList?pageNum=${i}">${i}</a>
 							<%-- 다른 페이지 번호 --%>
 						</c:otherwise>
 					</c:choose>
@@ -231,7 +253,7 @@ section {
 				<%-- 단, 현재 페이지 번호가 최대 페이지번호(maxPage)보다 작을 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
 				<%-- 두 가지 경우의 수에 따라 버튼을 달리 생성하지 않고, disabled 만 추가 여부 설정 --%>
 				<%-- pageNum 파라미터값이 최대 페이지번호 이상일 때 disabled 속성 추가 --%>
-				<input type="button" value="다음"
+				<input type="button" class="pageButton" value="다음"
 					onclick="location.href='BoardList?pageNum=${pageNum + 1}'"
 					<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 			</section>
