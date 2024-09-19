@@ -144,7 +144,7 @@
 					<%-- [이전] 버튼 클릭 시 AdminReport 서블릿 요청(파라미터 : 현재 페이지번호 - 1) --%>
 					<%-- 현재 페이지 번호(pageNum)가 URL 파라미터로 전달되므로 ${pageNum} 활용(미리 저장된 변수값) --%>
 					<%-- 단, 현재 페이지 번호가 1 보다 클 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
-					<input type="button" value="이전" onclick="location.href='AdminReport?pageNum=${pageNum - 1}'" <c:if test="${pageNum <= 1}">disabled</c:if>>
+					<input type="button" onclick="location.href='AdminReport?pageNum=${pageNum - 1}'" <c:if test="${pageNum <= 1}">disabled</c:if>>
 					<%-- 계산된 페이지 번호가 저장된 PageInfo 객체(pageInfo)를 통해 페이지 번호 출력 --%>
 					<%-- 시작페이지(startPage = begin) 부터 끝페이지(endPage = end)까지 1씩 증가하면서 표시 --%>
 					<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
@@ -164,7 +164,7 @@
 					<%-- 단, 현재 페이지 번호가 최대 페이지번호(maxPage)보다 작을 경우에만 동작(아니면, 버튼 비활성화 처리) --%>
 					<%-- 두 가지 경우의 수에 따라 버튼을 달리 생성하지 않고, disabled 만 추가 여부 설정 --%>
 					<%-- pageNum 파라미터값이 최대 페이지번호 이상일 때 disabled 속성 추가 --%>
-					<input type="button" value="다음" onclick="location.href='AdminReport?pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+					<input type="button" onclick="location.href='AdminReport?pageNum=${pageNum + 1}'" <c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 				</div>
 			</article>
 		</section>

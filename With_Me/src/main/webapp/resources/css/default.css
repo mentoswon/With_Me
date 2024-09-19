@@ -67,6 +67,24 @@ article table {
 	min-height: inherit;
 }
 
+#pageList input[type="button"]:first-child {
+	background: url("../image/prev.png") no-repeat ;
+	width: 20px;
+    height: 20px;
+    background-size: contain;
+    border: none;
+    cursor: pointer;
+}
+
+#pageList input[type="button"]:last-child {
+	background: url("../image/next.png") no-repeat ;
+	width: 20px;
+    height: 20px;
+    background-size: contain;
+    border: none;
+    cursor: pointer;
+}
+
 #member_area {
 	width: 100%;
 	text-align: right;
@@ -245,6 +263,10 @@ footer{
 	width : 100%;
 	height: 30px;
 	margin-top: 10px;
+	background-color: #ffab40;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
 }
 
 #footer_area .company_info {

@@ -396,7 +396,7 @@ $(document).ready(function() {
 							
 							<section id="pageList">
 								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-								<input type="button" value="이전" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
+								<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
 										<c:if test="${pageNum <= 1}">disabled</c:if> >
 								
 								<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
@@ -414,7 +414,7 @@ $(document).ready(function() {
 						<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
 								</c:forEach>
 								
-								<input type="button" value="다음" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
+								<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
 										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 							</section>
 						</div>
@@ -482,8 +482,7 @@ $(document).ready(function() {
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>
 								<section id="pageList">
-									<input type="button" value="이전"
-										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
+									<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
 										<c:if test="${pageNum <= 1}">disabled</c:if>>
 				
 									<c:forEach var="i" begin="${pageInfo.startPage}"
@@ -500,8 +499,7 @@ $(document).ready(function() {
 										</c:choose>
 									</c:forEach>
 				
-									<input type="button" value="다음"
-										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
+									<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
 										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 								</section>
 							</div>
@@ -561,8 +559,7 @@ $(document).ready(function() {
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>
 								<section id="pageList">
-									<input type="button" value="이전"
-										onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
+									<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
 										<c:if test="${pageNum <= 1}">disabled</c:if>>
 				
 									<c:forEach var="i" begin="${pageInfo.startPage}"
@@ -579,8 +576,7 @@ $(document).ready(function() {
 										</c:choose>
 									</c:forEach>
 				
-									<input type="button" value="다음"
-										onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
+									<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
 										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 								</section>
 							</div>

@@ -10,172 +10,8 @@
 		<title>with_me</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
-		<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
+		<link href="${pageContext.request.contextPath}/resources/css/project_list.css" rel="stylesheet" type="text/css">
 		<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
-		<style type="text/css">
-			h2 {
-				font-size: 16px;
-				margin-bottom: 30px;
-			}
-			
-			.sec02 .itemList {
-				padding-top: 30px;
-				height: 100%;
-			}
-			
-			.sec02 .itemList .itemWrapper {
-				display: grid;
-				grid-template-columns: repeat(4, 1fr);
-				gap: 2rem;
-			}
-			
-			.sec02 .itemList .itemWrapper .item {
-   				width: 270px;
-			}
-			.sec02 .itemList .itemWrapper .item .item_image {
-				margin-bottom: 20px;
-				width: 100%;
-				height: 230px;
-				position: relative;
-				overflow: hidden;
-			}
-			
-			.sec02 .itemList .itemWrapper .item .item_image:hover .thumnail {
-				transform: scale(1.1);
-   				transition: transform 0.5s;
-			}
-			
-			.sec02 .itemList .itemWrapper .item .item_image .thumnail {
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
-				transform: scale(1.0);
-				transition: transform 0.3s;
-			}
-			
-			.sec02 .itemList .itemWrapper .item .item_image .like {
-				position: absolute;
-				top: 88%;
-				right: 2%;
-			    width: 25px;	
-			    height: 25px;
-			    background-color: transparent;
-			    border: none;
-			    cursor: pointer;
-			}
-			
-			.sec02 .itemList .itemWrapper .item .item_image .like img {
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
-			}
-			
-			.sec02 .itemList .itemWrapper .item .item_info h4 {
-				font-size: 13px;	
-				font-weight: normal;
-				color: #bbb;
-				margin-bottom: 15px;	
-			}
-			.sec02 .itemList .itemWrapper .item .item_info h3 {
-				margin-bottom: 15px;	
-				text-align: left;
-				font-size: 16px;
-				height: 40px;
-			}
-			
-			.sec02 .itemList .itemWrapper .item .item_info a {
-				word-wrap: break-word;
-			}
-			
-			.sec02 .itemList .itemWrapper .item .fund_info {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				margin-bottom: 15px;
-			}
-			
-			.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap {
-				display: flex;
-				align-items: center;
-			} 
-			
-			.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_rate {
-				margin-right: 10px;
-				color: #ffab40;
-				font-weight: bold;
-			}	
-			
-			.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_amt {
-				color: #aaa;
-				font-size: 14px;
-			}
-				
-			.progress {
-				width: 100%;
-				appearance: none;
-				height: 7px;
-			}
-			
-			.progress::-webkit-progress-bar {
-				background-color: #eee;
-				border-radius: 3px;
-			}
-			
-			.progress::-webkit-progress-value {
-				background-color: #ffab40;
-				border-radius: 3px;
-			}
-			
-			.progress.end::-webkit-progress-value {
-				background-color: #ffab40;
-				border-radius: 3px;
-			}
-			
-			.set_noti {
-				text-align: center;
-				width: 100%;
-				border: 0.5px solid #eee;
-				border-radius: 5px;
-				padding: 8px 0;
-				font-size: 14px;
-			}
-			
-			.set_noti:hover {
-				background-color: #ffab40;
-				color: #fff;
-			}
-			
-			.filter {
-				display: inline-block;
-				margin-right: 10px;
-				font-size: 13px;
-				cursor: pointer;
-			}
-			
-			.active-filter {
-			    font-weight: bold;
-			    color: #ffab40;
-			}
-			
-			/* Mobile Responsive CSS */ 
-			@media screen and (max-width:768px) {
-				.sec02 .itemList .itemWrapper {
-					display: grid;
-					grid-template-columns: repeat(2, 1fr);
-					gap: 2rem;
-				}
-				
-				.sec02 .itemList .itemWrapper .item .fund_info {
-					font-size: 13px;
-				}
-				
-				.sec02 .itemList .itemWrapper .item .item_image .like {
-					width: 20px;
-					height: 20px;
-				}
-			}
-		</style>
-		
 	</head>
 	<body>
 		<header>
@@ -356,7 +192,7 @@
 			
 			<section id="pageList">
 				<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
-				<input type="button" value="이전" onclick="location.href='ProjectList?pageNum=${pageNum - 1}'"
+				<input type="button" onclick="location.href='ProjectList?pageNum=${pageNum - 1}'"
 						<c:if test="${pageNum <= 1}">disabled</c:if> >
 				
 				<%-- 계산된 페이지 번호가 저장된 PageInfo 객체를 통해 페이지 번호 출력 --%>
@@ -374,7 +210,7 @@
 		<%-- 			<a href="BoardList.bo?pageNum=${i}">${i}</a> --%>
 				</c:forEach>
 				
-				<input type="button" value="다음" onclick="location.href='ProjectList?pageNum=${pageNum + 1}'"
+				<input type="button" onclick="location.href='ProjectList?pageNum=${pageNum + 1}'"
 						<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 			</section>
 		</div>
@@ -456,9 +292,9 @@
 		}
 		
 		// 프로젝트 오픈 알림 신청 0909 추가
-// 		function setNotiProject(project_idx) {
-// 			alert("알림 신청이 완료되었습니다.");
-// 		}
+		function setNotiProject(project_idx) {
+			alert("알림 신청이 완료되었습니다.");
+		}
 		
 	</script>
 </html>

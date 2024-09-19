@@ -1,0 +1,167 @@
+@charset "UTF-8";
+section {
+	margin: 40px 0;
+}
+
+h2 {
+	font-size: 16px;
+	margin-bottom: 30px;
+}
+
+.sec02 .itemList {
+	padding-top: 30px;
+	height: 100%;
+}
+
+.sec02 .itemList .itemWrapper {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 2rem;
+}
+
+.sec02 .itemList .itemWrapper .item {
+				width: 270px;
+}
+.sec02 .itemList .itemWrapper .item .item_image {
+	margin-bottom: 20px;
+	width: 100%;
+	height: 230px;
+	position: relative;
+	overflow: hidden;
+}
+
+.sec02 .itemList .itemWrapper .item .item_image:hover .thumnail {
+	transform: scale(1.1);
+				transition: transform 0.5s;
+}
+
+.sec02 .itemList .itemWrapper .item .item_image .thumnail {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transform: scale(1.0);
+	transition: transform 0.3s;
+}
+
+.sec02 .itemList .itemWrapper .item .item_image .like {
+	position: absolute;
+	top: 88%;
+	right: 2%;
+    width: 25px;	
+    height: 25px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.sec02 .itemList .itemWrapper .item .item_image .like img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.sec02 .itemList .itemWrapper .item .item_info h4 {
+	font-size: 13px;	
+	font-weight: normal;
+	color: #bbb;
+	margin-bottom: 15px;	
+}
+.sec02 .itemList .itemWrapper .item .item_info h3 {
+	margin-bottom: 15px;	
+	text-align: left;
+	font-size: 16px;
+	height: 40px;
+}
+
+.sec02 .itemList .itemWrapper .item .item_info a {
+	word-wrap: break-word;
+}
+
+.sec02 .itemList .itemWrapper .item .fund_info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+}
+
+.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap {
+	display: flex;
+	align-items: center;
+} 
+
+.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_rate {
+	margin-right: 10px;
+	color: #ffab40;
+	font-weight: bold;
+}	
+
+.sec02 .itemList .itemWrapper .item .fund_info .fund_leftWrap > .fund_amt {
+	color: #aaa;
+	font-size: 14px;
+}
+	
+.progress {
+	width: 100%;
+	appearance: none;
+	height: 7px;
+}
+
+.progress::-webkit-progress-bar {
+	background-color: #eee;
+	border-radius: 3px;
+}
+
+.progress::-webkit-progress-value {
+	background-color: #ffab40;
+	border-radius: 3px;
+}
+
+.progress.end::-webkit-progress-value {
+	background-color: #ffab40;
+	border-radius: 3px;
+}
+
+.set_noti {
+	text-align: center;
+	width: 100%;
+	border: 0.5px solid #eee;
+	border-radius: 5px;
+	padding: 8px 0;
+	font-size: 14px;
+}
+
+.set_noti:hover {
+	background-color: #ffab40;
+	color: #fff;
+}
+
+.filter {
+	display: inline-block;
+	margin-right: 10px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.active-filter {
+    font-weight: bold;
+    color: #ffab40;
+}
+
+/* Mobile Responsive CSS */ 
+@media screen and (max-width:768px) {
+	.sec02 .itemList .itemWrapper {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 2rem;
+	}
+	
+	.sec02 .itemList .itemWrapper .item .fund_info {
+		font-size: 13px;
+	}
+	
+	.sec02 .itemList .itemWrapper .item .item_image .like {
+		width: 20px;
+		height: 20px;
+	}
+}
+			
