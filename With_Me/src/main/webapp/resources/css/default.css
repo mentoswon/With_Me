@@ -72,6 +72,7 @@ article table {
 	width: 20px;
     height: 20px;
     background-size: contain;
+    background-position-y: 2px;
     border: none;
     cursor: pointer;
 }
@@ -81,6 +82,7 @@ article table {
 	width: 20px;
     height: 20px;
     background-size: contain;
+    background-position-y: 2px;
     border: none;
     cursor: pointer;
 }

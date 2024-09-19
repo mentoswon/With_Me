@@ -393,7 +393,7 @@ $(document).ready(function() {
 						        <p>등록된 프로젝트가 없습니다.</p>
 						    </c:if>
 						</section>
-							
+						<c:if test="${not empty projectList}">	
 							<section id="pageList">
 								<%-- 현재 페이지 번호가 1 보다 클 경우에만 가능하게 해야함 --%>
 								<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
@@ -417,6 +417,7 @@ $(document).ready(function() {
 								<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
 										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
 							</section>
+						</c:if>
 						</div>
 					</div>
 				</div>
@@ -481,27 +482,29 @@ $(document).ready(function() {
 								</section>
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>
-								<section id="pageList">
-									<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if>>
-				
-									<c:forEach var="i" begin="${pageInfo.startPage}"
-										end="${pageInfo.endPage}">
-										<c:choose>
-											<c:when test="${i eq pageNum}">
-												<b>${i}</b>
-												<%-- 현재 페이지 번호 --%>
-											</c:when>
-											<c:otherwise>
-												<a href="MemberInfo?pageNum=${i}">${i}</a>
-												<%-- 다른 페이지 번호 --%>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-				
-									<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-								</section>
+								<c:if test="${not empty followList}">	
+									<section id="pageList">
+										<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
+											<c:if test="${pageNum <= 1}">disabled</c:if>>
+					
+										<c:forEach var="i" begin="${pageInfo.startPage}"
+											end="${pageInfo.endPage}">
+											<c:choose>
+												<c:when test="${i eq pageNum}">
+													<b>${i}</b>
+													<%-- 현재 페이지 번호 --%>
+												</c:when>
+												<c:otherwise>
+													<a href="MemberInfo?pageNum=${i}">${i}</a>
+													<%-- 다른 페이지 번호 --%>
+												</c:otherwise>
+											</c:choose>
+										</c:forEach>
+					
+										<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
+											<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+									</section>
+								</c:if>
 							</div>
 						</section>
 					</div>
@@ -558,27 +561,29 @@ $(document).ready(function() {
 								</section>
 								<br>
 								<%-- ========================== 페이징 처리 영역 ========================== --%>
-								<section id="pageList">
-									<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
-										<c:if test="${pageNum <= 1}">disabled</c:if>>
-				
-									<c:forEach var="i" begin="${pageInfo.startPage}"
-										end="${pageInfo.endPage}">
-										<c:choose>
-											<c:when test="${i eq pageNum}">
-												<b>${i}</b>
-												<%-- 현재 페이지 번호 --%>
-											</c:when>
-											<c:otherwise>
-												<a href="MemberInfo?pageNum=${i}">${i}</a>
-												<%-- 다른 페이지 번호 --%>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-				
-									<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
-										<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
-								</section>
+								<c:if test="${not empty followingList}">
+									<section id="pageList">
+										<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum - 1}'"
+											<c:if test="${pageNum <= 1}">disabled</c:if>>
+					
+										<c:forEach var="i" begin="${pageInfo.startPage}"
+											end="${pageInfo.endPage}">
+											<c:choose>
+												<c:when test="${i eq pageNum}">
+													<b>${i}</b>
+													<%-- 현재 페이지 번호 --%>
+												</c:when>
+												<c:otherwise>
+													<a href="MemberInfo?pageNum=${i}">${i}</a>
+													<%-- 다른 페이지 번호 --%>
+												</c:otherwise>
+											</c:choose>
+										</c:forEach>
+					
+										<input type="button" onclick="location.href='MemberInfo?pageNum=${pageNum + 1}'"
+											<c:if test="${pageNum >= pageInfo.maxPage}">disabled</c:if>>
+									</section>
+								</c:if>
 							</div>
 						</section>
 					</div>
