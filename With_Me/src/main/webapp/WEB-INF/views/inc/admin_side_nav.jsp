@@ -42,6 +42,12 @@
 				<li><a href="AdminReport">신고관리</a></li>
 			</ul>
 		</li>
+		<li class="depth01">
+			<a href="javascript:showDepth02(5)">공통코드</a>
+			<ul class="adminDepth02">
+				<li><a href="CommonCode">공통코드 추가</a></li>
+			</ul>
+		</li>
 	</ul>
 </nav>
 <script>
