@@ -9,146 +9,173 @@
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <style type="text/css">
-.product_img {
-	width: 300px;
-	height: 215px;
-}
-.product_img img{
-	width: 25%;
-	object-fit: cover;
+
+#select-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-#articleForm {
-    margin: 20px auto;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-table {
-    width: 116%;
-    border-collapse: separate;
-    border-spacing: 0 10px; /* 셀 간격 조정 */
-}
-
-td {
-    padding: 10px;
-    vertical-align: top;
-}
-
-td:first-child {
-    width: 60%;
-    font-weight: bold;
-}
-
-td:last-child {
-    width: 30%;
-}
-
-input[type="text"], select {
-    width: 40%;
-    padding: 8px;
-    box-sizing: border-box;
-    margin-top: 5px; /* 필드와 레이블 간격 */
-}
-
-.item-option {
-    width: calc(20% - 10px); /* 아이템 옵션의 너비 조정 */
-    margin-right: 10px; /* 아이템 옵션 간격 조정 */
-    display: inline-block;
-}
-
-.product-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}
-
-.button-container {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.button {
+button {
+    padding: 5px 10px;
     background-color: #FFAB40;
-    color: #fff;
     border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
     border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
-.button:hover {
-    background-color: #e6952d;
+button:hover {
+    background-color: #ff8c00;
 }
 </style>
-<script>
-// ==========================================================================
-// 카테고리 셀렉트
-var categoryObject = {
-	"푸드": ["사료", "껌류", "수제간식"],
-	"패션/위생": ["의류", "화장실"],
-	"식기/급수기": ["급수기", "급식기"],
-	"장난감/훈련": ["장난감", "훈련용품"],
-	"하우스/안전": ["하우스", "울타리", "기타안전용품"]
-}
-window.onload = function() {
-  var product_categorySel = document.getElementById("product_category");
-  var project_category_detailSel = document.getElementById("project_category_detail");
-  
-  for (var x in categoryObject) {
-	  product_categorySel.options[product_categorySel.options.length] = new Option(x, x);
-  }
-  product_categorySel.onchange = function() {
-	  
-    project_category_detailSel.length = 1;
-	
-	var y = categoryObject[this.value];
-	
-    for (var i = 0; i < y.length; i++) {
-    	project_category_detailSel.options[project_category_detailSel.options.length] = new Option(y[i], y[i]);
-    }
-  }
-}
-
-
-</script>
 </head>
 <body>
 	<header>
 		<%-- inc/top.jsp 페이지 삽입(jsp:include 액션태그 사용 시 / 경로는 webapp 가리킴) --%>
 		<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	</header>
-	<div id="commonCode">
-		<select name="">
-			<option value="FUND">FUND</option>
-			<option value="SHOP">SHOP</option>
-		</select>
-		<input type="button" value="+">
-	</div>
+<!-- 	<form action="RegistCode" method="post"> -->
+		<div id="commonCode">
+			<select name="SelectCode">
+				<option value="FUND">FUND(펀드)</option>
+				<option value="SHOP">SHOP(스토어)</option>
+			</select>
+			<button id="addButton">상위 공통코드 추가</button>
+			<button id="addSubButton">하위 공통코드 추가</button>
+		</div>
+		<div>
+			<input type="submit" value="등록">
+		</div>
+<!-- 	</form> -->
 	<footer>
 		<%-- 회사 소개 영역(inc/bottom.jsp) 페이지 삽입 --%>
 		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 	</footer>
 </body>
+<script>
+
+document.getElementById('addButton').addEventListener('click', function() {
+	
+	// 새로운 셀렉트박스 생성
+	const newSelect = document.createElement('select');
+	newSelect.name = 'SelectCode';
+	
+	// 새 셀렉트 박스에 옵션 추가
+	const newSelectOption1 = document.createElement('option');
+	newSelectOption1.value = 'FO';
+	newSelectOption1.textContent = 'FO(푸드)';
+	
+	const newSelectOption2 = document.createElement('option');
+	newSelectOption2.value = 'FA';
+	newSelectOption2.textContent = 'FA(패션/위생)';
+	
+	const newSelectOption3 = document.createElement('option');
+	newSelectOption3.value = 'CL';
+	newSelectOption3.textContent = 'CL(식기/급수기)';
+	
+	const newSelectOption4 = document.createElement('option');
+	newSelectOption4.value = 'TO';
+	newSelectOption4.textContent = 'TO(장난감/훈련)';
+	
+	const newSelectOption5 = document.createElement('option');
+	newSelectOption5.value = 'SA';
+	newSelectOption5.textContent = 'SA(하우스/안전)';
+	
+	newSelect.appendChild(newSelectOption1);
+	newSelect.appendChild(newSelectOption2);
+	newSelect.appendChild(newSelectOption3);
+	newSelect.appendChild(newSelectOption4);
+	newSelect.appendChild(newSelectOption5);
+	
+// 	// 새로운 하위 셀렉트박스 생성
+// 	const newSelect2 = document.createElement('select');
+// 	newSelect2.name = 'SelectCode';
+	
+// 	// 새 하위 셀렉트 박스에 옵션 추가
+// 	const newSubSelectOption1 = document.createElement('option');
+// 	newSubSelectOption1.value = 'FEE';
+// 	newSubSelectOption1.textContent = 'FEE(사료)';
+	
+// 	newSelect2.appendChild(newSubSelectOption1);
+	
+	document.getElementById('commonCode').appendChild(newSelect);
+// 	document.getElementById('commonCode').appendChild(newSelect2);
+});
+
+// ------------------------------------------------------------------------
+document.getElementById('addSubButton').addEventListener('click', function() {
+	
+	// 새로운 셀렉트박스 생성
+	const newSelect = document.createElement('select');
+	newSelect.name = 'SelectCode';
+	
+	// 새 셀렉트 박스에 옵션 추가
+	const newSelectOption1 = document.createElement('option');
+	newSelectOption1.value = 'FEE';
+	newSelectOption1.textContent = 'FEE(사료)';
+	
+	const newSelectOption2 = document.createElement('option');
+	newSelectOption2.value = 'GUM';
+	newSelectOption2.textContent = 'FUM(껌류)';
+	
+	const newSelectOption3 = document.createElement('option');
+	newSelectOption3.value = 'HAN';
+	newSelectOption3.textContent = 'HAN(수제간식)';
+	
+	const newSelectOption4 = document.createElement('option');
+	newSelectOption4.value = 'CLO';
+	newSelectOption4.textContent = 'CLO(의류)';
+	
+	const newSelectOption5 = document.createElement('option');
+	newSelectOption5.value = 'TOI';
+	newSelectOption5.textContent = 'TOI(화장실)';
+	
+	const newSelectOption6 = document.createElement('option');
+	newSelectOption6.value = 'FDR';
+	newSelectOption6.textContent = 'FDR(급식기)';
+	
+	const newSelectOption7 = document.createElement('option');
+	newSelectOption7.value = 'WAT';
+	newSelectOption7.textContent = 'WAT(급수기)';
+	
+	const newSelectOption8 = document.createElement('option');
+	newSelectOption8.value = 'TOY';
+	newSelectOption8.textContent = 'TOY(장난감)';
+	
+	const newSelectOption9 = document.createElement('option');
+	newSelectOption9.value = 'TRA';
+	newSelectOption9.textContent = 'TRA(훈련용품)';
+	
+	const newSelectOption10 = document.createElement('option');
+	newSelectOption10.value = 'HOU';
+	newSelectOption10.textContent = 'HOU(하우스)';
+	
+	const newSelectOption11 = document.createElement('option');
+	newSelectOption11.value = 'FEN';
+	newSelectOption11.textContent = 'FEN(울타리)';
+	
+	const newSelectOption12 = document.createElement('option');
+	newSelectOption12.value = 'ETC';
+	newSelectOption12.textContent = 'ETC(기타안전용품)';
+	
+	newSelect.appendChild(newSelectOption1);
+	newSelect.appendChild(newSelectOption2);
+	newSelect.appendChild(newSelectOption3);
+	newSelect.appendChild(newSelectOption4);
+	newSelect.appendChild(newSelectOption5);
+	newSelect.appendChild(newSelectOption6);
+	newSelect.appendChild(newSelectOption7);
+	newSelect.appendChild(newSelectOption8);
+	newSelect.appendChild(newSelectOption9);
+	newSelect.appendChild(newSelectOption10);
+	newSelect.appendChild(newSelectOption11);
+	newSelect.appendChild(newSelectOption12);
+	
+	document.getElementById('commonCode').appendChild(newSelect);
+});
+
+</script>
 </html>
 
 
