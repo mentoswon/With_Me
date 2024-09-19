@@ -8,113 +8,108 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MVC 게시판</title>
+<title>with_me</title>
 <!-- 외부 CSS 파일(css/default.css) 연결하기 -->
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <style type="text/css">
-.product_img {
-	width: 300px;
-	height: 215px;
-}
-.product_img img{
-	width: 25%;
-	object-fit: cover;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-#articleForm {
-    margin: 20px auto;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 10px; /* 셀 간격 조정 */
-}
-
-td {
-    padding: 5px;
-    vertical-align: top;
-}
-
-td:first-child {
-    width: 25%;
-    font-weight: bold;
-    padding-right: 120px; /* 오른쪽 여백 추가 */
-}
-
-#status {
-	font-weight: normal;
-}
-
-td:last-child {
-    width: 30%;
-}
-
-input[type="text"], select {
-    width: 47%;
-    padding: 8px;
-    box-sizing: border-box;
-    margin-top: 5px; /* 필드와 레이블 간격 */
-}
-
-.item-option {
-    width: calc(20% - 10px); /* 아이템 옵션의 너비 조정 */
-    margin-right: 10px; /* 아이템 옵션 간격 조정 */
-    display: inline-block;
-}
-
-.product-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}
-
-.button-container {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.button {
-    background-color: #FFAB40;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.button:hover {
-    background-color: #e6952d;
-}
-
-#status {
-	font-weight: normal;
-}
-
-#price {
-	font-weight: normal;
-}
+	.product_img {
+		width: 300px;
+		height: 215px;
+	}
+	.product_img img{
+		width: 25%;
+		object-fit: cover;
+	}
+	
+	body {
+	    font-family: Arial, sans-serif;
+	    margin: 0;
+	    padding: 0;
+	    background-color: #f4f4f4;
+	}
+	
+	#articleForm {
+	    margin: 20px auto;
+	    max-width: 600px;
+	    padding: 20px;
+	    background-color: #fff;
+	    border-radius: 8px;
+	    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+	
+	h2 {
+	    text-align: center;
+	    color: #333;
+	    margin-bottom: 20px;
+	}
+	
+	table {
+	    width: 100%;
+	    border-collapse: separate;
+	    border-spacing: 0 10px; /* 셀 간격 조정 */
+	}
+	
+	tr:nth-child(even) td {
+	    padding-bottom: 20px;
+	}
+	
+	td:first-child {
+	    width: 25%;
+	    font-weight: bold;
+	}
+	
+	#status {
+		font-weight: normal;
+	}
+	
+	td:last-child {
+	    width: 30%;
+	}
+	
+	input[type="text"], select {
+	    width: 100%;
+	    padding: 8px;
+	    box-sizing: border-box;
+	    margin-top: 5px; /* 필드와 레이블 간격 */
+	    background-color: #eee;
+	    border:none;
+	}
+	
+	.item-option {
+	    width: calc(20% - 10px); /* 아이템 옵션의 너비 조정 */
+	    margin-right: 10px; /* 아이템 옵션 간격 조정 */
+	    display: inline-block;
+	}
+	
+	.product-img {
+	    max-width: 100%;
+	    height: auto;
+	    border-radius: 5px;
+	}
+	
+	.button {
+	    background-color: #FFAB40;
+	    color: #fff;
+	    border: none;
+	    padding: 10px 20px;
+	    margin: 5px;
+	    cursor: pointer;
+	    border-radius: 5px;
+	    font-size: 16px;
+	    transition: background-color 0.3s ease;
+	}
+	
+	.button:hover {
+	    background-color: #e6952d;
+	}
+	
+	#status {
+		font-weight: normal;
+	}
+	
+	#price {
+		font-weight: normal;
+	}
 
 </style>
 <script src="${pageContext.request.servletContext.contextPath}/resources/js/jquery-3.7.1.js"></script>
@@ -268,9 +263,9 @@ function confirmDelete() {
 					</tr>
 					<tr>
 						<td align="center"><br>
-							<input type="button" value="목록" onclick="location.href='AdminStoreOrder?pageNum=${param.pageNum}'">
-							<input type="button" value="수정" onclick="location.href='ProductOrderModify?order_idx=${productOrder.order_idx}&pageNum=${param.pageNum}'">
-							<input type="button" value="삭제" onclick="confirmDelete()">
+							<input type="button" class="button" value="목록" onclick="location.href='AdminStoreOrder?pageNum=${param.pageNum}'">
+							<input type="button" class="button" value="수정" onclick="location.href='ProductOrderModify?order_idx=${productOrder.order_idx}&pageNum=${param.pageNum}'">
+							<input type="button" class="button" value="삭제" onclick="confirmDelete()">
 						</td>
 					</tr>
 				</table>

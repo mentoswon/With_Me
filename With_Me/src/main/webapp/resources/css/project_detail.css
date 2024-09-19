@@ -244,9 +244,10 @@ section {
 }
 
 .con02 .right #creatorInfo .wrap .btns .follow{
-background-color: #ffab40;
-color: #fff; 				
+	background-color: #ffab40;
+	color: #fff; 				
 }
+
 .con02 .right #creatorInfo .wrap .btns button {
 	width: 48%;
 	padding: 7px 0;
@@ -357,6 +358,14 @@ color: #fff;
 	top: 25%;
 	right: 5%;
 	width: 20px;
+}
+
+.con02 .right .toTop {
+	position: fixed;
+    bottom: 0;
+    right: 0;
+    display: none;
+    cursor: pointer;
 }
 	
 /* 모달 팝업 */

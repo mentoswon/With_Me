@@ -33,6 +33,18 @@
 			        alert("팝업 창이 차단되었습니다. 팝업 차단을 해제해주세요.");
 			    }
 			}
+			
+			window.addEventListener('scroll',function(){
+				if($(window).scrollTop() > 1400){
+					$(".toTop").fadeIn();
+				} else {
+					$(".toTop").fadeOut();
+				}
+			});
+			
+			function toTop(){
+				$(window).scrollTop(100);
+			}
 		</script>
 	</head>
 	<body>
@@ -293,6 +305,12 @@
 							</div>
 						</div>
 					</c:if>
+					<!-- top 으로 이동하는 버튼 -->
+					<div class="toTop" onclick="toTop()">
+						<figure>
+							<img alt="top" src="${pageContext.request.contextPath}/resources/image/topBtn.png">
+						</figure>
+					</div>
 				</div>
 			</section>
 		</div>

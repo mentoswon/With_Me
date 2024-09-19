@@ -75,7 +75,6 @@ function ProductOrderDetail(orderIdx) {
 							<input type="search" name="searchKeyword" value="${param.searchKeyword}" >
 							<input type="submit" value="검색">
 						</div>
-						<hr>
 					</form>
 				</div>
 				<br>
