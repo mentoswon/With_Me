@@ -24,7 +24,7 @@
 		justify-content: space-between;
 		position: relative;
 		margin-bottom: 20px;
-	}
+	} 
 	
 	.main .wrapper_top .search {
 		position: absolute;
