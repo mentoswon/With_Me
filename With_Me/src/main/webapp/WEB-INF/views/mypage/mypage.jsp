@@ -662,8 +662,8 @@
 							                <c:set var="today"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></c:set> 
 							
 							                <c:forEach var="dp" items="${DonationProjectList}">
-							                    <c:choose>
-							                        <c:when test="${dp.funding_end_date > today}">
+<%-- 							                    <c:choose> --%>
+<%-- 							                        <c:when test="${dp.funding_end_date > today}"> --%>
 							                            <c:set var="hasValidProject" value="true" />
 							                            <div class="item">
 							                                <div class="item_image">
@@ -697,23 +697,31 @@
 							                                        <div class="fund_amt"><fmt:formatNumber pattern="#,###">${dp.funding_amt}</fmt:formatNumber> 원</div> 
 							                                    </div>
 							                                    <div class="fund_etc">
-							                                        <c:choose>
-							                                            <c:when test="${leftDay eq 0}">
-							                                                오늘 마감
-							                                            </c:when>
-							                                            <c:otherwise>
-							                                                <fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
-							                                                <fmt:parseNumber value="${dp.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-							                                                <c:set value="${endDate - strDate}" var="leftDay"/>
-							                                                <c:out value="${leftDay}" />일 남음
-							                                            </c:otherwise>
-							                                        </c:choose>
+																	<c:choose>
+																	    <c:when test="${leftDay eq 0}">
+																	        오늘 마감
+																	    </c:when>
+																	    <c:otherwise>
+																	        <fmt:parseNumber value="${now.time/(1000*60*60*24)}" integerOnly="true" var="strDate"></fmt:parseNumber>
+																	        <fmt:parseNumber value="${dp.funding_end_date.time/(1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
+																	        <c:set value="${endDate - strDate}" var="leftDay"/>
+																	        
+																	        <c:choose>
+																	            <c:when test="${leftDay < 0}">
+																	                마감됨
+																	            </c:when>
+																	            <c:otherwise>
+																	                <c:out value="${leftDay}" />일 남음
+																	            </c:otherwise>
+																	        </c:choose>
+																	    </c:otherwise>
+																	</c:choose>
 							                                    </div>
 							                                </div>
 							                                <progress class="progress" value="${fund_rate}" min="0" max="100"></progress>
 							                            </div>
-							                        </c:when>
-							                    </c:choose>
+<%-- 							                        </c:when> --%>
+<%-- 							                    </c:choose> --%>
 							                </c:forEach>
 							            </div>
 							        </div>
