@@ -64,7 +64,7 @@
 			<div id="mainBanner">
 				<div class="slideshow-container">
 					<div class="mySlides fade">
-						<img src="https://puppydog.co.kr/web/upload/appfiles/0zdpAngaKBFnlCcCqpCU4A/ff643a9b4816f7173f45188aba4c8707.jpg" style="width:100%">
+						<img src="https://cdn.dogpang.com/catpang/data/event/banner/goodsno_maintopnew_202309141930171.jpg" style="width:100%">
 					</div>
 					
 					<div class="mySlides">
@@ -72,7 +72,7 @@
 					</div>
 					
 					<div class="mySlides">
-						<img src="https://puppydog09.openhost.cafe24.com/web/upload/appfiles/0zdpAngaKBFnlCcCqpCU4A/db4f9bfbcc7182cdd172831929f8b60d.png" style="width:100%">
+						<img src="https://cdn.dogpang.com/catpang/data/event/banner/goodsno_maintopnew_202309051403431.jpg" style="width:100%">
 					</div>
 				</div>
 			</div>

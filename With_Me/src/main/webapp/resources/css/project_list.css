@@ -117,7 +117,7 @@ h2 {
 }
 
 .progress.end::-webkit-progress-value {
-	background-color: #ffab40;
+	background-color: #888;
 	border-radius: 3px;
 }
 
@@ -137,7 +137,6 @@ h2 {
 
 .filter {
 	display: inline-block;
-	margin-right: 10px;
 	font-size: 13px;
 	cursor: pointer;
 }

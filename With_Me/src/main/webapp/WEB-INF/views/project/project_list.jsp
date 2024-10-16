@@ -139,9 +139,9 @@
 											
 											<div class="fund_amt" style="<c:if test='${project.funding_end_date < today}'> color: #575757; </c:if>" ><fmt:formatNumber pattern="#,###">${project.funding_amt}</fmt:formatNumber> 원</div> 
 										</div>
-										<div class="fund_etc" style="<c:if test="${leftDay eq 0 or project.funding_start_date > today}">color:#ffab40;font-weight: bold;</c:if> <c:if test='${project.funding_end_date < today}'>font-weight: bold;</c:if>">
+										<div class="fund_etc" style="<c:if test="${project.funding_end_date eq today or project.funding_start_date > today}">color:#ffab40;font-weight: bold;</c:if> <c:if test='${project.funding_end_date < today}'>font-weight: bold;</c:if>">
 											<c:choose>
-												<c:when test="${leftDay eq 0}">
+												<c:when test="${project.funding_end_date eq today}">
 													오늘 마감
 												</c:when>
 												<c:when test="${project.funding_start_date > today}">

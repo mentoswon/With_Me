@@ -480,6 +480,7 @@ section {
 	
 	.itemWrapper #infoArea {
 		width: 100%;
+        padding-top: 15px;
 	}
 	
 	.con02 .left {
