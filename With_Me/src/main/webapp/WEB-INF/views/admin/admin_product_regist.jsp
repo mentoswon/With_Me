@@ -64,6 +64,7 @@
 	    padding: 8px;
 	    box-sizing: border-box;
 	    margin-top: 5px; /* 필드와 레이블 간격 */
+	    margin-bottom: 10px;
 	}
 	
 	.item-option {
@@ -92,6 +93,14 @@
 	
 	.button:hover {
 	    background-color: #e6952d;
+	}
+	
+	#addButton {
+		margin-left: 10px;
+		width: 30px;
+		background-color: #FFAB40;
+		color: #fff;
+		border: none;
 	}
 </style>
 <script>
@@ -122,6 +131,17 @@ window.onload = function() {
     }
   }
 }
+
+document.getElementById("addButton").addEventListener("click", function() {
+    const inputContainer = document.getElementById("inputContainer");
+
+    // 새로운 input 요소 생성
+    const newInput = document.createElement("input");
+    newInput.type = "text";
+
+    // 컨테이너에 새로운 input 추가
+    inputContainer.appendChild(newInput);
+});
 
 
 </script>
@@ -177,23 +197,27 @@ window.onload = function() {
 							</td>
 						</tr>
 						<tr>
-							<td>상품 옵션</td>
+							<td>상품 옵션<input type="button" id="addButton" class="add-button" value="+"></td>
+							<td></td>
 						</tr>
 						<tr>
 			                <td>
 								<input type="text" name="product_item_option" class="itemText" placeholder="예) 230mm">
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 240mm">
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 250mm">
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 260mm">
-								<input type="text" name="product_item_option" class="itemText" placeholder="예) 270mm">
+<!-- 								<input type="text" name="product_item_option" class="itemText" placeholder="예) 240mm"> -->
+<!-- 								<input type="text" name="product_item_option" class="itemText" placeholder="예) 250mm"> -->
+<!-- 								<input type="text" name="product_item_option" class="itemText" placeholder="예) 260mm"> -->
+<!-- 								<input type="text" name="product_item_option" class="itemText" placeholder="예) 270mm"> -->
 			                </td>
 						</tr>	
+		                <tr id="inputContainer" class="input-container">
+						    <!-- 추가 텍스트박스가 들어갈 곳 -->
+						</tr>
 						<tr>
 							<td>상품가격</td>
 						</tr>
 						<tr>
 							<td>
-								<input type="text" name="product_price" id="product_price">
+								<input type="text" name="product_price" id="product_price" required="required">
 							</td> 
 						</tr>	
 						<tr>
@@ -201,7 +225,7 @@ window.onload = function() {
 						</tr>
 						<tr>	
 							<td>
-								<input type="text" name="product_stock" id="product_stock">
+								<input type="text" name="product_stock" id="product_stock" required="required">
 							</td>
 						</tr>	
 						<%-- 파일 첨부 영역 --%>
@@ -233,6 +257,22 @@ window.onload = function() {
 		<jsp:include page="/WEB-INF/views/inc/bottom.jsp"></jsp:include>
 	</footer>
 </body>
+<script type="text/javascript">
+
+document.getElementById("addButton").addEventListener("click", function() {
+    const inputContainer = document.getElementById("inputContainer");
+
+    // 새로운 input 요소 생성
+    const newInput = document.createElement("input");
+    newInput.type = "text";
+    newInput.name = "product_item_option";  // 동일한 name 속성으로 생성
+    newInput.className = "itemText";        // 기존과 동일한 클래스
+    newInput.placeholder = "예) 230mm";    // 새로 추가되는 텍스트박스의 placeholder
+
+    // 컨테이너에 새로운 input 추가
+    inputContainer.appendChild(newInput);
+});
+</script>
 </html>
 
 
