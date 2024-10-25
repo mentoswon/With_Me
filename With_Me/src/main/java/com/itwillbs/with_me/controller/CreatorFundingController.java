@@ -721,7 +721,7 @@ public class CreatorFundingController {
 	@GetMapping("ProjectPayment")
 	public String projectPayment(HttpSession session, Model model, @RequestParam("project_idx") String project_idx) {
 		String id = (String)session.getAttribute("sId");
-		// 미로그인 시 로그인 페이지로 이동(로그인 후 ProjectStart 페이지로 돌아오기)
+		// 미로그인 시 로그인 페이지로 이동
 		if(id == null) {
 			model.addAttribute("msg", "접근 권한이 없습니다.");
 			return "result/fail";
@@ -742,7 +742,7 @@ public class CreatorFundingController {
 	@GetMapping("ProjectSubmit")
 	public String projectSubmit(HttpSession session, Model model, @RequestParam Map<String, String> map) {
 		String id = (String)session.getAttribute("sId");
-		// 미로그인 시 로그인 페이지로 이동(로그인 후 ProjectStart 페이지로 돌아오기)
+		// 미로그인 시 로그인 페이지로 이동
 		if(id == null) {
 			model.addAttribute("msg", "접근 권한이 없습니다.");
 			return "result/fail";

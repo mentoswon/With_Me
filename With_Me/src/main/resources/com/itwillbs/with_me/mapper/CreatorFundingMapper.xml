@@ -356,9 +356,12 @@
 		, #{pre_creator_email}	-- pre_creator_email
 		, #{pre_project_code}	-- pre_project_code
 		, #{pre_pay_method_idx}	-- pre_pay_method_idx
-		, '결제완료'			-- pre_pay_status
-		, now()					-- pre_pay_date
-		, #{pre_pay_amt}		-- pre_pay_amt
+		, '결제완료'			-- pre_pay_status (결제 상태)
+		, now()					-- pre_pay_date (결제 날짜)
+		, #{pre_pay_amt}		-- pre_pay_amt (결제 금액)
+		, #{imp_uid}			-- imp_uid (결제 고유 번호)
+		, #{merchant_uid}		-- merchant_uid (상점 거래 고유 번호)
+		, #{apply_num}			-- apply_num (카드 승인 번호)
 	)
 </insert>
 

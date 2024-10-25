@@ -234,7 +234,7 @@ $(function () {
 				// 파라미터 값 설정
 				pg : "kakaopay.TC0ONETIME", // PG사 코드표에서 선택
 				pay_method : "card", // 결제 방식
-				merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호
+				merchant_uid : "IMP" + makeMerchantUid, // 상점 거래 고유 번호
 				name : "${project.project_title}", // 프로젝트명 -> 필수
 				amount : 500000, // 결제 금액 -> 필수
 				//구매자 정보 ↓
@@ -244,7 +244,10 @@ $(function () {
 			
 			}, function(rsp){ // callback
 				if(rsp.success){
-					alert("결제되었습니다.");
+					// 성공적으로 결제된 경우, hidden 필드에 결제 정보를 추가
+                    $("#imp_uid").val(rsp.imp_uid); // 결제 고유 번호
+                    $("#apply_num").val(rsp.apply_num); // 카드 승인 번호 (if applicable)
+                    alert("결제되었습니다.");
 					$("#ProjectSubmit").submit();
 				}else {
 					var msg = '결제에 실패하였습니다.';
@@ -258,7 +261,7 @@ $(function () {
 				// 파라미터 값 설정
 				pg : "html5_inicis.INIpayTest", // PG사 코드표에서 선택
 				pay_method : "card", // 결제 방식
-				merchant_uid : "IMP" + makeMerchantUid, // 결제 고유 번호
+				merchant_uid : "IMP" + makeMerchantUid, // 상점 거래 고유 번호
 				name : "${project.project_title}", // 프로젝트명 -> 필수
 				amount : 500, // 결제 금액 -> 필수(원래 50만원인데 실제 돈 출금되므로 500원으로 적음....)
 				//구매자 정보 ↓
@@ -268,7 +271,10 @@ $(function () {
 			
 			}, function(rsp){ // callback
 				if(rsp.success){
-					alert("결제되었습니다.");
+					// 성공적으로 결제된 경우, hidden 필드에 결제 정보를 추가
+                    $("#imp_uid").val(rsp.imp_uid); // 결제 고유 번호
+                    $("#apply_num").val(rsp.apply_num); // 카드 승인 번호 (if applicable)
+                    alert("결제되었습니다.");
 					$("#ProjectSubmit").submit();
 				}else {
 					var msg = '결제에 실패하였습니다.';
@@ -299,7 +305,7 @@ $(function () {
 					<div class="rewardInfo">
 						<h4>결제 정보</h4>
 						<div class="payInfoWrap">
-							<table style="width: 100%;">
+							<table style="width: 100%; border: none;">
 								<tr>
 									<td width="110">프로젝트명</td>
 									<td> : ${project.project_title}</td>
@@ -371,6 +377,10 @@ $(function () {
 	
 	                <input type="button" id="funding_complete" value="결제하기">
 	            </section>
+	            
+                <input type="hidden" name="merchant_uid" id="merchant_uid" value="">
+                <input type="hidden" name="imp_uid" id="imp_uid" value="">
+                <input type="hidden" name="apply_num" id="apply_num" value="">
         	</form>
         </div>
     </div>
