@@ -29,5 +29,6 @@
   		<typeAlias type="com.itwillbs.with_me.vo.ReportVO" alias="report"/>
   		<typeAlias type="com.itwillbs.with_me.vo.Store_userVO" alias="storeUser"/>
   		<typeAlias type="com.itwillbs.with_me.vo.PwSmsAuthInfoVO" alias="pwSmsAuth"/>
+  		<typeAlias type="com.itwillbs.with_me.vo.PremiumPaymentVO" alias="premiumPayment"/>
 	</typeAliases>
  </configuration>

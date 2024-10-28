@@ -11,6 +11,10 @@
 <link href="${pageContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/admin_default.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/resources/css/project_detail.css" rel="stylesheet" type="text/css">
+<%-- 포트원 결제 --%>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<%-- iamport.payment.js --%>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <style>
 	section {
 		height: auto;
@@ -70,12 +74,51 @@
 				return false;
 			}
 		});
+		
 		// 프로젝트 등록 거부
-		$(".refusalForm").submit(function() {
-			if(!confirm("프로젝트 등록을 거부하시겠습니까?")) {
-				return false;
-			}
-		});
+		$(".refusalForm").submit(function(event) {
+	        event.preventDefault();
+	        if(confirm("프로젝트 등록을 거부하시겠습니까?")) {
+	            const fundingPremium = ${project.funding_premium}; 
+	            if (fundingPremium === 1) {
+	
+	                const data = {
+	                    imp_uid: "${premiumPayment.imp_uid}",
+	                    merchant_uid: "${premiumPayment.merchant_uid}",	// 결제건의 주문번호
+	                    amount: 500000,	// 환불금액(50만원)
+	                    reason: "테스트 결제 환불"		// 환불사유
+                    	
+	                    // [가상계좌 환불시 필수입력]
+// 	                    refund_holder: "홍길동", 	// 예금주
+//                     	refund_bank: "88",	// 환불 수령계좌 은행코드(예: KG이니시스의 경우 신한은행은 88번)
+//                    	refund_account: "56211105948400"	// 환불 수령계좌 번호
+	                };
+	
+	                $.ajax({
+	                    url: 'CancelPayment',
+	                    type: 'POST',
+	                    data: JSON.stringify(data),
+	                    dataType : 'json',
+	                    contentType: 'application/json',
+	                    success: function(response) {
+	                        if (response.success) {
+	                            $(".refusalForm").off("submit").submit();
+	                        } else {
+	                            alert("결제 취소에 실패했습니다.");
+	                        }
+	                    },
+	                    error: function(xhr, status, error) {
+	                        console.error("Error Code: " + xhr.status);
+	                        console.error("Error Message: " + error);
+	                        alert("결제 취소 처리 중 오류가 발생했습니다.");
+	                    }
+	                });
+	            } else {
+	                $(".refusalForm").off("submit").submit();
+	            }
+	        }
+	    });
+		
 		// 프로젝트 취소 승인
 		$(".cancelForm").submit(function() {
 			if(!confirm("프로젝트 취소를 승인하시겠습니까?")) {
@@ -207,7 +250,10 @@
 								</form>
 								<form action="AdminProjectRegistApproval" class="refusalForm" method="post">
 									<input type="hidden" name="project_idx" value="${project.project_idx}">
+<%-- 									<input type="hidden" name="funding_premium" value="${project.funding_premium}"> --%>
 									<input type="hidden" name="isAuthorize" value="NO">
+<%-- 									<input type="hidden" name="imp_uid" value="${premiumPayment.imp_uid}"> <!-- 결제 고유 번호 --> --%>
+<%-- 									<input type="hidden" name="merchant_uid" value="${premiumPayment.merchant_uid}"> <!-- 상점 거래 고유 번호 --> --%>
 									<input type="submit" class="approvalBtn size1" value="등록거부">
 								</form>
 								<form action="AdminProjectCancelApproval" class="cancelForm" method="post">
@@ -237,7 +283,7 @@
 			</div>
 		</section>
 		<section>
-			<img alt="프로젝트 소개" src="${pageContext.request.contextPath}/resources/upload/${project.project_introduce}" title="프로젝트 소개">		
+			<img alt="프로젝트 소개" src="${pageContext.request.contextPath}/resources/upload/${project.project_introduce}" title="프로젝트 소개" style="width: 100%;">		
 		</section>
 		<div class="listBtn">
 			<input type="button" id="listBtn" value="목록" onclick="location.href='AdminProjectList?status=${param.status}'">

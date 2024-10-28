@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.itwillbs.with_me.vo.BoardVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.PremiumPaymentVO;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.ReportVO;
@@ -53,6 +54,14 @@ public interface AdminMapper {
 	
 	// 창작자 정보 조회
 	CreatorVO selectCreator(Map<String, Object> projectInfo);
+	
+	// ----------------------------------------------------------------
+	// 24.10.25 최지민 작업 결제 취소 작업
+	// 프리미엄 요금 결제정보 조회
+	PremiumPaymentVO selectPremiumPayment(ProjectVO project);
+	// 프리미엄 요금 환불 처리
+	int updatePremiumRefund(ProjectVO project);
+	// ----------------------------------------------------------------
 	
 	// 프로젝트 상태 변경
 	int updateProjectStatus(@Param("project") ProjectVO project, @Param("status") String status);
@@ -110,5 +119,8 @@ public interface AdminMapper {
 	
 	// 신고 상태 변경
 	int updateReportState(ReportVO report);
+
+
+
 	
 }

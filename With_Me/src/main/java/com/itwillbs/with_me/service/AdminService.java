@@ -10,6 +10,7 @@ import com.itwillbs.with_me.mapper.AdminMapper;
 import com.itwillbs.with_me.vo.BoardVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MemberVO;
+import com.itwillbs.with_me.vo.PremiumPaymentVO;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.ReportVO;
@@ -74,6 +75,20 @@ public class AdminService {
 	public CreatorVO getCreator(Map<String, Object> projectInfo) {
 		return mapper.selectCreator(projectInfo);
 	}
+	
+	// ----------------------------------------------------------------
+	// 24.10.25 최지민 작업 결제 취소 작업
+	// 프리미엄 요금 결제정보 조회 요청
+	public PremiumPaymentVO getPremiumPayment(ProjectVO project) {
+		return mapper.selectPremiumPayment(project);
+	}
+	
+	// 프리미엄 요금 환불 처리 요청
+	public int premiumRefund(ProjectVO project) {
+		return mapper.updatePremiumRefund(project);
+	}
+	
+	// ----------------------------------------------------------------
 	
 	// 프로젝트 상태 변경
 	public int changeProjectStatus(ProjectVO project, String status) {
@@ -164,5 +179,8 @@ public class AdminService {
 	public int changeReportState(ReportVO report) {
 		return mapper.updateReportState(report);
 	}
+
+
+	
 	
 }

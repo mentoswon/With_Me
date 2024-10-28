@@ -245,8 +245,10 @@ $(function () {
 			}, function(rsp){ // callback
 				if(rsp.success){
 					// 성공적으로 결제된 경우, hidden 필드에 결제 정보를 추가
+                    $("#merchant_uid").val("IMP" + makeMerchantUid); // 상점 거래 고유 번호
                     $("#imp_uid").val(rsp.imp_uid); // 결제 고유 번호
                     $("#apply_num").val(rsp.apply_num); // 카드 승인 번호 (if applicable)
+                    console.log("apply_num: ", rsp.apply_num); // apply_num의 값을 확인
                     alert("결제되었습니다.");
 					$("#ProjectSubmit").submit();
 				}else {
@@ -272,8 +274,10 @@ $(function () {
 			}, function(rsp){ // callback
 				if(rsp.success){
 					// 성공적으로 결제된 경우, hidden 필드에 결제 정보를 추가
+                    $("#merchant_uid").val("IMP" + makeMerchantUid); // 상점 거래 고유 번호
                     $("#imp_uid").val(rsp.imp_uid); // 결제 고유 번호
                     $("#apply_num").val(rsp.apply_num); // 카드 승인 번호 (if applicable)
+                    console.log("apply_num: ", rsp.apply_num); // apply_num의 값을 확인
                     alert("결제되었습니다.");
 					$("#ProjectSubmit").submit();
 				}else {

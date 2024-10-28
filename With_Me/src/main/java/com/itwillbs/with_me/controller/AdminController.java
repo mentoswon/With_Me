@@ -29,6 +29,7 @@ import com.itwillbs.with_me.vo.BoardVO;
 import com.itwillbs.with_me.vo.CreatorVO;
 import com.itwillbs.with_me.vo.MemberVO;
 import com.itwillbs.with_me.vo.PageInfo;
+import com.itwillbs.with_me.vo.PremiumPaymentVO;
 import com.itwillbs.with_me.vo.ProjectCancelVO;
 import com.itwillbs.with_me.vo.ProjectVO;
 import com.itwillbs.with_me.vo.ReportVO;
@@ -349,6 +350,16 @@ public class AdminController {
 		ProjectCancelVO projectCancel = adminService.getProjectCancel(project);
 //		System.out.println("projectCancel : " + projectCancel);
 		
+		// ---------------------------------------------------------------------------------
+		// 24.10.25 최지민 작업 결제 취소 작업
+		// 프리미엄 요금제일경우 결제정보 조회
+		if (projectInfo.get("funding_premium").equals(1)) {
+			PremiumPaymentVO premiumPayment = adminService.getPremiumPayment(project);
+			System.out.println("premiumPayment2222 : " + premiumPayment);
+			model.addAttribute("premiumPayment", premiumPayment);
+		}
+		// ---------------------------------------------------------------------------------
+		
 		// 프로젝트 상세정보, 창작자 정보 Model 객체에 저장 -> admin_project_detail.jsp 로 전달
 		model.addAttribute("project", projectInfo);
 		model.addAttribute("creator", creator);
@@ -372,6 +383,24 @@ public class AdminController {
 			status = "승인";
 		} else if(isAuthorize.equals("NO")) {
 			status = "거부";
+			
+			// ---------------------------------------------------------------------------------
+			// 24.10.25 최지민 작업 결제 취소 작업
+			System.out.println("projet : " + project);
+			// 프리미엄 요금 환불 로직 추가
+	        if (project.getFunding_premium() == 1) { // 프리미엄 요금이 선택된 경우
+	            int refundAmount = 500000; // 50만원 환불
+	            // 환불 처리 요청
+	            int refundSuccess = adminService.premiumRefund(project);
+	            if (refundSuccess > 0) {
+                    model.addAttribute("msg", "프리미엄 요금 환불 처리 성공!");
+                } else {
+	                model.addAttribute("msg", "프리미엄 요금 환불 처리 실패!");
+	                return "result/fail"; // 환불 실패 시 처리
+	            }
+	        }
+	        
+	        // ---------------------------------------------------------------------------------
 		}
 		int updateCount = adminService.changeProjectStatus(project, status);
 		// 등록 승인/거부 결과 판별

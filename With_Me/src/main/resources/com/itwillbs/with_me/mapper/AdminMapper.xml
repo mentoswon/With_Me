@@ -253,6 +253,24 @@
 		WHERE creator_idx = #{creator_idx}
 	</select>
 	
+	<!-- 프리미엄 요금 결제정보 조회 -->
+	<select id="selectPremiumPayment" resultType="premiumPayment">
+		SELECT *
+		FROM premium_payment
+		WHERE pre_project_code = (SELECT project_code
+								  FROM project_info
+		                          WHERE project_idx = #{project_idx})
+	</select>
+	
+	<!-- 프리미엄 요금 환불 처리 -->
+	<update id="updatePremiumRefund">
+		UPDATE premium_payment
+		SET pre_pay_status = '결제취소'
+		WHERE pre_project_code = (SELECT project_code
+								  FROM project_info
+		                          WHERE project_idx = #{project_idx})
+	</update>
+	
 	<!-- 프로젝트 상태 변경 -->
 	<update id="updateProjectStatus">
 		UPDATE project_info
