@@ -45,7 +45,12 @@ http://c5d2403t2.itwillbs.com/with_me/
 
 |메인페이지|
 |------|
-|<img src="https://github.com/user-attachments/assets/77e27eee-dbd0-446f-86b4-fa1a08263fd6"  width="700" height="650"/>|
+|<img src="https://github.com/user-attachments/assets/77e27eee-dbd0-446f-86b4-fa1a08263fd6"  width="800" height="750"/>|
+
+|로그인|카카오 로그인|
+|------|------|
+|<img src="https://github.com/user-attachments/assets/18e3df31-5f66-4ab6-ab74-b5ae52bcb161"  width="800" height="750"/>|<img src="https://github.com/user-attachments/assets/8897b2f2-7a36-4143-94ec-5b1a9f134573"  width="800" height="750"/>|
+
 
 
 
