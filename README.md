@@ -58,6 +58,9 @@ http://c5d2403t2.itwillbs.com/with_me/
 |<img src="https://github.com/user-attachments/assets/9157810c-6165-4d9b-8afe-52459639a846"  width="400" height="350"/>|<img src="https://github.com/user-attachments/assets/81bd7275-48b1-4969-93fb-1706bee2435d"  width="400" height="350"/>|
 |- 해당 아이디 비번 찾기|- Cool SMS API를 이용한 비밀번호 재설정|
 
-
-
+|채팅(웹소켓)|
+|------|
+|<img src="https://github.com/user-attachments/assets/fd8dae32-a684-4d19-a611-2851b278c0d2"  width="800" height="750"/>|
+|- 창작자 이름을 클릭해 상대방과 1:1 채팅을 할 수 있도록 설정<br>
+- 웹소켓을 이용하여 실시간으로 창작자와 문의를 할 수 있도록 구현|
 
