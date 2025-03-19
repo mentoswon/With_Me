@@ -45,7 +45,7 @@ http://c5d2403t2.itwillbs.com/with_me/
 
 |메인페이지|
 |------|
-![스크린샷 2024-10-15 211242](https://github.com/user-attachments/assets/7ef335e7-8945-49d2-bed0-0568e44bcba4 width="300" height="350")
+![스크린샷 2024-10-15 211242](https://github.com/user-attachments/assets/7ef335e7-8945-49d2-bed0-0568e44bcba4)
 
 
 
