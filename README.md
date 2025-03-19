@@ -50,6 +50,10 @@ http://c5d2403t2.itwillbs.com/with_me/
 |로그인|카카오 로그인|
 |------|------|
 |<img src="https://github.com/user-attachments/assets/18e3df31-5f66-4ab6-ab74-b5ae52bcb161"  width="500" height="450"/>|<img src="https://github.com/user-attachments/assets/8897b2f2-7a36-4143-94ec-5b1a9f134573"  width="500" height="450"/>|
+|- 일반 로그인|카카오 REST API를 이용한 로그인|
+
+|비밀번호 찾기|
+|------|
 
 
 
