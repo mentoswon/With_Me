@@ -32,3 +32,10 @@ http://c5d2403t2.itwillbs.com/with_me/
 |라이브러리|<img src="https://img.shields.io/badge/jQuery-0769AD?style=flat-square&logo=jQuery&logoColor=white"/><img src="https://img.shields.io/badge/MyBatis-000000?style=for-the-badge&logo=MyBatis&logoColor=white">|
 |데이터베이스|<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/>|
 |협업 도구|<img alt="Slack" src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white" /><img src="https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white"/>|
+
+### 👨‍💻 팀원
+----------------
+|팀장|부팀장|서기|팀원|팀원|
+|------|---|---|---|---|
+|<div align="center">[이해원](https://github.com/mentoswon)</div>|<div align="center">[최지민](https://github.com/codeJimin)</div>|<div align="center">[최민석](https://github.com/CHOIMINSEOK-KORR)</div>|<div align="center">[하지형](https://github.com/morehaji)</div>|<div align="center">[김성윤](https://github.com/Seong-yun-Kim)</div>|
+|관리자페이지<br>관리자페이지 CSS|메인 페이지<br>결제/예약|예약<br>차량 리스트<br>차량 상세조회|회원가입/로그인<br>고객센터|마이페이지<br>1:1문의|
