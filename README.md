@@ -55,8 +55,7 @@ http://c5d2403t2.itwillbs.com/with_me/
 
 |비밀번호 찾기|비밀번호 찾기|
 |------|------|
-|<img src="https://github.com/user-attachments/assets/94b8cb86-5a07-4f3e-b8ba-c8b5d4566110"  width="500" height="450"/>|<img src="https://github.com/user-attachments/assets/1f23610e-a673-4b5c-86fe-c6877fac961f"  width="500" height="450"/>|
-|Cool SMS API를 이용한 비밀번호 찾기기|
+|<img src="https://github.com/user-attachments/assets/94b8cb86-5a07-4f3e-b8ba-c8b5d4566110"  width="500" height="450"/>|<img src="https://github.co기|Cool SMS API를 이용한 비밀번호 찾기기|
 
 
 
