@@ -40,6 +40,8 @@ http://c5d2403t2.itwillbs.com/with_me/
 |<div align="center">[이해원](https://github.com/mentoswon)</div>|<div align="center">[최지민](https://github.com/codeJimin)</div>|<div align="center">[최민석](https://github.com/CHOIMINSEOK-KORR)</div>|<div align="center">[하지형](https://github.com/morehaji)</div>|<div align="center">[김성윤](https://github.com/Seong-yun-Kim)</div>|
 |메인페이지<br>사용자 펀딩 후원<br>금융결제원 API<br>포트원 API<br>채팅 알림|창작자 펀딩 등록<br>금융결제원 API<br>포트원 API<br>CoolSMS API|채팅<웹소켓><br>마이페이지<br>로그인(카카오 로그인)/회원가입<br>CoolSMS API<br>상품관리(관리자)|스토어<br>포트원 API<br>이용안내 및 게시판|회원관리(관리자)<br>프로젝트 관리(관리자)<br>게시판 관리(관리자)|
 
+
+
 ## 2. 주요 기능
 ---------------------------------------------------------------------
 
