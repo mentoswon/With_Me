@@ -46,6 +46,7 @@ http://c5d2403t2.itwillbs.com/with_me/
 |메인페이지|
 |------|
 |<img src="https://github.com/user-attachments/assets/77e27eee-dbd0-446f-86b4-fa1a08263fd6"  width="800" height="750"/>|
+|메인페이지에서 프로젝트 확인과 펀딩, 스토어 랭킹을 확인가능|
 
 |로그인|카카오 로그인|
 |------|------|
@@ -54,7 +55,8 @@ http://c5d2403t2.itwillbs.com/with_me/
 
 |비밀번호 찾기|
 |------|
-
+|<img src="https://github.com/user-attachments/assets/94b8cb86-5a07-4f3e-b8ba-c8b5d4566110"  width="500" height="450"/>|<img src="https://github.com/user-attachments/assets/1f23610e-a673-4b5c-86fe-c6877fac961f"  width="500" height="450"/>|
+|Cool SMS API를 이용한 비밀번호 찾기기|
 
 
 
