@@ -58,5 +58,10 @@ http://c5d2403t2.itwillbs.com/with_me/
 |<img src="https://github.com/user-attachments/assets/9157810c-6165-4d9b-8afe-52459639a846"  width="500" height="450"/>|<img src="https://github.com/user-attachments/assets/81bd7275-48b1-4969-93fb-1706bee2435d"  width="500" height="450"/>|
 |- 해당 아이디 비번 찾기|- Cool SMS API를 이용한 비밀번호 재설정|
 
+|비밀번호 찾기|비밀번호 찾기|
+|------|------|
+|<img src="https://github.com/user-attachments/assets/9157810c-6165-4d9b-8afe-52459639a846"  width="500" height="450"/>|<img src="https://github.com/user-attachments/assets/81bd7275-48b1-4969-93fb-1706bee2435d"  width="500" height="450"/>|
+|- 해당 아이디 비번 찾기|- Cool SMS API를 이용한 비밀번호 재설정|
+
 
 
