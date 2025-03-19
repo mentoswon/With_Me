@@ -38,4 +38,4 @@ http://c5d2403t2.itwillbs.com/with_me/
 |팀장|부팀장|서기|팀원|팀원|
 |------|---|---|---|---|
 |<div align="center">[이해원](https://github.com/mentoswon)</div>|<div align="center">[최지민](https://github.com/codeJimin)</div>|<div align="center">[최민석](https://github.com/CHOIMINSEOK-KORR)</div>|<div align="center">[하지형](https://github.com/morehaji)</div>|<div align="center">[김성윤](https://github.com/Seong-yun-Kim)</div>|
-|메인페이지<br>사용자 펀딩 후원<br>금융결제원 API<br>포트원 API<br>채팅 알림|메인 페이지<br>결제/예약|예약<br>차량 리스트<br>차량 상세조회|회원가입/로그인<br>고객센터|마이페이지<br>1:1문의|
+|메인페이지<br>사용자 펀딩 후원<br>금융결제원 API<br>포트원 API<br>채팅 알림|창작자 펀딩 등록<br>금융결제원 API<br>포트원 API<br>CoolSMS API|채팅<웹소켓><br>마이페이지<br>로그인(카카오 로그인)/회원가입<br>CoolSMS API<br>상품관리(관리자)|회원가입/로그인<br>고객센터|마이페이지<br>1:1문의|
