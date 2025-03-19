@@ -49,7 +49,7 @@ http://c5d2403t2.itwillbs.com/with_me/
 
 |로그인|카카오 로그인|
 |------|------|
-|<img src="https://github.com/user-attachments/assets/18e3df31-5f66-4ab6-ab74-b5ae52bcb161"  width="800" height="750"/>|<img src="https://github.com/user-attachments/assets/8897b2f2-7a36-4143-94ec-5b1a9f134573"  width="800" height="750"/>|
+|<img src="https://github.com/user-attachments/assets/18e3df31-5f66-4ab6-ab74-b5ae52bcb161"  width="600" height="550"/>|<img src="https://github.com/user-attachments/assets/8897b2f2-7a36-4143-94ec-5b1a9f134573"  width="600" height="550"/>|
 
 
 
